@@ -346,6 +346,35 @@ export default {
 
         return param;
       }());
+    },
+    //画点
+    drawPoint(map,d,blnPanTo){
+
+      let point=new BMap.Point(d.longitude || d.equipment_longitude, d.latitude || d.equipment_latitude);
+      var label= new BMap.Label(`<div style="border:3px solid white;width:20px;height:20px;border-radius:50%;background-color:#0faaea;">
+                                    
+                                </div>`,{position:point,offset:new BMap.Size(-pointOps.size/2,-pointOps.size)});
+      label.setStyle({
+                          fontSize : "12px",
+                          lineHeight : "20px",
+                          fontFamily:"微软雅黑",
+                          fontWeight:'600',
+                          border:'0px solid black',
+                          'background-color':'transparent',
+                          'max-width':'none'
+                      });
+      map.addOverlay(label);
+
+
+      if(blnPanTo){
+        map.panTo(point);
+      }
+
+      return label;
+    },
+    //清除地图覆盖物
+    clearOverlays(map){
+      map.clearOverlays();
     }
   }
 }
