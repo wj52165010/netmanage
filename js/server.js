@@ -800,7 +800,7 @@ class server{
         data =data || {id:'',law_case_id:''}
         this.baseBag.target='analy_task';
         this.baseBag.method='get';
-        this.baseBag.data={task_id:data.id || '',law_case_id:data.law_case_id};
+        this.baseBag.data={task_id:data.id || '',law_case_id:data.law_case_id,task_type:data.task_type};
         return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
       }
 

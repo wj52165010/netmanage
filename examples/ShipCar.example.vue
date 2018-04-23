@@ -2,7 +2,7 @@
 <template>
     <div class="ShipCar">
 
-        <!--左边侧边框-->
+      <!--左边侧边框-->
       <div class="left_pop bound" :class="{active:blnShowHistoryPop}">
           <!--显示标签-->
           <div class="pop_lable" @click="blnShowHistoryPop=!blnShowHistoryPop">

@@ -4,8 +4,29 @@
         <!--地图容器-->
         <div class="map" :id="mapid"></div>
 
+        <!--左边侧边框-->
+        <div class="left_pop bound" :class="{active:blnShowHistoryPop}">
+          <!--显示标签-->
+          <div class="pop_lable" @click="blnShowHistoryPop=!blnShowHistoryPop">
+            历史记录
+          </div>
+          <Scroll ref="historyPopScroll" :listen="historyData">
+            <div v-for="h in historyData" class="item" @click="lookTask(h);">
+              <div class="child">
+                <span style="display:inline-block;width:50%;">开始时间:&nbsp;{{converTime(h.task_conditions.begin_time,'yyyy-MM-dd')}}</span><span style="display:inline-block;width:50%;">结束时间:&nbsp;{{converTime(h.task_conditions.end_time,'yyyy-MM-dd')}}</span>
+              </div>
+              <div class="child">
+                <span style="display:inline-block;width:50%;">开始时段:&nbsp;{{h.task_conditions.begin_hour}}点</span><span style="display:inline-block;width:50%;">结束时段:&nbsp;{{h.task_conditions.end_hour}}点</span>
+              </div>
+              <div class="child">
+                <span style="display:inline-block;width:50%;">用车次数:&nbsp;{{h.task_conditions.frequency}}次</span><span style="display:inline-block;width:25%;">结果:&nbsp;{{h.result_count}}</span><span style="display:inline-block;width:25%;">状态:&nbsp;{{h.status_note}}</span>
+              </div>
+            </div>
+          </Scroll>
+        </div>
+
         <!--操作栏-->
-        <div class="option_bar" :style="{'right':curTask?'320px':'0px'}">
+        <div class="option_bar" :style="{'right':curTask?'320px':'0px',left:blnShowHistoryPop?'310px':'10px'}">
           <div style="float:left;margin-right:10px;margin-top:5px;">
             日期 <el-date-picker type="daterange" v-model="timeRange"  placeholder="选择日期范围" style="width: 220px;display:inline-block;"></el-date-picker>
           </div>
@@ -40,57 +61,49 @@
           <div class="clearfix"></div>
         </div>
         <!--右边显示区域-->
-        <div class="right_container" v-if="curTask" :style="{bottom:curTask && curTask.task_status=='completed'?'0px':'auto'}">
+        <div class="right_container" v-if="curTask" :style="{bottom:curTask && curTask.task_status=='completed'?'10px':'auto'}">
           <!--数据加载提示信息-->
           <div class="tipInfo" v-if="curTask.task_status!=='completed'">
             <i class="fa fa-clock-o" style="font-size:30px;"></i>{{curTask.task_status=='created'?'正在分析,请稍后...':'出现异常'}}
           </div>
-          <div v-if="curTask.task_status=='completed'">
+          <div v-if="curTask.task_status=='completed' && detailData" style="width:100%;height:100%;">
             <!--列表栏-->
             <div class="title">网约车分析 <span style="float:right;font-size:12px;">完成时间&nbsp;&nbsp;&nbsp;2018-02-01</span></div>
             <!--内容栏-->
             <div class="content">
-              <Scroll>
+              <Scroll ref="detailScroll">
                 <div class="item">
                   <div class="child_item">
                     <span class="item_title">积累人数</span>
                     <span class="item_icon"><i class="fa fa-line-chart" @click="LookLine()"></i><i class="fa fa-navicon"></i></span>
-                    <span class="item_number">47人</span>
+                    <span class="item_number">{{detailData.totlePerson}}人</span>
                   </div>
                 </div>
 
-                <div class="item">
+                <div class="item" v-if="detailData.fromplaceTop.length>0">
                   <div class="child_item">
                     <span class="item_title" style="font-size:14px;">乘车地址top</span>
                     <span class="item_icon"><i class="fa fa-bullseye" @click="heartMap()"></i><i class="fa fa-navicon"></i></span>
                   </div>
-                  <div class="child_item">
-                    <span class="item_title">美全世纪城附近</span>
+                  <div class="child_item" v-for="v in detailData.fromplaceTop">
+                    <span class="item_title">{{v.region_name}}</span>
                     <span class="item_icon"> &nbsp;</span>
-                    <span class="item_number">10人</span>
+                    <span class="item_number">{{v.count}}次</span>
                   </div>
-                  <div class="child_item">
-                    <span class="item_title">美全世纪城附近</span>
-                    <span class="item_icon"> &nbsp;</span>
-                    <span class="item_number">10人</span>
-                  </div>
+                
                 </div>
 
-                <div class="item">
+                <div class="item" v-if="detailData.toplaceTop.length>0">
                   <div class="child_item">
-                    <span class="item_title" style="font-size:14px;">目的地top</span>
+                    <span class="item_title" style="font-size:14px;" @click="heartMap()">目的地top</span>
                     <span class="item_icon"><i class="fa fa-bullseye"></i><i class="fa fa-navicon"></i></span>
                   </div>
-                  <div class="child_item">
-                    <span class="item_title">美全世纪城附近</span>
+                  <div class="child_item" v-for="v in detailData.toplaceTop">
+                    <span class="item_title">{{v.region_name}}</span>
                     <span class="item_icon"> &nbsp;</span>
-                    <span class="item_number">10人</span>
+                    <span class="item_number">{{v.count}}次</span>
                   </div>
-                  <div class="child_item">
-                    <span class="item_title">美全世纪城附近</span>
-                    <span class="item_icon"> &nbsp;</span>
-                    <span class="item_number">10人</span>
-                  </div>
+
                 </div>
 
                 <div class="item" v-for="d in data">
@@ -101,15 +114,6 @@
                   <!--图表显示容器-->
                   <div class="chart_container" :id="d.id"></div>
                 </div>
-
-                <!--<div class="item">
-                  <div class="child_item">
-                    <span class="item_title" style="font-size:14px;">目的地区域分布</span>
-                    <span class="item_icon"><i class="fa fa-navicon"></i></span>
-                  </div>
-
-                  <div class="chart_container" id="chartwo"></div>
-                </div>-->
 
               </Scroll>
             </div>
@@ -127,7 +131,7 @@ import 'echarts/lib/component/legend'
 import Scroll from 'components/scroll'
 import HeatMap from './Home.HeatMap.js'
 
-import {AddAnalyTask} from '../store/mutation-types'
+import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData} from '../store/mutation-types'
 
 
 export default {
@@ -145,31 +149,42 @@ export default {
       startHour:'',
       endHour:'',
       curTask:null,
+      blnShowHistoryPop:false,
+      historyData:[],
+      detailData:null,
     }
   },
   watch:{
-    startHour(){
-      console.log(parseInt(this.startHour));
-    },
     curTask(){
       this.$nextTick(()=>{
-        if(this.curTask.task_status!='completed') return;
-        this.initEchart();
+        setTimeout(()=>{
+          if(this.curTask.task_status!='completed') return;
+          setTimeout(()=>{
+            this.initEchart();
+            this.$refs.detailScroll.reloadyScroll();
+          },200);
+          
+        },200);
+        
       });
-    }
+    },
   },
   mounted(){
     this.initMap();
 
+    this.getAnalyTask();
+
     //监听任务分析结果
     this.socket = io(ser.url);
-    this.socket.on('AnalyTraceTask', (data)=> {
+    this.socket.on('carhailing', (data)=> {
       let d=eval('('+data+')');
       if(d.task_status!='completed') return;
 
       if(this.curTask.task_id!=d.task_id) return;
       
-      
+      let task=_.find(this.historyData,h=>h.task_id==d.task_id);
+      task.result_count=d.count;
+      this.lookTask(task);
     });
     
   },
@@ -201,47 +216,85 @@ export default {
         if(!tool.msg(res,`正在分析中....`,'分析失败!')) return;
         this.curTask=res.biz_body[0];
 
+        this.historyData.unshift(this.curTask);        
       });
     
+
+    },
+    //获取历史记录
+    getAnalyTask(){
+      this.$store.dispatch(GetAnalyTask,{task_type:'carhailing'}).then(res=>{
+        this.historyData=res.biz_body;
+      });
+    },
+    lookTask(t){
+      if(!parseInt(t.result_count)){tool.info('没有相关结果!'); return;}
+      this.getTaskDetail(t);
+      
+    },
+
+    //获取任务详细信息
+    getTaskDetail(t){
+      this.$store.dispatch(GetAnalyTaskData,{id:t.task_id}).then(res=>{
+        this.detailData=res.biz_body;
+        this.curTask=t;
+
+        this.data=_.flatten([
+          _.keys(res.biz_body.fromRegion).length>0?{
+            id:'chartone',
+            name:'乘车地区分布',
+            data:res.biz_body.fromRegion
+          }:[],
+          _.keys(res.biz_body.toRegion).length>0?{
+            id:'chartwo',
+            name:'目的地区分布',
+            data:res.biz_body.toRegion
+          }:[]
+        ]);
+      });
 
     },
     //初始化图表插件
     initEchart(){
       this.charts={};
-      let option={
-          color:['#85c226','#f8c301','#728499'],
-          legend: {
-              orient: 'vertical',
-              left: 'left',
-              data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎'],
-              textStyle:{color:'white'}
-          },
-          series : [
-                {
-                  name: '访问来源',
-                  type: 'pie',
-                  radius : '70px',
-                  center: ['70%', '50%'],
-                  data:[
-                      {value:335, name:'直接访问'},
-                      {value:310, name:'邮件营销'},
-                      {value:234, name:'联盟广告'},
-                      {value:135, name:'视频广告'},
-                      {value:1548, name:'搜索引擎'}
-                  ],
-                  itemStyle: {
-                      normal: {
-                          label:{
-                            show:true,
-                            position:'inner',
-                            formatter:'{d}%'
-                          }
-                      }
-                  }
-              }
-          ]
-      };
-      _.each(this.data,d=>{
+  
+        _.each(this.data,d=>{
+          let data=d.data;
+          let keys=_.keys(data); 
+  
+          let vals=_.map(data,(v,k)=>{return {name:k,value:v.count}});
+
+
+          let option={
+            color:['#85c226','#f8c301','#728499'],
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: keys,
+                textStyle:{color:'white'}
+            },
+            series : [
+                  {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius : '70px',
+                    center: ['70%', '50%'],
+                    data:vals,
+                    itemStyle: {
+                        normal: {
+                            label:{
+                              show:true,
+                              position:vals.length>1?'inner':'center',
+                              formatter:'{d}%',
+                              textStyle : {
+                                color:'white'
+                              }
+                            }
+                        }
+                    }
+                }
+            ]
+        };
         this.charts[d.id] = echarts.init($(this.$el).find(`div[id="${d.id}"]`)[0]);
         this.charts[d.id].setOption(option);
       });
@@ -375,7 +428,11 @@ export default {
     //清除地图覆盖物
     clearOverlays(map){
       map.clearOverlays();
-    }
+    },
+    //时间戳转日期
+    converTime(t,format){
+      return tool.DateByTimestamp(t,format || 'yyyy-MM-dd hh:mm:ss');
+    },
   }
 }
 </script>
@@ -410,6 +467,44 @@ export default {
   .NetAboutCar .right_container .content .item .child_item{margin-bottom:5px;}
 
   .NetAboutCar .right_container .content .item .chart_container{width:100%;height:170px;}
+
+  
+    //左边侧边框
+  @bgColor:fade(@HeaderBgCol,90%);
+  @popW:300px;
+  .NetAboutCar .left_pop{
+    position:absolute;left:-@popW;top:14px;bottom:10px;z-index:100;width:@popW;background-color:@bgColor !important;
+    border-top-right-radius:5px;border-bottom-right-radius:5px;color:white;text-align:left;
+  }
+
+  .NetAboutCar .left_pop.active{left:0px;}
+
+  .NetAboutCar .left_pop .pop_lable{
+    width:30px;position:absolute;top:50%;margin-top:-40px;
+    background-color:@bgColor;color:white;
+    font-size:12px;padding:10px 8px;border-top-right-radius:5px;border-bottom-right-radius:5px;
+    right:-30px;
+    cursor:pointer;.trans();
+  }
+
+  .NetAboutCar .left_pop .pop_lable:hover{background-color:@Font_Hover_Col;}
+
+  .NetAboutCar .left_pop .item{font-size:12px;padding:10px;.trans();.border('bottom');}
+  .NetAboutCar .left_pop .item:hover{background-color:@Font_Hover_Col;cursor:pointer;}
+  .NetAboutCar .left_pop .item .child{margin-bottom:10px;}
+  .NetAboutCar .left_pop .item .item_type{
+    padding:2px 8px;position:relative;display:inline-block;
+  }
+
+  .NetAboutCar .left_pop .item.active .bottom_right:before,
+  .NetAboutCar .left_pop .item.active .bottom_right:after,
+  .NetAboutCar .left_pop .item.active .top_left:after,
+  .NetAboutCar .left_pop .item.active .top_left:before,
+  .NetAboutCar .left_pop .item:hover .bottom_right:before,
+  .NetAboutCar .left_pop .item:hover .bottom_right:after,
+  .NetAboutCar .left_pop .item:hover .top_left:after,
+  .NetAboutCar .left_pop .item:hover .top_left:before{background:@bgColor;}
+
 
   
 </style>
