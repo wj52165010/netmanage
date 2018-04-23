@@ -1,0 +1,44 @@
+html{height:100%;width: 100%;}
+body{margin:0px;height:100%;width:100%;overflow:hidden;font-family:微软雅黑 !important;}
+a{text-decoration: none !important;}
+.form-horizontal .form-group{margin:0px !important;}
+
+@import 'Animate.less';
+@import '../../node_modules/bootstrap/less/variables.less';
+@import '../../node_modules/bootstrap/less/glyphicons.less';
+.uncheckIcon_tree,.checkIcon_tree{
+  position: relative;
+  padding: 0px 10px;
+}
+.uncheckIcon_tree:before{
+  content:'';
+  width: 20px;
+  height: 20px;
+  background: url("../assets/green.png") no-repeat;
+  cursor: pointer;
+  position: absolute;
+  top:0px;
+  left:0px;
+}
+
+.checkIcon_tree:before{
+  content:'';
+  width: 20px;
+  height: 20px;
+  background: url("../assets/green.png") no-repeat;
+  cursor: pointer;
+  position: absolute;
+  background-position: -40px 0px;
+  top:0px;
+  left:0px;
+}
+
+.triangle::before{
+    content: '';
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid rgb(0, 204, 102);
+    position: absolute;
+    bottom: -7px;
+    left: 60px;
+}

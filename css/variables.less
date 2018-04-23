@@ -1,0 +1,75 @@
+@headerH:60px;//头部高度
+@footerH:40px;//底部高度
+@navW:60px; //导航栏高度
+@contentH:~"calc(100% - @{headerH} - @{footerH})";//内容页高度
+@HeaderBgCol:#2f3341;//头部背景色
+@BgCol:#ebedee;//页面背景色
+@FrontCol:#ffffff;//页面前景色
+@FontCol:#728499;//字体颜色
+@Font_Hover_Col:rgb(3, 171, 103);//#03c1d7;//鼠标放上字体颜色
+@Active_Bg_Col:@Font_Hover_Col;//导航激活背景色
+@Active_Front_Col:white;//导航激活前景色
+@borderCol:#e7eaec;//表框颜色
+@btn_Bg_Col_hover_0:#98e32c;//#98e32c按钮背景色0
+@btn_Bg_Col_0:shade(@btn_Bg_Col_hover_0,10%);//按钮前景色1(#638ca6)备选颜色
+@btn_Bg_Col_hover_1:@Font_Hover_Col;//按钮背景色1
+@btn_Bg_Col_1:shade(@btn_Bg_Col_hover_1,10%);//按钮前景色1(#638ca6)备选颜色
+@btn_Bg_Col_2:shade(#ebb52f,10%);//按钮前景色2
+@btn_Bg_Col_hover_2:#ebb52f;//按钮背景色2
+@btn_Bg_Col_3:shade(@Font_Hover_Col,10%);//按钮前景色3
+@btn_Bg_Col_hover_3:@Font_Hover_Col;//按钮背景色3
+@btn_Bg_Col_4:shade(#9b26b0,10%);//按钮前景色4
+@btn_Bg_Col_hover_4:#9b26b0;//按钮背景色4
+@btn_Bg_Col_5:shade(@Font_Hover_Col,10%);//按钮前景色5
+@btn_Bg_Col_hover_5:@Font_Hover_Col;//按钮背景色5
+@btn_Bg_Col_6:@btn_Bg_Col_hover_0;//按钮背景色
+@btn_Bg_Col_hover_6:shade(@btn_Bg_Col_6,10%);//按钮背景色
+
+.user-select(){
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    user-select:none;
+}
+
+.border(@direction,@col:@borderCol) when(@direction="") {
+    border-top:1px solid @col;
+    border-bottom:1px solid @col;
+    border-left:1px solid @col;
+    border-right:1px solid @col;
+}
+.border(@direction,@col:@borderCol) when(@direction="top") {//表框样式
+    border-top:1px solid @col;
+}
+.border(@direction,@col:@borderCol) when(@direction="bottom") {//表框样式
+    border-bottom:1px solid @col;
+}
+.border(@direction,@col:@borderCol) when(@direction="left") {//表框样式
+    border-left:1px solid @col;
+}
+.border(@direction,@col:@borderCol) when(@direction="right") {//表框样式
+    border-right:1px solid @col;
+}
+
+.transAtt(@att,@start_time:0.5s){
+    transition: @att @start_time cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s;
+    -moz-transition: @att @start_time cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s;
+    -ms-transition: @att @start_time cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s;
+    -webkit-transition: @att @start_time cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s;
+    -o-transition:@att @start_time cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s;
+}
+
+.trans(@start_time:0.5s){
+    transition: all @start_time cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s;
+    -moz-transition: all @start_time cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s;
+    -ms-transition: all @start_time cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s;
+    -webkit-transition: all @start_time cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s;
+    -o-transition:all @start_time cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s;
+}
+
+.transLine(@start_time:0.5s){
+    transition: all @start_time cubic-bezier(.35, .52,.33, .98) 0s;
+    -moz-transition: all @start_time cubic-bezier(.35, .52,.33, .98) 0s;
+    -ms-transition: all @start_time cubic-bezier(.35, .52,.33, .98) 0s;
+    -webkit-transition: all @start_time cubic-bezier(.35, .52,.33, .98) 0s;
+    -o-transition:all @start_time cubic-bezier(.35, .52,.33, .98) 0s;
+}

@@ -1,0 +1,21 @@
+@borderCol:#dfe6ec;
+@tableHeaderH:30px;
+
+.border(@direction,@col:@borderCol) when(@direction="") {
+    border-top:1px solid @borderCol;
+    border-bottom:1px solid @borderCol;
+    border-left:1px solid @borderCol;
+    border-right:1px solid @borderCol;
+}
+.border(@direction,@col:@borderCol) when(@direction="top") {//表框样式
+    border-top:1px solid @borderCol;
+}
+.border(@direction,@col:@borderCol) when(@direction="bottom") {//表框样式
+    border-bottom:1px solid @borderCol;
+}
+.border(@direction,@col:@borderCol) when(@direction="left") {//表框样式
+    border-left:1px solid @borderCol;
+}
+.border(@direction,@col:@borderCol) when(@direction="right") {//表框样式
+    border-right:1px solid @borderCol;
+}
