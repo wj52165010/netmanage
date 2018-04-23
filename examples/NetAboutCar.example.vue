@@ -273,7 +273,18 @@ export default {
     },
     //热力图
     heartMap(){
-      
+      tool.open(function(){
+        html=``;
+        let param={
+            title:'地图路径',
+            area:['800px','600px'],
+            content:`<div class="LookLine_pop" style="width:100%;height:100%;">${html}</div>`,
+            success(layero){
+            }
+        }
+
+        return param;
+      }());
     }
   }
 }
