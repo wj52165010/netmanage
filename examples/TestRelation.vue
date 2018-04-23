@@ -17,9 +17,7 @@ export default {
   name: 'TestRelation',
   components:{Relation},
   data () {
-    return {
-     
-    }
+   
   },
 
 }
