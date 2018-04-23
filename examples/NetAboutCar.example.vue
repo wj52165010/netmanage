@@ -270,6 +270,10 @@ export default {
 
         return param;
       }());
+    },
+    //热力图
+    heartMap(){
+      
     }
   }
 }
