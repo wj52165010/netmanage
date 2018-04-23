@@ -57,7 +57,7 @@
               <div class="item">
                 <div class="child_item">
                   <span class="item_title" style="font-size:14px;">乘车地址top</span>
-                  <span class="item_icon"><i class="fa fa-bullseye"></i><i class="fa fa-navicon"></i></span>
+                  <span class="item_icon"><i class="fa fa-bullseye" @click="heartMap()"></i><i class="fa fa-navicon"></i></span>
                 </div>
                 <div class="child_item">
                   <span class="item_title">美全世纪城附近</span>
