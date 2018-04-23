@@ -5,7 +5,7 @@
         <div class="map" :id="mapid"></div>
 
         <!--操作栏-->
-        <div class="option_bar">
+        <div class="option_bar" :style="{'right':curTask?'320px':'0px'}">
           <div style="float:left;margin-right:10px;margin-top:5px;">
             日期 <el-date-picker type="daterange" v-model="timeRange"  placeholder="选择日期范围" style="width: 220px;display:inline-block;"></el-date-picker>
           </div>
@@ -33,80 +33,86 @@
             <span style="float:left;margin-top:10px;margin-right:10px;">用车次数</span> <el-input-number v-model="num" :min="0" :max="10000" label="描述文字"></el-input-number>
           </div>
 
-          <button type="button" class="btn btn-default" style="float:right;background-color:#20a1ff;color:white;margin-top:5px;" >
+          <button type="button" class="btn btn-default" style="float:right;background-color:#20a1ff;color:white;margin-top:5px;" @click="search()" >
               <span v-show="!blnSearch">分 析</span>
               <i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i>
           </button>
           <div class="clearfix"></div>
         </div>
         <!--右边显示区域-->
-        <div class="right_container">
-          <!--列表栏-->
-          <div class="title">网约车分析 <span style="float:right;font-size:12px;">完成时间&nbsp;&nbsp;&nbsp;2018-02-01</span></div>
-          <!--内容栏-->
-          <div class="content">
-            <Scroll>
-              <div class="item">
-                <div class="child_item">
-                  <span class="item_title">积累人数</span>
-                  <span class="item_icon"><i class="fa fa-line-chart" @click="LookLine()"></i><i class="fa fa-navicon"></i></span>
-                  <span class="item_number">47人</span>
-                </div>
-              </div>
-
-              <div class="item">
-                <div class="child_item">
-                  <span class="item_title" style="font-size:14px;">乘车地址top</span>
-                  <span class="item_icon"><i class="fa fa-bullseye" @click="heartMap()"></i><i class="fa fa-navicon"></i></span>
-                </div>
-                <div class="child_item">
-                  <span class="item_title">美全世纪城附近</span>
-                  <span class="item_icon"> &nbsp;</span>
-                  <span class="item_number">10人</span>
-                </div>
-                <div class="child_item">
-                  <span class="item_title">美全世纪城附近</span>
-                  <span class="item_icon"> &nbsp;</span>
-                  <span class="item_number">10人</span>
-                </div>
-              </div>
-
-              <div class="item">
-                <div class="child_item">
-                  <span class="item_title" style="font-size:14px;">目的地top</span>
-                  <span class="item_icon"><i class="fa fa-bullseye"></i><i class="fa fa-navicon"></i></span>
-                </div>
-                <div class="child_item">
-                  <span class="item_title">美全世纪城附近</span>
-                  <span class="item_icon"> &nbsp;</span>
-                  <span class="item_number">10人</span>
-                </div>
-                <div class="child_item">
-                  <span class="item_title">美全世纪城附近</span>
-                  <span class="item_icon"> &nbsp;</span>
-                  <span class="item_number">10人</span>
-                </div>
-              </div>
-
-              <div class="item" v-for="d in data">
-                <div class="child_item">
-                  <span class="item_title" style="font-size:14px;">{{d.name}}</span>
-                  <span class="item_icon"><i class="fa fa-navicon"></i></span>
-                </div>
-                <!--图表显示容器-->
-                <div class="chart_container" :id="d.id"></div>
-              </div>
-
-              <!--<div class="item">
-                <div class="child_item">
-                  <span class="item_title" style="font-size:14px;">目的地区域分布</span>
-                  <span class="item_icon"><i class="fa fa-navicon"></i></span>
+        <div class="right_container" v-if="curTask" :style="{bottom:curTask && curTask.task_status=='completed'?'0px':'auto'}">
+          <!--数据加载提示信息-->
+          <div class="tipInfo" v-if="curTask.task_status!=='completed'">
+            <i class="fa fa-clock-o" style="font-size:30px;"></i>{{curTask.task_status=='created'?'正在分析,请稍后...':'出现异常'}}
+          </div>
+          <div v-if="curTask.task_status=='completed'">
+            <!--列表栏-->
+            <div class="title">网约车分析 <span style="float:right;font-size:12px;">完成时间&nbsp;&nbsp;&nbsp;2018-02-01</span></div>
+            <!--内容栏-->
+            <div class="content">
+              <Scroll>
+                <div class="item">
+                  <div class="child_item">
+                    <span class="item_title">积累人数</span>
+                    <span class="item_icon"><i class="fa fa-line-chart" @click="LookLine()"></i><i class="fa fa-navicon"></i></span>
+                    <span class="item_number">47人</span>
+                  </div>
                 </div>
 
-                <div class="chart_container" id="chartwo"></div>
-              </div>-->
+                <div class="item">
+                  <div class="child_item">
+                    <span class="item_title" style="font-size:14px;">乘车地址top</span>
+                    <span class="item_icon"><i class="fa fa-bullseye" @click="heartMap()"></i><i class="fa fa-navicon"></i></span>
+                  </div>
+                  <div class="child_item">
+                    <span class="item_title">美全世纪城附近</span>
+                    <span class="item_icon"> &nbsp;</span>
+                    <span class="item_number">10人</span>
+                  </div>
+                  <div class="child_item">
+                    <span class="item_title">美全世纪城附近</span>
+                    <span class="item_icon"> &nbsp;</span>
+                    <span class="item_number">10人</span>
+                  </div>
+                </div>
 
-            </Scroll>
+                <div class="item">
+                  <div class="child_item">
+                    <span class="item_title" style="font-size:14px;">目的地top</span>
+                    <span class="item_icon"><i class="fa fa-bullseye"></i><i class="fa fa-navicon"></i></span>
+                  </div>
+                  <div class="child_item">
+                    <span class="item_title">美全世纪城附近</span>
+                    <span class="item_icon"> &nbsp;</span>
+                    <span class="item_number">10人</span>
+                  </div>
+                  <div class="child_item">
+                    <span class="item_title">美全世纪城附近</span>
+                    <span class="item_icon"> &nbsp;</span>
+                    <span class="item_number">10人</span>
+                  </div>
+                </div>
+
+                <div class="item" v-for="d in data">
+                  <div class="child_item">
+                    <span class="item_title" style="font-size:14px;">{{d.name}}</span>
+                    <span class="item_icon"><i class="fa fa-navicon"></i></span>
+                  </div>
+                  <!--图表显示容器-->
+                  <div class="chart_container" :id="d.id"></div>
+                </div>
+
+                <!--<div class="item">
+                  <div class="child_item">
+                    <span class="item_title" style="font-size:14px;">目的地区域分布</span>
+                    <span class="item_icon"><i class="fa fa-navicon"></i></span>
+                  </div>
+
+                  <div class="chart_container" id="chartwo"></div>
+                </div>-->
+
+              </Scroll>
+            </div>
           </div>
         </div>
     </div>
@@ -119,6 +125,7 @@ import 'echarts/lib/chart/line'
 import 'echarts/lib/component/legend'
 
 import Scroll from 'components/scroll'
+import HeatMap from './Home.HeatMap.js'
 
 import {AddAnalyTask} from '../store/mutation-types'
 
@@ -136,20 +143,34 @@ export default {
       data:[{id:'chartone',name:'乘车地区域分布'},{id:'chartwo',name:'乘车地区域分布'}],
       timeRange:[],
       startHour:'',
-      endHour:''
+      endHour:'',
+      curTask:null,
     }
   },
   watch:{
     startHour(){
       console.log(parseInt(this.startHour));
+    },
+    curTask(){
+      this.$nextTick(()=>{
+        if(this.curTask.task_status!='completed') return;
+        this.initEchart();
+      });
     }
   },
   mounted(){
     this.initMap();
 
-    setTimeout(()=>{
-      this.initEchart();
-    },1000);
+    //监听任务分析结果
+    this.socket = io(ser.url);
+    this.socket.on('AnalyTraceTask', (data)=> {
+      let d=eval('('+data+')');
+      if(d.task_status!='completed') return;
+
+      if(this.curTask.task_id!=d.task_id) return;
+      
+      
+    });
     
   },
   methods:{
@@ -159,6 +180,30 @@ export default {
       let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
       this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);
       this.map.enableScrollWheelZoom(true);
+    },
+    search(){
+      if(this.timeRange.length<=0){return tool.info('时间范围必填!');}
+      if(!this.startHour || !this.endHour){return tool.info('时间段必填!');}
+
+      this.blnSearch=true;
+      this.$store.dispatch(AddAnalyTask,{
+        task_type:'carhailing',
+        task_conditions:{
+          begin_time:tool.Timestamp(this.timeRange[0]),
+          end_time:tool.Timestamp(this.timeRange[1]),
+          begin_hour:parseInt(this.startHour),
+          end_hour:parseInt(this.endHour),
+          frequency:this.num
+        },
+        
+      }).then(res=>{
+        this.blnSearch=false;
+        if(!tool.msg(res,`正在分析中....`,'分析失败!')) return;
+        this.curTask=res.biz_body[0];
+
+      });
+    
+
     },
     //初始化图表插件
     initEchart(){
@@ -207,7 +252,7 @@ export default {
         let html=`<div name="container" style="width:100%;height:100%;"></div>`;
         let chart=null;
         let param={
-            title:'地图路径',
+            title:'折线图',
             area:['800px','600px'],
             content:`<div class="LookLine_pop" style="width:100%;height:100%;">${html}</div>`,
             success(layero){
@@ -274,12 +319,28 @@ export default {
     //热力图
     heartMap(){
       tool.open(function(){
-        html=``;
+        let id='pop_map'+tool.guid();
+        html=`<div id="${id}" style="width:100%;height:100%;"></div>`;
         let param={
-            title:'地图路径',
+            title:'热力图',
             area:['800px','600px'],
             content:`<div class="LookLine_pop" style="width:100%;height:100%;">${html}</div>`,
             success(layero){
+              let map = new BMap.Map(layero.find('#'+id)[0],{minZoom:13,maxZoom:18});
+              map.centerAndZoom(new BMap.Point(113.841106,36.081306),13);
+              map.enableScrollWheelZoom(true);
+              let pm=new HeatMap(map,{});
+
+              //let d = res.biz_body[0];
+
+              // map.panTo(new BMap.Point(d.longitude,d.latitude));
+
+              // let data ={};
+              // _.each(res.biz_body,r=>{
+              //   data[r.longitude+'_'+r.latitude]={length:parseInt(2)};
+              // });
+
+              // pm.draw(data);
             }
         }
 
@@ -302,6 +363,8 @@ export default {
  @titleH:40px;
  .NetAboutCar .right_container .title{width:100%;height:@titleH;line-height:@titleH;background-color:@Font_Hover_Col;color:white;text-align:left;padding:0px 10px;}
 
+ .NetAboutCar .right_container .tipInfo{color:white;font-size:20px;padding:20px;background-color:@Font_Hover_Col;}
+
  .NetAboutCar .option_bar{
    position:absolute;top:10px;left:10px;right:@rightContainerW + 20px;background-color:rgba(47, 51, 65, 0.3);text-align:left;padding:2px 10px;border-radius:10px;color:white;
   }
@@ -318,4 +381,6 @@ export default {
   .NetAboutCar .right_container .content .item .child_item{margin-bottom:5px;}
 
   .NetAboutCar .right_container .content .item .chart_container{width:100%;height:170px;}
+
+  
 </style>
