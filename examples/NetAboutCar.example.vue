@@ -86,8 +86,7 @@
                     <span class="item_icon"><i class="fa fa-bullseye" @click="lookHeart(1)"></i><i class="fa fa-navicon" @click="lookList(1)"></i></span>
                   </div>
                   <div class="child_item" v-for="v in detailData.fromplaceTop">
-                    <span class="item_title">{{v.region_name}}</span>
-                    <span class="item_icon"> &nbsp;</span>
+                    <span class="item_title">{{v.address}}</span>
                     <span class="item_number">{{v.count}}次</span>
                   </div>
                 
@@ -99,8 +98,8 @@
                     <span class="item_icon"><i class="fa fa-bullseye" @click="lookHeart()"></i><i class="fa fa-navicon" @click="lookList()"></i></span>
                   </div>
                   <div class="child_item" v-for="v in detailData.toplaceTop">
-                    <span class="item_title">{{v.region_name}}</span>
-                    <span class="item_icon"> &nbsp;</span>
+                    <span class="item_title">{{v.address}}</span>
+    
                     <span class="item_number">{{v.count}}次</span>
                   </div>
 
@@ -241,7 +240,7 @@ export default {
         this.detailData=res.biz_body;
         this.curTask=t;
 
-
+        console.log(res.biz_body);
         this.data=_.flatten([
           _.keys((res.biz_body.fromRegion) || []).length>0?{
             id:'chartone',
@@ -620,7 +619,7 @@ export default {
 
   .NetAboutCar .right_container .content .item{padding:5px 20px;margin-top:10px;}
   .NetAboutCar .right_container .content .item .item_title{}
-  .NetAboutCar .right_container .content .item  .item_number{float:right;margin-right:20px;}
+  .NetAboutCar .right_container .content .item  .item_number{float:right;margin-right:0px;}
   .NetAboutCar .right_container .content .item  .item_icon{float:right;width:60px;height:100%;display:inline-block;text-align:right;}
   .NetAboutCar .right_container .content .item  .item_icon i{margin-left:10px;cursor:pointer;}
   .NetAboutCar .right_container .content .item  .item_icon i:hover{color:@Font_Hover_Col;}

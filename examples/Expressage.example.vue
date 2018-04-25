@@ -43,7 +43,7 @@
           </div>
           <div v-if="curTask.task_status=='completed' && detailData" style="width:100%;height:100%;">
             <!--列表栏-->
-            <div class="title">快递隐患分析 <span style="float:right;font-size:12px;">完成时间&nbsp;&nbsp;&nbsp;2018-02-01</span></div>
+            <div class="title">快递隐患分析 <span style="float:right;font-size:12px;">完成时间&nbsp;&nbsp;&nbsp;{{converTime(curTask.task_conditions.end_time,'yyyy-MM-dd')}}</span></div>
             <!--内容栏-->
             <div class="content">
               <Scroll ref="detailScroll">
@@ -61,8 +61,7 @@
                     <span class="item_icon"><i class="fa fa-bullseye" @click="lookHeart()"></i><i class="fa fa-navicon" @click="lookList()"></i></span>
                   </div>
                   <div class="child_item" v-for="v in detailData.locationTop">
-                    <span class="item_title">{{v.region_name}}</span>
-                    <span class="item_icon"> &nbsp;</span>
+                    <span class="item_title">{{v.address}}</span>
                     <span class="item_number">{{v.count}}次</span>
                   </div>
                 
@@ -71,7 +70,7 @@
                 <div class="item" v-for="d in data">
                   <div class="child_item">
                     <span class="item_title" style="font-size:14px;">{{d.name}}</span>
-                    <span class="item_icon"></span>
+                    <span class="item_icon"><i class="fa fa-navicon" @click="lookArea(d)"></i></span>
                   </div>
                   <!--图表显示容器-->
                   <div class="chart_container" :id="d.id"></div>
@@ -223,18 +222,22 @@ export default {
 
           let option={
             color:['#85c226','#f8c301','#728499'],
-            legend: {
-                orient: 'vertical',
-                left: 'left',
-                data: keys,
-                textStyle:{color:'white'}
+            // legend: {
+            //     orient: 'vertical',
+            //     left: 'left',
+            //     data: keys,
+            //     textStyle:{color:'white'}
+            // },
+             tooltip : {
+                trigger: 'item',
+                formatter: "{b} : {c} ({d}%)"
             },
             series : [
                   {
                     name: '',
                     type: 'pie',
-                    radius : '70px',
-                    center: ['70%', '50%'],
+                    radius : '120px',
+                    center: ['50%', '50%'],
                     data:vals,
                     itemStyle: {
                         normal: {
@@ -439,6 +442,59 @@ export default {
         return param;
       }());
     },
+    //查看区域列表
+    lookArea(d){
+      let s=this;
+      tool.open(function(){
+        let html=`
+          <div class="table_header">
+              <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                  <thead><tr>
+                      <th style="width:200px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:200px;" class="divEllipsis">区域名称</div></th>
+                      <th style="width:100px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:100px;" class="divEllipsis">次数</div></th>
+                      <th style="width:100px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:100px;" class="divEllipsis">百分比</div></th>
+                  </tr></thead>
+              </table>
+          </div>
+          <div class="table_body">
+            <Scroll :listen="data" ref="detailSrcoll">
+                <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                  <tbody><tr v-for="d in data">
+                      <td style="width:200px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:200px;" class="divEllipsis">{{d.name}}</div></td>
+                      <td style="width:100px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:100px;" class="divEllipsis">{{d.count}}</div></td>
+                      <td style="width:100px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:100px;" class="divEllipsis">{{d.radio}}</div></td>
+                  </tr></tbody>
+              </table>
+            </Scroll>
+          </div>
+        `;
+        let param={
+          title:'列表数据',
+          area:['450px','350px'],
+          content:`<div class="LookFromPlaceList_area_pop pop" style="width:100%;height:100%;overflow:hidden;">${html}</div>`,
+          components:{Scroll},
+          store:s.$store,
+          context:{
+            data:[]
+          },
+          success(layero){
+            
+            let countArr=_.pluck(d.data,'count');
+            let total = _.reduce(countArr, function(memo, num){ return memo + num; }, 0)
+
+            param.selfData.data=_.map(d.data,v=>{
+              return {
+                name:v.region_name,
+                count:v.count,
+                radio:(v.count/total*100).toFixed(2)
+              }
+            });
+          }
+        };
+
+        return param;
+      }());
+    },
     //画点
     drawPoint(map,d,blnPanTo){
 
@@ -512,14 +568,14 @@ export default {
 
   .Expressage .right_container .content .item{padding:5px 20px;margin-top:10px;}
   .Expressage .right_container .content .item .item_title{}
-  .Expressage .right_container .content .item  .item_number{float:right;margin-right:20px;}
+  .Expressage .right_container .content .item  .item_number{float:right;margin-right:0px;}
   .Expressage .right_container .content .item  .item_icon{float:right;width:60px;height:100%;display:inline-block;text-align:right;}
   .Expressage .right_container .content .item  .item_icon i{margin-left:10px;cursor:pointer;}
   .Expressage .right_container .content .item  .item_icon i:hover{color:@Font_Hover_Col;}
 
   .Expressage .right_container .content .item .child_item{margin-bottom:5px;}
 
-  .Expressage .right_container .content .item .chart_container{width:100%;height:170px;}
+  .Expressage .right_container .content .item .chart_container{width:100%;height:260px;}
 
   
     //左边侧边框
