@@ -2336,10 +2336,168 @@ UpdateFocusPerson(data){
 GetNation(){
   this.baseBag.target='data';
   this.baseBag.method='get_nation';
+  this.baseBag.data={};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+/**
+ *获取网约车统计图
+ * 
+ * params:{
+ * task_id: ‘’,
+	 type:’’ //day 按时间统计    from 按出发地统计    to 按目的地统计
+
+ *     
+  }
+  */
+ GetCarhailingChart(data){
+  this.baseBag.target='analy_task';
+  this.baseBag.method='get_carhailing_chart';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+ }
+ /**
+ *获取网约车人员信息列表
+ * 
+ * params:{
+ * task_id: ‘’,
+
+ *     
+  }
+  */
+ GetCarhailingPersonList(data){
+  this.baseBag.target='analy_task';
+  this.baseBag.method='get_carhailing_passengers';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+ }
+
+  /**
+ *获取网约车出发地列表列表
+ * 
+ * params:{
+ * task_id: ‘’,
+
+ *     
+  }
+  */
+ GetCarhailingFromplaceList(data){
+  this.baseBag.target='analy_task';
+  this.baseBag.method='get_carhailing_fromplace';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+ }
+
+  /**
+ *获取网约车目的地列表列表
+ * 
+ * params:{
+ * task_id: ‘’,
+
+ *     
+  }
+  */
+ GetCarhailingToplaceList(data){
+  this.baseBag.target='analy_task';
+  this.baseBag.method='get_carhailing_toplace';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+ }
+
+  /**
+ *获取车船出行统计图
+ * 
+ * params:{
+ * task_id: ‘’,
+
+ *     
+  }
+  */
+GetVehicleChart(data){
+  this.baseBag.target='analy_task';
+  this.baseBag.method='get_vehicle_chart';
   this.baseBag.data=data;
   return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
 }
 
+ /**
+ *获取车船出行人员列表
+ * 
+ * params:{
+ * task_id: ‘’，
+   type: ‘’//in 进入 out 出行,
+	 limit: 10,
+	 skip: 0
+
+
+ *     
+  }
+  */
+ GetVehiclePersonList(data){
+  this.baseBag.target='analy_task';
+  this.baseBag.method='get_vehicle_list';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+/**
+ *获取车船出行同行人群
+ * 
+ * params:{
+ * task_id: ‘’，
+ *     
+  }
+  */
+ GetVehicleTeam(data){
+  this.baseBag.target='analy_task';
+  this.baseBag.method='get_vehicle_team';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+/**
+ *获取可疑快递信息
+ * 
+ * params:{
+ * task_id: ‘’，
+ *     
+  }
+  */
+ GetDangerExpress(data){
+  this.baseBag.target='analy_task';
+  this.baseBag.method='get_danger_express';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+ }
+
+ /**
+ *获取可疑人员列表
+ * 
+ * params:{
+ * task_id: ‘’，
+ * limit:0,
+ * skip:0
+  }
+  */
+ GetDangerExpressList(data){
+  this.baseBag.target='analy_task';
+  this.baseBag.method='get_danger_express_receiver';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+ }
+ 
+ /**
+ *获取可疑人员列表
+ * 
+ * params:{
+ * task_id: ‘’，
+
+  }
+  */
+ GetDangerExpressListLoaction(data){
+  this.baseBag.target='analy_task';
+  this.baseBag.method='get_danger_express_location';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+ }
 }
 
 module.exports = new server(baseBag,baseUri,url);

@@ -311,6 +311,21 @@ export const DelShortPath='DelShortPath' //删除最短路径
 export const GetShortPathRes='GetShortPathRes' //获取最短分析结果集
 export const OneSearch='OneSearch' //一键搜搜索
 
+export const GetCarhailingChart='GetCarhailingChart'//获取网约车统计图
+export const GetCarhailingPersonList='GetCarhailingPersonList'//获取网约车人员信息列表
+export const GetCarhailingFromplaceList='GetCarhailingFromplaceList'//获取网约车出发地列表
+export const GetCarhailingToplaceList='GetCarhailingToplaceList'//获取网约车目的地列表
+
+export const GetVehicleChart='GetVehicleChart'//获取车船出行统计图
+export const GetVehiclePersonList='GetVehiclePersonList'//获取车船出行人员列表
+export const GetVehicleTeam='GetVehicleTeam'//获取车船出行同行人群
+
+export const GetDangerExpress='GetDangerExpress' //获取可疑快递详细信息
+export const GetDangerExpressList='GetDangerExpressList'//获取可疑人员列表
+export const GetDangerExpressListLoaction='GetDangerExpressListLoaction'//获取可疑快递区域列表
+
+export const GetNation='GetNation' //获取民族数据
+
 /**************** 例子接口 ******************/
 export const TogetherTeam='TogetherTeam' //获取同行分析组
 export const TogetherTeamTrack='TogetherTeamTrack'//获取同行分析组MAC轨迹

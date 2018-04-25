@@ -68,14 +68,14 @@
           </div>
           <div v-if="curTask.task_status=='completed' && detailData" style="width:100%;height:100%;">
             <!--列表栏-->
-            <div class="title">网约车分析 <span style="float:right;font-size:12px;">完成时间&nbsp;&nbsp;&nbsp;2018-02-01</span></div>
+            <div class="title">网约车分析 <span style="float:right;font-size:12px;">完成时间&nbsp;&nbsp;&nbsp;{{converTime(curTask.task_conditions.end_time,'yyyy-MM-dd')}}</span></div>
             <!--内容栏-->
             <div class="content">
               <Scroll ref="detailScroll">
                 <div class="item">
                   <div class="child_item">
                     <span class="item_title">积累人数</span>
-                    <span class="item_icon"><i class="fa fa-line-chart" @click="LookLine()"></i><i class="fa fa-navicon"></i></span>
+                    <span class="item_icon"><i class="fa fa-line-chart" @click="LookLine('day')"></i><i class="fa fa-navicon" @click="lookPersonList()"></i></span>
                     <span class="item_number">{{detailData.totlePerson}}人</span>
                   </div>
                 </div>
@@ -83,7 +83,7 @@
                 <div class="item" v-if="detailData.fromplaceTop.length>0">
                   <div class="child_item">
                     <span class="item_title" style="font-size:14px;">乘车地址top</span>
-                    <span class="item_icon"><i class="fa fa-bullseye" @click="heartMap()"></i><i class="fa fa-navicon"></i></span>
+                    <span class="item_icon"><i class="fa fa-bullseye" @click="lookHeart(1)"></i><i class="fa fa-navicon" @click="lookList(1)"></i></span>
                   </div>
                   <div class="child_item" v-for="v in detailData.fromplaceTop">
                     <span class="item_title">{{v.region_name}}</span>
@@ -95,8 +95,8 @@
 
                 <div class="item" v-if="detailData.toplaceTop.length>0">
                   <div class="child_item">
-                    <span class="item_title" style="font-size:14px;" @click="heartMap()">目的地top</span>
-                    <span class="item_icon"><i class="fa fa-bullseye"></i><i class="fa fa-navicon"></i></span>
+                    <span class="item_title" style="font-size:14px;">目的地top</span>
+                    <span class="item_icon"><i class="fa fa-bullseye" @click="lookHeart()"></i><i class="fa fa-navicon" @click="lookList()"></i></span>
                   </div>
                   <div class="child_item" v-for="v in detailData.toplaceTop">
                     <span class="item_title">{{v.region_name}}</span>
@@ -109,7 +109,7 @@
                 <div class="item" v-for="d in data">
                   <div class="child_item">
                     <span class="item_title" style="font-size:14px;">{{d.name}}</span>
-                    <span class="item_icon"><i class="fa fa-navicon"></i></span>
+                    <span class="item_icon"></span>
                   </div>
                   <!--图表显示容器-->
                   <div class="chart_container" :id="d.id"></div>
@@ -131,7 +131,8 @@ import 'echarts/lib/component/legend'
 import Scroll from 'components/scroll'
 import HeatMap from './Home.HeatMap.js'
 
-import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData} from '../store/mutation-types'
+import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,
+        GetCarhailingChart,GetCarhailingPersonList,GetCarhailingFromplaceList,GetCarhailingToplaceList} from '../store/mutation-types'
 
 
 export default {
@@ -171,7 +172,7 @@ export default {
   },
   mounted(){
     this.initMap();
-
+  
     this.getAnalyTask();
 
     //监听任务分析结果
@@ -236,16 +237,18 @@ export default {
     //获取任务详细信息
     getTaskDetail(t){
       this.$store.dispatch(GetAnalyTaskData,{id:t.task_id}).then(res=>{
+        if(!tool.msg(res)) return
         this.detailData=res.biz_body;
         this.curTask=t;
 
+
         this.data=_.flatten([
-          _.keys(res.biz_body.fromRegion).length>0?{
+          _.keys((res.biz_body.fromRegion) || []).length>0?{
             id:'chartone',
             name:'乘车地区分布',
             data:res.biz_body.fromRegion
           }:[],
-          _.keys(res.biz_body.toRegion).length>0?{
+          _.keys((res.biz_body.toRegion) || []).length>0?{
             id:'chartwo',
             name:'目的地区分布',
             data:res.biz_body.toRegion
@@ -299,29 +302,197 @@ export default {
         this.charts[d.id].setOption(option);
       });
     },
+    //查看网约车人员信息列表
+    lookPersonList(){
+      let s=this;
+
+      tool.open(function(){
+        let html=`
+          <div class="table_header">
+              <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                  <thead><tr>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">驾驶员</div></th>
+                      <th :style="{width:w+'px'}" style="border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">出发地</div></th>
+                      <th :style="{width:w+'px'}" style="border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}"class="divEllipsis">目的地</div></th>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">驾驶员电话</div></th>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">车色</div></th>
+                      
+                  </tr></thead>
+              </table>
+          </div>
+          <div class="table_body">
+            <Scroll :listen="data" ref="detailSrcoll">
+                <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                  <tbody><tr v-for="d in data">
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.driver_name}}</div></td>
+                      <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">{{d.from_address}}</div></td>
+                      <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">{{d.to_address}}</div></td>
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.driver_mobile}}</div></td>
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.driver_color}}</div></td>
+                      
+                  </tr></tbody>
+              </table>
+            </Scroll>
+          </div>
+        `;
+        let param={
+            title:'人员信息',
+            area:['1000px','600px'],
+            content:`<div class="LookPersonList_pop pop" style="width:100%;height:100%;overflow: hidden;">${html}</div>`,
+            components:{Scroll},
+            store:s.$store,
+            context:{
+              w:0,
+              data:[],
+            },
+            success(layero){
+              param.selfData.w=(layero.width()-450)/2;
+
+              s.$store.dispatch(GetCarhailingPersonList,{
+                task_id:s.curTask.task_id
+              }).then(res=>{
+                if(!tool.msg(res,'','获取数据失败!')) return;
+                param.selfData.data=res.biz_body;
+              });
+            }
+        }
+
+        return param;
+      }());
+    },
+    //查看出发地/目的地列表
+    lookList(type){
+      let s=this;
+      tool.open(function(){
+        let html=`
+          <div class="table_header">
+              <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                  <thead><tr>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">区域</div></th>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">编码</div></th>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">数量</div></th>
+                      <th :style="{width:w+'px'}" style="border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">地址</div></th>
+                  </tr></thead>
+              </table>
+          </div>
+          <div class="table_body">
+            <Scroll :listen="data" ref="detailSrcoll">
+                <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                  <tbody><tr v-for="d in data">
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.region_name}}</div></td>
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.region_code}}</div></td>
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.count}}</div></td>
+                      <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">{{d.address}}</div></td>
+                  </tr></tbody>
+              </table>
+            </Scroll>
+          </div>
+        `;
+        let chart=null;
+        let param={
+            title:`${type?'出发':'到达'}地列表`,
+            area:['800px','600px'],
+            content:`<div class="LookFromPlaceList_pop pop" style="width:100%;height:100%;overflow:hidden;">${html}</div>`,
+            components:{Scroll},
+            store:s.$store,
+            context:{
+              w:0,
+              data:[]
+            },
+            success(layero){
+              param.selfData.w=layero.width()-450;
+
+       
+              s.$store.dispatch(type?GetCarhailingFromplaceList:GetCarhailingToplaceList,{
+                task_id:s.curTask.task_id
+              }).then(res=>{
+                if(!tool.msg(res,'','获取数据失败!'))  return
+
+                param.selfData.data=res.biz_body;
+              });
+
+            }
+        };
+
+        return param;
+      }());
+    },
+    //查看出发地/目的地热力图
+    lookHeart(type){
+      let s=this;
+      tool.open(function(){
+        let id='pop_map'+tool.guid();
+        let html=`<div id="${id}" style="width:100%;height:100%;"></div>`;
+        let param={
+          title:`${type?'出发':'到达'}地热力图`,
+            area:['800px','600px'],
+            content:`<div class="LookFromPlaceHeat_pop pop" style="width:100%;height:100%;">${html}</div>`,
+            context:{
+              data:[]
+            },
+            success(layero){
+              s.$store.dispatch(type?GetCarhailingFromplaceList:GetCarhailingToplaceList,{
+                task_id:s.curTask.task_id
+              }).then(res=>{
+                if(!tool.msg(res,'','获取数据失败!'))  return
+
+                let map = new BMap.Map(layero.find('#'+id)[0],{minZoom:13,maxZoom:18});
+                let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
+                map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);
+                map.enableScrollWheelZoom(true);
+                let pm=new HeatMap(map,{});
+
+                let data = _.map(res.biz_body,d=>{
+                  return {longitude:d.longti,latitude:d.lat,count:d.count};
+                });
+                let d = data[0];
+
+                map.panTo(new BMap.Point(d.longitude,d.latitude));
+
+                let ds ={};
+                _.each(data,r=>{
+                  ds[r.longitude+'_'+r.latitude]={length:r.count};
+                });
+
+                pm.draw(ds);
+              });
+            }
+        };
+
+        return param;
+      }());
+    },
     //查看折线图
-    LookLine(){
+    LookLine(type){
+      
+      let s=this;
       tool.open(function(){
         let html=`<div name="container" style="width:100%;height:100%;"></div>`;
         let chart=null;
         let param={
-            title:'折线图',
+            title:'统计图',
             area:['800px','600px'],
-            content:`<div class="LookLine_pop" style="width:100%;height:100%;">${html}</div>`,
+            content:`<div class="LookLine_pop pop" style="width:100%;height:100%;">${html}</div>`,
             success(layero){
               chart = echarts.init(layero.find('div[name="container"]')[0]);
-              chart.setOption(
-                 {
-                  legend: {
-                      data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
-                  },
+              //获取数据
+              s.$store.dispatch(GetCarhailingChart,{
+                task_id:s.curTask.task_id,
+                type:type
+              }).then(res=>{
+                if(!tool.msg(res,'','获取数据失败!')) return;
+                let data=res.biz_body;
+                let days=_.map(data,d=>d.day);
+                let ds=_.map(data,d=>d.count);
 
+                chart.setOption(
+                 {
                   calculable : true,
                   xAxis : [
                       {
                           type : 'category',
                           boundaryGap : false,
-                          data : ['周一','周二','周三','周四','周五','周六','周日']
+                          data :days
                       }
                   ],
                   yAxis : [
@@ -331,38 +502,14 @@ export default {
                   ],
                   series : [
                       {
-                          name:'邮件营销',
+                          name:'',
                           type:'line',
-                          stack: '总量',
-                          data:[120, 132, 101, 134, 90, 230, 210]
+                          data:ds
                       },
-                      {
-                          name:'联盟广告',
-                          type:'line',
-                          stack: '总量',
-                          data:[220, 182, 191, 234, 290, 330, 310]
-                      },
-                      {
-                          name:'视频广告',
-                          type:'line',
-                          stack: '总量',
-                          data:[150, 232, 201, 154, 190, 330, 410]
-                      },
-                      {
-                          name:'直接访问',
-                          type:'line',
-                          stack: '总量',
-                          data:[320, 332, 301, 334, 390, 330, 320]
-                      },
-                      {
-                          name:'搜索引擎',
-                          type:'line',
-                          stack: '总量',
-                          data:[820, 932, 901, 934, 1290, 1330, 1320]
-                      }
                   ]
-              }
-              );
+                }
+                );
+              });
             }
         }
 
@@ -384,7 +531,7 @@ export default {
               map.enableScrollWheelZoom(true);
               let pm=new HeatMap(map,{});
 
-              //let d = res.biz_body[0];
+              // let d = res.biz_body[0];
 
               // map.panTo(new BMap.Point(d.longitude,d.latitude));
 
@@ -436,6 +583,20 @@ export default {
   }
 }
 </script>
+
+<style lang="less">
+  @import "../css/variables.less";
+  //列表样式
+  @bgColor:fade(@HeaderBgCol,90%);
+  @tableRowH:36px;
+  .pop  .table{margin-bottom:0px;color: white;}
+  .pop  .table_header{height:@tableRowH;}
+  .pop  .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
+  .pop  .table_header th{padding:0px !important;color:black; line-height:@tableRowH;}
+  .pop  .table_header{color:black;}
+  .pop  .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
+  .pop  .table_body td{padding:0px !important;color:black;line-height:@tableRowH;.border('bottom');}
+</style>
 
 <style scoped lang="less">
  @import "../css/variables.less";

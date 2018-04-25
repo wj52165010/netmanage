@@ -244,6 +244,7 @@ export default {
     }
   },
   mounted(){
+
     app={t:this,menus:[]};
 
     //判断当前资源加载完成
@@ -328,19 +329,19 @@ export default {
         {name:'CCIC预警',icon:'fa fa-dashboard',keyid:"11025",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"CCICPage"},
         {name:'操作日志',icon:'fa fa-opera',keyid:"11027",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"OperLogPage"},
 
-        {name:'同行轨迹(案例)',icon:'fa fa-opera',keyid:"11028",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"PeerTrack"},
+        {name:'同行轨迹',icon:'fa fa-opera',keyid:"11028",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"PeerTrack"},
         {name:'首页(案例)',icon:'fa fa-opera',keyid:"11029",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Home"},
         //{name:'关系展示(案例)',icon:'fa fa-opera',keyid:"11030",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Relation"},
-        {name:'关系展示(案例2)',icon:'fa fa-opera',keyid:"11031",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Relation2"},
+        {name:'关系展示',icon:'fa fa-opera',keyid:"11031",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Relation2"},
         //{name:'测试关系展示(案例)',icon:'fa fa-opera',keyid:"11032",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"TestRelation"},
         //{name:'轨迹分析(案例)',icon:'fa fa-opera',keyid:"11033",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Track"},
-        {name:'轨迹分析(案例2)',icon:'fa fa-opera',keyid:"11034",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Track2"},
-        {name:'关注人员(案例)',icon:'fa fa-opera',keyid:"11035",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"AttenPerson"},
-        {name:'最短路径(案例)',icon:'fa fa-opera',keyid:"11036",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"ShortPath"},
+        {name:'轨迹分析',icon:'fa fa-opera',keyid:"11034",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Track2"},
+        {name:'关注人员',icon:'fa fa-opera',keyid:"11035",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"AttenPerson"},
+        {name:'最短路径',icon:'fa fa-opera',keyid:"11036",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"ShortPath"},
         //{name:'二次碰撞详细页面(案例)',icon:'fa fa-opera',keyid:"11037",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"CrashSecondDetail"},
-        {name:'网约车分析(案例)',icon:'fa fa-opera',keyid:"11038",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"NetAboutCar"},
-        {name:'车船航班分析(案例)',icon:'fa fa-opera',keyid:"11039",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"ShipCar"},
-        {name:'隐患快递分析(案例)',icon:'fa fa-opera',keyid:"11040",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Expressage"},
+        {name:'网约车分析',icon:'fa fa-opera',keyid:"11038",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"NetAboutCar"},
+        {name:'车船航班分析',icon:'fa fa-opera',keyid:"11039",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"ShipCar"},
+        {name:'隐患快递分析',icon:'fa fa-opera',keyid:"11040",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Expressage"},
       ];
 
       app.menus=fixMenus;

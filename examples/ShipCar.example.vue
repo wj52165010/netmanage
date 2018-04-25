@@ -8,8 +8,18 @@
           <div class="pop_lable" @click="blnShowHistoryPop=!blnShowHistoryPop">
             历史记录
           </div>
-          <Scroll ref="historyPopScroll" >
-            
+          <Scroll ref="historyPopScroll" :listen="historyData">
+            <div v-for="h in historyData" class="item" @click="lookTask(h);">
+              <div class="child">
+                <span style="display:inline-block;width:50%;">开始时间:&nbsp;{{converTime(h.task_conditions.begin_time,'yyyy-MM-dd')}}</span><span style="display:inline-block;width:50%;">结束时间:&nbsp;{{converTime(h.task_conditions.end_time,'yyyy-MM-dd')}}</span>
+              </div>
+              <div class="child">
+                <span style="display:inline-block;width:40%;">民族:&nbsp;{{h.task_conditions.nations && h.task_conditions.nations[0]}}</span><span style="display:inline-block;width:60%;">身份证:&nbsp;{{h.task_conditions.certs && h.task_conditions.certs[0]}}</span>
+              </div>
+              <div class="child">
+                <span style="display:inline-block;width:50%;">结果:&nbsp;{{h.result_count}}</span><span style="display:inline-block;width:50%;">状态:&nbsp;{{h.status_note}}</span>
+              </div>
+            </div>
           </Scroll>
       </div>
 
@@ -17,18 +27,23 @@
         <div class="main" :style="{'margin-left':blnShowHistoryPop?'340px':'0px'}">
             <div class="option_bar">
                 <div style="float:left;margin-top:2px;">
-                 日期 <el-date-picker type="daterange"  placeholder="选择日期范围" style="width: 220px;display:inline-block;"></el-date-picker>
+                 日期 <el-date-picker type="daterange" v-model="timeRange"  placeholder="选择日期范围" style="width: 220px;display:inline-block;"></el-date-picker>
                 </div>
                 <div style="float:left;margin-top:2px;margin-left:10px;width:130px;">
-                    <el-select  clearable placeholder="民族">
-                        
+                    <el-select v-model="nation"  clearable placeholder="民族">
+                        <el-option
+                        v-for="item in nations"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.value">
+                        </el-option>
                     </el-select>
                 </div>
                 <div style="float:left;margin-top:2px;margin-left:10px;width:200px;">
-                    <el-input placeholder="身份筛选" /> 
+                    <el-input placeholder="身份筛选" v-model="cert" /> 
                 </div>
 
-                <button type="button" class="btn btn-default" style="float:left;background-color:#20a1ff;color:white;margin-top:3px;margin-left:10px;" >
+                <button type="button" class="btn btn-default" style="float:left;background-color:#20a1ff;color:white;margin-top:3px;margin-left:10px;" @click="search()">
                     <span v-show="!blnSearch">分 析</span>
                     <i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i>
                 </button>
@@ -36,41 +51,46 @@
             <!--内容栏-->
             <div class="content">
                 <!--图标显示区域-->
-                <div class="chart_container">
+                <div class="chart_container" v-show="chartsData">
 
                     <div class="item">
                         <div style="position:absolute;font-size:14px;font-weight:600;top:0px;left:40px;">每日进入人数趋势</div>
                         <div name="chartone" style="width:100%;height:100%;"></div>
+                        <div style="position:absolute;font-size:14px;top:0px;right:40px;color:rgb(3, 171, 103);cursor:pointer;" @click="lookList('in')">
+                            <i class="fa fa-navicon"></i>
+                        </div>
                     </div>
                     <div class="item">
                         <div style="position:absolute;font-size:14px;font-weight:600;top:0px;left:40px;">每日离开人数趋势</div>
                         <div name="charttwo" style="width:100%;height:100%;"></div>
+                        <div style="position:absolute;font-size:14px;top:0px;right:40px;color:rgb(3, 171, 103);cursor:pointer;" @click="lookList('out')">
+                            <i class="fa fa-navicon"></i>
+                        </div>
                     </div>
                 </div>
 
                 <!--内容显示区域-->
-                <div class="content_container">
+                <div class="content_container" v-if="personData.length>0">
                     <div style="font-weight:600;font-size:14px;line-height:40px;">疑似群体</div>
                     <!--内容展示区域-->
                     <div class="info_conatienr">
                         <!--左边导航栏-->
                         <div class="left_nav">
-                            <Scroll>
-                                <div class="item">群体一</div>
-                                <div class="item">群体一</div>
+                            <Scroll :listen="personData">
+                                <div class="item" @click="curShowIndex=i" :class="{active:curShowIndex==i}"  v-for="(v,i) in personData" >{{v.netbar_wacode_note}}</div>
                             </Scroll>
                         </div>
                         <!--右边内容区域-->
                         <div class="right_container">
                             <Scroll>
-                                <div class="person" v-for="p in persons">
+                                <div class="person" v-for="p in personData[curShowIndex].persons">
                                     <div class="photo_container"><div class="photo"></div></div>
                                     <div class="info">
-                                        <div class="item">张亮同</div>
-                                        <div class="item">汉族</div>
-                                        <div class="item">身份证&nbsp;&nbsp;500109198612122533</div>
-                                        <div class="item fixitem divEllipsis">到达车站&nbsp;&nbsp;重庆菜园坝火车站</div>
-                                        <div class="item">到达时间&nbsp;&nbsp;2018-2-3 10:11</div>
+                                        <div class="item">{{p.name}}</div>
+                                        <div class="item">{{p.nation}}</div>
+                                        <div class="item">身份证&nbsp;&nbsp;{{p.cert_number}}</div>
+                                        <div class="item fixitem divEllipsis">到达车站&nbsp;&nbsp;{{p.to.station}}</div>
+                                        <div class="item">到达时间&nbsp;&nbsp;{{converTime(p.receive_time)}}</div>
                                     </div>
                                 </div>
                             </Scroll>
@@ -86,7 +106,7 @@
 import echarts from  'echarts'
 import Scroll from 'components/scroll'
 
-import {BODY_RESIZE,GetNation} from '../store/mutation-types'
+import {BODY_RESIZE,GetNation,GetAnalyTask,AddAnalyTask,GetVehicleChart,GetVehiclePersonList,GetVehicleTeam} from '../store/mutation-types'
 export default {
   name: 'ShipCar',
   components:{Scroll},
@@ -94,9 +114,17 @@ export default {
     return {
       chartone:null,
       charttwo:null,
-      persons:[1,2],
       blnShowHistoryPop:false,
       blnSearch:false,
+      curTask:null,
+      historyData:[],
+      timeRange:[],
+      nation:'',
+      cert:'',
+      nations:[],
+      chartsData:null,
+      personData:[],
+      curShowIndex:0,
     }
   },
   watch:{
@@ -108,40 +136,28 @@ export default {
             },600);
         });
         
-    }
-  },
-  mounted(){
-    setTimeout(()=>{
-        this.initChart();
-        this.setChart();
-    },200); 
-
-    this.$store.commit(BODY_RESIZE,()=>{
-        if(!this.chartone || !this.charttwo) return;
-        this.chartone.resize();
-        this.charttwo.resize();
-    });
-    
-  },
-  methods:{
-    initChart(){
-        this.chartone = echarts.init($(this.$el).find(`div[name="chartone"]`)[0]);
-        this.charttwo = echarts.init($(this.$el).find(`div[name="charttwo"]`)[0]);
     },
-    setChart(){
-        let option = {
+    chartsData(){
+        let keysdomestic=_.map(this.chartsData.inVehicle_domestic,d=>d.day),
+            valsdomestic=_.map(this.chartsData.inVehicle_domestic,d=>d.count),
+            keysabroad=_.map(this.chartsData.inVehicle_abroad,d=>d.day),
+            valsabroad=_.map(this.chartsData.inVehicle_abroad,d=>d.count),
+            keysdomesticOut=_.map(this.chartsData.outVehicle_domestic,d=>d.day),
+            valsdomesticOut=_.map(this.chartsData.outVehicle_domestic,d=>d.count),
+            keysabroadOut=_.map(this.chartsData.outVehicle_abroad,d=>d.day),
+            valsabroadOut=_.map(this.chartsData.outVehicle_abroad,d=>d.count);
+        let optionOne = {
                 tooltip : {
                     trigger: 'axis'
                 },
                 legend: {
-                    data:['意向','预购','成交']
+                    data:['国内','国际']
                 },
-                calculable : true,
                 xAxis : [
                     {
                         type : 'category',
                         boundaryGap : false,
-                        data : ['周一','周二','周三','周四','周五','周六','周日']
+                        data : _.uniq(keysdomestic.concat(keysabroad))
                     }
                 ],
                 yAxis : [
@@ -151,33 +167,270 @@ export default {
                 ],
                 series : [
                     {
-                        name:'成交',
+                        name:'国内',
                         type:'line',
-                        itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                        data:[10, 12, 21, 54, 260, 830, 710]
+                        data:valsdomestic
                     },
                     {
-                        name:'预购',
+                        name:'国际',
                         type:'line',
-                        itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                        data:[30, 182, 434, 791, 390, 30, 10]
+                        data:valsabroad
                     },
-                    {
-                        name:'意向',
-                        type:'line',
-                        itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                        data:[1320, 1132, 601, 234, 120, 90, 20]
-                    }
                 ]
             };
+        
+        let optionTwo = {
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['国内','国际']
+                },
     
-    this.chartone.setOption(option);
-    this.charttwo.setOption(option);
-                    
+                xAxis : [
+                    {
+                        type : 'category',
+                        boundaryGap : false,
+                        data : _.uniq(keysdomesticOut.concat(keysabroadOut))
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series : [
+                    {
+                        name:'国内',
+                        type:'line',
+                        data:valsdomesticOut
+                    },
+                    {
+                        name:'国际',
+                        type:'line',
+                        data:valsabroadOut
+                    },
+                ]
+            };
+
+        this.$nextTick(()=>{
+            setTimeout(()=>{
+                this.chartone.setOption(optionOne);
+                this.chartone.resize();
+                this.charttwo.setOption(optionTwo);
+                this.charttwo.resize();
+            },300);
+        });
+        
     }
+  },
+  mounted(){
+    setTimeout(()=>{
+        this.initChart();
+        //this.setChart();
+    },200); 
+
+    this.$store.commit(BODY_RESIZE,()=>{
+        if(!this.chartone || !this.charttwo) return;
+        this.chartone.resize();
+        this.charttwo.resize();
+    });
+
+    this.getNation();
+    this.getAnalyTask();
+
+    //监听任务分析结果
+    this.socket = io(ser.url);
+    this.socket.on('vehicle', (data)=> {
+      let d=eval('('+data+')');
+      if(d.task_status!='completed') return;
+
+      if(this.curTask.task_id!=d.task_id) return;
+      
+      let task=_.find(this.historyData,h=>h.task_id==d.task_id);
+      task.result_count=d.count;
+      this.lookTask(task);
+    });
+    
+  },
+  methods:{
+    initChart(){
+        this.chartone = echarts.init($(this.$el).find(`div[name="chartone"]`)[0]);
+        this.charttwo = echarts.init($(this.$el).find(`div[name="charttwo"]`)[0]);
+    },
+    search(){
+      if(this.timeRange.length<=0){return tool.info('时间范围必填!');}
+      
+      this.blnSearch=true;
+      this.$store.dispatch(AddAnalyTask,{
+        task_type:'vehicle',
+        task_conditions:{
+          begin_time:tool.Timestamp(this.timeRange[0]),
+          end_time:tool.Timestamp(this.timeRange[1]),
+          nations:[this.nation],
+          certs:[this.cert]
+        },
+        
+      }).then(res=>{
+        this.blnSearch=false;
+        if(!tool.msg(res,`正在分析中....`,'分析失败!')) return;
+        this.curTask=res.biz_body[0];
+        this.curTask.status_note='创建中...';
+        this.historyData.unshift(this.curTask);        
+      });
+    
+
+    },
+    lookTask(t){
+      if(!parseInt(t.result_count)){tool.info('没有相关结果!'); return;}
+      this.getTaskDetail(t);
+    },
+    //获取任务详细
+    getTaskDetail(t){
+        this.curTask=t;
+        //获取统计图信息
+        this.$store.dispatch(GetVehicleChart,{
+            task_id:t.task_id
+        }).then(res=>{
+            if(!tool.msg(res,'','获取数据失败!')) return;
+            this.chartsData=res.biz_body;
+        });
+
+        //获取同行人员信息
+        this.$store.dispatch(GetVehicleTeam,{
+            task_id:t.task_id
+        }).then(res=>{
+            if(!tool.msg(res,'','获取数据失败!')) return;
+            this.personData=res.biz_body;
+        });
+    },
+    //查看列表
+    lookList(type){
+      let s=this;
+      tool.open(function(){
+        let w=$(s.$el).width(),
+            h=$(s.$el).height();
+        let html=`
+            <div style="width:100%;height:calc(100% - 40px);">
+                <div class="table_header">
+                    <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                        <thead><tr>
+                            <th style="width:120px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">姓名</div></th>
+                            <th style="width:120px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">证件类型</div></th>
+                            <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">证件号码</div></th>
+                            <th style="width:80px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">民族</div></th>
+                            <th style="width:80px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">国籍</div></th>
+                            <th style="width:120px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">车次/座位</div></th>
+                            <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">到达时间</div></th>
+                            <th :style="{width:w+'px'}" style="border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">到达地</div></th>
+                            <th style="width:200px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:200px;" class="divEllipsis">最近出现场所及时间</div></th>
+                            <th style="width:80px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">已关注</div></th>
+                            <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">关注人编号</div></th>
+                        </tr></thead>
+                    </table>
+                </div>
+                <div class="table_body">
+                    <Scroll :listen="data" ref="detailSrcoll">
+                        <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                        <tbody><tr v-for="d in data">
+                            <td style="width:120px;border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.name"><div style="width:120px;" class="divEllipsis">{{d.name}}</div></td>
+                            <td style="width:120px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">{{d.cert_type}}</div></td>
+                            <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.cert_number}}</div></td>
+                            <td style="width:80px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">{{d.nation}}</div></td>
+                            <td style="width:80px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">{{d.nationality}}</div></td>
+                            <td style="width:120px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">{{d.train_no}}/{{d.seat}}</div></td>
+                            <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{converTime(d.time)}}</div></td>
+                            <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">{{d.to.country}}{{d.to.county}}{{d.to.station}}</div></td>
+                            <td style="width:200px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:200px;" class="divEllipsis">{{d.net_wacode_note || '无'}}/{{converTime(d.online)}}</div></td>
+                            <td style="width:80px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">{{d.focus?'是':'否'}}</div></td>
+                            <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.focus_id}}</div></td>
+                        </tr></tbody>
+                    </table>
+                    </Scroll>
+                </div>
+
+            </div>
+            <div name="page_container" class="page_container">
+                <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span></span>
+                <div class="firstPage" @click="pageChange(0)">首页</div>
+                <div class="prePage" @click="pageChange(pageIndex-1)">上一页</div>
+                <div class="nextPage" @click="pageChange(pageIndex+1)">下一页</div>
+            </div>
+        `;
+        let param={
+            title:`${type=='in'?'进入':'离开'}信息`,
+            area:[`${w}px`,`${h}px`],
+            content:`<div class="Lookin_out_pop pop" style="width:100%;height:100%;overflow:hidden;">${html}</div>`,
+            components:{Scroll},
+            store:s.$store,
+            offset:'10px',
+            context:{
+              w:0,
+              pageIndex:0,
+              limit:20,
+              data:[],
+              pageChange(index){
+                  index = index<0?0:index;
+                  let d=param.selfData;
+                  s.$store.dispatch(GetVehiclePersonList,{
+                      task_id:s.curTask.task_id,
+                      type:type,
+                      limit:d.limit,
+                      skip:index*d.limit
+                  }).then(res=>{
+                      if(!tool.msg(res,'','获取数据失败!')){ return;}
+                      //if(index==0){tool.info('已经位于首页!');}
+                      if(res.biz_body.length<=0){tool.info('已经位于尾页!'); return;}
+
+                      d.pageIndex=index;
+                      d.data=res.biz_body;
+                  });
+              },
+              //时间戳转日期
+              converTime(t,format){
+                return tool.DateByTimestamp(t,format || 'yyyy-MM-dd hh:mm:ss');
+              },
+            },
+            success(layero){
+                param.selfData.w=layero.width()-1250;
+
+                param.selfData.pageChange(0);
+            }
+        };
+
+        return param;
+      }());
+    },
+    //获取历史记录
+    getAnalyTask(){
+      this.$store.dispatch(GetAnalyTask,{task_type:'vehicle'}).then(res=>{
+        this.historyData=res.biz_body;
+      });
+    },
+    //获取民族
+    getNation(){
+        this.$store.dispatch(GetNation).then(res=>this.nations=res.biz_body);
+    },
+    //时间戳转日期
+    converTime(t,format){
+      return tool.DateByTimestamp(t,format || 'yyyy-MM-dd hh:mm:ss');
+    },
   }
 }
 </script>
+<style lang="less">
+  @import "../css/variables.less";
+  //列表样式
+  @bgColor:fade(@HeaderBgCol,90%);
+  @tableRowH:36px;
+  .pop  .table{margin-bottom:0px;color: white;}
+  .pop  .table_header{height:@tableRowH;}
+  .pop  .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
+  .pop  .table_header th{padding:0px !important;color:black; line-height:@tableRowH;}
+  .pop  .table_header{color:black;}
+  .pop  .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
+  .pop  .table_body td{padding:0px !important;color:black;line-height:@tableRowH;.border('bottom');}
+</style>
 
 <style scoped lang="less">
     @import "../css/variables.less";

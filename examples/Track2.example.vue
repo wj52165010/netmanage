@@ -969,7 +969,7 @@ export default {
     height:100%;width:@lineW;background:fade(@Font_Hover_Col,90%);
   }
 
-  //列表样式
+//列表样式
 @tableRowH:40px;
 .table{margin-bottom:0px;color: white;}
 .table_header{height:@tableRowH;.border('bottom');border-top-right-radius:5px;border-top-left-radius:5px;}

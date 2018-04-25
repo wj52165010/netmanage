@@ -1493,6 +1493,94 @@ export default new Vuex.Store({
                     resolve(res);
                 });
             });
+        },
+
+        [types.GetCarhailingChart]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetCarhailingChart(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.GetCarhailingPersonList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetCarhailingPersonList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.GetCarhailingToplaceList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetCarhailingToplaceList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.GetVehicleChart]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetVehicleChart(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.GetVehiclePersonList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetVehiclePersonList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.GetVehicleTeam]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetVehicleTeam(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.GetDangerExpress]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetDangerExpress(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.GetDangerExpressList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetDangerExpressList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.GetCarhailingFromplaceList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetCarhailingFromplaceList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.GetDangerExpressListLoaction]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetDangerExpressListLoaction(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.GetNation]({commit}){
+            return new Promise((resolve,reject)=>{
+                ser.GetNation().then(res=>{
+                    resolve(res);
+                });
+            });
         }
 
         //#endregion
