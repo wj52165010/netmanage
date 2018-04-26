@@ -32,7 +32,7 @@
                 <div v-for="(h,i) in historyData" class="item" @click="getTaskRes(h.task_id);curShowTaskId=h.task_id;">
                     <div class="item_span">
                         <span>关键字1:{{h.first_key}}</span>
-                        <span style="float:right;">{{h.status_note}}</span>
+                        <span style="float:right;">{{h.status_note || '分析中...'}}</span>
                     </div>
                     <div><span style="margin-right:10px;">关键字2:{{h.second_key}}</span><span>结果数:{{h.result}}</span></div>
                     <div>
@@ -191,7 +191,7 @@ export default {
         this.ctx.save();
         this.ctx.beginPath();
         this.ctx.arc(x,y,r,0,2*Math.PI);
-        this.ctx.fillStyle =color || 'rgba(142,229,238)';
+        this.ctx.fillStyle =color || '#5f52a1';
         this.ctx.fill();
         this.ctx.restore();
     },
@@ -373,11 +373,12 @@ export default {
     },
     //刷新画布
     redraw(v){
+
         this.curTaskData.start_node.root=true;
         this.curTaskData.end_node.root=true;
         let startP={id:this.curTaskData.start_node.data_id,x:0,y:0,text:this.curTaskData.start_node.key};
         let endP={id:this.curTaskData.end_node.data_id,x:0,y:0,text:this.curTaskData.end_node.key};
-        let childs=_.chain(this.curTaskData.paths).flatten().filter(r=>r.type=='data').map(r=>{r.x=0;r.y=0;r.radius=30;r.color='#52cc52'; return r;}).value(); 
+        let childs=_.chain(this.curTaskData.paths).flatten().filter(r=>r.type=='data').map(r=>{r.x=0;r.y=0;r.radius=30;r.color='#009a44'; return r;}).value(); 
 
         this.points=[
             startP,
@@ -385,7 +386,9 @@ export default {
             ...childs
         ];
 
+        
         this.edges=_.flatten(v);
+       
 
         this.simulation.nodes(this.points);
 
@@ -420,11 +423,12 @@ export default {
             // res.biz_body.paths[0].push({type:'line',value:"->"});
             res.biz_body.paths=_.map(res.biz_body.paths,arr=>{
 
-                return _.map(arr,a=>{a.id=a._id;a.text=s.kind[a.key_type];return a;})
+                return _.map(arr,a=>{a.id=a._id;a.text=(a.account_type_note || a.key_type_note)+`(${a.key})`;return a;})
             });
 
-            console.log(tool.Clone(res.biz_body.paths));
             this.curTaskData=res.biz_body;
+
+            //console.log(tool.Clone(this.curTaskData));
         });
 
         // this.curTaskData={
@@ -470,6 +474,8 @@ export default {
            if(!tool.msg(res,`查询成功,${res.biz_body[0] && res.biz_body[0].task_status=='aborted'?'任务异常!':'任务正在创建中...!'}`)) return;
 
            this.historyData.push(res.biz_body[0]);
+           this.curTaskData=res.biz_body[0];
+           this.curShowTaskId=this.curTaskData.task_id;
        });
     },
     //删除任务
@@ -521,9 +527,11 @@ export default {
     },
     dragged(){
         if(d3.event.subject.x==undefined){
-          this.translate.x+=d3.event.dx;
-          this.translate.y+=d3.event.dy;
-        }else if(!d3.event.subject.root){//根节点不允许拖动
+      
+           this.translate.x+=d3.event.dx;
+           this.translate.y+=d3.event.dy;
+        }else if(!d3.event.subject.root && d3.event.subject.type){//根节点不允许拖动
+
             d3.event.subject.fx = d3.event.x;
             d3.event.subject.fy = d3.event.y;
         }

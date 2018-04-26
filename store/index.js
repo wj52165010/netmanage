@@ -1581,6 +1581,14 @@ export default new Vuex.Store({
                     resolve(res);
                 });
             });
+        },
+
+        [types.GetPersonPhoto]({commit},cert){
+            return new Promise((resolve,reject)=>{
+                ser.GetPersonPhoto().then(res=>{
+                    resolve(res);
+                });
+            });
         }
 
         //#endregion

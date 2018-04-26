@@ -54,7 +54,7 @@
                     </el-dropdown>
                 </div>
                 <button v-show="!blnbatch" type="button" class="btn btn-default" style="margin-top:-4px;" @click="blnbatch=true">批量管理</button>
-                <button v-show="blnbatch" @mousedown.stop="popMouseDown($event,'bottom');popType='labatch'" type="button" class="btn btn-default" style="margin-top:-4px;text-align:left;width:110px;position:relative;">添加到标签 <span style="color:#059cd3;font-size:20px;font-size: 20px;position: absolute;top: 2px;right: 10px;">+<span></button>
+                <button v-show="blnbatch" @mousedown.stop="popMouseDown($event,'bottom',true);popType='labatch'" type="button" class="btn btn-default" style="margin-top:-4px;text-align:left;width:110px;position:relative;">添加到标签 <span style="color:#059cd3;font-size:20px;font-size: 20px;position: absolute;top: 2px;right: 10px;">+<span></button>
                 <button v-show="blnbatch" @click="batchDel()" type="button" class="btn btn-default" style="margin-top:-4px;text-align:left;width:70px;position:relative;">删除 <span style="color:#ff8282;font-size:20px;font-size: 14px;position: absolute;top: 6px;right: 10px;"><i class="fa fa-trash-o"></i><span></button>
                 <button v-show="blnbatch" @click="blnbatch=false;" type="button" class="btn btn-default" style="margin-top:-4px;text-align:left;width:130px;position:relative;">退出批量管理 <span style="color:gray;font-size:20px;font-size: 14px;position: absolute;top: 6px;right: 10px;"><i class="fa fa-arrow-right"></i><span></button>
                 <span v-show="blnbatch" style="margin-left:10px;margin-right:20px;font-size: 12px;">已选择{{batchData.length}}</span>
@@ -83,7 +83,9 @@
                                     <i class="fa fa-check iden"></i>
                                 </div>
                                 <!--照片栏-->
-                                <div class="photo_bar"></div>
+                                <div class="photo_bar">
+                                    <img :src="getPhotoUrl(d)" style="width:100%;height:100%;" />
+                                </div>
                                 <!--信息栏-->
                                 <div class="info_bar">
                                     <div class="item" @click="showUpdateNameIndex=i;curUpdateData=d;name=d.focus_title;">
@@ -563,7 +565,10 @@ export default {
   },
   methods:{
     noHandler(){},
-
+    getPhotoUrl(d){
+        let type=d.focus_property[0]?d.focus_property[0].t:'';
+        return '/cert/' + (type=='cert'?d.focus_property[0].k:'0');
+    },
     //获取特定标签数据
     getSpeLabelCount(){
         //获取关联标签总数
@@ -609,8 +614,8 @@ export default {
         
         }
     },
-    popMouseDown(e,dir){
-        if(this.blnbatch) return;
+    popMouseDown(e,dir,blnShow){
+        if(this.blnbatch && !blnShow) return;
 
         let dom =$(e.target || e.srcElement).parents('.child'),
             poffset=$(this.$el).offset();
@@ -634,7 +639,7 @@ export default {
                                              skip:this.limit*index}).then(res=>{
             this.blnLoading=false;
             this.data=res.biz_body;
-
+    
             //console.log(tool.Clone(this.data));
             if(res.biz_body.length<=0){tool.info('暂无数据!');return;}
             this.pageIndex=index;
@@ -661,6 +666,7 @@ export default {
 
             res.biz_body[0].ajax_count='';
             this.labels.push(res.biz_body[0]);
+
         });
     },
     //删除标签
@@ -669,7 +675,15 @@ export default {
             if(!tool.msg(res,'删除成功!')) return;
 
             let index=_.findIndex(this.labels,l=>l.tag_id==d.tag_id);
-            this.labels.splice(index,1)
+            this.labels.splice(index,1);
+
+            //清除人员数据中的标签数据
+            _.each(this.data,v=>{
+
+                let index =_.findIndex(v.focus_tags,l=>(l.id || l.tag_id)==(d.tag_id +''));
+ 
+                v.focus_tags.splice(index,1);
+            });
         });
     },
     //排序改变事件

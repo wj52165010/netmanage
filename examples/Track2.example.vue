@@ -11,7 +11,8 @@
             历史记录
           </div>
           <Scroll ref="historyPopScroll" :listen="historyTrace">
-            <div v-for="(h,i) in historyTrace" class="item" :class="{active:historyPopIndex==i}"  @click="lookTask(h);historyPopIndex=i;">
+            <div v-for="(h,i) in historyTrace" class="item" style="position:relative;" :class="{active:historyPopIndex==i}"  @click="lookTask(h);historyPopIndex=i;">
+                <i class="fa fa-remove" style="position:absolute;right:20px;bottom:10px;font-size:20px;" @click.stop="removeTask(h.task_id,i)"></i>
                 <div class="child">
                   <div class="item_type">
                     {{h.key_type_note}}
@@ -933,6 +934,8 @@ export default {
   .Track .left_pop .item .item_type{
     padding:2px 8px;position:relative;display:inline-block;
   }
+
+  .Track .left_pop .item i:hover{cursor:pointer;color:#20a1ff;}
 
   .Track .left_pop .item.active .bottom_right:before,
   .Track .left_pop .item.active .bottom_right:after,

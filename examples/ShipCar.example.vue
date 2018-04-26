@@ -84,7 +84,11 @@
                         <div class="right_container">
                             <Scroll>
                                 <div class="person" v-for="p in personData[curShowIndex].persons">
-                                    <div class="photo_container"><div class="photo"></div></div>
+                                    <div class="photo_container">
+                                        <div class="photo">
+                                            <img :src="'/cert/'+(p.cert_number || 0)" style="width:100%;height:100%;" />
+                                        </div>
+                                    </div>
                                     <div class="info">
                                         <div class="item">{{p.name}}</div>
                                         <div class="item">{{p.nation}}</div>

@@ -29,7 +29,9 @@
               <!--内容栏-->
               <div class="info_bar">
                 <!--头像-->
-                <div v-if="serachInfo.code=='cert' && curData.length>0" style="width:70px;height:90px;float:left;margin-right:10px;border:1px solid #e7eaec;"></div>
+                <div v-if="serachInfo.code=='cert' && curData.length>0" style="width:70px;height:90px;float:left;margin-right:10px;border:1px solid #e7eaec;">
+                  <img :src="'/cert/'+(curData[0].certificate_code || 0)" style="width:100%;height:100%;" />
+                </div>
                 <!--身份证-->
                 <div v-if="serachInfo.code=='cert' && curData.length>0">
                   <div><span style="margin-right:10px;">姓名</span>{{curData[0].customer_name}}</div>

@@ -2498,6 +2498,18 @@ GetVehicleChart(data){
   this.baseBag.data=data;
   return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
  }
+ 
+  /**
+ *获取可疑人员头像
+ * 
+ * params:{
+ * certcode: ‘’，
+
+  }
+  */
+ GetPersonPhoto(cert){
+  return post(this.url+'/'+'cert'+'/'+cert);
+ }
 }
 
 module.exports = new server(baseBag,baseUri,url);

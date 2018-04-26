@@ -325,6 +325,7 @@ export const GetDangerExpressList='GetDangerExpressList'//获取可疑人员列�
 export const GetDangerExpressListLoaction='GetDangerExpressListLoaction'//获取可疑快递区域列表
 
 export const GetNation='GetNation' //获取民族数据
+export const GetPersonPhoto='GetPersonPhoto' //获取人员头像
 
 /**************** 例子接口 ******************/
 export const TogetherTeam='TogetherTeam' //获取同行分析组
