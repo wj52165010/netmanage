@@ -158,8 +158,9 @@ let Drag=function(el,options){
             //鼠标放下事件
             $(document).mouseup(function(){
                 isDrag=false;
-                if(dragIndex==null && replaceIndex==null)return;
-                if(curItem==null) return;
+                dragDistan=0;
+                if(dragIndex==null && replaceIndex==null){ return;}
+                if(curItem==null){return;}
                 if(replaceIndex==null){
                     $(curItem).css({top:pos[dragIndex].y,left:pos[dragIndex].x});
                 }else{
@@ -195,6 +196,7 @@ let Drag=function(el,options){
                 if(setting.mouseup){
                     setting.mouseup(_.pluck(pos,'el'));
                 }
+
             });
         };
 

@@ -70,9 +70,11 @@ export default {
             if(!this.gridly){
                 this.gridly = $('div[name="sideMenu_container"]').dragsort({
                     remove:()=>{
+                        //console.log('remove',this.blnDrag);
                         this.blnDrag=true;
                     },
                     mouseup:(els)=>{
+                        //console.log('mouseup',this.blnDrag);
                         if(this.blnDrag){setTimeout(()=>{ self.blnDrag=false;},0)}else{self.blnDrag=false;}
                         self.saveSort(els);
                     }
@@ -169,7 +171,9 @@ export default {
       },
       //菜单项单击事件
       item_click(menu){
+          //console.log('click',this.blnDrag);
           if(this.blnDrag){return;}
+
           if(this.Menu_State.getRes(menu.status).val<=0){return;}
           menu.type=menu.type || 'templatePage';
           menu.id=menu.keyid;

@@ -11,7 +11,8 @@
             历史记录
           </div>
           <Scroll ref="historyPopScroll" :listen="historyData">
-            <div v-for="h in historyData" class="item" @click="lookTask(h);">
+            <div v-for="(h,i) in historyData" class="item" @click="lookTask(h);" style="position:relative;">
+              <i class="fa fa-remove" style="position:absolute;right:20px;bottom:5px;font-size:20px;" @click.stop="removeTask(h.task_id,i)"></i>
               <div class="child">
                 <span style="display:inline-block;width:50%;">开始时间:&nbsp;{{converTime(h.task_conditions.begin_time,'yyyy-MM-dd')}}</span><span style="display:inline-block;width:50%;">结束时间:&nbsp;{{converTime(h.task_conditions.end_time,'yyyy-MM-dd')}}</span>
               </div>
@@ -92,7 +93,7 @@ import 'echarts/lib/component/legend'
 import Scroll from 'components/scroll'
 import HeatMap from './Home.HeatMap.js'
 
-import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,
+import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,DelTraceHistory,
         GetCarhailingChart,GetCarhailingPersonList,GetCarhailingFromplaceList,GetCarhailingToplaceList,
         GetDangerExpress,GetDangerExpressList,GetDangerExpressListLoaction
         } from '../store/mutation-types'
@@ -114,6 +115,7 @@ export default {
       blnShowHistoryPop:false,
       historyData:[],
       detailData:null,
+      pm:null
     }
   },
   watch:{
@@ -180,10 +182,21 @@ export default {
     
 
     },
+    //删除历史轨迹任务
+    removeTask(id,i){
+      tool.confirm('您确定要删除该任务吗?',['确定','取消'],()=>{
+          this.$store.dispatch(DelTraceHistory,id).then(res=>{
+            if(!tool.msg(res,'删除成功!','删除失败!')) return;
+
+            this.historyData.splice(i,1);
+          }); 
+      },function(){});
+    },
     //获取历史记录
     getAnalyTask(){
       this.$store.dispatch(GetAnalyTask,{task_type:'danger_express'}).then(res=>{
         this.historyData=res.biz_body;
+        this.blnShowHistoryPop=this.historyData.length>0;
       });
     },
     lookTask(t){
@@ -300,7 +313,7 @@ export default {
         let param={
             title:'人员信息',
             area:['1000px','600px'],
-            content:`<div class="LookPersonList_Express_pop pop" style="width:100%;height:100%;overflow:hidden;">${html}</div>`,
+            content:`<div class="LookPersonList_Express_pop pop" style="width:100%;height:100%;overflow:hidden;background-color:rgba(47, 51, 65, 0.9) !important;color:white;">${html}</div>`,
             components:{Scroll},
             store:s.$store,
             context:{
@@ -374,7 +387,7 @@ export default {
         let param={
             title:'快递区域',
             area:['800px','600px'],
-            content:`<div class="LookFromPlaceList_area_pop pop" style="width:100%;height:100%;overflow:hidden;">${html}</div>`,
+            content:`<div class="LookFromPlaceList_area_pop pop" style="width:100%;height:100%;overflow:hidden;background-color:rgba(47, 51, 65, 0.9) !important;color:white;">${html}</div>`,
             components:{Scroll},
             store:s.$store,
             context:{
@@ -400,47 +413,29 @@ export default {
     //查看热力图
     lookHeart(){
       let s=this;
-      tool.open(function(){
-        let id='pop_map'+tool.guid();
-        let html=`<div id="${id}" style="width:100%;height:100%;"></div>`;
-        let param={
-          title:'热力图',
-            area:['800px','600px'],
-            content:`<div class="LookFromPlaceHeat_pop pop" style="width:100%;height:100%;">${html}</div>`,
-            context:{
-              data:[]
-            },
-            success(layero){
-              s.$store.dispatch(GetDangerExpressListLoaction,{
+      if(this.pm)this.pm.destroy();
+
+      s.$store.dispatch(GetDangerExpressListLoaction,{
                 task_id:s.curTask.task_id
-              }).then(res=>{
-                if(!tool.msg(res,'','获取数据失败!'))  return
+      }).then(res=>{
+        if(!tool.msg(res,'','获取数据失败!'))  return
 
-                let map = new BMap.Map(layero.find('#'+id)[0],{minZoom:13,maxZoom:18});
-                let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
-                map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);
-                map.enableScrollWheelZoom(true);
-                let pm=new HeatMap(map,{});
+        this.pm=new HeatMap(this.map,{});
 
-                let data = _.map(res.biz_body,d=>{
-                  return {longitude:d.longti,latitude:d.lat,count:d.count};
-                });
-                let d = data[0];
+        let data = _.map(res.biz_body,d=>{
+          return {longitude:d.longti,latitude:d.lat,count:d.count};
+        });
+        let d = data[0];
 
-                map.panTo(new BMap.Point(d.longitude,d.latitude));
+        this.map.panTo(new BMap.Point(d.longitude,d.latitude));
 
-                let ds ={};
-                _.each(data,r=>{
-                  ds[r.longitude+'_'+r.latitude]={length:r.count};
-                });
+        let ds ={};
+        _.each(data,r=>{
+          ds[r.longitude+'_'+r.latitude]={length:r.count};
+        });
 
-                pm.draw(ds);
-              });
-            }
-        };
-
-        return param;
-      }());
+        this.pm.draw(ds);
+      });
     },
     //查看区域列表
     lookArea(d){
@@ -534,16 +529,16 @@ export default {
 
 <style lang="less">
   @import "../css/variables.less";
-  //列表样式
+ //列表样式
   @bgColor:fade(@HeaderBgCol,90%);
   @tableRowH:36px;
-  .pop  .table{margin-bottom:0px;color: white;}
+  .pop  .table{margin-bottom:0px;color: white;background-color:rgba(47, 51, 65, 0.9) !important;}
   .pop  .table_header{height:@tableRowH;}
   .pop  .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
-  .pop  .table_header th{padding:0px !important;color:black; line-height:@tableRowH;}
+  .pop  .table_header th{padding:0px !important;color:black; line-height:@tableRowH;color:white;}
   .pop  .table_header{color:black;}
   .pop  .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
-  .pop  .table_body td{padding:0px !important;color:black;line-height:@tableRowH;.border('bottom');}
+  .pop  .table_body td{padding:0px !important;color:black;line-height:@tableRowH;.border('bottom');color:white;}
 </style>
 
 <style scoped lang="less">
@@ -604,6 +599,8 @@ export default {
   .Expressage .left_pop .item .item_type{
     padding:2px 8px;position:relative;display:inline-block;
   }
+
+  .Expressage .left_pop .item i:hover{color:#20a1ff;}
 
   .Expressage .left_pop .item.active .bottom_right:before,
   .Expressage .left_pop .item.active .bottom_right:after,

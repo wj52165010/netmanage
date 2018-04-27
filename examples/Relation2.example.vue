@@ -25,7 +25,7 @@
         </div>
         <canvas :id="id"></canvas>
         <!--提示信息-->
-        <div  class="tip_pop" :id="tipId" :style="{top:tipTop+'px',left:tipLeft+'px'}">数据结果过多</div>
+        <div  class="tip_pop" :id="tipId" :style="{top:tipTop+'px',left:tipLeft+'px'}">{{tipInfo}}</div>
     </div>
 </template>
 
@@ -59,6 +59,7 @@ export default {
       iconPin:null,//定位图片对象
       iconStar:null,//五角星图标
       iconWarn:null,//警告图标
+      iconWarnYellow:null,//黄色警告
       iconLoading:null,//加载中图标
       searchKey:'',//搜索关键字
       serachInfo:{color:'gray',val:'',code:''},//搜索类型提示信息
@@ -77,6 +78,7 @@ export default {
       rectLineWidth:5,//矩形边框宽度
       tipTop:-1000,
       tipLeft:-1000,
+      tipInfo:'',
       curShowTipId:'',//当前显示提示信息所属节点ID
     }
   },
@@ -144,6 +146,8 @@ export default {
     this.iconStar.src='static/icons-star.png';
     this.iconWarn=new Image();
     this.iconWarn.src='static/icons-warn.png';
+    this.iconWarnYellow=new Image();
+    this.iconWarnYellow.src="static/icons-warn-yellow.png";
     this.iconLoading=new Image();
     this.iconLoading.src='static/Loading6.gif';
 
@@ -415,6 +419,11 @@ export default {
         if(p.isOver){
             this.drawOption(p.x+size.w/2-15,p.y-size.h/2 +15,this.iconWarn);//画警告路径
         }
+        //画黄色警告图标
+        if(p.isNone){
+            this.drawOption(p.x+size.w/2-15,p.y-size.h/2 +15,this.iconWarnYellow);//画警告路径
+        }
+        
 
         //画节点描述信息
         this.drawText(p);
@@ -783,7 +792,7 @@ export default {
                 point.arcIndex=index;
 
                 //判断鼠标是否进入警告图标
-                if(point.isOver){
+                if(point.isOver || point.isNone){
                     let size=s.rectSize;
                     s.drawOption(point.x+size.w/2-15,point.y-size.h/2 +15);//画警告路径
                     if(s.ctx.isPointInPath(pos.x,pos.y)) {
@@ -791,12 +800,14 @@ export default {
                         s.tipTop=pos.py-size.h/2 -35;
                         s.tipLeft=pos.px+size.w/2-15-tipW/2-10;
                         s.curShowTipId=point.id;
+                        s.tipInfo=point.isOver?'结果数太多':'暂无数据';
                     }else if(s.curShowTipId == point.id){
                         s.tipTop=-1000;
                         s.tipLeft=-1000;
                         s.curShowTipId='';
                     }
                 }
+                
 
             }
             
@@ -812,6 +823,8 @@ export default {
     //canvas鼠标单击事件
     regPosClick(){
         $(this.canvas[0]).on('click',(e)=>{
+            let res=this.blnOpiton(e);
+
             _.each(this.points,p=>p.clicked=false);
             //判断鼠标单击节点数据
             let point = this.blnInPoint(e);
@@ -833,7 +846,9 @@ export default {
                 if(!point.anmalcomplete) point.anmalTime=(new Date()).getTime();//当前动画开始时间
             }
             
-            let res=this.blnOpiton(e);
+
+            res= res.flag ?res : this.blnOpiton(e);
+
             //判断鼠标单击节点操作栏
             let clickP=null,optIndex=-1;
             
@@ -876,8 +891,8 @@ export default {
                         break;
                     case 2://解锁
                         if(clickP.parent){return;}//父节点不用解锁
-                        clickP.x=clickP.fx;
-                        clickP.x=clickP.fy;
+                        // clickP.x=clickP.fx;
+                        // clickP.x=clickP.fy;
                         clickP.fx=null;
                         clickP.fy=null;
                         break;
@@ -938,6 +953,7 @@ export default {
             if(data.length<=0){tool.info('暂无数据!');return;}
             
             point.isOver=res.biz_body.is_over;
+        
 
             let childs=[
                 ...this.converData('vid',virtuals),
@@ -945,6 +961,10 @@ export default {
                 ...this.converData('cert',customers),
                 ...this.converData('mobile',mobiles),
                 ];
+
+            point.isNone=true;
+            let tmpChilds=_.filter(childs,c=>!_.find(this.points,p=>p.id==c.id));
+            point.isNone=tmpChilds.length<=0;
 
             let distinctData =this.distinctPoint(point,childs);
             distinctData.points=this.pointPos(point,distinctData.points);
@@ -973,6 +993,7 @@ export default {
         let index=-1;
         let s=this;
         let p=_.find(s.points,p=>p.clicked);
+   
         if(!p) return res;
         let size=s.rectSize;
 
@@ -989,6 +1010,7 @@ export default {
         
         //判断删除按钮
         s.drawClearBtn(p.x+size.w/2,p.y-size.h/2);
+      
         if(s.ctx.isPointInPath(x,y)) {
             res=true;index=0;
         }
@@ -1072,6 +1094,7 @@ export default {
             root.root=true;
             root.blnExtend=data.length>0;
             root.parent=true;
+            root.typeHide=false;
             rootPointers.splice(0,1);
         }else if(this.serachInfo.code=='vid'){
             if(rootPointers.length==1){
@@ -1095,6 +1118,7 @@ export default {
             root.root=true;
             root.blnExtend=data.length>0;
             root.parent=true;
+            root.typeHide=false;
             //构造多余的子节点数据
 
             _.each(rootPointers,r=>{
@@ -1142,6 +1166,7 @@ export default {
                 p.fy=p.y;
             });
         },1000);
+
       });
     },
     //去除重复点

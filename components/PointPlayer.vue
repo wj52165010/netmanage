@@ -8,14 +8,14 @@
             <div class="btn_item" @click="rate(1)"><i class="fa fa-forward"></i></div>
         </div>
         <!--切换阀-->
-        <div class="switch">
+        <div class="switch " v-if="!blnSimple">
             <div class="switch_container">
                 <div class="up"><span class="info" :class="{active:model==1}" @click="modelChange(1)">D</span></div>
                 <div class="down"><span class="info" :class="{active:model==0}"@click="modelChange(0)">P</span></div>
             </div>
         </div>
         <!--进度条-->
-        <div class="progress">
+        <div class="progress" :class="{simple:blnSimple}">
             <!--进度条路径-->
             <div class="path" name="path" @mousedown.stop="pathMouseDown($event)">
                 <!--进度点/进度按钮-->
@@ -39,7 +39,7 @@ import {BODY_RESIZE} from '../store/mutation-types'
 
 export default {
   name: 'PointPlayer',
-  props:['data','range','kind','blnNoRefresh'],
+  props:['data','range','kind','blnNoRefresh','blnSimple'],
   data () {
     return {
       blnDrag:false,//是否正在拖动中
@@ -171,7 +171,21 @@ export default {
     },
     //播放速率改变事件
     rate(d){
-      this.curRate=this.curRate+d<1?1:this.curRate+d>this.maxRate?this.maxRate:this.curRate+d;
+      if(this.blnSimple){
+          let unit=((this.w-this.dragBtnW)/this.data.length);
+         
+          this.curPos=d>0?
+            this.curPos+unit>this.w-this.dragBtnW?this.w-this.dragBtnW:this.curPos+unit:
+            this.curPos-unit<=0?0:this.curPos-unit;
+
+        if(d>0){
+            this.curPos=this.curPos<1?1:this.curPos;
+        }
+
+      }else{
+        this.curRate=this.curRate+d<1?1:this.curRate+d>this.maxRate?this.maxRate:this.curRate+d;
+      }
+      
     },
     //播放路径单击事件(改变播放的位置)
     pathMouseDown(e){
@@ -301,6 +315,8 @@ export default {
   @ProgressBtnSize:14px;
   @ProgressBtnSmallSize:@ProgressBtnSize - 6px;
   .PointPlayer .progress{padding:0px 10px;background-color:transparent;height:auto;border:none;left:@Padding;top:@Padding;bottom:@Padding;right:@PlayerBtnW + @SwitchW + @Padding *2 + 30px;position:absolute;margin:0px;overflow:visible;}
+  .PointPlayer .progress.simple{right:@PlayerBtnW + @Padding *2 + 30px;}
+  
   .PointPlayer .progress .path{
     width:100%;height:@TimePlayerPathH;margin-top:(@TimeH - 2*@Padding - @TimePlayerPathH)/2;border-radius:10px;background-color:@TimePlayerPathbg;position:relative;
     cursor:pointer;

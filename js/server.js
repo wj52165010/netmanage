@@ -2,7 +2,7 @@
 
 //基地址192.168.100.80:3031(http://192.168.23.73:3030)
 //发布地址:172.23.90.8:3030
-let url='http://192.168.23.73:3030';
+let url='http://192.168.100.80:3031';
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
 
@@ -2510,6 +2510,285 @@ GetVehicleChart(data){
  GetPersonPhoto(cert){
   return post(this.url+'/'+'cert'+'/'+cert);
  }
+ /* 获取场所管理定制页面信息
+   * 
+     * params:{
+        siteName:'' //场所名称
+        siteRange:'',//场所范围
+        siteState:'',//场所状态
+        siteType:'',//场所类型
+        dataSource:'',//数据来源
+        areaRange:'',//区域范围
+        skip:'',   //从第几条数据开始
+        limit:'', //一页显示多少条
+     }
+  */
+  GetSiteList(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='site_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+// 获取非网吧场所下挂在设备详情
+  GetSiteDeviceList(data){
+    this.baseBag.target='device';
+    this.baseBag.method='device_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+  // 获取网吧场所下挂载终端列表
+  GetSiteTerminalList(data){
+    this.baseBag.target='terminal_info';
+    this.baseBag.method='terminal_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
+  // 获取字典信息集合
+  getDictTables(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='get_dict_tables';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取数据采集趋势
+  SiteDetectColl(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='site_detect_coll';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取场所详情
+  SiteDetail(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='site_detail';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取场所在离线数据
+  SiteHisPercentage(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='his_percentage';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取场所昨日在离线状况
+  LastPercentage(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='last_percentage';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+  // 导出统计场所状态率
+  HisPercentageExport(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='his_percentage_export';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+  // 获取可视范围内场所集合
+  GetSiteMap(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='site_map';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 获取按区域汇总场所集合
+  SiteMapRegion(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='site_map_region';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+
+
+  // 获取设备管理定制页面
+  GetDeviceList(data){
+    this.baseBag.target='device';
+    this.baseBag.method='device_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 获取设备采集趋势
+  DeviceDetectColl(data){
+    this.baseBag.target='device';
+    this.baseBag.method='device_detect_coll';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+    // 获取设备昨日在离线状况
+    LastDevicePercentage(data){
+      this.baseBag.target='device';
+      this.baseBag.method='last_percentage';
+      this.baseBag.data=data;
+      return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+    } 
+  // 获取设备详情
+  DeviceDetail(data){
+    this.baseBag.target='device';
+    this.baseBag.method='device_detail';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取设备在离线数据
+  DeviceHisPercentage(data){
+    this.baseBag.target='device';
+    this.baseBag.method='his_percentage';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 导出统计设备状态率
+  DeviceHisPercentageExport(data){
+    this.baseBag.target='device';
+    this.baseBag.method='his_percentage_export';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取可视范围内场所集合
+  GetDeviceMap(data){
+    this.baseBag.target='device';
+    this.baseBag.method='device_map';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 获取按区域汇总场所集合
+  DeviceMapRegion(data){
+    this.baseBag.target='device';
+    this.baseBag.method='device_map_region';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 获取厂商管理定制页面
+  GetFirmList(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='firm_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 厂商状态数量统计[柱状图]
+  GetFirmCollColumn(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='firm_coll_column';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 厂商状态数量统计[折线图]
+  GetFirmCollLine(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='firm_coll_line';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  //厂商状态率按场所汇总导出
+  GetFirmSiteExport(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='firm_coll_column_site_export';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  //厂商状态率按设备汇总导出
+  GetFirmDeviceExport(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='firm_coll_column_device_export';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+
+  // 获取区域管理定制页面信息
+  GetRegionList(data){
+    this.baseBag.target='region';
+    this.baseBag.method='region_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+
+  // 获取app定制页面列表信息
+  GetAppList(data){
+    this.baseBag.target='app_info';
+    this.baseBag.method='app_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+  // 获取app定制页面详情
+  GetAppDetail(data){
+    this.baseBag.target='app_info';
+    this.baseBag.method='app_detail';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取app定制页面概况统计（用于饼图和右侧柱状图）
+  GetAppViolations(data){
+    this.baseBag.target='app_info';
+    this.baseBag.method='app_violations';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // app页面健康率统计
+  GetAppGreenPre(data){
+    this.baseBag.target='app_info';
+    this.baseBag.method='app_green_pre';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+
+  // 获取网站备案定制页面列表信息
+  GetWebList(data){
+    this.baseBag.target='web_info';
+    this.baseBag.method='web_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取未备案网站详情
+  GetWebDetail(data){
+    this.baseBag.target='web_info';
+    this.baseBag.method='web_detail';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取网站备案定制页面备案变更列表
+  GetWebChangeList(data){
+    this.baseBag.target='web_change';
+    this.baseBag.method='web_change_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取备案变更详情
+  GetWebChangeDetail(data){
+    this.baseBag.target='web_change';
+    this.baseBag.method='web_change_detail';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+
+  // 获取热点列表定制页面信息
+  GetHotspotList(data){
+    this.baseBag.target='hotspot_info';
+    this.baseBag.method='hotspot_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取热点列表定制页面详情
+  GetHotspotDetail(data){
+    this.baseBag.target='hotspot_info';
+    this.baseBag.method='hotspot_detail';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+
+  // 按厂商统计采集量
+  GetFirmCollFirm(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='coll_firm';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }    
+  // 按数据来源统计采集量
+  GetCollMicroprobe(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='coll_microprobe';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }     
 }
 
 module.exports = new server(baseBag,baseUri,url);

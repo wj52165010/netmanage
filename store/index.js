@@ -1589,6 +1589,350 @@ export default new Vuex.Store({
                     resolve(res);
                 });
             });
+        },
+        //获取场所管理定制页面
+        [types.GetSiteList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetSiteList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+                //获取场所管理定制页面
+        [types.GetSiteList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetSiteList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },       
+        //获取场所下挂在设备详情
+        [types.GetSiteDeviceList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetSiteDeviceList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取网吧场所下挂载终端列表
+        [types.GetSiteTerminalList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetSiteTerminalList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },        
+        //获取获取字典信息集合
+        [types.getDictTables]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.getDictTables(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取数据采集趋势
+        [types.SiteDetectColl]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.SiteDetectColl(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取场所详情
+        [types.SiteDetail]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.SiteDetail(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取场所在离线数据
+        [types.SiteHisPercentage]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.SiteHisPercentage(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取场所昨日在离线状况
+        [types.LastPercentage]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.LastPercentage(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //导出统计场所状态率
+        [types.HisPercentageExport]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.HisPercentageExport(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取可视范围内场所集合
+        [types.GetSiteMap]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetSiteMap(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取按区域汇总场所集合
+        [types.SiteMapRegion]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.SiteMapRegion(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        //获取设备管理定制页面
+        [types.GetDeviceList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetDeviceList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取设备采集趋势
+        [types.DeviceDetectColl]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DeviceDetectColl(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+                //获取设备采集趋势
+        [types.DeviceDetectColl]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DeviceDetectColl(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取设备昨日在离线状况
+        [types.LastDevicePercentage]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.LastDevicePercentage(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取设备详情
+        [types.DeviceDetail]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DeviceDetail(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取设备在离线数据
+        [types.DeviceHisPercentage]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DeviceHisPercentage(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //导出统计设备状态率
+        [types.DeviceHisPercentageExport]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DeviceHisPercentageExport(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取可视范围内场所集合
+        [types.GetDeviceMap]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetDeviceMap(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取按区域汇总场所集合
+        [types.DeviceMapRegion]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DeviceMapRegion(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+
+        //获取厂商管理定制页面
+        [types.GetFirmList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetFirmList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //厂商状态数量统计[柱状图]
+        [types.GetFirmCollColumn]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetFirmCollColumn(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //厂商状态数量统计[折线图]
+        [types.GetFirmCollLine]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetFirmCollLine(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //厂商状态率按场所汇总导出
+        [types.GetFirmSiteExport]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetFirmSiteExport(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //厂商状态率按设备汇总导出
+        [types.GetFirmDeviceExport]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetFirmDeviceExport(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        //获取区域管理定制页面
+        [types.GetRegionList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetRegionList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        //获取app定制页面列表信息
+        [types.GetAppList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetAppList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },       
+        //获取app定制页面详情
+        [types.GetAppDetail]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetAppDetail(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },  
+        //获取app定制页面概况统计（用于饼图和右侧柱状图）
+        [types.GetAppViolations]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetAppViolations(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },  
+        //app页面健康率统计
+        [types.GetAppGreenPre]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetAppGreenPre(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        }, 
+        //获取网站备案定制页面列表信息
+        [types.GetWebList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetWebList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //获取未备案网站详情
+        [types.GetWebDetail]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetWebDetail(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },         
+        //获取网站备案定制页面备案变更列表
+        [types.GetWebChangeList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetWebChangeList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //获取备案变更详情获取备案变更详情
+        [types.GetWebChangeDetail]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetWebChangeDetail(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //获取热点列表定制页面信息
+        [types.GetHotspotList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetHotspotList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //获取热点列表定制页面详情
+        [types.GetHotspotDetail]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetHotspotDetail(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //按厂商统计采集量
+        [types.GetFirmCollFirm]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetFirmCollFirm(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },    
+         //按数据来源统计采集量
+         [types.GetCollMicroprobe]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetCollMicroprobe(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },        
+        
+
+        /******************* 例子接口 ****************/
+        //#region 例子接口
+        [types.TogetherTeam]({commit}){
+            return new Promise((resolve,reject)=>{
+                ser.TogetherTeam().then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.TogetherTeamTrack]({commit},{mac,indexArray}){
+            return new Promise((resolve,reject)=>{
+                ser.TogetherTeamTrack({mac,indexArray}).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
+        [types.TogetherTeamMainTrack]({commit}){
+            return new Promise((resolve,reject)=>{
+                ser.TogetherTeamMainTrack().then(res=>{
+                    resolve(res);
+                });
+            });
         }
 
         //#endregion

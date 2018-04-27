@@ -178,7 +178,7 @@
                 <div class="label">周活动Top</div>
                 <div class="child" v-for="d in detailInfo.weekday">
                   周{{d.week}}
-                  <span class="right">{{d.appear_count/d.count*100}}%</span> 
+                  <span class="right">{{(d.appear_count/d.count*100).toFixed(1)}}%</span> 
                   <div class="right process">
                     <div class="child" :style="{width:d.appear_count/d.count*100+'%'}"></div>
                   </div>
@@ -405,6 +405,7 @@ export default {
     initData(){
       this.$store.dispatch(AnalyTraceHistory).then(res=>{
         this.historyTrace=res.biz_body;
+        this.blnShowHistoryPop=this.historyTrace.length>0;
       });
     },
     //搜索事件

@@ -11,7 +11,8 @@
             历史记录
           </div>
           <Scroll ref="historyPopScroll" :listen="historyData">
-            <div v-for="h in historyData" class="item" @click="lookTask(h);">
+            <div v-for="(h,i) in historyData" class="item" @click="lookTask(h);" style="position:relative;">
+              <i class="fa fa-remove" style="position:absolute;right:10px;bottom:5px;font-size:20px;" @click.stop="removeTask(h.task_id,i)"></i>
               <div class="child">
                 <span style="display:inline-block;width:50%;">开始时间:&nbsp;{{converTime(h.task_conditions.begin_time,'yyyy-MM-dd')}}</span><span style="display:inline-block;width:50%;">结束时间:&nbsp;{{converTime(h.task_conditions.end_time,'yyyy-MM-dd')}}</span>
               </div>
@@ -60,6 +61,11 @@
           </button>
           <div class="clearfix"></div>
         </div>
+        <!--提示信息-->
+        <div style="position:absolute;top:100px;" :style="{'right':curTask?'320px':'0px',left:blnShowHistoryPop?'310px':'10px'}">
+          <div style="padding: 5px 10px;display: inline-block;background: rgb(3, 171, 103);color: white;border-radius: 5px;">{{tipInfo}}</div>
+        </div>
+
         <!--右边显示区域-->
         <div class="right_container" v-if="curTask" :style="{bottom:curTask && curTask.task_status=='completed'?'10px':'auto'}">
           <!--数据加载提示信息-->
@@ -130,7 +136,7 @@ import 'echarts/lib/component/legend'
 import Scroll from 'components/scroll'
 import HeatMap from './Home.HeatMap.js'
 
-import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,
+import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,DelTraceHistory,
         GetCarhailingChart,GetCarhailingPersonList,GetCarhailingFromplaceList,GetCarhailingToplaceList} from '../store/mutation-types'
 
 
@@ -152,6 +158,8 @@ export default {
       blnShowHistoryPop:false,
       historyData:[],
       detailData:null,
+      pm:null,
+      tipInfo:'',
     }
   },
   watch:{
@@ -221,10 +229,21 @@ export default {
     
 
     },
+    //删除历史轨迹任务
+    removeTask(id,i){
+      tool.confirm('您确定要删除该任务吗?',['确定','取消'],()=>{
+          this.$store.dispatch(DelTraceHistory,id).then(res=>{
+            if(!tool.msg(res,'删除成功!','删除失败!')) return;
+
+            this.historyData.splice(i,1);
+          }); 
+      },function(){});
+    },
     //获取历史记录
     getAnalyTask(){
       this.$store.dispatch(GetAnalyTask,{task_type:'carhailing'}).then(res=>{
         this.historyData=res.biz_body;
+        this.blnShowHistoryPop=this.historyData.length>0;
       });
     },
     lookTask(t){
@@ -240,7 +259,6 @@ export default {
         this.detailData=res.biz_body;
         this.curTask=t;
 
-        console.log(res.biz_body);
         this.data=_.flatten([
           _.keys((res.biz_body.fromRegion) || []).length>0?{
             id:'chartone',
@@ -314,6 +332,8 @@ export default {
                       <th :style="{width:w+'px'}" style="border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">出发地</div></th>
                       <th :style="{width:w+'px'}" style="border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}"class="divEllipsis">目的地</div></th>
                       <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">驾驶员电话</div></th>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">乘车人电话</div></th>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">上车时间</div></th>
                       <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">车色</div></th>
                       
                   </tr></thead>
@@ -324,9 +344,11 @@ export default {
                 <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
                   <tbody><tr v-for="d in data">
                       <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.driver_name}}</div></td>
-                      <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">{{d.from_address}}</div></td>
-                      <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">{{d.to_address}}</div></td>
+                      <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.from_address"><div :style="{width:w+'px'}" class="divEllipsis">{{d.from_address}}</div></td>
+                      <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.to_address"><div :style="{width:w+'px'}" class="divEllipsis">{{d.to_address}}</div></td>
                       <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.driver_mobile}}</div></td>
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.mobile}}</div></td>
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.order_time}}</div></td>
                       <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.driver_color}}</div></td>
                       
                   </tr></tbody>
@@ -337,7 +359,7 @@ export default {
         let param={
             title:'人员信息',
             area:['1000px','600px'],
-            content:`<div class="LookPersonList_pop pop" style="width:100%;height:100%;overflow: hidden;">${html}</div>`,
+            content:`<div class="LookPersonList_pop pop" style="width:100%;height:100%;overflow: hidden;background-color:rgba(47, 51, 65, 0.9) !important;color:white;">${html}</div>`,
             components:{Scroll},
             store:s.$store,
             context:{
@@ -345,13 +367,14 @@ export default {
               data:[],
             },
             success(layero){
-              param.selfData.w=(layero.width()-450)/2;
+              param.selfData.w=(layero.width()-750)/2;
 
               s.$store.dispatch(GetCarhailingPersonList,{
                 task_id:s.curTask.task_id
               }).then(res=>{
                 if(!tool.msg(res,'','获取数据失败!')) return;
                 param.selfData.data=res.biz_body;
+
               });
             }
         }
@@ -391,7 +414,7 @@ export default {
         let param={
             title:`${type?'出发':'到达'}地列表`,
             area:['800px','600px'],
-            content:`<div class="LookFromPlaceList_pop pop" style="width:100%;height:100%;overflow:hidden;">${html}</div>`,
+            content:`<div class="LookFromPlaceList_pop pop" style="width:100%;height:100%;overflow:hidden;background-color:rgba(47, 51, 65, 0.9) !important;color:white;">${html}</div>`,
             components:{Scroll},
             store:s.$store,
             context:{
@@ -419,47 +442,31 @@ export default {
     //查看出发地/目的地热力图
     lookHeart(type){
       let s=this;
-      tool.open(function(){
-        let id='pop_map'+tool.guid();
-        let html=`<div id="${id}" style="width:100%;height:100%;"></div>`;
-        let param={
-          title:`${type?'出发':'到达'}地热力图`,
-            area:['800px','600px'],
-            content:`<div class="LookFromPlaceHeat_pop pop" style="width:100%;height:100%;">${html}</div>`,
-            context:{
-              data:[]
-            },
-            success(layero){
-              s.$store.dispatch(type?GetCarhailingFromplaceList:GetCarhailingToplaceList,{
+      if(this.pm)this.pm.destroy();
+
+      this.tipInfo=type?'出发地热力图':'目的地热力图';
+
+      s.$store.dispatch(type?GetCarhailingFromplaceList:GetCarhailingToplaceList,{
                 task_id:s.curTask.task_id
               }).then(res=>{
-                if(!tool.msg(res,'','获取数据失败!'))  return
+        if(!tool.msg(res,'','获取数据失败!'))  return
 
-                let map = new BMap.Map(layero.find('#'+id)[0],{minZoom:13,maxZoom:18});
-                let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
-                map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);
-                map.enableScrollWheelZoom(true);
-                let pm=new HeatMap(map,{});
+        this.pm=new HeatMap(this.map,{});
 
-                let data = _.map(res.biz_body,d=>{
-                  return {longitude:d.longti,latitude:d.lat,count:d.count};
-                });
-                let d = data[0];
+        let data = _.map(res.biz_body,d=>{
+          return {longitude:d.longti,latitude:d.lat,count:d.count};
+        });
+        let d = data[0];
 
-                map.panTo(new BMap.Point(d.longitude,d.latitude));
+        this.map.panTo(new BMap.Point(d.longitude,d.latitude));
 
-                let ds ={};
-                _.each(data,r=>{
-                  ds[r.longitude+'_'+r.latitude]={length:r.count};
-                });
+        let ds ={};
+        _.each(data,r=>{
+          ds[r.longitude+'_'+r.latitude]={length:r.count};
+        });
 
-                pm.draw(ds);
-              });
-            }
-        };
-
-        return param;
-      }());
+        this.pm.draw(ds);
+      });
     },
     //查看折线图
     LookLine(type){
@@ -585,16 +592,16 @@ export default {
 
 <style lang="less">
   @import "../css/variables.less";
-  //列表样式
+ //列表样式
   @bgColor:fade(@HeaderBgCol,90%);
   @tableRowH:36px;
-  .pop  .table{margin-bottom:0px;color: white;}
+  .pop  .table{margin-bottom:0px;color: white;background-color:rgba(47, 51, 65, 0.9) !important;}
   .pop  .table_header{height:@tableRowH;}
   .pop  .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
-  .pop  .table_header th{padding:0px !important;color:black; line-height:@tableRowH;}
+  .pop  .table_header th{padding:0px !important;color:black; line-height:@tableRowH;color:white;}
   .pop  .table_header{color:black;}
   .pop  .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
-  .pop  .table_body td{padding:0px !important;color:black;line-height:@tableRowH;.border('bottom');}
+  .pop  .table_body td{padding:0px !important;color:black;line-height:@tableRowH;.border('bottom');color:white;}
 </style>
 
 <style scoped lang="less">
@@ -647,7 +654,7 @@ export default {
     cursor:pointer;.trans();
   }
 
-  .NetAboutCar .left_pop .pop_lable:hover{background-color:@Font_Hover_Col;}
+  .NetAboutCar .left_pop .pop_lable:hover{color:@Font_Hover_Col;}
 
   .NetAboutCar .left_pop .item{font-size:12px;padding:10px;.trans();.border('bottom');}
   .NetAboutCar .left_pop .item:hover{background-color:@Font_Hover_Col;cursor:pointer;}
@@ -655,6 +662,7 @@ export default {
   .NetAboutCar .left_pop .item .item_type{
     padding:2px 8px;position:relative;display:inline-block;
   }
+  .NetAboutCar .left_pop .item i:hover{cursor:pointer;color:#20a1ff;}
 
   .NetAboutCar .left_pop .item.active .bottom_right:before,
   .NetAboutCar .left_pop .item.active .bottom_right:after,

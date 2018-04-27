@@ -9,7 +9,8 @@
             历史记录
           </div>
           <Scroll ref="historyPopScroll" :listen="historyData">
-            <div v-for="h in historyData" class="item" @click="lookTask(h);">
+            <div v-for="(h,i) in historyData" class="item" @click="lookTask(h);" style="position:relative;">
+              <i class="fa fa-remove" style="position:absolute;right:20px;bottom:5px;font-size:20px;" @click.stop="removeTask(h.task_id,i)"></i>
               <div class="child">
                 <span style="display:inline-block;width:50%;">开始时间:&nbsp;{{converTime(h.task_conditions.begin_time,'yyyy-MM-dd')}}</span><span style="display:inline-block;width:50%;">结束时间:&nbsp;{{converTime(h.task_conditions.end_time,'yyyy-MM-dd')}}</span>
               </div>
@@ -110,7 +111,7 @@
 import echarts from  'echarts'
 import Scroll from 'components/scroll'
 
-import {BODY_RESIZE,GetNation,GetAnalyTask,AddAnalyTask,GetVehicleChart,GetVehiclePersonList,GetVehicleTeam} from '../store/mutation-types'
+import {BODY_RESIZE,GetNation,GetAnalyTask,AddAnalyTask,GetVehicleChart,GetVehiclePersonList,GetVehicleTeam,DelTraceHistory} from '../store/mutation-types'
 export default {
   name: 'ShipCar',
   components:{Scroll},
@@ -285,6 +286,16 @@ export default {
     
 
     },
+    //删除历史轨迹任务
+    removeTask(id,i){
+      tool.confirm('您确定要删除该任务吗?',['确定','取消'],()=>{
+          this.$store.dispatch(DelTraceHistory,id).then(res=>{
+            if(!tool.msg(res,'删除成功!','删除失败!')) return;
+
+            this.historyData.splice(i,1);
+          }); 
+      },function(){});
+    },
     lookTask(t){
       if(!parseInt(t.result_count)){tool.info('没有相关结果!'); return;}
       this.getTaskDetail(t);
@@ -321,15 +332,12 @@ export default {
                         <thead><tr>
                             <th style="width:120px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">姓名</div></th>
                             <th style="width:120px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">证件类型</div></th>
-                            <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">证件号码</div></th>
-                            <th style="width:80px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">民族</div></th>
-                            <th style="width:80px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">国籍</div></th>
+                            <th style="width:330px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:330px;" class="divEllipsis">证件号码/民族/国籍</div></th>
                             <th style="width:120px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">车次/座位</div></th>
                             <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">到达时间</div></th>
                             <th :style="{width:w+'px'}" style="border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">到达地</div></th>
                             <th style="width:200px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:200px;" class="divEllipsis">最近出现场所及时间</div></th>
                             <th style="width:80px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">已关注</div></th>
-                            <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">关注人编号</div></th>
                         </tr></thead>
                     </table>
                 </div>
@@ -338,16 +346,13 @@ export default {
                         <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
                         <tbody><tr v-for="d in data">
                             <td style="width:120px;border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.name"><div style="width:120px;" class="divEllipsis">{{d.name}}</div></td>
-                            <td style="width:120px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">{{d.cert_type}}</div></td>
-                            <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.cert_number}}</div></td>
-                            <td style="width:80px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">{{d.nation}}</div></td>
-                            <td style="width:80px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">{{d.nationality}}</div></td>
+                            <td style="width:120px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">身份证</div></td>
+                            <td style="width:330px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:330px;" class="divEllipsis">{{d.cert_number}}/{{d.nation}}/{{d.nationality}}</div></td>
                             <td style="width:120px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">{{d.train_no}}/{{d.seat}}</div></td>
                             <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{converTime(d.time)}}</div></td>
                             <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">{{d.to.country}}{{d.to.county}}{{d.to.station}}</div></td>
                             <td style="width:200px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:200px;" class="divEllipsis">{{d.net_wacode_note || '无'}}/{{converTime(d.online)}}</div></td>
                             <td style="width:80px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">{{d.focus?'是':'否'}}</div></td>
-                            <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{d.focus_id}}</div></td>
                         </tr></tbody>
                     </table>
                     </Scroll>
@@ -364,7 +369,7 @@ export default {
         let param={
             title:`${type=='in'?'进入':'离开'}信息`,
             area:[`${w}px`,`${h}px`],
-            content:`<div class="Lookin_out_pop pop" style="width:100%;height:100%;overflow:hidden;">${html}</div>`,
+            content:`<div class="Lookin_out_pop pop" style="width:100%;height:100%;overflow:hidden;background-color:rgba(47, 51, 65, 0.9) !important;color:white;">${html}</div>`,
             components:{Scroll},
             store:s.$store,
             offset:'10px',
@@ -396,7 +401,7 @@ export default {
               },
             },
             success(layero){
-                param.selfData.w=layero.width()-1250;
+                param.selfData.w=layero.width()-1120;
 
                 param.selfData.pageChange(0);
             }
@@ -409,6 +414,7 @@ export default {
     getAnalyTask(){
       this.$store.dispatch(GetAnalyTask,{task_type:'vehicle'}).then(res=>{
         this.historyData=res.biz_body;
+        this.blnShowHistoryPop=this.historyData.length>0;
       });
     },
     //获取民族
@@ -427,13 +433,13 @@ export default {
   //列表样式
   @bgColor:fade(@HeaderBgCol,90%);
   @tableRowH:36px;
-  .pop  .table{margin-bottom:0px;color: white;}
+  .pop  .table{margin-bottom:0px;color: white;background-color:rgba(47, 51, 65, 0.9) !important;}
   .pop  .table_header{height:@tableRowH;}
   .pop  .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
-  .pop  .table_header th{padding:0px !important;color:black; line-height:@tableRowH;}
+  .pop  .table_header th{padding:0px !important;color:black; line-height:@tableRowH;color:white;}
   .pop  .table_header{color:black;}
   .pop  .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
-  .pop  .table_body td{padding:0px !important;color:black;line-height:@tableRowH;.border('bottom');}
+  .pop  .table_body td{padding:0px !important;color:black;line-height:@tableRowH;.border('bottom');color:white;}
 </style>
 
 <style scoped lang="less">
@@ -503,6 +509,8 @@ export default {
   .ShipCar .left_pop .item .item_type{
     padding:2px 8px;position:relative;display:inline-block;
   }
+
+  .ShipCar .left_pop .item i:hover{color:#20a1ff;}
 
   .ShipCar .left_pop .item.active .bottom_right:before,
   .ShipCar .left_pop .item.active .bottom_right:after,

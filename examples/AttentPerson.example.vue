@@ -754,7 +754,7 @@ export default {
                                 <div class="dropDownItem" style="border-left:none;border-top:0px;" v-if="type && type.val=='vid'">
                                     <i class="fa fa-sort-down" @mousedown.stop="blnShowVidDropDown=!blnShowVidDropDown;"></i>
                                     <div style="width:100%;height:100%;padding:0px 10px;background-color: #e5e5e5;" @mousedown.stop="blnShowVidDropDown=!blnShowVidDropDown;">
-                                        <input type="text" style="background-color: #e5e5e5;" class="vidTypeInput" v-model="vidType" />
+                                        <input type="text" style="background-color: #e5e5e5;height:100%;" placeholder="选择类型" class="vidTypeInput" v-model="vidType" />
                                     </div>
                                     <div class="dropDownContent" v-show="blnShowVidDropDown" :style="{height:vidTypes.length>10?'190px':'auto','z-index':100}">
                                         <Scroll :listen="vidTypes" :store="store">
@@ -785,8 +785,7 @@ export default {
                         </div>
                         <div style="width:100%;margin-top:10px;" class="label_set">
                             <div class="btn" @click="selLabel()" style="margin-right:0px;"><i class="fa fa-pencil"></i></div>
-                            <div class="btn" @click="addLable()"><i class="fa fa-plus"></i></div>
-                            <div style="margin-right:80px;line-height:30px;padding:0px 10px;">
+                            <div style="margin-right:40px;line-height:30px;padding:0px 10px;">
                                 <span v-if="defaultVal.length<=0">添加标签</span>
                                 <div class="label_item" v-for="(d,i) in defaultVal">{{d.tag_title}}<div class="del_btn" @click="delLable(i)">X</div></div>
                             </div>
@@ -975,23 +974,35 @@ export default {
                         tool.open(function(){
                             
                             let html=`
-                                <div style="height:310px;">
-                                    <Scroll :listen="labels">
-                                        <div class="label_item" v-for="l in labels" @click="toogelLabel(l)">{{l.tag_title}}<i class="fa fa-check" v-show="isSelect(l)"></i></div>
-                                    </Scroll>
-                                </div>
-                                <div style="text-align:right;margin-top:10px;margin-bottom:10px;">
-                                        <button type="button" class="btn btn-default" style="font-size:12px;" @click="close()">关闭</button>
+                                <div class="LableInfo">
+                                    <div class="lable_container">
+                                        <Scroll :listen="labels">
+                                            <div style="display:inline-block;margin-right:10px;" v-for="d in labels">
+                                                <i class="fa" @click="toogelLabel(d)" :class="{
+                                                'fa-square-o':!isSelect(d),
+                                                'fa-check-square-o':isSelect(d)}" :style="{color:isSelect(d)?'green':'gray',cursor:'pointer'}">
+                                                </i> {{d.tag_title}}
+                                            </div>
+                                        </Scroll>
+                                    </div>
+                                
+                                    <div class="option_container">
+                                        <div class="btn_container" style="cursor:pointer;" @click="AddLabel()">+</div>
+                                        <div class="input_container">
+                                            <input type="text" v-model="key" placeholder="创建新标签" />
+                                        </div>
+                                    </div>
                                 </div>
                             `;
                             let addParam={
                                 title:'选择标签',
-                                area:['300px','400px'],
+                                area:'300px',
                                 components:{Scroll},
-                                content:`<div class="addAttention_item_sel" style="width:100%;height:100%;">${html}</div>`,
+                                content:`<div class="addAttention_item_sel AttentPerson" style="width:100%;height:100%;padding:10px;">${html}</div>`,
                                 store:store,
                                 context:{
                                     labels:labels,
+                                    key:'',
                                     isSelect(d){
                                         return _.find(param.selfData.defaultVal,f=>f.tag_id==d.tag_id);
                                     },
@@ -1003,7 +1014,19 @@ export default {
                                            param.selfData.defaultVal.push(d);
                                        }
                                     },
+                                    AddLabel(){
+                                         s.$store.dispatch(AddFocusPersonLabel,{tag_title:addParam.selfData.key}).then(res=>{
+                                            if(!tool.msg(res,'添加成功!')) return;
+                                            let item = _.map(res.biz_body,r=>{r.name=r.tag_title; return r;})[0];
+                                            param.selfData.defaultVal.push(item);
+                               
+                                            s.labels.push(item);
+                                            param.selfData.labelVal.push(item);
+                                        });
+                                        addParam.close();
+                                    },
                                     close(){ addParam.close();}
+
                                 }
                             }
                            

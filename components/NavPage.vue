@@ -22,7 +22,6 @@ export default {
   },
   methods:{
     activePage(page){
-       
         let self=this,index=-1;
         for(let i=0;i<self.data.length;i++){
             if(self.data[i].id==page.id){index=i;break;}

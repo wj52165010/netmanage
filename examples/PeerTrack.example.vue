@@ -38,7 +38,7 @@
           <!--时间播放器容器-->
           <div class="TimerPlayerContainer">
             <!--<TimePlayer :range="range" @timeChange="timeChange" />-->
-            <PointPlayer :data="i_mainMac" @countChange="countChange" :range="range" @timeChange="timeChange" />
+            <PointPlayer :data="i_mainMac" @countChange="countChange" :range="range" :blnSimple="true" @timeChange="timeChange" />
           </div>
         </div>
     </div>
@@ -302,13 +302,13 @@ export default {
     },
     //描两点之间的三角箭头
     drawArrow(polyline,length,angleValue,distance,strokeColor,width){
-     return BaiduHelper.arrows(this.map,polyline,length,angleValue,distance,strokeColor,width);
+     return ''; //BaiduHelper.arrows(this.map,polyline,length,angleValue,distance,strokeColor,width);
     },
     //操作MAC路径显示
     macPath(map,res,mainPath,sOps,dOps,pOps){
-      let startPointOps=sOps || {size:15,color:'green'},//路径起点样式
-          drawPointOps=dOps || {size:10,color:'red'}, //画过后的点样式
-          pointOps=pOps || {size:20,color:'blue'}; //正在画的点样式
+      let startPointOps=sOps || {size:15,color:'#ff0000'},//路径起点样式
+          drawPointOps=dOps || {size:10,color:'green',borderColor:'#808080'}, //画过后的点样式
+          pointOps=pOps || {size:20,color:'#0077b3'}; //正在画的点样式
       
       map=map || this.map;
 
@@ -335,7 +335,7 @@ export default {
               if(mainPath.length>1){
                 mainPath[0].setOffset(new BMap.Size(-drawPointOps.size/2,-drawPointOps.size/2));
                 mainPath[0].setContent(`<div style="background-color:${drawPointOps.color};width:${drawPointOps.size}px;height:${drawPointOps.size}px;line-height:${drawPointOps.size}px;text-align:center;border-radius:50%;color:white;"></div>`);
-                mainPath[0]._relLine.setStrokeColor(drawPointOps.color);
+                mainPath[0]._relLine.setStrokeColor(drawPointOps.borderColor || drawPointOps.color);
               }
             }
 
@@ -444,7 +444,7 @@ export default {
           let childMac=s.childMac[key];
           let res = this.getOptData(end,childMac.addData,childMac.unAddData,childMac.endTime,this.range);
 
-          s.macPath(this.childMap,res,childMac.path,{size:15,color:'yellow'},{size:10,color:'black'},{size:20,color:'orange'});
+          s.macPath(this.childMap,res,childMac.path,{size:15,color:'#ff0000'},{size:10,color:'green',borderColor:'#808080'},{size:20,color:'#0077b3'});
           childMac.endTime=end;
         }
       }else{//已数据为基准
@@ -459,7 +459,7 @@ export default {
           let childMac=s.childMac[key];
           let res = this.getCountData(count,childMac.addData,childMac.unAddData,childMac.data);
 
-          s.macPath(this.childMap,res,childMac.path,{size:15,color:'yellow'},{size:10,color:'black'},{size:20,color:'orange'});
+          s.macPath(this.childMap,res,childMac.path,{size:15,color:'#ff0000'},{size:10,color:'green',borderColor:'#808080'},{size:20,color:'#0077b3'});
         }
       }
 

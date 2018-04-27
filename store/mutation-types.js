@@ -327,6 +327,59 @@ export const GetDangerExpressListLoaction='GetDangerExpressListLoaction'//获取
 export const GetNation='GetNation' //获取民族数据
 export const GetPersonPhoto='GetPersonPhoto' //获取人员头像
 
+/**获取场所管理定制页面信息*/
+export const GetSiteList='GetSiteList' //获取场所管理定制页面
+export const SiteDetail='SiteDetail' //获取场所详情
+export const GetSiteDeviceList='GetSiteDeviceList' //获取非网吧场所下挂在设备详情
+export const GetSiteTerminalList='GetSiteTerminalList' //获取网吧场所下挂载终端列表
+export const getDictTables='getDictTables' //获取字典信息集合
+export const SiteDetectColl='SiteDetectColl' //获取数据采集趋势
+export const SiteHisPercentage='SiteHisPercentage' //获取场所在离线数据
+export const LastPercentage='LastPercentage' //获取场所昨日在离线状况
+export const HisPercentageExport='HisPercentageExport' //导出统计场所状态率
+export const GetSiteMap='GetSiteMap' //获取可视范围内场所集合
+export const SiteMapRegion='SiteMapRegion' //获取按区域汇总场所集合
+
+/**获取设备管理定制页面信息*/
+export const GetDeviceList='GetDeviceList' //获取设备管理定制页面
+export const DeviceDetectColl='DeviceDetectColl' //获取设备采集趋势
+export const LastDevicePercentage='LastDevicePercentage' //获取设备昨日在离线状况
+export const DeviceDetail='DeviceDetail' //获取设备详情
+export const DeviceHisPercentage='DeviceHisPercentage' //获取设备在离线数据
+export const DeviceHisPercentageExport='DeviceHisPercentageExport' //导出统计设备状态率
+export const GetDeviceMap='GetDeviceMap' //获取可视范围内场所集合
+export const DeviceMapRegion='DeviceMapRegion' //获取按区域汇总场所集合
+
+/**获取厂商管理定制页面信息*/
+export const GetFirmList='GetFirmList' //获取厂商管理定制页面
+export const GetFirmCollColumn='GetFirmCollColumn' //厂商状态数量统计[柱状图]
+export const GetFirmCollLine='GetFirmCollLine' //厂商状态数量统计[折线图]
+export const GetFirmSiteExport='GetFirmSiteExport' //厂商状态率按场所汇总导出
+export const GetFirmDeviceExport='GetFirmDeviceExport' //厂商状态率按设备汇总导出
+
+// 获取区域管理定制页面信息
+export const GetRegionList='GetRegionList' //获取区域管理定制页面
+
+
+// 获取app定制页面信息
+export const GetAppList='GetAppList' //获取app定制页面列表信息
+export const GetAppDetail='GetAppDetail' //获取app定制页面详情
+export const GetAppViolations='GetAppViolations' //app页面概况统计（用于饼图和右侧柱状图）
+export const GetAppGreenPre='GetAppGreenPre' //app页面健康率统计
+
+// 获取网站备案定制页面信息
+export const GetWebList='GetWebList' //获取网站备案定制页面未备案网站列表
+export const GetWebDetail='GetWebDetail' //获取未备案网站详情
+export const GetWebChangeList='GetWebChangeList' //获取网站备案定制页面备案变更列表
+export const GetWebChangeDetail='GetWebChangeDetail' //获取备案变更详情
+
+// 获取热点列表定制页面信息
+export const GetHotspotList='GetHotspotList' //获取热点列表定制页面信息
+export const GetHotspotDetail='GetHotspotDetail' //获取热点列表定制页面详情
+
+export const GetFirmCollFirm='GetFirmCollFirm' //按厂商统计采集量
+export const GetCollMicroprobe='GetCollMicroprobe' //按数据来源统计采集量
+
 /**************** 例子接口 ******************/
 export const TogetherTeam='TogetherTeam' //获取同行分析组
 export const TogetherTeamTrack='TogetherTeamTrack'//获取同行分析组MAC轨迹

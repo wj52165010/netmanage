@@ -53,4 +53,8 @@ export default class HeardMap {
     hidden(){
         this.mapv.hide();
     }
+
+    destroy(){
+        this.mapv.destroy();
+    }
 }

@@ -53,6 +53,17 @@ Vue.component('placeMap',(resolve)=>{require(['./components/PlaceMap'],resolve)}
 Vue.component('Setting',(resolve)=>{require(['./modules/menu/setting'],resolve)});
 
 
+Vue.component('mapSite',(resolve)=>{require(['./components/mapSite'],resolve)});//场所管理定制版的地图描点组件
+Vue.component('sitePage',(resolve)=>{require(['./pages/sitePage'],resolve)});//场所管理定制版页面
+Vue.component('devicePage',(resolve)=>{require(['./pages/devicePage'],resolve)});//设备管理定制版页面
+Vue.component('firmPage',(resolve)=>{require(['./pages/firmPage'],resolve)});//厂商管理定制版页面
+Vue.component('areaPage',(resolve)=>{require(['./pages/areaPage'],resolve)});//区域管理定制版页面
+Vue.component('mobileAppPage',(resolve)=>{require(['./pages/mobileAppPage'],resolve)});//手机App管控定制版页面
+Vue.component('WebSiteRecordPage',(resolve)=>{require(['./pages/WebSiteRecordPage'],resolve)});//网站备案定制版页面 
+Vue.component('hotspotPage',(resolve)=>{require(['./pages/hotspotPage'],resolve)});//网站备案定制版页面 
+Vue.component('staticCheckPage',(resolve)=>{require(['./pages/staticCheckPage'],resolve)});//统计考核页面
+
+
 /***********************************************案例测试页面********************************************/
 Vue.component('PeerTrack',(resolve)=>{require(['./examples/PeerTrack.example'],resolve)});
 Vue.component('Home',(resolve)=>{require(['./examples/Home.example'],resolve)});

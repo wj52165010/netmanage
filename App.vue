@@ -342,6 +342,15 @@ export default {
         {name:'网约车分析',icon:'fa fa-opera',keyid:"11038",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"NetAboutCar"},
         {name:'车船航班分析',icon:'fa fa-opera',keyid:"11039",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"ShipCar"},
         {name:'隐患快递分析',icon:'fa fa-opera',keyid:"11040",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Expressage"},
+
+        {name:'场所管理默认',icon:'fa fa-cubes',keyid:"11041",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"sitePage"},
+        {name:'设备管理默认',icon:'fa fa-ticket',keyid:"11042",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"devicePage"},
+        {name:'厂商概况',icon:'fa fa-handshake-o',keyid:"11043",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"firmPage"},
+        {name:'区域管理默认',icon:'fa fa-eercast',keyid:"11044",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"areaPage"},
+        {name:'App管理',icon:'fa fa-mobile',keyid:"11045",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"mobileAppPage"},
+        {name:'网站备案',icon:'fa fa-ravelry',keyid:"11046",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"WebSiteRecordPage"},
+        {name:'热点备案',icon:'fa fa-podcast',keyid:"11047",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"hotspotPage"},
+        {name:'统计考核',icon:'fa fa-map',keyid:"11048",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"staticCheckPage"},   
       ];
 
       app.menus=fixMenus;

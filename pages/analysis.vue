@@ -446,12 +446,14 @@ export default {
         this.blnLoading=false;
         if(res.msg.code!='successed')return;
         this.tasks=res.biz_body;
+
       });
 
       //获取案件信息
       this.$store.dispatch(GetCase,{}).then(res=>{
         if(res.msg.code!='successed')return;
         this.cases=res.biz_body;
+
       });
     },
     //转化日期显示格式
@@ -489,7 +491,7 @@ export default {
     },
     //转化任务类型为显示值
     showTaskKind(val){
-      return _.find(taskKind,k=>{return k.val==val}).name;
+      return (_.find(taskKind,k=>{return k.val==val}) || {name:''}).name;
     },
     tagchange(item){
         this.curTag=item;

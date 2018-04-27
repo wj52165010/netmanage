@@ -51,7 +51,7 @@
 import * as d3 from 'd3'
 import Scroll from 'components/scroll'
 
-import {AddShortPath,GetShortPath,DelShortPath,GetShortPathRes} from '../store/mutation-types'
+import {BODY_RESIZE,AddShortPath,GetShortPath,DelShortPath,GetShortPathRes} from '../store/mutation-types'
 
 export default {
   name: 'ShortPath',
@@ -80,6 +80,7 @@ export default {
       keyOne:'',
       keyTwo:'',
       kind:{vid:'虚拟身份',cert:'身份证',mac:'MAC',mobile:'手机'},
+      rectSize:{h:70,w:145}
     }
   },
   watch:{
@@ -96,6 +97,7 @@ export default {
         this.translate={x:this.canvas.width/2,y:this.canvas.height/2};
 
         this.ticked();
+        this.simulation.alphaTarget(0.3).restart();
     },
     curTaskData(){
        
@@ -136,6 +138,22 @@ export default {
             this.getTaskRes(this.curShowTaskId);
         });
     },100);
+
+    this.$store.commit(BODY_RESIZE,()=>{
+        let el=$(this.$el);
+        if(this.blnShowHistoryPop){
+            this.canvas.width=el.width() - 310;
+            this.canvas.attr('width',el.width() - 310);
+        }else{
+            this.canvas.width=el.width();
+            this.canvas.attr('width',el.width());
+        }
+
+        this.translate={x:this.canvas.width/2,y:this.canvas.height/2};
+
+        this.ticked();
+        this.simulation.alphaTarget(0.3).restart();
+    });
   },
   destroyed(){
 
@@ -179,6 +197,7 @@ export default {
                 p.x=this.canvas.width - this.translate.x -step;p.y=0;
             }
             this.drawCirclePath(p.x,p.y,p.radius || this.radius,p.color)
+            //this.drawRect(p);
         });
 
         //画描述文字
@@ -195,15 +214,56 @@ export default {
         this.ctx.fill();
         this.ctx.restore();
     },
+    //画矩形节点路径
+    drawRect(p){
+        let ctx=this.ctx,size=this.rectSize;
+        ctx.save();
+        
+        this.drawRadiusRect(p.x-size.w/2,p.y-size.h/2,size.w,size.h,10);
+
+        ctx.lineWidth=this.rectLineWidth;
+        let storeColor=d3.color(p.color || '#5f52a1').darker(0.5);
+        storeColor.opacity=0.7
+        ctx.strokeStyle=storeColor;
+        let colorBg=d3.color(p.color || '#5f52a1');
+
+        ctx.fillStyle=colorBg;
+        
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
+    },
+    //画带圆角的矩形
+    drawRadiusRect(x, y, w, h, r){
+        let ctx=this.ctx;
+        if (w < 2 * r) {r = w / 2;}
+        if (h < 2 * r){ r = h / 2;}
+
+        ctx.beginPath();
+        ctx.moveTo(x+r, y);
+        ctx.arcTo(x+w, y, x+w, y+h, r);
+        ctx.arcTo(x+w, y+h, x, y+h, r);
+        ctx.arcTo(x, y+h, x, y, r);
+        ctx.arcTo(x, y, x+w, y, r);
+        ctx.closePath();
+    },
     //画节点连线
     drawLine(p){
         let start=this.pointPosByR(p.target,p.source,p.source.radius || this.radius),
             end=this.pointPosByR(p.source,p.target,p.target.radius || this.radius);
+        let rectSize=this.rectSize;
 
         
         if(p.dir==0){
+            // let _end={
+            //     x:end.x-rectSize.w/2,
+            //     y:end.y==start.y?end.y :end.y+rectSize.h/2
+            // }; 
+
             this.drawArrow(start,end);
         }else{
+
             this.drawArrow(end,start);
         }
         //画线
