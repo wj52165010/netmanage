@@ -173,6 +173,10 @@ export default {
      //注册输入框输入事件
     var lazyLayout = _.debounce(function () {
 
+        if(self.blnClear){
+            self.placeCallback({regions: [],polices: [],sites: []});
+        }
+
         if (!$(this).val()) {
             flag.input = false;
             flag.clearBtn = false;
@@ -256,19 +260,25 @@ export default {
             //判断是否只有一个搜索结果(如果只有一个搜索结果)
             let childs = self.searchScoll.children('.search_item');
             let count=(data.regions || []).length+(data.polices || []).length+(data.sites || []).length;
-      
+
             if(childs.length==1){
                 $(childs[0]).trigger('click');
             }else if(count>1 && count<500){
                 self.blnSelAll=true;
                 self.searchData=data;
                 self.selData={regions: [],polices: [],sites: []};
+       
                 self.$emit('place_res',self.ccontext || '','');
+  
             }else{
                 self.blnSelAll=false;
                 self.searchData={regions: [],polices: [],sites: []};
                 self.selData={regions: [],polices: [],sites: []};
-                self.$emit('place_res',self.ccontext || '','');
+                if(self.blnClear){
+                    self.placeCallback(self.selData);
+                }else{
+                    self.$emit('place_res',self.ccontext || '','');
+                }
             }
 
             //单击body隐藏搜索结果框

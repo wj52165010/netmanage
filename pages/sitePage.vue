@@ -712,17 +712,20 @@ export default {
       },
       //查询按钮(搜索)
       query_click(){
-          this.data=[];
-          this.blnSearch=true;
-          this.blnLoading=true;
-          this.pageNum= 0;
-          this.query.skip=this.pageNum*this.query.limit;
-          this.$store.dispatch(GetSiteList,this.query).then(res=>{
-              this.blnSearch=false;
-              this.blnLoading=false;
-              if(!tool.msg(res,'','搜索失败!'))return;
-              this.data=res.biz_body;
-          });
+        setTimeout(()=>{
+            this.data=[];
+            this.blnSearch=true;
+            this.blnLoading=true;
+            this.pageNum= 0;
+            this.query.skip=this.pageNum*this.query.limit;
+
+            this.$store.dispatch(GetSiteList,this.query).then(res=>{
+                this.blnSearch=false;
+                this.blnLoading=false;
+                if(!tool.msg(res,'','搜索失败!'))return;
+                this.data=res.biz_body;
+            });
+        },400)
       },
       //页码切换(分页)
        pageChange(index){

@@ -215,7 +215,7 @@ export default {
         }else if(d.val==0){//处理中
             this.curStatu='running'
         }
-          
+    
         this.$store.dispatch(GetCase,{
             law_case_status:this.curStatu,
             limit:this.limit,

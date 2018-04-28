@@ -621,6 +621,7 @@ export default {
       },
       //场所定位
       placePos(){
+          if(!this.placeSearchCond){tool.info('请选择下拉框中的值在进行搜索!'); return;}
           let self=this;
           let {longitude:lng,latitude:lat}=this.placeSearchCond
           this.map.panTo(new BMap.Point(lng,lat));

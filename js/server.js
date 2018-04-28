@@ -2,7 +2,7 @@
 
 //基地址192.168.100.80:3031(http://192.168.23.73:3030)
 //发布地址:172.23.90.8:3030
-let url='http://192.168.100.80:3031';
+let url='http://192.168.23.73:3030';
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
 
@@ -584,7 +584,8 @@ class server{
       getCase({law_case_id,law_case_title,law_case_time,law_case_status,limit,skip}){
         this.baseBag.target='law_case';
         this.baseBag.method='get';
-        this.baseBag.data={law_case_id:law_case_id || '',law_case_title:law_case_title || '',law_case_time:law_case_time || '',law_case_status:law_case_status || '',limit:limit ||'',skip:skip || ''};
+
+        this.baseBag.data={law_case_id:law_case_id || '',law_case_title:law_case_title || '',law_case_time:law_case_time || '',law_case_status:law_case_status || '',limit:limit ||'',skip:skip || '0'};
         return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
       }
       /**

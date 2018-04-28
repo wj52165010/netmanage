@@ -57,7 +57,7 @@ export default {
         let inter=this.params.interface || '';//远程数据条件
         let model=(this.menu || this.innerMenu).condtionsObj;
         let {param:result,sepParam} = tmpDAO.searchParam(extraParam,model);
-        
+
         return this.store.dispatch(Get_OPerate_Data,{interface:inter,keyid:(this.menu || this.innerMenu).keyid,extraData:result,indexFields:sepParam,condtionsObj:model});
       },
       //编译模板数据
@@ -121,7 +121,7 @@ export default {
             setTimeout(()=>{
                 self.viewVue.$mount($('#'+this.id)[0]);
             },0);
-
+ 
             self.blnShowLoading=true;
             self.getData().then(res=>{
                 self.blnShowLoading=false;

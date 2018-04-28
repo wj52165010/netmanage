@@ -377,6 +377,7 @@ export default {
       let d=eval('('+data+')');
       //替换状态
       let task = _.find(this.tasks,t=>t.task_id==d.task_id);
+      if(!task) return;
       task.task_status=d.task_status;
       task.result_count=d.count;
     });
@@ -510,6 +511,11 @@ export default {
       //判断任务还没有结果的时候需要给予提示
       if((taskData.result_count=='0' ||  !taskData.result_count)&& (taskData.task_status=='created' || taskData.task_status=='running')){
         tool.info('任务正在分析中还未产生结果,请稍候...');
+        return;
+      }
+
+      if(taskData.task_status=='aborted'){
+        tool.info('任务出现异常,请重新创建任务!');
         return;
       }
 

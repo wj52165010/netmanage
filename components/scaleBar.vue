@@ -129,6 +129,7 @@ export default {
       top:10px;
       cursor:pointer;
       z-index:100;
+      text-align:center;
   }
   .dragBtn:hover{background-color:@btn_Bg_Col_hover_0;}
   .colorLine{position:absolute;bottom:0px;background-color:#999999;width:100%;top:0px;}

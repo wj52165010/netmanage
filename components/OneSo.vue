@@ -265,9 +265,9 @@ export default {
         account_type:'',
       }).then(res=>{
         this.identitys=res.biz_body.data;
-        this.curData=res.biz_body.selfData;
+        this.curData=this.serachInfo.code=='vid'?_.filter(res.biz_body.selfData,d=>d.account_type_note):res.biz_body.selfData;
 
-        //console.log(tool.Clone(res.biz_body));
+      
       });
     
     });
