@@ -53,6 +53,7 @@ import PointPlayer from 'components/PointPlayer'
 import BaiduHelper from '../helper/BaiduHelper'
 export default {
   name: 'PeerTrack',
+  props:['taskid'],
   components:{Scroll,TimePlayer,PointPlayer},
   data () {
     return {
@@ -94,7 +95,9 @@ export default {
     this.initChildMap();
 
     //获取同行主MAC轨迹信息
-    this.$store.dispatch(TogetherTeamMainTrack).then(res=>{
+    this.$store.dispatch(TogetherTeamMainTrack,{task_id:this.taskid}).then(res=>{
+      
+      if(res.biz_body.data.length<=0){tool.info('暂无数据!');return;}
       this.mainMac=tool.Clone(res.biz_body.data);
       this.i_mainMac=tool.Clone(res.biz_body.data);
       this.unAddData=res.biz_body.data;
@@ -124,7 +127,7 @@ export default {
     });
 
     //获取同行分析组
-    this.$store.dispatch(TogetherTeam).then(res=>{
+    this.$store.dispatch(TogetherTeam,{task_id:this.taskid}).then(res=>{
       this.navs=this.struNavsData(res.biz_body);
     });
 
@@ -204,7 +207,7 @@ export default {
         //获取该从MAC路径信息
         if(this.cacheShape[d.name+parentId]) return;
 
-        this.$store.dispatch(TogetherTeamTrack,{mac:d.name,indexArray:this.mainMac}).then(res=>{
+        this.$store.dispatch(TogetherTeamTrack,{task_id:this.taskid,mac:d.name,indexArray:this.mainMac}).then(res=>{
           //this.cacheShape[d.name+parentId] = this.playPath(res.biz_body[0][d.name],'rgb(3, 171, 103)',{size:20,color:'rgb(3, 171, 103)'});//画出整个子MAC路径数据
 
           this.childMac[d.name+parentId]={};

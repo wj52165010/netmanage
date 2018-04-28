@@ -1471,25 +1471,25 @@ export default new Vuex.Store({
         },
         /******************* 例子接口 ****************/
         //#region 例子接口
-        [types.TogetherTeam]({commit}){
+        [types.TogetherTeam]({commit},data){
             return new Promise((resolve,reject)=>{
-                ser.TogetherTeam().then(res=>{
+                ser.TogetherTeam(data).then(res=>{
                     resolve(res);
                 });
             });
         },
 
-        [types.TogetherTeamTrack]({commit},{mac,indexArray}){
+        [types.TogetherTeamTrack]({commit},{task_id,mac,indexArray}){
             return new Promise((resolve,reject)=>{
-                ser.TogetherTeamTrack({mac,indexArray}).then(res=>{
+                ser.TogetherTeamTrack({task_id,mac,indexArray}).then(res=>{
                     resolve(res);
                 });
             });
         },
 
-        [types.TogetherTeamMainTrack]({commit}){
+        [types.TogetherTeamMainTrack]({commit},data){
             return new Promise((resolve,reject)=>{
-                ser.TogetherTeamMainTrack().then(res=>{
+                ser.TogetherTeamMainTrack(data).then(res=>{
                     resolve(res);
                 });
             });
@@ -1908,34 +1908,6 @@ export default new Vuex.Store({
             });
         },        
         
-
-        /******************* 例子接口 ****************/
-        //#region 例子接口
-        [types.TogetherTeam]({commit}){
-            return new Promise((resolve,reject)=>{
-                ser.TogetherTeam().then(res=>{
-                    resolve(res);
-                });
-            });
-        },
-
-        [types.TogetherTeamTrack]({commit},{mac,indexArray}){
-            return new Promise((resolve,reject)=>{
-                ser.TogetherTeamTrack({mac,indexArray}).then(res=>{
-                    resolve(res);
-                });
-            });
-        },
-
-        [types.TogetherTeamMainTrack]({commit}){
-            return new Promise((resolve,reject)=>{
-                ser.TogetherTeamMainTrack().then(res=>{
-                    resolve(res);
-                });
-            });
-        }
-
-        //#endregion
 
     },
     modules:{

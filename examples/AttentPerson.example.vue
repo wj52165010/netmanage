@@ -75,7 +75,7 @@
                 <div class="content_info">
                     <Scroll :listen="data">
                         <!--卡片项-->
-                        <div class="card" :class="{active:blnbatch && isBatchData(d)}" v-for="(d,i) in data" @click="toggleBatch(d)">
+                        <div class="card" :class="{active:blnbatch && isBatchData(d)}" v-for="(d,i) in data" @click="toggleBatch(d)" @mouseenter="card_mouseover(d)">
                             <!--内容展示区域-->
                             <div class="info">
                                 <!--选中标识-->
@@ -107,7 +107,7 @@
                             <!--底部显示区域-->
                             <div class="bottom">
                                 <span>报警{{d.alarms}}</span>
-                                <span style="float:right;">最后报警时间&nbsp;{{converTime(d.alarm_last_time)}}</span>
+                                <span style="float:right;">最后报警时间&nbsp;{{parseInt(d.alarm_last_time)?converTime(d.alarm_last_time):'无'}}</span>
                             </div>
                         </div>
                         <div class="clearfix"></div>
@@ -459,7 +459,7 @@ export default {
       searchPersonKey:'',//当前查询任务标签关键字
       blnLoading:false,
       orders:['默认排序','按报警数降序','按报警时间降序'],
-      curOrder:0,
+      curOrder:2,
       ordersVal:['','alarms','alarm_last_time'],
       blnbatch:false,
       batchData:[],
@@ -468,6 +468,9 @@ export default {
       curShowTagId:'',
       noDeFine:false,//是否显示为定义标签
       name:'',
+      blnDragSelect:false,//是否开启拖动选择
+      mouseDownId:0,
+      mouseUpId:0
     }
   },
   watch:{
@@ -558,16 +561,42 @@ export default {
             this.curUpdateData.focus_title=v;
         });
     });
+
+
+    //判断是否正在进行拖动选择操作
+    this.mouseDownId=Fx.SingleBind('mousedown',$(this.$el),(e)=>{
+        if(!this.blnbatch) return;
+        this.blnDragSelect=true;
+    });
+
+    this.mouseUpId=Fx.SingleBind('mouseup',$(this.$el),(e)=>{
+        if(!this.blnbatch) return;
+        this.blnDragSelect=false;
+    });
   },
   destroyed(){
     if(this.blnNoInit) return;
     Fx.ClearBind('mousedown',$('body'),this.mousedownid);
+    Fx.ClearBind('mousedown',$(this.$el),this.mouseDownId);
+    Fx.ClearBind('mouseup',$(this.$el),this.mouseUpId);
   },
   methods:{
     noHandler(){},
     getPhotoUrl(d){
         let type=d.focus_property[0]?d.focus_property[0].t:'';
         return '/cert/' + (type=='cert'?d.focus_property[0].k:'0');
+    },
+    //标签项进入卡片项
+    card_mouseover(d){
+        if(!this.blnDragSelect) return;
+        
+        let index=_.findIndex(this.batchData,b=>b.focus_id==d.focus_id);
+        if(index>-1){
+            this.batchData.splice(index,1);
+        }else{
+            this.batchData.push(d);
+        }
+        d.blnAssess=true;
     },
     //获取特定标签数据
     getSpeLabelCount(){
@@ -657,6 +686,7 @@ export default {
     },
     pageChange(index){
       this.GetPeson(index);
+      this.batchData=[];
     },
     //添加标签
     AddLabel(){
@@ -1065,7 +1095,17 @@ export default {
 </script>
 <style lang="less">
     @import "../css/variables.less";
-    .AttentPerson .detailInfo{width:100%;height:100%;position:relative;}
+    .AttentPerson{
+        -webkit-user-select:none;
+        -moz-user-select:none;
+        -ms-user-select:none;
+        user-select:none;
+    }
+    .AttentPerson .detailInfo{
+        width:100%;
+        height:100%;
+        position:relative;
+    }
     .AttentPerson .detailInfo .info_item{margin-left:0px;margin-bottom:5px;}
     .AttentPerson .detailInfo .info_item .del{float:right;display:none;}
     .AttentPerson .detailInfo .info_item .del:hover{color:@Font_Hover_Col;cursor:pointer;}

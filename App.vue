@@ -281,14 +281,13 @@ export default {
     this.$store.dispatch(GetMenuKind).then(res=>{
       this.$store.commit(SetMenuKind,res.biz_body);
       MenuKind=this.$store.getters.MenuKind;
-
       //添加一个测试菜单分类(非测试可删除)
-      MenuKind.push({
-        icon:"fa fa-navicon",
-        title:'案例',
-        orderby:10000,
-        id:100000,
-      });
+      // MenuKind.push({
+      //   icon:"fa fa-navicon",
+      //   title:'案例',
+      //   orderby:10000,
+      //   id:100000,
+      // });
 
       //获取登录用户信息
       this.$store.dispatch(GetUser,ser.baseBag.userid).then(res=>{
@@ -310,47 +309,47 @@ export default {
       this.$store.commit(Set_System_Menus,this.menus);
       //定制菜单页面
       let fixMenus=[
+        {name:'首页',icon:'fa fa-opera',keyid:"11029",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:0,status:'{status:"completed"}',type:"Home"},
         //{name:'列表拖动',icon:'fa fa-dashboard',id:'31015',keyid:"31015",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"TableDrag"},
-        {name:'基础页面',icon:'fa fa-dashboard',id:'11015',keyid:"11015",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"BasePage"},
-        {name:'报警布控',icon:'fa fa-address-book',keyid:"11010",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"deployCtrlPage"},
+        {name:'报警布控',icon:'fa fa-address-book',keyid:"11010",menu_type:_.find(MenuKind,m=>m.id==9),blnShow:1,status:'{status:"completed"}',type:"deployCtrlPage"},
         // {name:'碰撞关系',icon:'fa fa-address-book',keyid:"11020",menu_type:MenuKind[1],blnShow:1,status:'{status:"completed"}',type:"CollisionPage"},
         //{name:'高危库',icon:'fa fa-address-book',keyid:"11018",menu_type:MenuKind[1],blnShow:1,status:'{status:"completed"}',type:"highriskPage"},
-        {name:'高危库',icon:'fa fa-address-book',keyid:"11026",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"HighRiskPage"},
+        {name:'高危库',icon:'fa fa-address-book',keyid:"11026",menu_type:_.find(MenuKind,m=>m.id==9),blnShow:1,status:'{status:"completed"}',type:"HighRiskPage"},
         {name:'权限配置',icon:'fa fa-chain',keyid:"11011",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"permisPage"},
         {name:'用户管理',icon:'fa fa-users',keyid:"11012",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"UserManagePage"},
         // {name:'关系图',icon:'fa fa-users',keyid:"11013",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"RelationPage"},
-        {name:'综合分析',icon:'fa fa-dashboard',keyid:"11014",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"AnalysisPage"},
+        {name:'综合分析',icon:'fa fa-dashboard',keyid:"11014",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"AnalysisPage"},
         // {name:'分析详细页面',icon:'fa fa-dashboard',keyid:"11016",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"AnalysisDetailPage"},
         // {name:'碰撞分析页面',icon:'fa fa-dashboard',keyid:"11017",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"CrashAnalyPage"},
         // {name:'碰撞分析详细',icon:'fa fa-dashboard',keyid:"11021",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"CrashDetailPage"},
-        {name:'数据质量',icon:'fa fa-dashboard',keyid:"11022",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"dataMassPage"},
+        {name:'数据质量',icon:'fa fa-dashboard',keyid:"11022",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"dataMassPage"},
         {name:'远程接口管理',icon:'fa fa-dashboard',keyid:"13023",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"remoteInterfacePage"},
-        {name:'案件管理',icon:'fa fa-dashboard',keyid:"11024",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"CaseManagePage"},
-        {name:'CCIC预警',icon:'fa fa-dashboard',keyid:"11025",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"CCICPage"},
+        {name:'案件管理',icon:'fa fa-dashboard',keyid:"11024",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"CaseManagePage"},
+        {name:'CCIC预警',icon:'fa fa-dashboard',keyid:"11025",menu_type:_.find(MenuKind,m=>m.id==9),blnShow:1,status:'{status:"completed"}',type:"CCICPage"},
         {name:'操作日志',icon:'fa fa-opera',keyid:"11027",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"OperLogPage"},
 
-        {name:'同行轨迹',icon:'fa fa-opera',keyid:"11028",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"PeerTrack"},
-        {name:'首页(案例)',icon:'fa fa-opera',keyid:"11029",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Home"},
+       // {name:'同行轨迹',icon:'fa fa-opera',keyid:"11028",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"PeerTrack"},
         //{name:'关系展示(案例)',icon:'fa fa-opera',keyid:"11030",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Relation"},
-        {name:'关系展示',icon:'fa fa-opera',keyid:"11031",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Relation2"},
+        {name:'关系展示',icon:'fa fa-opera',keyid:"11031",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"Relation2"},
         //{name:'测试关系展示(案例)',icon:'fa fa-opera',keyid:"11032",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"TestRelation"},
         //{name:'轨迹分析(案例)',icon:'fa fa-opera',keyid:"11033",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Track"},
-        {name:'轨迹分析',icon:'fa fa-opera',keyid:"11034",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Track2"},
-        {name:'关注人员',icon:'fa fa-opera',keyid:"11035",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"AttenPerson"},
-        {name:'最短路径',icon:'fa fa-opera',keyid:"11036",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"ShortPath"},
+        {name:'轨迹分析',icon:'fa fa-opera',keyid:"11034",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"Track2"},
+        {name:'关注人员',icon:'fa fa-opera',keyid:"11035",menu_type:_.find(MenuKind,m=>m.id==9),blnShow:1,status:'{status:"completed"}',type:"AttenPerson"},
+        {name:'最短路径',icon:'fa fa-opera',keyid:"11036",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"ShortPath"},
         //{name:'二次碰撞详细页面(案例)',icon:'fa fa-opera',keyid:"11037",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"CrashSecondDetail"},
-        {name:'网约车分析',icon:'fa fa-opera',keyid:"11038",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"NetAboutCar"},
-        {name:'车船航班分析',icon:'fa fa-opera',keyid:"11039",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"ShipCar"},
-        {name:'隐患快递分析',icon:'fa fa-opera',keyid:"11040",menu_type:_.find(MenuKind,m=>m.id==100000),blnShow:1,status:'{status:"completed"}',type:"Expressage"},
+        {name:'网约车分析',icon:'fa fa-opera',keyid:"11038",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"NetAboutCar"},
+        {name:'车船航班分析',icon:'fa fa-opera',keyid:"11039",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"ShipCar"},
+        {name:'隐患快递分析',icon:'fa fa-opera',keyid:"11040",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"Expressage"},
 
-        {name:'场所管理默认',icon:'fa fa-cubes',keyid:"11041",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"sitePage"},
-        {name:'设备管理默认',icon:'fa fa-ticket',keyid:"11042",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"devicePage"},
-        {name:'厂商概况',icon:'fa fa-handshake-o',keyid:"11043",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"firmPage"},
-        {name:'区域管理默认',icon:'fa fa-eercast',keyid:"11044",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"areaPage"},
-        {name:'App管理',icon:'fa fa-mobile',keyid:"11045",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"mobileAppPage"},
-        {name:'网站备案',icon:'fa fa-ravelry',keyid:"11046",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"WebSiteRecordPage"},
-        {name:'热点备案',icon:'fa fa-podcast',keyid:"11047",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"hotspotPage"},
-        {name:'统计考核',icon:'fa fa-map',keyid:"11048",menu_type:_.find(MenuKind,m=>m.id==2),blnShow:1,status:'{status:"completed"}',type:"staticCheckPage"},   
+        {name:'场所管理',icon:'fa fa-cubes',keyid:"11041",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"sitePage"},
+        {name:'设备管理',icon:'fa fa-ticket',keyid:"11042",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"devicePage"},
+        {name:'厂商概况',icon:'fa fa-handshake-o',keyid:"11043",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"firmPage"},
+        {name:'区域管理',icon:'fa fa-eercast',keyid:"11044",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"areaPage"},
+        {name:'App管理',icon:'fa fa-mobile',keyid:"11045",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"mobileAppPage"},
+        {name:'网站备案',icon:'fa fa-ravelry',keyid:"11046",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"WebSiteRecordPage"},
+        {name:'热点备案',icon:'fa fa-podcast',keyid:"11047",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"hotspotPage"},
+        {name:'统计考核',icon:'fa fa-map',keyid:"11048",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"staticCheckPage"},   
+        {name:'数据总览',icon:'fa fa-dashboard',id:'11015',keyid:"11015",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"BasePage"},
       ];
 
       app.menus=fixMenus;

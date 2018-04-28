@@ -109,6 +109,7 @@ export default {
     //初始化
     init(){
         this.w=$(this.$el).find('div[name="path"]').width();
+
         this.scaleVal=scaleLinear().domain([0,this.data.length-1]).range([1,this.w-this.dragBtnW]);
         
         let dataIndex=Math.round(this.scaleVal.invert(this.curPos));

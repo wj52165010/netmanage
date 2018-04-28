@@ -63,7 +63,7 @@
         </div>
         <!--提示信息-->
         <div style="position:absolute;top:100px;" :style="{'right':curTask?'320px':'0px',left:blnShowHistoryPop?'310px':'10px'}">
-          <div style="padding: 5px 10px;display: inline-block;background: rgb(3, 171, 103);color: white;border-radius: 5px;">{{tipInfo}}</div>
+          <div style="padding: 5px 10px;display: inline-block;background: rgb(3, 171, 103);color: white;border-radius: 5px;" v-if="tipInfo">{{tipInfo}}</div>
         </div>
 
         <!--右边显示区域-->
@@ -92,7 +92,7 @@
                     <span class="item_icon"><i class="fa fa-bullseye" @click="lookHeart(1)"></i><i class="fa fa-navicon" @click="lookList(1)"></i></span>
                   </div>
                   <div class="child_item" v-for="v in detailData.fromplaceTop">
-                    <span class="item_title">{{v.address}}</span>
+                    <span class="item_title divEllipsis" :title="v.address">{{v.address}}</span>
                     <span class="item_number">{{v.count}}次</span>
                   </div>
                 
@@ -104,7 +104,7 @@
                     <span class="item_icon"><i class="fa fa-bullseye" @click="lookHeart()"></i><i class="fa fa-navicon" @click="lookList()"></i></span>
                   </div>
                   <div class="child_item" v-for="v in detailData.toplaceTop">
-                    <span class="item_title">{{v.address}}</span>
+                    <span class="item_title divEllipsis" :title="v.address">{{v.address}}</span>
     
                     <span class="item_number">{{v.count}}次</span>
                   </div>
@@ -113,8 +113,8 @@
 
                 <div class="item" v-for="d in data">
                   <div class="child_item">
-                    <span class="item_title" style="font-size:14px;">{{d.name}}</span>
-                    <span class="item_icon"></span>
+                    <span class="item_title divEllipsis" style="font-size:14px;">{{d.name}}</span>
+                    <span class="item_icon"><i class="fa fa-navicon" @click="lookArea(d)"></i></span>
                   </div>
                   <!--图表显示容器-->
                   <div class="chart_container" :id="d.id"></div>
@@ -136,7 +136,7 @@ import 'echarts/lib/component/legend'
 import Scroll from 'components/scroll'
 import HeatMap from './Home.HeatMap.js'
 
-import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,DelTraceHistory,
+import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,DelAnalyTask,
         GetCarhailingChart,GetCarhailingPersonList,GetCarhailingFromplaceList,GetCarhailingToplaceList} from '../store/mutation-types'
 
 
@@ -232,7 +232,7 @@ export default {
     //删除历史轨迹任务
     removeTask(id,i){
       tool.confirm('您确定要删除该任务吗?',['确定','取消'],()=>{
-          this.$store.dispatch(DelTraceHistory,id).then(res=>{
+          this.$store.dispatch(DelAnalyTask,id).then(res=>{
             if(!tool.msg(res,'删除成功!','删除失败!')) return;
 
             this.historyData.splice(i,1);
@@ -271,6 +271,9 @@ export default {
             data:res.biz_body.toRegion
           }:[]
         ]);
+
+        //默认打开第一个热力图
+        this.lookHeart(0);
       });
 
     },
@@ -287,18 +290,22 @@ export default {
 
           let option={
             color:['#85c226','#f8c301','#728499'],
-            legend: {
-                orient: 'vertical',
-                left: 'left',
-                data: keys,
-                textStyle:{color:'white'}
+            // legend: {
+            //     orient: 'vertical',
+            //     left: 'left',
+            //     data: keys,
+            //     textStyle:{color:'white'}
+            // },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{b} : {c} ({d}%)"
             },
             series : [
                   {
-                    name: '访问来源',
+                    name: '',
                     type: 'pie',
-                    radius : '70px',
-                    center: ['70%', '50%'],
+                    radius : '120px',
+                    center: ['50%', '50%'],
                     data:vals,
                     itemStyle: {
                         normal: {
@@ -522,6 +529,59 @@ export default {
         return param;
       }());
     },
+    //查看区域列表
+    lookArea(d){
+      let s=this;
+      tool.open(function(){
+        let html=`
+          <div class="table_header">
+              <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                  <thead><tr>
+                      <th style="width:200px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:200px;" class="divEllipsis">区域名称</div></th>
+                      <th style="width:100px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:100px;" class="divEllipsis">次数</div></th>
+                      <th style="width:100px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:100px;" class="divEllipsis">百分比</div></th>
+                  </tr></thead>
+              </table>
+          </div>
+          <div class="table_body">
+            <Scroll :listen="data" ref="detailSrcoll">
+                <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                  <tbody><tr v-for="d in data">
+                      <td style="width:200px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:200px;" class="divEllipsis">{{d.name}}</div></td>
+                      <td style="width:100px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:100px;" class="divEllipsis">{{d.count}}</div></td>
+                      <td style="width:100px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:100px;" class="divEllipsis">{{d.radio}}</div></td>
+                  </tr></tbody>
+              </table>
+            </Scroll>
+          </div>
+        `;
+        let param={
+          title:`${d.name}`,
+          area:['450px','350px'],
+          content:`<div class="LookFromPlaceList_area_pop pop" style="width:100%;height:100%;overflow:hidden;">${html}</div>`,
+          components:{Scroll},
+          store:s.$store,
+          context:{
+            data:[]
+          },
+          success(layero){
+            
+            let countArr=_.pluck(d.data,'count');
+            let total = _.reduce(countArr, function(memo, num){ return memo + num; }, 0)
+
+            param.selfData.data=_.map(d.data,(v,k)=>{
+              return {
+                name:k,
+                count:v.count,
+                radio:(v.count/total*100).toFixed(2)
+              }
+            });
+          }
+        };
+
+        return param;
+      }());
+    },
     //热力图
     heartMap(){
       tool.open(function(){
@@ -625,7 +685,7 @@ export default {
   .NetAboutCar .right_container .content{width:100%;height:~'calc(100% - @{titleH})';color:white;text-align:left;font-size:12px;padding:10px 0px;}
 
   .NetAboutCar .right_container .content .item{padding:5px 20px;margin-top:10px;}
-  .NetAboutCar .right_container .content .item .item_title{}
+  .NetAboutCar .right_container .content .item .item_title{display:inline-block;width:80%;}
   .NetAboutCar .right_container .content .item  .item_number{float:right;margin-right:0px;}
   .NetAboutCar .right_container .content .item  .item_icon{float:right;width:60px;height:100%;display:inline-block;text-align:right;}
   .NetAboutCar .right_container .content .item  .item_icon i{margin-left:10px;cursor:pointer;}
@@ -633,7 +693,7 @@ export default {
 
   .NetAboutCar .right_container .content .item .child_item{margin-bottom:5px;}
 
-  .NetAboutCar .right_container .content .item .chart_container{width:100%;height:170px;}
+  .NetAboutCar .right_container .content .item .chart_container{width:100%;height:260px;}
 
   
     //左边侧边框

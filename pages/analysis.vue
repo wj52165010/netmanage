@@ -191,6 +191,7 @@ import Relation from '../pages/relation'
 import dropdwonBtn from 'components/dropdwonBtn'
 import RelativeAnlay from '../modules/case/anlay'
 import CrashSecondDetail from 'components/crash_second_detail'
+import PeerTrack from '../examples/PeerTrack.example.vue'
 
 import {AddAnalyTask,GetAnalyTask,DelAnalyTask,GetAnalyTaskData,GetVirType,GetCase} from '../store/mutation-types'
 
@@ -559,7 +560,7 @@ export default {
           let content='';
           switch(_.find(self.taskKind,t=>{return t.val==type}).id){
             case '同行分析':
-              content=`<AnalysisDetailPage :store="store" :taskid="taskid" />`;
+              content=`<PeerTrack :taskid="taskid" />`;
               break;
             case '关联分析':
               content=`<RelationPage ref="relationCmp" :store="store" :taskid="taskid" />`
@@ -579,6 +580,7 @@ export default {
             area: [`${popW}px`,`${popH}px`],
             content:`<div class="openTmp" style="width:100%;height:100%;overflow-y:auto;">${html}</div>`,
             store:self.$store,
+            components:{PeerTrack},
             context:{
               store:self.$store,
               taskid:id,

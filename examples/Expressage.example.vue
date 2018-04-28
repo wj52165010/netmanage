@@ -93,7 +93,7 @@ import 'echarts/lib/component/legend'
 import Scroll from 'components/scroll'
 import HeatMap from './Home.HeatMap.js'
 
-import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,DelTraceHistory,
+import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,DelTraceHistory,DelAnalyTask,
         GetCarhailingChart,GetCarhailingPersonList,GetCarhailingFromplaceList,GetCarhailingToplaceList,
         GetDangerExpress,GetDangerExpressList,GetDangerExpressListLoaction
         } from '../store/mutation-types'
@@ -185,7 +185,7 @@ export default {
     //删除历史轨迹任务
     removeTask(id,i){
       tool.confirm('您确定要删除该任务吗?',['确定','取消'],()=>{
-          this.$store.dispatch(DelTraceHistory,id).then(res=>{
+          this.$store.dispatch(DelAnalyTask,id).then(res=>{
             if(!tool.msg(res,'删除成功!','删除失败!')) return;
 
             this.historyData.splice(i,1);
@@ -219,6 +219,9 @@ export default {
             data:res.biz_body.region
           }
         ];
+
+        //默认打开热力图
+        this.lookHeart();
       });
 
     },
@@ -464,7 +467,7 @@ export default {
           </div>
         `;
         let param={
-          title:'列表数据',
+          title:'区域',
           area:['450px','350px'],
           content:`<div class="LookFromPlaceList_area_pop pop" style="width:100%;height:100%;overflow:hidden;">${html}</div>`,
           components:{Scroll},

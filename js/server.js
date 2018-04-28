@@ -1889,10 +1889,10 @@ class server{
        
      }
     */
-    TogetherTeam(){
+    TogetherTeam(data){
       this.baseBag.target='analy_task';
       this.baseBag.method='get_together_team';
-      this.baseBag.data={};
+      this.baseBag.data=data || {};
 
       return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
     }
@@ -1904,10 +1904,10 @@ class server{
         mac:''
      }
     */
-    TogetherTeamTrack({mac,indexArray}){
+    TogetherTeamTrack({task_id,mac,indexArray}){
       this.baseBag.target='analy_task';
       this.baseBag.method='get_together_team_track';
-      this.baseBag.data={mac:mac || '',indexArray:indexArray || []};
+      this.baseBag.data={task_id:task_id || '',mac:mac || '',indexArray:indexArray || []};
 
       return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
     }
@@ -1919,11 +1919,10 @@ class server{
         mac:''
      }
     */
-    TogetherTeamMainTrack(){
+    TogetherTeamMainTrack(data){
       this.baseBag.target='analy_task';
       this.baseBag.method='get_together_team_main_mac_track';
-      this.baseBag.data={};
-
+      this.baseBag.data=data || {};
       return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
     }
     //#endregion

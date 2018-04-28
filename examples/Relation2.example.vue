@@ -412,7 +412,10 @@ export default {
             p.anmalcomplete=false;
         }
 
-        this.drawOption(p.x+size.w/2-15-20,p.y+size.h/2-10,p.isloading?this.iconLoading:this.iconExtend);//画展开按钮
+        if(!p.isNone){
+            this.drawOption(p.x+size.w/2-15-20,p.y+size.h/2-10,p.isloading?this.iconLoading:this.iconExtend);//画展开按钮
+        }
+
         this.drawOption(p.x+size.w/2-15,p.y+size.h/2-10,this.iconPin);//画展定位按钮
 
         //画警告图标

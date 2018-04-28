@@ -80,7 +80,9 @@ export default {
       keyOne:'',
       keyTwo:'',
       kind:{vid:'虚拟身份',cert:'身份证',mac:'MAC',mobile:'手机'},
-      rectSize:{h:70,w:145}
+      rectSize:{h:70,w:145},
+      subtion:null,
+      blnRect:true,
     }
   },
   watch:{
@@ -109,7 +111,7 @@ export default {
   mounted(){
     let Rx=this.$store.getters.Rx;
     this.dataSubject=new Rx.Subject();
-    this.dataSubject.subscribe(this.redraw);
+    this.subtion = this.dataSubject.subscribe(this.redraw);
 
     let el=$(this.$el);
     this.canvas=el.find(`canvas[name="canvas"]`);
@@ -151,12 +153,18 @@ export default {
 
         this.translate={x:this.canvas.width/2,y:this.canvas.height/2};
 
+        this.canvas.height=el.height();
+        this.canvas.attr('height',el.height());
+
         this.ticked();
+        if(!this.simulation) return;
         this.simulation.alphaTarget(0.3).restart();
     });
   },
   destroyed(){
-
+    this.simulation.stop();
+    this.subtion.unsubscribe();
+    this.subtion=null;
   },
   methods:{
     //转化时间
@@ -175,6 +183,7 @@ export default {
             .on("tick", s.ticked);
     },
     ticked(){
+        if(!this.ctx) return;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.draw();
     },
@@ -196,12 +205,12 @@ export default {
             }else if(i==1){ //终点
                 p.x=this.canvas.width - this.translate.x -step;p.y=0;
             }
-            this.drawCirclePath(p.x,p.y,p.radius || this.radius,p.color)
-            //this.drawRect(p);
+            //this.drawCirclePath(p.x,p.y,p.radius || this.radius,p.color)
+            this.drawRect(p,true);
         });
 
         //画描述文字
-        _.each(this.points,this.drawText);
+        //_.each(this.points,this.drawText);
 
         this.ctx.restore();
     },
@@ -215,22 +224,34 @@ export default {
         this.ctx.restore();
     },
     //画矩形节点路径
-    drawRect(p){
+    drawRect(p,flag){
         let ctx=this.ctx,size=this.rectSize;
         ctx.save();
         
         this.drawRadiusRect(p.x-size.w/2,p.y-size.h/2,size.w,size.h,10);
 
-        ctx.lineWidth=this.rectLineWidth;
+        ctx.lineWidth=2;
         let storeColor=d3.color(p.color || '#5f52a1').darker(0.5);
         storeColor.opacity=0.7
         ctx.strokeStyle=storeColor;
-        let colorBg=d3.color(p.color || '#5f52a1');
+        let colorBg=p.blnChild?'#ebedee':d3.color(p.color || '#5f52a1');
 
         ctx.fillStyle=colorBg;
         
         ctx.fill();
         ctx.stroke();
+        ctx.clip();
+
+
+        if(flag){
+          //如果是子节点加个颜色框
+          if(p.blnChild){
+            ctx.fillStyle =p.color;  //对画布填充颜色  
+            ctx.fillRect(p.x-this.rectSize.w/2, p.y-this.rectSize.h/2, this.rectSize.w,30);
+          }
+
+          this.drawText(p);
+        }
 
         ctx.restore();
     },
@@ -250,20 +271,24 @@ export default {
     },
     //画节点连线
     drawLine(p){
-        let start=this.pointPosByR(p.target,p.source,p.source.radius || this.radius),
-            end=this.pointPosByR(p.source,p.target,p.target.radius || this.radius);
-        let rectSize=this.rectSize;
+    
+        let lineW = this.pointRectByDetal(p.source,p.target)
+
+        let start=this.pointPosByR(p.target,p.source,lineW),
+              end=this.pointPosByR(p.source,p.target,lineW);
+
+        // let start=this.pointPosByR(p.target,p.source,p.target.radius || this.radius),
+        //    end=this.pointPosByR(p.source,p.target,p.target.radius || this.radius);
 
         
         if(p.dir==0){
-            // let _end={
-            //     x:end.x-rectSize.w/2,
-            //     y:end.y==start.y?end.y :end.y+rectSize.h/2
-            // }; 
-
+        
             this.drawArrow(start,end);
-        }else{
+        }else if(p.dir==1){
 
+            this.drawArrow(end,start);
+        }else{
+            this.drawArrow(start,end);
             this.drawArrow(end,start);
         }
         //画线
@@ -348,6 +373,36 @@ export default {
 
         return arrows;
     },
+    //根据斜率判断线与矩形边框之间的焦点长度
+    pointRectByDetal(pStart,pEnd){
+        if(pStart.y==pEnd.y){//没有斜率
+            return this.rectSize.w/2;
+        }
+
+        let detal=(pEnd.y-pStart.y)/(pEnd.x-pStart.x);//斜率
+        let angle=Math.atan(detal);
+        let constB=this.rectSize.w/2;
+
+        if(angle<Math.PI/4 && 0<=angle){
+            constB=this.rectSize.w/2;
+            return constB/Math.cos(angle);
+        }
+        if(angle>=Math.PI/4 && angle < Math.PI/2){
+            constB=this.rectSize.h/2;
+            return constB/Math.sin(angle);
+        }
+    
+        if(angle>=-Math.PI/2 && angle < -Math.PI/4){
+            constB=this.rectSize.h/2;
+            return constB/Math.sin(angle);
+        }
+
+        if(angle>=-Math.PI/4 && angle < 0){
+            constB=this.rectSize.w/2;
+            return constB/Math.cos(angle);
+        }
+
+    },
     //根据直线斜率计算除开节点半径后的点位置
     pointPosByR(pixelStart,pixelEnd,distance){
         let detal=0;
@@ -367,12 +422,12 @@ export default {
             let x= Math.abs((pixelEnd.x-pixelStart.x)/lineW*distance);
             let y= Math.abs((pixelEnd.y-pixelStart.y)/lineW*distance);
                 //判断象限
-            if(pixelEnd.x<pixelStart.x && pixelEnd.y>pixelStart.y){//第一象限
+            if(pixelEnd.x<pixelStart.x && pixelEnd.y>pixelStart.y){//第二象限
                 arrowPoint.x=pixelEnd.x+x;
                 arrowPoint.y=pixelEnd.y-y;
 
             }
-            if(pixelEnd.x>pixelStart.x && pixelEnd.y>pixelStart.y){//第二象限
+            if(pixelEnd.x>pixelStart.x && pixelEnd.y>pixelStart.y){//第一象限
                 arrowPoint.x=pixelEnd.x-x;
                 arrowPoint.y=pixelEnd.y-y;
 
@@ -393,47 +448,53 @@ export default {
     getHistory(){
         this.$store.dispatch(GetShortPath).then(res=>{
             this.historyData=res.biz_body;
+            this.blnShowHistoryPop=this.historyData.length>0;
         });
     },
 
     //绑定当前显示任务数据
     bindDataListen(bindData){
+        //bindData.paths=[bindData.paths[0].splice(0,2)] //测试数据
+    
         let Rx=this.$store.getters.Rx;
         let startP={id:bindData.start_node.data_id,x:0,y:0,text:'条件1'};
         let endP={id:bindData.end_node.data_id,x:0,y:0,text:'条件2'};
 
         let obs = _.map(bindData.paths,path=>{
-        let lines=Rx.Observable.from(_.filter(path,p=>p.type=='line'));
-        let res = Rx.Observable.from([..._.filter(path,p=>p.type=='data'),endP]);
+            let lines=Rx.Observable.from(_.filter(path,p=>p.type=='line'));
+            let res = Rx.Observable.from([..._.filter(path,p=>p.type=='data'),endP]);
 
-        return resScan=res.scan((acc,one)=>{
-                let sp = acc.pop();
-                acc.push({
-                    "source": sp.id , "target": one.id 
-                });
-                acc.push(one);
+            return resScan=res.scan((acc,one)=>{
+                    let sp = acc.pop();
+                    acc.push({
+                        "source": sp.id , "target": one.id 
+                    });
+                    acc.push(one);
 
-                return acc;
-            },[startP]).map(v=>{
-                let data =_.filter(v,d=>d.source!=undefined);
-                return data[data.length-1];
-            }).zip(lines).map(v=>{
-                let d=v[0],l=v[1];
-                
-                d.dir=l.value =='->'?0:1;
+                    return acc;
+                },[startP]).map(v=>{
+                    let data =_.filter(v,d=>d.source!=undefined);
+                    return data[data.length-1];
+                }).zip(lines).map(v=>{
+                    let d=v[0],l=v[1];
+                    
+                    d.dir=l.value =='->'?0:1;
 
-                return d;
-            }).scan((acc,one)=>{
-                acc.push(one);
-                return acc;
-            },[]).last();
+                    return d;
+                }).scan((acc,one)=>{
+                    acc.push(one);
+                    return acc;
+                },[]).last();
         });
 
-        return Rx.Observable.combineLatest(...obs);
+        if(bindData.paths.length>0){
+            return Rx.Observable.combineLatest(...obs);
+        }else{
+            return Rx.Observable.combineLatest([[]],[[]]);
+        }
     },
     //刷新画布
     redraw(v){
-
         this.curTaskData.start_node.root=true;
         this.curTaskData.end_node.root=true;
         let startP={id:this.curTaskData.start_node.data_id,x:0,y:0,text:this.curTaskData.start_node.key};
@@ -448,13 +509,26 @@ export default {
 
         
         this.edges=_.flatten(v);
+
+        //判断起始节点是否需要连线
+        if(this.curTaskData.is_StartToEnd){
+            this.edges.push({"source": startP.id , "target": endP.id,dir:2,starttoend:true}); 
+        }
        
 
         this.simulation.nodes(this.points);
 
-        this.simulation.force("link").links(this.edges).distance(this.instances);
+        this.simulation.force("link").links(this.edges).distance((d)=>{
+            if(d.starttoend){
+                return (this.canvas.width - this.translate.x -250)*2;
+            }
+            
+            return this.instances;
+        });
 
         this.simulation.alphaTarget(0.3).restart();
+        
+    
     },
     //画节点描述信息
     drawText(p){
@@ -462,11 +536,27 @@ export default {
         let ctx=this.ctx;
         ctx.save();
         ctx.font="normal 12px 微软雅黑";
-        let rect={w:ctx.measureText(p.text).width,h:ctx.measureText('W').width};
+        let rectSize=this.rectSize;
 
-        ctx.fillStyle='black';
-        ctx.textBaseline='middle';
-        ctx.fillText(p.text,p.x-rect.w/2,p.y);
+        if(this.blnRect){
+            let rect={w:ctx.measureText(p.text).width,h:ctx.measureText('W').width};
+            ctx.fillStyle='white';
+            ctx.textBaseline='middle';
+            if(p.blnChild){
+                ctx.fillText(p.text,p.x-rectSize.w/2 + 10,p.y-rectSize.h/2+15);
+
+                ctx.fillStyle='black';
+                ctx.fillText(p.subText,p.x-rectSize.w/2 + 10,p.y-rectSize.h/2+15 + rect.h+20);
+            }else{
+                ctx.fillText(p.text,p.x-rect.w/2,p.y);
+            }
+        }else{
+            let rect={w:ctx.measureText(p.text+p.subText).width,h:ctx.measureText('W').width};
+            ctx.fillStyle='black';
+            ctx.textBaseline='middle';
+            ctx.fillText(p.text,p.x-rect.w/2,p.y);
+        }
+        
 
 
         this.ctx.restore();
@@ -483,7 +573,7 @@ export default {
             // res.biz_body.paths[0].push({type:'line',value:"->"});
             res.biz_body.paths=_.map(res.biz_body.paths,arr=>{
 
-                return _.map(arr,a=>{a.id=a._id;a.text=(a.account_type_note || a.key_type_note)+`(${a.key})`;return a;})
+                return _.map(arr,a=>{a.id=a._id;a.text=(a.account_type_note || a.key_type_note);a.subText=`${a.key}`;a.blnChild=true;return a;})
             });
 
             this.curTaskData=res.biz_body;
@@ -572,10 +662,20 @@ export default {
             dx = (x-s.transform.invertX(s.translate.x)) - point.x - s.canvas.offset().left;
             dy = (y-s.transform.invertY(s.translate.y)) - point.y;
 
-            
-            let radius =point.radius || s.radius;
-            if (dx * dx + dy * dy < radius * radius) {
-               res=point;break;
+            if(!s.blnRect){
+                let radius =point.radius || s.radius;
+                if (dx * dx + dy * dy < radius * radius) {
+                res=point;break;
+                }
+            }else{
+                //画节点路径(矩形)
+                let size=s.rectSize;
+                s.drawRadiusRect(point.x-size.w/2,point.y-size.h/2,size.w,size.h,10);
+                let cx =(x-s.transform.invertX(s.translate.x)) - s.canvas.offset().left;
+                let cy =(y-s.transform.invertY(s.translate.y));
+                if(s.ctx.isPointInPath(cx,cy)){
+                     res=point;break;
+                }
             }
         }
         return  res; 

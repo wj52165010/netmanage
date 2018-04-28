@@ -111,7 +111,7 @@
 import echarts from  'echarts'
 import Scroll from 'components/scroll'
 
-import {BODY_RESIZE,GetNation,GetAnalyTask,AddAnalyTask,GetVehicleChart,GetVehiclePersonList,GetVehicleTeam,DelTraceHistory} from '../store/mutation-types'
+import {BODY_RESIZE,GetNation,GetAnalyTask,AddAnalyTask,GetVehicleChart,GetVehiclePersonList,GetVehicleTeam,DelAnalyTask} from '../store/mutation-types'
 export default {
   name: 'ShipCar',
   components:{Scroll},
@@ -289,7 +289,7 @@ export default {
     //删除历史轨迹任务
     removeTask(id,i){
       tool.confirm('您确定要删除该任务吗?',['确定','取消'],()=>{
-          this.$store.dispatch(DelTraceHistory,id).then(res=>{
+          this.$store.dispatch(DelAnalyTask,id).then(res=>{
             if(!tool.msg(res,'删除成功!','删除失败!')) return;
 
             this.historyData.splice(i,1);
@@ -336,7 +336,7 @@ export default {
                             <th style="width:120px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">车次/座位</div></th>
                             <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">到达时间</div></th>
                             <th :style="{width:w+'px'}" style="border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">到达地</div></th>
-                            <th style="width:200px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:200px;" class="divEllipsis">最近出现场所及时间</div></th>
+                            <th style="width:400px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:400px;" class="divEllipsis">最近出现场所及时间</div></th>
                             <th style="width:80px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">已关注</div></th>
                         </tr></thead>
                     </table>
@@ -351,8 +351,8 @@ export default {
                             <td style="width:120px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:120px;" class="divEllipsis">{{d.train_no}}/{{d.seat}}</div></td>
                             <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">{{converTime(d.time)}}</div></td>
                             <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">{{d.to.country}}{{d.to.county}}{{d.to.station}}</div></td>
-                            <td style="width:200px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:200px;" class="divEllipsis">{{d.net_wacode_note || '无'}}/{{converTime(d.online)}}</div></td>
-                            <td style="width:80px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis">{{d.focus?'是':'否'}}</div></td>
+                            <td style="width:400px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:400px;" class="divEllipsis">{{d.netbar_wacode_note || '无'}}/{{converTime(d.online)}}</div></td>
+                            <td style="width:80px;border-top:0px;border-right:1px solid #ddd;" class="text-center"><div style="width:80px;" class="divEllipsis" :style="{color:d.focus?'red':'white'}">{{d.focus?'是':'否'}}</div></td>
                         </tr></tbody>
                     </table>
                     </Scroll>
@@ -401,7 +401,7 @@ export default {
               },
             },
             success(layero){
-                param.selfData.w=layero.width()-1120;
+                param.selfData.w=layero.width()-1320;
 
                 param.selfData.pageChange(0);
             }

@@ -487,33 +487,34 @@ export default {
     },
     //中间列表项单击事件
     infoClick(d){
-      if(this.showMapIndex!==4) return;
+      this.showMapIndex=4;
+      this.$nextTick(()=>{
+        let mask= _.find(this.sepPersonMarsk,p=>{
+          return p.point.lat==d.equipment_latitude && p.point.lng==d.equipment_longitude;
+        });
 
-      let mask= _.find(this.sepPersonMarsk,p=>{
-        return p.point.lat==d.equipment_latitude && p.point.lng==d.equipment_longitude;
+        _.each(this.labels,l=>{
+          this.map.removeOverlay(l);
+        });
+        _.each(this.sepPersonMarsk,p=>{
+          p.setAnimation(null)
+        });
+    
+        this.map.panTo(mask.point);
+        // var label= new BMap.Label('<div><i class="fa fa-check-circle" style="color:green;font-size:30px;"></i></dvi>',{offset:new BMap.Size(-5, -30)});
+        // label.setStyle({
+        // fontSize : "12px",
+        // lineHeight : "20px",
+        // fontFamily:"微软雅黑",
+        // fontWeight:'600',
+        // border:'0px solid black',
+        // 'background-color':'transparent',
+        // 'max-width':'none'
+        // });
+        // mask.setLabel(label);
+        mask.setAnimation(BMAP_ANIMATION_BOUNCE);
+        //this.labels.push(label);
       });
-
-      _.each(this.labels,l=>{
-        this.map.removeOverlay(l);
-      });
-      _.each(this.sepPersonMarsk,p=>{
-        p.setAnimation(BMAP_ANIMATION_BOUNCE)
-      });
-  
-      this.map.panTo(mask.point);
-      var label= new BMap.Label('<div><i class="fa fa-check-circle" style="color:green;font-size:30px;"></i></dvi>',{offset:new BMap.Size(-5, -30)});
-      label.setStyle({
-      fontSize : "12px",
-      lineHeight : "20px",
-      fontFamily:"微软雅黑",
-      fontWeight:'600',
-      border:'0px solid black',
-      'background-color':'transparent',
-      'max-width':'none'
-      });
-      mask.setLabel(label);
-      mask.setAnimation(null);
-      this.labels.push(label);
   
     },
     //热力鼠标移动到点上的提示信息

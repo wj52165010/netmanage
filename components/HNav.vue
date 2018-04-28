@@ -102,6 +102,7 @@ export default {
     menu_del(menu,index){
       let menus=this.menu,itemIndex=-1,self=this,activeItem=menus[self.curIndex];
       this.mouseleave();
+      this.blnShowTip=false;
 
       for(let i=0;i<menus.length;i++){
         if(menu.id==menus[i].id){itemIndex=i;break;}
