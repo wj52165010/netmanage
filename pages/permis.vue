@@ -244,6 +244,7 @@ export default {
                             self.$store.dispatch(AddGroup,data).then(res=>{
                                if(!tool.msg(res,'添加用户组成功!','添加用户组失败!')){return}
                                 data.user_group_id=res.biz_body.user_group_id;
+                                data.create_time=parseInt(tool.Timestamp(new Date()))*1000;
                                 self.data.unshift(data);
                             })
                            
