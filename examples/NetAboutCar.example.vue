@@ -161,7 +161,7 @@
 import echarts from  'echarts/lib/echarts'
 import 'echarts/lib/chart/pie'
 import 'echarts/lib/chart/line'
-import 'echarts/lib/component/legend'
+import 'echarts/lib/component/tooltip'
 
 import Scroll from 'components/scroll'
 import HeatMap from './Home.HeatMap.js'
@@ -327,12 +327,6 @@ export default {
 
           let option={
             color:['#85c226','#f8c301','#728499'],
-            // legend: {
-            //     orient: 'vertical',
-            //     left: 'left',
-            //     data: keys,
-            //     textStyle:{color:'white'}
-            // },
             tooltip : {
                 trigger: 'item',
                 formatter: "{b} : {c} ({d}%)"
@@ -737,7 +731,7 @@ export default {
 
   .NetAboutCar .right_container .content .item .child_item{margin-bottom:5px;}
 
-  .NetAboutCar .right_container .content .item .chart_container{width:100%;height:260px;}
+  .NetAboutCar .right_container .content .item .chart_container{width:100%;height:280px;}
 
   
     //左边侧边框

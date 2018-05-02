@@ -265,6 +265,8 @@ import Scroll from 'components/scroll'
 import AttenType from '../enum/AttenType'
 import cInput from 'components/Input'
 import MulSelect from 'components/MulSelect'
+import ScaleBar from 'components/scaleBar'
+
 import '../../static/jquery-file-upload/jquery.ui.widget.js'
 import '../../static/jquery-file-upload/jquery.iframe-transport.js'
 import '../../static/jquery-file-upload/jquery.fileupload.js'
@@ -532,18 +534,30 @@ export default {
       },
       //显示报警地址地图信息
       showPlace(d){
+        let s=this;
         tool.open(function(){
-            let html=`<div name="container" style="width:100%;height:100%;"></div>`;
+            let html=`<div  style="width:100%;height:100%;position:relative;">
+                        <div name="map_container" style="width:100%;height:100%;"></div>
+                        <div style="position:absolute;top:10px;left:10px;">
+                            <ScaleBar :start="13" :end="18" @change="zoomChange" ref="scaleBar" />
+                        </div>
+                      </div>`;
             let param={
                     title:'位置信息',
                     content:html,
                     area:['800px','400px'],
+                    components:{ScaleBar},
+                    store:s.$store,
                     context:{
-
+                        map:null,
+                        zoomChange(zoom){
+                            param.selfData.map.setZoom(zoom);
+                        }
                     },
                     success(layero){
-                        let mapEl=layero.find('div[name="container"]');
+                        let mapEl=layero.find('div[name="map_container"]');
                         let map = new BMap.Map(mapEl[0],{minZoom:13,maxZoom:18});
+                        param.selfData.map=map;
                         let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
                         var point =new BMap.Point(d.equipment_longitude || centerPoint[0] || 0,d.equipment_latitude || centerPoint[1] || 0);
 
@@ -580,6 +594,12 @@ export default {
                             'max-width':'none'
                         });
                         map.addOverlay(label);
+
+                        //添加地图层级改变事件
+                        map.addEventListener('zoomend',(e)=>{
+                            var zoom=map.getZoom();
+                            param.$refs.scaleBar.setVal(zoom);
+                        });
                     }
                 };
 

@@ -217,6 +217,7 @@ import Vue from 'vue'
 import HTag from 'components/HTag'
 import PlaceSearch from 'components/PlaceSearch'
 import Scroll from 'components/scroll'
+import ScaleBar from 'components/scaleBar'
 import {BODY_RESIZE,GetCertificateType,CCICPoliceData,CCICGetPerson,CCICAddPerson,GetMatchMode,CCICDelPerson} from '../store/mutation-types'
 import InputDir from 'components/Input'
 import MaskInput from 'components/maskInput'
@@ -323,17 +324,31 @@ export default {
       //场所地址字段单击事件
       placeClick(d){
           if(!d.equipment_latitude || !d.equipment_longitude){return;}
+          let s=this;
           tool.open(function(){
-              let html=``;
+              let html=`
+                <div name="map_container" style="width:100%;height:100%;"></div>
+                <div style="position:absolute;top:10px;left:10px;">
+                    <ScaleBar :start="13" :end="18" @change="zoomChange" ref="scaleBar" />
+                </div>
+              `;
 
               let param={
                 title:'位置信息',
                 area:['800px','400px'],
-                content:`<div name="map_container" style="width:100%;height:400px;">${html}</div>`,
-                context:{},
+                content:`<div name="map_container_pop" style="width:100%;height:400px;position:relative;">${html}</div>`,
+                components:{ScaleBar},
+                store:s.$store,
+                context:{
+                    map:null,
+                    zoomChange(zoom){
+                        param.selfData.map.setZoom(zoom);
+                    }
+                },
                 success(layero){
 
                     let map =  new BMap.Map(layero.find('div[name="map_container"]')[0],{minZoom:13,maxZoom:18});
+                    param.selfData.map=map;
                     map.centerAndZoom(new BMap.Point(d.equipment_longitude,d.equipment_latitude),7);//重庆中心点
                     map.enableScrollWheelZoom(true);
 
@@ -365,6 +380,12 @@ export default {
                         'max-width':'none'
                     });
                     map.addOverlay(label);
+
+                    //添加地图层级改变事件
+                    map.addEventListener('zoomend',(e)=>{
+                        var zoom=map.getZoom();
+                        param.$refs.scaleBar.setVal(zoom);
+                    });
                 }
               }
 
