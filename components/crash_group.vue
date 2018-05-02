@@ -18,11 +18,11 @@
             <div class="condGroup_item" style="position:absolute;background-color:transparent;width:100%;height:9px;top:-30px">
                 <div class="info"></div>
                 <div class="option_bar" style="border:none;">
-                    <div class="option_item" v-for="(g,key) in group[0].val" style="background-color:transparent;text-align:center;padding:0px;font-weight:600;">{{key.substr(0,1)}}</div>
+                    <div class="option_item" v-for="(g,key) in group[0].val" style="background-color:transparent;text-align:center;padding:0px;font-weight:600;"><el-tooltip placement="top" :content="`分组${key.substr(0,1)}`">{{key.substr(0,1)}}</el-tooltip></div>
                 </div>
             </div>
             <div class="condGroup_item" v-for="(v,i) in group">
-                <div class="info">{{v.name}}</div>
+                <div class="info"><el-tooltip placement="top" :content="v.tip">{{v.name}}</el-tooltip></div>
                     
                 <div class="option_bar">
                     <div class="option_item" name="dragIn" :dataT="key" @mousedown="mousedown($event,item,key)" v-for="(item,key) in v.val">
@@ -77,9 +77,9 @@ export default {
         D:'#ff7733'
       },
       group:[
-        {name:'U',type:'join',val:{B1:[],C1:[],D1:[]}},
-        {name:'N',type:'union',val:{B2:[],C2:[],D2:[]}},
-        {name:'一',type:'except',val:{B3:[],C3:[],D3:[]}},
+        {name:'U',tip:'交集',type:'join',val:{B1:[],C1:[],D1:[]}},
+        {name:'N',tip:'并集',type:'union',val:{B2:[],C2:[],D2:[]}},
+        {name:'一',tip:'差集',type:'except',val:{B3:[],C3:[],D3:[]}},
       ],
       //conds:[{id:0},{id:1},{id:2}],
       dragInDoms:null,

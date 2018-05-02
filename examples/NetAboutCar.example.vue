@@ -4,6 +4,11 @@
         <!--地图容器-->
         <div class="map" :id="mapid"></div>
 
+        <!--中间地图伸缩尺-->
+        <div class="scaleContainer" :style="{left:blnShowHistoryPop?'300px':'0px'}">
+            <ScaleBar :start="13" :end="18" @change="zoomChange" ref="scaleBar" />
+        </div>
+
         <!--左边侧边框-->
         <div class="left_pop bound" :class="{active:blnShowHistoryPop}">
           <!--显示标签-->
@@ -81,7 +86,14 @@
                 <div class="item">
                   <div class="child_item">
                     <span class="item_title">积累人数</span>
-                    <span class="item_icon"><i class="fa fa-line-chart" @click="LookLine('day')"></i><i class="fa fa-navicon" @click="lookPersonList()"></i></span>
+                    <span class="item_icon">
+                      <el-tooltip placement="top" content="统计图">
+                        <i class="fa fa-line-chart" @click="LookLine('day')"></i>
+                      </el-tooltip>
+                      <el-tooltip placement="top" content="列表信息">
+                        <i class="fa fa-navicon" @click="lookPersonList()"></i>
+                      </el-tooltip>
+                    </span>
                     <span class="item_number">{{detailData.totlePerson}}人</span>
                   </div>
                 </div>
@@ -89,7 +101,14 @@
                 <div class="item" v-if="detailData.fromplaceTop.length>0">
                   <div class="child_item">
                     <span class="item_title" style="font-size:14px;">乘车地址top</span>
-                    <span class="item_icon"><i class="fa fa-bullseye" @click="lookHeart(1)"></i><i class="fa fa-navicon" @click="lookList(1)"></i></span>
+                    <span class="item_icon">
+                      <el-tooltip placement="top" content="热点图">
+                        <i class="fa fa-bullseye" @click="lookHeart(1)"></i>
+                      </el-tooltip>
+                      <el-tooltip placement="top" content="列表信息">
+                        <i class="fa fa-navicon" @click="lookList(1)"></i>
+                      </el-tooltip>
+                    </span>
                   </div>
                   <div class="child_item" v-for="v in detailData.fromplaceTop">
                     <span class="item_title divEllipsis" :title="v.address">{{v.address}}</span>
@@ -101,7 +120,14 @@
                 <div class="item" v-if="detailData.toplaceTop.length>0">
                   <div class="child_item">
                     <span class="item_title" style="font-size:14px;">目的地top</span>
-                    <span class="item_icon"><i class="fa fa-bullseye" @click="lookHeart()"></i><i class="fa fa-navicon" @click="lookList()"></i></span>
+                    <span class="item_icon">
+                      <el-tooltip placement="top" content="热点图">
+                        <i class="fa fa-bullseye" @click="lookHeart()"></i>
+                      </el-tooltip>
+                      <el-tooltip placement="top" content="列表信息">
+                        <i class="fa fa-navicon" @click="lookList()"></i>
+                      </el-tooltip>
+                    </span>
                   </div>
                   <div class="child_item" v-for="v in detailData.toplaceTop">
                     <span class="item_title divEllipsis" :title="v.address">{{v.address}}</span>
@@ -114,7 +140,11 @@
                 <div class="item" v-for="d in data">
                   <div class="child_item">
                     <span class="item_title divEllipsis" style="font-size:14px;">{{d.name}}</span>
-                    <span class="item_icon"><i class="fa fa-navicon" @click="lookArea(d)"></i></span>
+                    <span class="item_icon">
+                      <el-tooltip placement="top" content="列表信息">
+                        <i class="fa fa-navicon" @click="lookArea(d)"></i>
+                      </el-tooltip>
+                    </span>
                   </div>
                   <!--图表显示容器-->
                   <div class="chart_container" :id="d.id"></div>
@@ -135,6 +165,7 @@ import 'echarts/lib/component/legend'
 
 import Scroll from 'components/scroll'
 import HeatMap from './Home.HeatMap.js'
+import ScaleBar from 'components/scaleBar'
 
 import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,DelAnalyTask,
         GetCarhailingChart,GetCarhailingPersonList,GetCarhailingFromplaceList,GetCarhailingToplaceList} from '../store/mutation-types'
@@ -142,7 +173,7 @@ import {AddAnalyTask,GetAnalyTraceTask,GetAnalyTask,GetAnalyTaskData,DelAnalyTas
 
 export default {
   name: 'NetAboutCar',
-  components:{Scroll},
+  components:{Scroll,ScaleBar},
   data () {
     return {
       mapid:'map'+tool.guid(),
@@ -203,6 +234,12 @@ export default {
       let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
       this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);
       this.map.enableScrollWheelZoom(true);
+
+      //添加地图层级改变事件
+      this.map.addEventListener('zoomend',(e)=>{
+          var zoom=this.map.getZoom();
+          this.$refs.scaleBar.setVal(zoom);
+      });
     },
     search(){
       if(this.timeRange.length<=0){return tool.info('时间范围必填!');}
@@ -646,6 +683,10 @@ export default {
     converTime(t,format){
       return tool.DateByTimestamp(t,format || 'yyyy-MM-dd hh:mm:ss');
     },
+    zoomChange(zoom){
+      if(!this.map)return;
+      this.map.setZoom(zoom);
+    }
   }
 }
 </script>
@@ -668,6 +709,9 @@ export default {
  @import "../css/variables.less";
  .NetAboutCar{width:100%;height:100%;position:relative;}
  .NetAboutCar .map{width:100%;height:100%;}
+ .NetAboutCar .scaleContainer{
+    position:absolute;top:90px;left:0px;z-index: 1000;
+  }
 
  @bgColor:fade(@HeaderBgCol,90%);
  @rightContainerW:300px;

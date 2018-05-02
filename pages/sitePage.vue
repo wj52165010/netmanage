@@ -283,7 +283,7 @@ export default {
                     netbar_name:r.netbar_name,
                     netbar_address:r.netbar_address,
                     online_state:r.online_state,
-                    capture_time:r.capture_time?tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'',
+                    capture_time:(r.capture_time&&r.capture_time!='0') ? tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'无',
                     business_state:r.business_state,
                     last_upload_num:r.last_upload_num,
                     longitude:r.longitude,
@@ -922,7 +922,7 @@ export default {
                                     if(res.msg.code!='successed')return;
                                     param.selfData.detaillnLoading=false;
                                     param.selfData.detailData=res.biz_body;
-                                    param.selfData.detailData.capture_time = param.selfData.detailData.capture_time ? tool.DateByTimestamp(param.selfData.detailData.capture_time,'yyyy-MM-dd hh:mm:ss'):'';
+                                    param.selfData.detailData.capture_time = (param.selfData.detailData.capture_time && param.selfData.detailData.capture_time!='0') ? tool.DateByTimestamp(param.selfData.detailData.capture_time,'yyyy-MM-dd hh:mm:ss'):'无';
                                 });
                             }
                         },
@@ -996,7 +996,7 @@ export default {
                                     param.selfData.DeviceblnLoading=false;
                                     param.selfData.deviceData= res.biz_body;
                                     for( let ary of param.selfData.deviceData){
-                                       ary.capture_time=ary.capture_time ? tool.DateByTimestamp(ary.capture_time,'yyyy-MM-dd hh:mm:ss'):"";
+                                       ary.capture_time=(ary.capture_time&&ary.capture_time!='0') ? tool.DateByTimestamp(ary.capture_time,'yyyy-MM-dd hh:mm:ss'):"无";
                                    };
 
                                 });
@@ -1066,7 +1066,7 @@ export default {
                                     param.selfData.DeviceblnLoading=false;
                                     param.selfData.deviceData= res.biz_body;
                                     for( let ary of param.selfData.deviceData){
-                                       ary.capture_time=ary.capture_time ? tool.DateByTimestamp(ary.capture_time,'yyyy-MM-dd hh:mm:ss'):"";
+                                       ary.capture_time=(ary.capture_time&&ary.capture_time!='0') ? tool.DateByTimestamp(ary.capture_time,'yyyy-MM-dd hh:mm:ss'):"无";
                                    };
 
                                 });

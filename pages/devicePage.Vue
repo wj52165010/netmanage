@@ -332,7 +332,7 @@ export default {
                     equipment_name:r.equipment_name,
                     mac:r.mac,
                     online_state:r.online_state,
-                    capture_time:r.capture_time ? tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'',
+                    capture_time:(r.capture_time&&r.capture_time!='0') ? tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'无',
                     last_upload_num:r.last_upload_num,
                     equipment_type:r.equipment_type,
                     county:r.county,
@@ -866,7 +866,7 @@ export default {
                                 self.$store.dispatch(DeviceDetail,{equipment_id:siteId}).then(res=>{
                                     if(res.msg.code!='successed')return;
                                     param.selfData.detailData=res.biz_body;
-                                    param.selfData.detailData.capture_time = param.selfData.detailData.capture_time ? tool.DateByTimestamp(param.selfData.detailData.capture_time,'yyyy-MM-dd hh:mm:ss'):'';
+                                    param.selfData.detailData.capture_time = (param.selfData.detailData.capture_time&&param.selfData.detailData.capture_time!='0') ? tool.DateByTimestamp(param.selfData.detailData.capture_time,'yyyy-MM-dd hh:mm:ss'):'无';
                                 });
                             }
                         },
@@ -1000,7 +1000,7 @@ export default {
 }
 </script>
 <style lang="less">
-    /* 场所详情样式*/
+    /* 设备详情样式*/
    .device-detail-container .layui-layer-title{
         background-color: #03ab67;
         font-weight: 700;

@@ -164,7 +164,6 @@ export default {
       },
       //新增人员
       addPerson(valup){
-          console.log(tool.Clone(valup));
           let self=this;
           tool.open(function(){
 

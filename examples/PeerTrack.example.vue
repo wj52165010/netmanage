@@ -51,10 +51,11 @@ import Scroll from 'components/scroll'
 import TimePlayer from 'components/TimePlayer'
 import PointPlayer from 'components/PointPlayer'
 import BaiduHelper from '../helper/BaiduHelper'
+import ScaleBar from 'components/scaleBar'
 export default {
   name: 'PeerTrack',
   props:['taskid'],
-  components:{Scroll,TimePlayer,PointPlayer},
+  components:{Scroll,TimePlayer,PointPlayer,ScaleBar},
   data () {
     return {
        id:'map'+tool.guid(),

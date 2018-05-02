@@ -21,8 +21,16 @@
               <div class="bar">
                 <span class="label">场所总数 {{countData.place.total}}</span>
                 <span class="icon">
-                  <div class="circlebg"><i class="fa fa-home"></i></div>
-                  <div class="circlebg"><i class="fa fa-laptop"></i></div>
+                  <div class="circlebg">
+                    <el-tooltip placement="top" content="场所在离线情况">
+                      <i class="fa fa-home" @click="showMapIndex=0"></i>
+                    </el-tooltip>
+                  </div>
+                  <div class="circlebg">
+                    <el-tooltip placement="top" content="区域在离线情况">
+                      <i class="fa fa-laptop" @click="showMapIndex=1"></i>
+                    </el-tooltip>
+                  </div>
                 </span>
               </div>
               <div class="info">
@@ -41,7 +49,9 @@
               <div class="bar">
                 <span class="label">设备总数 {{countData.equipment.total}}</span>
                 <span class="icon">
-                  <i class="fa fa-support"></i>
+                  <el-tooltip placement="top" content="设备在离线情况">
+                    <i class="fa fa-support" @click="showMapIndex=2"></i>
+                  </el-tooltip>
                 </span>
               </div>
               <div class="info">
@@ -71,7 +81,9 @@
               <div class="bar">
                 <span class="label">特定人员 {{countData.iden.total}}</span>
                 <span class="icon">
-                  <i class="fa fa-bell-o"></i>
+                  <el-tooltip placement="top" content="特定人员报警点">
+                    <i class="fa fa-bell-o" @click="showMapIndex=4"></i>
+                  </el-tooltip>
                 </span>
               </div>
               <div class="info">
@@ -414,11 +426,15 @@ export default {
 
       //添加地图层级改变事件
       this.map.addEventListener('zoomend',(e)=>{
+          var zoom=this.map.getZoom();
+          this.$refs.scaleBar.setVal(zoom);
           if(this.showMapIndex==0){
             this.blnLoading=true;
             this.pp.AddMarker().then(()=>{this.blnLoading=false;});
           }
       });
+
+      
     },
     initData(){
       //获取场所在离线信息
@@ -674,7 +690,7 @@ export default {
   .Home .right_container .top_show .content .item .bar .label,
   .Home .left_container .content .item .bar .label{font-size:14px;line-height:@InfoLineH;padding:0px;}
   .Home .right_container .top_show .content .item .bar .icon,
-  .Home .left_container .content .item .bar .icon{float:right;margin-top:5px;}
+  .Home .left_container .content .item .bar .icon{float:right;margin-top:5px;cursor:pointer;}
 
   .Home .navpop .item:hover .circlebg i,
   .Home .navpop .item:hover{cursor:pointer;color:@Font_Hover_Col;}

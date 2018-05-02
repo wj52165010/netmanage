@@ -60,7 +60,7 @@ Vue.component('firmPage',(resolve)=>{require(['./pages/firmPage'],resolve)});//�
 Vue.component('areaPage',(resolve)=>{require(['./pages/areaPage'],resolve)});//区域管理定制版页面
 Vue.component('mobileAppPage',(resolve)=>{require(['./pages/mobileAppPage'],resolve)});//手机App管控定制版页面
 Vue.component('WebSiteRecordPage',(resolve)=>{require(['./pages/WebSiteRecordPage'],resolve)});//网站备案定制版页面 
-Vue.component('hotspotPage',(resolve)=>{require(['./pages/hotspotPage'],resolve)});//网站备案定制版页面 
+Vue.component('hotspotPage',(resolve)=>{require(['./pages/hotspotPage'],resolve)});//热点备案定制版页面 
 Vue.component('staticCheckPage',(resolve)=>{require(['./pages/staticCheckPage'],resolve)});//统计考核页面
 
 

@@ -327,8 +327,8 @@ export default {
               let html=``;
 
               let param={
-                title:'显示位置',
-                area:'600px',
+                title:'位置信息',
+                area:['800px','400px'],
                 content:`<div name="map_container" style="width:100%;height:400px;">${html}</div>`,
                 context:{},
                 success(layero){

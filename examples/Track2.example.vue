@@ -4,6 +4,11 @@
       <!--地图容器-->
       <div :id="id" class="map"></div>
 
+      <!--中间地图伸缩尺-->
+      <div class="scaleContainer" :style="{left:blnShowHistoryPop?'300px':'0px'}">
+          <ScaleBar :start="13" :end="18" @change="zoomChange" ref="scaleBar" />
+      </div>
+
       <!--左边侧边框-->
       <div class="left_pop bound" :class="{active:blnShowHistoryPop}">
           <!--显示标签-->
@@ -238,11 +243,12 @@ import SearchDropdown from 'components/SearchDropdown'
 import PlaceSearch from '../components/PlaceSearch'
 import BaiduHelper from '../helper/BaiduHelper'
 import HeatMap from './Home.HeatMap.js'
+import ScaleBar from 'components/scaleBar'
 import {BODY_RESIZE,AnalyTraceTask,AnalyTraceHistory,DelTraceHistory,GetAnalyTraceTask,MapDataRange} from '../store/mutation-types'
 
 export default {
   name: 'Track',
-  components:{PointPlayer,Scroll,SearchDropdown,PlaceSearch},
+  components:{PointPlayer,Scroll,SearchDropdown,PlaceSearch,ScaleBar},
   props:['searchVal','defTimeRange'],
   data () {
     return {
@@ -337,7 +343,6 @@ export default {
       if(this.detailInfo){
         setTimeout(()=>{
           this.$refs.detailScroll.reloadyScroll();
-          console.log(2);
         },100);
       }
     }
@@ -391,6 +396,12 @@ export default {
       let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
       this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);
       this.map.enableScrollWheelZoom(true);
+
+      //添加地图层级改变事件
+      this.map.addEventListener('zoomend',(e)=>{
+          var zoom=this.map.getZoom();
+          this.$refs.scaleBar.setVal(zoom);
+      });
     },
     //初始化范围地图
     initRangeMap(){
@@ -811,6 +822,10 @@ export default {
       }
 
       return res;
+    },
+    zoomChange(zoom){
+      if(!this.map)return;
+      this.map.setZoom(zoom);
     }
   }
 }
@@ -820,6 +835,10 @@ export default {
   @import "../css/variables.less";
   .Track{width:100%;height:100%;}
   .Track .map{width:100%;height:100%;}
+
+  .Track .scaleContainer{
+    position:absolute;top:90px;left:0px;z-index: 1000;
+  }
 
   @rightW:300px;
   .Track .left_container{
