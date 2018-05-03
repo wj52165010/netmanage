@@ -102,7 +102,8 @@ export default {
         this.simulation.alphaTarget(0.3).restart();
     },
     curTaskData(){
-       
+       if(!this.curTaskData.start_node){ tool.info('没有相关数据!'); return ;}
+
        this.bindDataListen(this.curTaskData).subscribe(v=>{
            this.dataSubject.next(v);
        });
@@ -614,6 +615,7 @@ export default {
     },
     search(){
        if(!this.keyOne || !this.keyTwo){tool.info('关键字必填!'); return;}
+       if(this.keyOne == this.keyTwo){tool.info('关键字不能一样!');return;}
 
        this.blnLoading=true;
        this.$store.dispatch(AddShortPath,{
