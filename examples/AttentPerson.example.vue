@@ -1,6 +1,6 @@
 <!-- 关注人员例子页面组件 -->
 <template>
-    <div class="AttentPerson">
+    <div class="AttentPerson" :class="{unSelect:blnbatch}">
         <!--加载中标识-->
         <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index:100;">
             <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;"><i class="fa fa-spinner fa-pulse" style="color:#98e32c;"></i></div></div>
@@ -161,7 +161,11 @@ export default {
         components:{Scroll},
         props:['data'],
         template:`<div class="detailInfo">
-                    <div class="info_item" v-for="(d,i) in data.focus_property">{{d.t_note}}:&nbsp;&nbsp;{{d.k}} <i class="fa fa-recycle del" @click="del(d,i)"></i></div>
+                    <div class="info_item" v-for="(d,i) in data.focus_property">{{d.t_note}}:&nbsp;&nbsp;{{d.k}} 
+                        <el-tooltip  effect="light" content="删除" placement="top" style="float:right;margin-top:2px;">
+                            <i class="fa fa-remove del" @click="del(d,i)"></i>
+                        </el-tooltip>
+                    </div>
 
                     <div class="info_item">
                         <div class="inputDropDown">
@@ -246,14 +250,16 @@ export default {
                 this.vidTypeVal=t.value;
             },
             del(d,index){
-                this.$store.dispatch(DelFocusPersonProperty,{
-                    focus_id:this.data.focus_id,
-                    focus_property_item:d,
-                }).then(res=>{
-                  if(!tool.msg(res,'删除成功！')) return;
-                  this.data.focus_property.splice(index,1);
-
-                });
+                tool.confirm('确定要删除该特征信息吗?',['确定','取消'],()=>{
+                    this.$store.dispatch(DelFocusPersonProperty,{
+                        focus_id:this.data.focus_id,
+                        focus_property_item:d,
+                    }).then(res=>{
+                        if(!tool.msg(res,'删除成功！')) return;
+                        this.data.focus_property.splice(index,1);
+                    });
+                    
+                },function(){});
             },
             add(){
               
@@ -1095,7 +1101,7 @@ export default {
 </script>
 <style lang="less">
     @import "../css/variables.less";
-    .AttentPerson{
+    .AttentPerson.unSelect{
         -webkit-user-select:none;
         -moz-user-select:none;
         -ms-user-select:none;

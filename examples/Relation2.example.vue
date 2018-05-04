@@ -61,6 +61,7 @@ export default {
       iconWarn:null,//警告图标
       iconWarnYellow:null,//黄色警告
       iconLoading:null,//加载中图标
+      iconPaste:null,//粘贴图标
       searchKey:'',//搜索关键字
       serachInfo:{color:'gray',val:'',code:''},//搜索类型提示信息
       showTypes:['cert','mac','mobile','vid','start'],//当前显示的类型
@@ -71,7 +72,7 @@ export default {
           'vid':{color:'#b37d47',name:'虚拟身份',icon:'fa fa-square'},
           'start':{color:'#e74c3c',name:'起点',icon:'fa fa-star'}
       },
-      rectSize:{h:70,w:145},
+      rectSize:{h:70,w:165},
       opionH:30,//操作栏高度
       opionSpace:20,//操作栏之间的间隔
       roundRadius:10,//矩形圆角弧度
@@ -150,6 +151,8 @@ export default {
     this.iconWarnYellow.src="static/icons-warn-yellow.png";
     this.iconLoading=new Image();
     this.iconLoading.src='static/Loading6.gif';
+    this.iconPaste=new Image();
+    this.iconPaste.src='static/icons-paste.png';
 
     this.tipDom=$(this.$el).find(`div[id="${this.tipId}"]`);
 
@@ -340,6 +343,9 @@ export default {
         ctx.font="12px 微软雅黑";
         let rectOne={w:ctx.measureText(p.subTextOne).width,h:ctx.measureText('W').width};
         ctx.fillText(p.subTextOne,p.x-size.w/2+10,p.y-size.h/2+15+rect.h+10);
+
+        //画复制粘贴按钮
+        this.drawOption(p.x-size.w/2+10 + rectOne.w +20,p.y-size.h/2+15+rect.h+12,this.iconPaste);//画警告路径
 
         if(p.subTextTwo){
             ctx.font="12px 微软雅黑";
@@ -795,8 +801,8 @@ export default {
                 point.arcIndex=index;
 
                 //判断鼠标是否进入警告图标
+                let size=s.rectSize;
                 if(point.isOver || point.isNone){
-                    let size=s.rectSize;
                     s.drawOption(point.x+size.w/2-15,point.y-size.h/2 +15);//画警告路径
                     if(s.ctx.isPointInPath(pos.x,pos.y)) {
                         let tipW = s.tipDom.width();
@@ -809,6 +815,21 @@ export default {
                         s.tipLeft=-1000;
                         s.curShowTipId='';
                     }
+                }
+
+                //判断是否进入复制图标
+                let rectOne={w:s.ctx.measureText(point.subTextOne).width,h:s.ctx.measureText('W').width};
+                s.drawOption(point.x-size.w/2+10 + rectOne.w +20,point.y-size.h/2+15+rectOne.h+12);//画警告路径
+                if(s.ctx.isPointInPath(pos.x,pos.y)){
+                    let tipW = s.tipDom.width();
+                    s.tipTop=pos.py-size.h/2-10;
+                    s.tipLeft=pos.px-size.w/2+10 + rectOne.w +5;
+                    s.curShowTipId=point.id;
+                    s.tipInfo='复制';
+                }else if(s.curShowTipId == point.id){
+                    s.tipTop=-1000;
+                    s.tipLeft=-1000;
+                    s.curShowTipId='';
                 }
                 
 
@@ -898,6 +919,9 @@ export default {
                         // clickP.x=clickP.fy;
                         clickP.fx=null;
                         clickP.fy=null;
+                        break;
+                    case 3://复制
+                        console.log(navigator.clipboard);
                         break;
                 }
             }
@@ -1025,6 +1049,13 @@ export default {
         s.drawOption(p.x+size.w/2-15,p.y+size.h/2-10);//画展定位按钮
         if(s.ctx.isPointInPath(x,y)) {
             res=true;index=2;
+        }
+
+        //判断是否进入复制图标
+        let rectOne={w:s.ctx.measureText(point.subTextOne).width,h:s.ctx.measureText('W').width};
+        s.drawOption(point.x-size.w/2+10 + rectOne.w +20,point.y-size.h/2+15+rectOne.h+12);//画警告路径
+        if(s.ctx.isPointInPath(x,y)){
+            res=true;index=3;
         }
 
         return {flag:res,index:index,p};
