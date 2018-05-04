@@ -135,14 +135,18 @@
                 <MapSite :blnInit="true" :data="newObject" :showData="showData" :isSite="true"/>
             </div> -->
             <!--统计图表显示区域-->
-            <div class="chart_container" v-show="viewTable=='statistics'">
+            <div class="chart_container" v-show="viewTable=='statistics'" style="height: calc(100% - 30px);width:100%;position:relative">
                 <!--扇形图（昨日状况）-->
-                <div name="pie_chart_container" class="" style="width:500px;height:370px;margin:0 20px;display:inline-block" ></div>
+                <div style="width:30%;height:50%;display:inline-block">
+                     <div name="pie_chart_container" class="" style="width:100%;height:100%;text-align:left"></div>
+                </div>               
                 <!--柱状图(问题总览)-->
-                <div name="bar_chart_container" style="height:370px;display:inline-block" :style="{ width: elWidth-600+'px' }"></div>
+                <div style="width:67%;height:50%;display:inline-block" >
+                    <div name="bar_chart_container" style="width:100%%;height:100%;" ></div>
+                </div>
                 <!--线形图（在离线率）-->
-                <div name="line_chart_container" style="width:100%;height:400px;display:inline-block">
-                     <div class="his-row">
+                <div name="line_chart_container" style="width:95%;height:50%;display:inline-block;margin:0 auto">
+                     <div class="his-row" style="height:13%">
                         <div class="his-title">应用市场健康率</div>
                         <div class="his-term item">
                             <span>应用类型</span>
@@ -172,11 +176,11 @@
                         </div>        -->
                     </div>
                     <!--在离线率图表显示区域-->
-                    <div class="chart_container" style="width:100%;height:320px;display:inline-block">
+                    <div class="chart_container" style="width:100%;height:87%;display:inline-block">
                         <!--在离线率柱状图-->
-                        <div name="his_bar_chart_container" style="height:420px;margin:0 auto" :style="{ width: elWidth-100+'px',height:elHeight-450+'px' }" v-show="changeChart=='bar'"></div>
+                        <div name="his_bar_chart_container" style="margin:0 auto;width:100%;height:100%" v-show="changeChart=='bar'"></div>
                         <!--在离线率线形图-->
-                        <div name="his_line_chart_container" style="height:420px;margin:0 auto" :style="{ width: elWidth-100+'px',height:elHeight-450+'px'}" v-show="changeChart=='line'"></div>
+                        <div name="his_line_chart_container" style="margin:0 auto;width:100%;height:100%" v-show="changeChart=='line'"></div>
                     </div>
                 </div>
             </div>
@@ -219,6 +223,30 @@ export default {
         collType () {
             this.getOnOffLineData();
         },
+        viewTable(){
+            if(this.viewTable=="statistics"){
+                if(this.myLineChart){
+                    setTimeout(()=>{
+                        this.myLineChart.resize(); 
+                    })                          
+                };
+                if(this.myOnOffBarChart){
+                    setTimeout(()=>{
+                        this.myOnOffBarChart.resize();
+                    })                                                      
+                };
+                if(this.myPieChart){
+                    setTimeout(()=>{
+                        this.myPieChart.resize(); 
+                    })                                                    
+                } ;        
+                if(this.myBarChart){
+                    setTimeout(()=>{
+                        this.myBarChart.resize();
+                    })                                                     
+                }                  
+            }
+        },      
     },
   data () {
     return {
@@ -287,24 +315,26 @@ export default {
     this.bodyClickId=tool.SingleBind('mousedown',$('body'),()=>{
        this.blnShowStatus=false;
     });
-    this.elWidth=$(this.$el).width();
-    this.elHeight=$(this.$el).height();
+    //this.elWidth=$(this.$el).width();
+    //this.elHeight=$(this.$el).height();
 
     this.refreshPage();
     this.getOnOffLineData();
     this.getYesdayData()
 
     this.$store.commit(BODY_RESIZE,()=>{
-          this.elWidth=$(this.$el).width();
-          this.elHeight=$(this.$el).height();
-          if(!this.myLineChart)return;
-           this.myLineChart.resize();
-          if(!this.myOnOffBarChart)return;
-          this.myOnOffBarChart.resize();
-          if(!this.myPieChart)return;          
-          this.myPieChart.resize();
-          if(!this.myBarChart)return;                 
-          this.myBarChart.resize();
+            if(this.myLineChart){
+                this.myLineChart.resize();              
+            };
+            if(this.myOnOffBarChart){
+                this.myOnOffBarChart.resize();              
+            };
+            if(this.myPieChart){
+                this.myPieChart.resize();             
+            } ;        
+            if(this.myBarChart){
+                this.myBarChart.resize();             
+            }                
     });
   },
   computed:{
@@ -690,6 +720,10 @@ export default {
                 }, 
                 data:['健康率','违规率']  
             },
+            grid:{	//设置图标距离
+                left: 50,
+                right: 50,
+            },              
             xAxis: {
 
                 type: 'category',
@@ -1288,7 +1322,7 @@ export default {
     .stiepage .green{color:green}
   .stiepage .chart_container .his-row .his-term{
     float: left;
-    margin-left: 60px;
+    margin-left: 40px;
   }
   .stiepage .chart_container .his-row .optionBar{
     float: right;

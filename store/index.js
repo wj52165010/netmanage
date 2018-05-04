@@ -1907,7 +1907,14 @@ export default new Vuex.Store({
                 });
             });
         },        
-        
+        //获取报警数据
+        [types.GetIdentData]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetIdentData(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }
 
     },
     modules:{

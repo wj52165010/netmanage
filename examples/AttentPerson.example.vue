@@ -105,7 +105,7 @@
                                 </div>
                             </div>
                             <!--底部显示区域-->
-                            <div class="bottom">
+                            <div class="bottom" @click="lookIndent(d)">
                                 <span>报警{{d.alarms}}</span>
                                 <span style="float:right;">最后报警时间&nbsp;{{parseInt(d.alarm_last_time)?converTime(d.alarm_last_time):'无'}}</span>
                             </div>
@@ -149,7 +149,7 @@ import Scroll from 'components/scroll'
 import InputDir from 'components/Input'
 import PlaceSearch from 'components/PlaceSearch'
 import MulSelect from 'components/MulSelect'
-import { GetFocusPerson , AddFocusPersonLabel ,GetFocusPersonLabel,GetTagCount,DelFocusPersonLabel,UpdateFocusPersonLabel , DelFocusPerson ,UpdateFocusPerson
+import { GetFocusPerson , AddFocusPersonLabel ,GetFocusPersonLabel,GetTagCount,DelFocusPersonLabel,UpdateFocusPersonLabel , DelFocusPerson ,UpdateFocusPerson,GetIdentData
         ,DelFocusPersonProperty,AddFocusPersonProperty,AddFocusPerson,AddMoreFocusPersonProperty,DelMoreFocusPersonProperty,UpdateFocusPersonRegion,UpdateFocusPersonName} from '../store/mutation-types'
 export default {
   name: 'AttentPerson',
@@ -603,6 +603,72 @@ export default {
             this.batchData.push(d);
         }
         d.blnAssess=true;
+    },
+    //查看报警数据
+    lookIndent(d){
+       let s=this;
+
+      tool.open(function(){
+        let html=`
+          <div class="table_header">
+              <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                  <thead><tr>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">报警姓名</div></th>
+                      <th :style="{width:w+'px'}" style="border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}" class="divEllipsis">证件号</div></th>
+                      <th :style="{width:w+'px'}" style="border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div :style="{width:w+'px'}"class="divEllipsis">手机</div></th>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">MAC</div></th>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">报警时间</div></th>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">报警场所</div></th>
+                      <th style="width:150px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;" class="text-center"><div style="width:150px;" class="divEllipsis">报警来源</div></th>
+                      
+                  </tr></thead>
+              </table>
+          </div>
+          <div class="table_body">
+            <Scroll :listen="data" ref="detailSrcoll">
+                <table class="table" style="border-collapse: collapse;margin-bottom:0px;">
+                  <tbody><tr v-for="d in data">
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.customer_name"><div style="width:150px;" class="divEllipsis">{{d.customer_name}}</div></td>
+                      <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.certificate_code"><div :style="{width:w+'px'}" class="divEllipsis">{{d.certificate_code}}</div></td>
+                      <td :style="{width:w+'px'}" style="border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.mobile"><div :style="{width:w+'px'}" class="divEllipsis">{{d.mobile}}</div></td>
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.mac"><div style="width:150px;" class="divEllipsis">{{d.mac}}</div></td>
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.policeTime"><div style="width:150px;" class="divEllipsis">{{converTime(d.logtime)}}</div></td>
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.netbar_name"><div style="width:150px;" class="divEllipsis">{{d.netbar_name}}</div></td>
+                      <td style="width:150px;border-top:0px;border-right:1px solid #ddd;" class="text-center" :title="d.source_type"><div style="width:150px;" class="divEllipsis">{{d.source_type}}</div></td>
+                      
+                  </tr></tbody>
+              </table>
+            </Scroll>
+          </div>
+        `;
+        let param={
+            title:'人员信息',
+            area:['1000px','600px'],
+            content:`<div class="LookPersonList_pop pop" style="width:100%;height:100%;overflow: hidden;background-color:rgba(47, 51, 65, 0.9) !important;color:white;">${html}</div>`,
+            components:{Scroll},
+            store:s.$store,
+            context:{
+              w:0,
+              data:[],
+              converTime(time){
+                return tool.DateByTimestamp(time,'yyyy-MM-dd mm:hh:ss');
+              }
+            },
+            success(layero){
+              param.selfData.w=(layero.width()-750)/2;
+
+              s.$store.dispatch(GetIdentData,{focus_id:d.focus_id})
+              .then(res=>{
+                if(!tool.msg(res,'','获取数据失败!')) return;
+                param.selfData.data=res.biz_body;
+
+              });
+            }
+        }
+
+        return param;
+      }());
+
     },
     //获取特定标签数据
     getSpeLabelCount(){
@@ -1099,6 +1165,8 @@ export default {
   }
 }
 </script>
+
+
 <style lang="less">
     @import "../css/variables.less";
     .AttentPerson.unSelect{
@@ -1182,7 +1250,17 @@ export default {
         text-align:center;line-height:@LableBtn;float:right;
     }
 
-</style>
+    //列表样式
+    @bgColor:fade(@HeaderBgCol,90%);
+    @tableRowH:36px;
+    .pop  .table{margin-bottom:0px;color: white;background-color:rgba(47, 51, 65, 0.9) !important;}
+    .pop  .table_header{height:@tableRowH;}
+    .pop  .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
+    .pop  .table_header th{padding:0px !important;color:black; line-height:@tableRowH;color:white;}
+    .pop  .table_header{color:black;}
+    .pop  .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
+    .pop  .table_body td{padding:0px !important;color:black;line-height:@tableRowH;.border('bottom');color:white;}
+    </style>
 
 <style scoped lang="less">
 @import "../css/variables.less";

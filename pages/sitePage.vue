@@ -80,16 +80,16 @@
                         <div><span class="overflow" style="width:115px;">场所编码</span></div>
                         <div><span class="overflow" style="width:100px;">场所名称</span></div>
                         <div><span class="overflow" style="width:230px;">场所地址</span></div>
-                        <div><span class="overflow" style="width:70px;">场所状态</span></div>
-                        <div><span class="overflow" style="width:120px;">场所概况</span></div>
-                        <div><span class="overflow" style="width:180px;">最近联系时间</span></div>
-                        <div><span class="overflow" style="width:80px;">昨日上传量</span></div>
+                        <div><span class="overflow" style="width:63px;">场所状态</span></div>
+                        <div><span class="overflow" style="width:80px;">场所概况</span></div>
+                        <div><span class="overflow" style="width:140px;">最近联系时间</span></div>
+                        <div><span class="overflow" style="width:72px;">昨日上传量</span></div>
                         <div><span class="overflow" style="width:65px;">营业状态</span></div>
                         <div><span class="overflow" style="width:90px;">场所类型</span></div>
                         <div><span class="overflow" style="width:60px;">所属区域</span></div>
                         <div><span class="overflow" style="width:60px;">数据来源</span></div>
                         <div><span class="overflow" style="width:80px;">所属厂商</span></div>
-                        <div><span class="overflow" style="width:50px;">操作</span></div>
+                        <div><span class="overflow" style="width:65px;">操作</span></div>
                     </li>
                 </ul>
                 <div class="content">
@@ -100,16 +100,16 @@
                                 <div  :title="d.netbar_wacode" ><span class="overflow" style="width:115px;">{{d.netbar_wacode}}</span></div>
                                 <div class="align" :title="d.netbar_name" ><span class="overflow" style="width:100px;">{{d.netbar_name}}</span></div>
                                 <div class="align" :title="d.netbar_address"><span class="overflow" style="width:230px;">{{d.netbar_address}}</span></div>
-                                <div  :title="d.online_state"><span class="overflow" style="width:70px;" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]">{{d.online_state}}</span></div>
-                                <div @click="moutType(d.netbar_wacode,d.netbar_name,d.microprobe_type)"><span class="overflow sit-click" style="width:120px;" v-html="d.situation"></span></div>
-                                <div  :title="d.capture_time"><span class="overflow" style="width:180px;">{{d.capture_time}}</span></div>
-                                <div  :title="d.last_upload_num" @click="dataStatus(d.netbar_wacode,d.netbar_name)"><span class="overflow sit-click" style="width:80px;">{{d.last_upload_num}}</span></div>
+                                <div  :title="d.online_state"><span class="overflow" style="width:63px;" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]">{{d.online_state}}</span></div>
+                                <div @click="moutType(d.netbar_wacode,d.netbar_name,d.microprobe_type)"><span class="overflow sit-click" style="width:80px;" v-html="d.situation"></span></div>
+                                <div  :title="d.capture_time"><span class="overflow" style="width:140px;">{{d.capture_time}}</span></div>
+                                <div  :title="d.last_upload_num" @click="dataStatus(d.netbar_wacode,d.netbar_name)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
                                 <div  :title="d.business_state"><span class="overflow" style="width:65px;">{{d.business_state}}</span></div>
                                 <div class="align" :title="d.netsite_type"><span class="overflow" style="width:90px;">{{d.netsite_type}}</span></div>
                                 <div  :title="d.region_name"><span class="overflow" style="width:60px;">{{d.region_name}}</span></div>
                                 <div  :title="d.microprobe_type"><span class="overflow" style="width:60px;">{{d.microprobe_type}}</span></div>
                                 <div class="align" :title="d.security_software_orgname"><span class="overflow" style="width:80px;">{{d.security_software_orgname}}</span></div>
-                                <div  title="查看详情" @click="searchSiteDetail(d.netbar_wacode,d.microprobe_type)"><span class="overflow sit-click" style="width:50px">详细</span></div>
+                                <div  title="查看详情" @click="searchSiteDetail(d.netbar_wacode,d.microprobe_type)"><span class="overflow sit-click" style="width:65px">详细</span></div>
                             </li>
                         </ul>
                     </Scroll>
@@ -126,14 +126,18 @@
                 <MapSite :blnInit="true" :data="newObject" :showData="showData" :isSite="true"/>
             </div>
             <!--统计图表显示区域-->
-            <div class="chart_container" v-show="viewTable=='statistics'">
+            <div class="chart_container" v-show="viewTable=='statistics'" style="height: calc(100% - 30px);width:100%;position:relative">
                 <!--扇形图（昨日状况）-->
-                <div name="pie_chart_container" class="" style="width:500px;height:370px;margin:0 20px;display:inline-block" ></div>
+                <div style="width:30%;height:50%;display:inline-block">
+                     <div name="pie_chart_container" class="" style="width:100%;height:100%;text-align:left"></div>
+                </div>               
                 <!--柱状图(问题总览)-->
-                <div name="bar_chart_container" style="height:370px;display:inline-block" :style="{ width: elWidth-600+'px' }"></div>
+                <div style="width:67%;height:50%;display:inline-block" >
+                    <div name="bar_chart_container" style="width:100%%;height:100%;" ></div>
+                </div>
                 <!--线形图（在离线率）-->
-                <div name="line_chart_container" style="width:100%;height:400px;display:inline-block">
-                     <div class="his-row">
+                <div name="line_chart_container" style="width:95%;height:50%;display:inline-block;margin:0 auto">
+                     <div class="his-row" style="height:13%">
                         <div class="his-title">场所在离线</div>
                         <div class="his-term item">
                             <span>统计方式：</span>
@@ -161,11 +165,11 @@
                         </div>       
                     </div>
                     <!--在离线率图表显示区域-->
-                    <div class="chart_container" style="width:100%;height:320px;display:inline-block">
+                    <div class="chart_container" style="width:100%;height:87%;display:inline-block">
                         <!--在离线率柱状图-->
-                        <div name="his_bar_chart_container" style="height:420px;margin:0 auto" :style="{ width: elWidth-100+'px',height:elHeight-450+'px' }" v-show="changeChart=='bar'"></div>
+                        <div name="his_bar_chart_container" style="margin:0 auto;width:100%;height:100%" v-show="changeChart=='bar'"></div>
                         <!--在离线率线形图-->
-                        <div name="his_line_chart_container" style="height:420px;margin:0 auto" :style="{ width: elWidth-100+'px',height:elHeight-450+'px'}" v-show="changeChart=='line'"></div>
+                        <div name="his_line_chart_container" style="margin:0 auto;width:100%;height:100%" v-show="changeChart=='line'"></div>
                     </div>
                 </div>
             </div>
@@ -206,6 +210,40 @@ export default {
         collType () {
             this.getOnOffLineData();
         },
+        viewTable(){
+            if(this.viewTable=="statistics"){
+                if(this.myLineChart){
+                    setTimeout(()=>{
+                        this.myLineChart.resize(); 
+                    })                          
+                };
+                if(this.myOnOffBarChart){
+                    setTimeout(()=>{
+                        this.myOnOffBarChart.resize();
+                    })                                                      
+                };
+                if(this.myPieChart){
+                    setTimeout(()=>{
+                        this.myPieChart.resize(); 
+                    })                                                    
+                } ;        
+                if(this.myBarChart){
+                    setTimeout(()=>{
+                        this.myBarChart.resize();
+                    })                                                     
+                }                  
+            }
+        },
+        changeChart(){
+            if(!this.myLineChart)return;
+                setTimeout(()=>{
+                    this.myLineChart.resize();
+            },0);            
+            if(!this.myOnOffBarChart)return;
+                setTimeout(()=>{
+                    this.myOnOffBarChart.resize();
+            },0);  
+        }
     },
   data () {
     return {
@@ -236,7 +274,7 @@ export default {
         query:{
             limit:20,//每页20条
             skip:0,//跳过0条
-            netbar_name:'',//场所名称
+            netbar_name:'',//场所名称 
             netsite_type:'', //场所类型
             netsite_state:'',//场所状态
             microprobe_type:'',//数据来源&采集系统类型
@@ -253,26 +291,22 @@ export default {
     this.bodyClickId=tool.SingleBind('mousedown',$('body'),()=>{
        this.blnShowStatus=false;
     });
-    this.elWidth=$(this.$el).width();
-    this.elHeight=$(this.$el).height();
-
     this.refreshPage();
     this.getOnOffLineData();
     this.getYesdayData();
-    setTimeout(function(){
-        this.viewTable='list'},0)
-
     this.$store.commit(BODY_RESIZE,()=>{
-          this.elWidth=$(this.$el).width();
-          this.elHeight=$(this.$el).height();
-          if(!this.myLineChart)return;
-           this.myLineChart.resize();
-          if(!this.myOnOffBarChart)return;
-          this.myOnOffBarChart.resize();
-          if(!this.myPieChart)return;          
-          this.myPieChart.resize();
-          if(!this.myBarChart)return;                 
-          this.myBarChart.resize();
+            if(this.myLineChart){
+                this.myLineChart.resize();              
+            };
+            if(this.myOnOffBarChart){
+                this.myOnOffBarChart.resize();              
+            };
+            if(this.myPieChart){
+                this.myPieChart.resize();             
+            } ;        
+            if(this.myBarChart){
+                this.myBarChart.resize();             
+            }                
     });
   },
   computed:{
@@ -378,7 +412,7 @@ export default {
       //切换柱状图和条形图
         changeChartSty(val){
             if(val==this.changeChart) return;
-            this.changeChart = val;
+            this.changeChart = val;          
         },
       //加载扇形图(饼图)，昨日状况
       loadPieChart(data){
@@ -471,6 +505,10 @@ export default {
             }]
         };
         this.myPieChart.setOption(option);
+         setTimeout(()=>{
+             this.myPieChart.resize();
+         })
+        
       },
        //加载柱状图 问题总览   
       loadBarChart(data){
@@ -550,6 +588,10 @@ export default {
             ]
         };
         this.myBarChart.setOption(option);
+        setTimeout(()=>{
+              this.myBarChart.resize();   
+         })
+
       },
     //加载在离线折线图time横坐标时间 inLineData：在线 ,offLineData：离线,abnormalsData：异常
      addOfflineLineChart(data){
@@ -632,6 +674,7 @@ export default {
             };
         
             this.myLineChart.setOption(option);
+            this.myLineChart.resize();   
      },
     //  加载在离线柱状图
       addOfflineBarChart(data){
@@ -661,6 +704,10 @@ export default {
                 }, 
                 data:['在线数','异常数','离线数']  
             },
+            grid:{	//设置图标距离
+                left: 50,
+                right: 50,
+            },            
             xAxis: {
 
                 type: 'category',
@@ -702,6 +749,7 @@ export default {
             ]
         };
         this.myOnOffBarChart.setOption(option);
+       // this.myOnOffBarChart.resize();
       },
       //导出统计场所状态率
       ExportOnlineCount(){

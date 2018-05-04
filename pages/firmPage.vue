@@ -108,7 +108,7 @@
                 <div class="chart_container" style="width:100%;height:100%;position:relative">
                     <!--场所在离线-->
                     <div style="width:100%;height:50%;">
-                        <div class="his-row">
+                        <div class="his-row" style="height:13%">
                             <div class="his-title">场所在离线</div>
                             <div class="his-title item" style="font-size:12px;font-weight:normal;text-align:left">
                                 <span>厂商名称：</span>
@@ -150,19 +150,18 @@
                                     </div>
                                 </div>
                             </div>      
-                        </div>
-                                
+                        </div>                                
                         <!--场所在离线在离线率图表显示区域-->
-                        <div class="chart_container">
+                        <div class="chart_container" style="height:87%;width:100%;display:inline-block">
                             <!--场所在离线率柱状图-->
-                            <div name="site_bar_chart_container"  v-show="changeSiteChart=='bar'" style="height:420px;margin:0 auto" :style="{ width: elWidth-100+'px',height:(elHeight/2-74)+'px' }"></div>
+                            <div name="site_bar_chart_container"  v-show="changeSiteChart=='bar'" style="margin:0 auto;width:100%;height:100%"></div>
                             <!--场所在离线线形图-->
-                            <div name="site_line_chart_container" v-show="changeSiteChart=='line'" style="height:420px;margin:0 auto" :style="{ width: elWidth-100+'px',height:elHeight/2-74+'px' }"></div>
+                            <div name="site_line_chart_container" v-show="changeSiteChart=='line'" style="margin:0 auto;width:100%;height:100%"></div>
                         </div>
                     </div>                   
                     <!--设备在离线-->
                     <div style="width:100%;height:50%;">
-                        <div class="his-row">
+                        <div class="his-row" style="height:13%">
                             <div class="his-title">设备在离线</div>
                             <div class="his-title item" style="font-size:12px;font-weight:normal;text-align:left">
                                 <span>厂商名称：</span>
@@ -206,11 +205,11 @@
                             </div>      
                         </div>     
                         <!--在离线率图表显示区域-->
-                        <div class="chart_container" style="width:100%;height:320px;display:inline-block">
+                        <div class="chart_container" style="height:87%;width:100%;display:inline-block">
                             <!--在离线率柱状图-->
-                            <div name="device_bar_chart_container" v-show="changeDeviceChart=='bar'" style="height:420px;margin:0 auto" :style="{ width: elWidth-100+'px',height:(elHeight/2-74)+'px' }"></div>
+                            <div name="device_bar_chart_container" v-show="changeDeviceChart=='bar'" style="margin:0 auto;width:100%;height:100%"></div>
                             <!--在离线率线形图-->
-                            <div name="device_line_chart_container" v-show="changeDeviceChart=='line'" style="height:420px;margin:0 auto" :style="{ width: elWidth-100+'px',height:(elHeight/2-74)+'px' }"></div>
+                            <div name="device_line_chart_container" v-show="changeDeviceChart=='line'" style="margin:0 auto;width:100%;height:100%"></div>
                         </div>
                     </div>
                 </div>                
@@ -252,6 +251,7 @@ export default {
       cSelect,
       MulDropDwon
     },
+
   data () {
     return {
         blnLoading:true,                //加载中标识
@@ -299,28 +299,56 @@ export default {
     this.bodyClickId=tool.SingleBind('mousedown',$('body'),()=>{
        this.blnShowStatus=false;
     });
-    this.elWidth=$(this.$el).width();
-    this.elHeight=$(this.$el).height();
+   // this.elWidth=$(this.$el).width();
+   // this.elHeight=$(this.$el).height();
     //console.log(this.elWidth,this.elHeight);
 
     this.refreshPage();
+        this.getSiteOnBarData();        // 获取场所在线柱状图数据
+        this.getDeviceOnBarData();        // 获取设备在线柱状图数据
+        this.getSiteOnlineData();        // 获取场所在线折线图数据
+        this.getDeviceOnlineData();        // 获取设备在线折线图数据      
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //      // this.elWidth=$(this.$el).width();
+    //       //this.elHeight=$(this.$el).height();
 
+    //       if(!this.siteOnOffLineChart)return;
+    //        this.siteOnOffLineChart.resize();
+
+    //       if(!this.siteOnOffBarChart)return;
+    //       this.siteOnOffBarChart.resize();
+
+    //       if(!this.deviceOnOffLineChart)return;
+    //        this.deviceOnOffLineChart.resize();
+
+    //       if(!this.deviceOnOffBarChart)return;
+    //       this.deviceOnOffBarChart.resize();
+    // });
     this.$store.commit(BODY_RESIZE,()=>{
-          this.elWidth=$(this.$el).width();
-          this.elHeight=$(this.$el).height();
-
-          if(!this.siteOnOffLineChart)return;
-           this.siteOnOffLineChart.resize();
-
-          if(!this.siteOnOffBarChart)return;
-          this.siteOnOffBarChart.resize();
-
-          if(!this.deviceOnOffLineChart)return;
-           this.deviceOnOffLineChart.resize();
-
-          if(!this.deviceOnOffBarChart)return;
-          this.deviceOnOffBarChart.resize();
+                if(this.siteOnOffBarChart){
+                    setTimeout(()=>{
+                        this.siteOnOffBarChart.resize(); 
+                    })                          
+                };
+                if(this.siteOnOffLineChart){
+                    setTimeout(()=>{
+                        this.siteOnOffLineChart.resize();
+                    })                                                      
+                };
+                if(this.deviceOnOffBarChart){
+                    setTimeout(()=>{
+                        this.deviceOnOffBarChart.resize(); 
+                    })                                                    
+                } ;        
+                if(this.deviceOnOffLineChart){
+                    setTimeout(()=>{
+                        this.deviceOnOffLineChart.resize();
+                    })                                                     
+                }                 
     });
+
+
+
   },
   computed:{
       showData(){
@@ -377,7 +405,58 @@ export default {
             this.getDeviceOnlineData();        // 获取设备在线折线图数据     
         },
         deep: true    
-    }
+    },
+        viewTable(){
+            if(this.viewTable=="statistics"){
+                if(this.siteOnOffBarChart){
+                    setTimeout(()=>{
+                        this.siteOnOffBarChart.resize(); 
+                    })                          
+                };
+                if(this.siteOnOffLineChart){
+                    setTimeout(()=>{
+                        this.siteOnOffLineChart.resize();
+                    })                                                      
+                };
+                if(this.deviceOnOffBarChart){
+                    setTimeout(()=>{
+                        this.deviceOnOffBarChart.resize(); 
+                    })                                                    
+                } ;        
+                if(this.deviceOnOffLineChart){
+                    setTimeout(()=>{
+                        this.deviceOnOffLineChart.resize();
+                    })                                                     
+                }                   
+            }
+        },
+        changeSiteChart(){
+                if(this.siteOnOffBarChart){
+                    setTimeout(()=>{
+                        this.siteOnOffBarChart.resize(); 
+                    })                          
+                };
+                if(this.siteOnOffLineChart){
+                    setTimeout(()=>{
+                        this.siteOnOffLineChart.resize();
+                    })                                                      
+                };
+        },
+        changeDeviceChart(){
+                if(this.deviceOnOffBarChart){
+                    setTimeout(()=>{
+                        this.deviceOnOffBarChart.resize(); 
+                    })                                                    
+                } ;        
+                if(this.deviceOnOffLineChart){
+                    setTimeout(()=>{
+                        this.deviceOnOffLineChart.resize();
+                    })                                                     
+                }  
+        }  
+
+
+
   },
   methods:{
       //刷新页面
@@ -397,10 +476,7 @@ export default {
             this.firms=res.biz_body;
         });
       
-        this.getSiteOnBarData();        // 获取场所在线柱状图数据
-        this.getDeviceOnBarData();        // 获取设备在线柱状图数据
-        this.getSiteOnlineData();        // 获取场所在线折线图数据
-        this.getDeviceOnlineData();        // 获取设备在线折线图数据        
+  
     
       },
       //列表和统计相互切换  
@@ -531,7 +607,7 @@ export default {
                     data:firmNames  
                 },
                 grid:{	//设置图标上面和下面的距离
-                    left: 50,
+                    left: 80,
                     right: 50,
                     //y:20
                 },
@@ -668,7 +744,7 @@ export default {
     //加载设备在离线折线图
      addDeviceLineChart(data){
         let offlineLineChart=$(this.$el).find('div[name="device_line_chart_container"]')[0]
-        this.siteOnOffLineChart = echarts.init(offlineLineChart);
+        this.deviceOnOffLineChart = echarts.init(offlineLineChart);
         let time=[],allData=[],firmNames=[];
         for(let i=0;i<data[0].orgs.length;i++){
             firmNames.push(data[0].orgs[i].security_software_orgname);           //获取所有厂商名
@@ -715,7 +791,7 @@ export default {
                     data:firmNames  
                 },
                 grid:{	//设置图标上面和下面的距离
-                    left: 50,
+                    left: 80,
                     right: 50,
                     //y:20
                 },
@@ -748,7 +824,7 @@ export default {
                 series:allData
             };
         
-            this.siteOnOffLineChart.setOption(option);
+            this.deviceOnOffLineChart.setOption(option);
      },
     //加载设备在离线柱状图
     addDeviceBarChart(data){
@@ -1198,7 +1274,7 @@ export default {
     .firmpage .green{color:green}
   .firmpage .chart_container .his-row .his-term{
     float: left;
-    margin-left: 60px;
+    margin-left: 30px;
   }
   .firmpage .chart_container .his-row .optionBar{
     float: right;

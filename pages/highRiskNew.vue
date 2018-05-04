@@ -1137,6 +1137,9 @@ export default {
 
             return param;
           }());
+      },
+      converTime(time){
+        return tool.DateByTimestamp(time,'yyyy-MM-dd mm:hh:ss');
       }
   }
 }

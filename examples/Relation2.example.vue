@@ -32,6 +32,7 @@
 <script>
 import {RelationSecond} from '../store/mutation-types'
 import SearchDropdown from 'components/SearchDropdown'
+import clipboard from 'clipboard-polyfill'
 
 import * as d3 from 'd3'
 export default {
@@ -921,7 +922,8 @@ export default {
                         clickP.fy=null;
                         break;
                     case 3://复制
-                        console.log(navigator.clipboard);
+                        clipboard.writeText(point.subTextOne);
+                        tool.info('复制成功!');
                         break;
                 }
             }

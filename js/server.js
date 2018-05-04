@@ -2,7 +2,7 @@
 
 //基地址192.168.100.80:3031(http://192.168.23.73:3030)
 //发布地址:172.23.90.8:3030
-let url='http://192.168.100.80:3031';
+let url='http://192.168.23.73:3030';
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
 
@@ -2788,7 +2788,15 @@ GetVehicleChart(data){
     this.baseBag.method='coll_microprobe';
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
-  }     
+  } 
+  
+  //获取报警数据
+  GetIdentData(data){
+    this.baseBag.target='key_identity';
+    this.baseBag.method='getdata';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
 }
 
 module.exports = new server(baseBag,baseUri,url);

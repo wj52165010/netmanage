@@ -379,6 +379,8 @@ export const GetHotspotDetail='GetHotspotDetail' //获取热点列表定制页�
 
 export const GetFirmCollFirm='GetFirmCollFirm' //按厂商统计采集量
 export const GetCollMicroprobe='GetCollMicroprobe' //按数据来源统计采集量
+export const GetIdentData='GetIdentData'//获取报警数据
+
 
 /**************** 例子接口 ******************/
 export const TogetherTeam='TogetherTeam' //获取同行分析组

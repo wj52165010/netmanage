@@ -105,21 +105,21 @@
                 </div>
                 <ul class="header">
                     <li class="item">
-                        <div><span class="overflow" style="width:215px;">设备编码</span></div>
+                        <div><span class="overflow" style="width:170px;">设备编码</span></div>
                         <div><span class="overflow" style="width:150px;">设备名称</span></div>
                         <!-- <div :style="{width:case_address_w+'px'}"><span class="overflow" :style="{width:case_address_w+'px'}">场所名称</span></div> -->
-                        <div><span class="overflow" style="width:130px;">设备MAC</span></div>
-                        <div><span class="overflow" style="width:70px;">设备状态</span></div>
+                        <div><span class="overflow" style="width:120px;">设备MAC</span></div>
+                        <div><span class="overflow" style="width:63px;">设备状态</span></div>
                         
                         <div><span class="overflow" style="width:140px;">最近联系时间</span></div>
-                        <div><span class="overflow" style="width:80px;">昨日上传量</span></div>
-                        <div><span class="overflow" style="width:100px;">设备类型</span></div>
+                        <div><span class="overflow" style="width:72px;">昨日上传量</span></div>
+                        <div><span class="overflow" style="width:85px;">设备类型</span></div>
                         <!-- <div><span class="overflow" style="width:65px;">营业状态</span></div> -->
                         <div><span class="overflow" style="width:140px;">所属场所</span></div>
                         <div><span class="overflow" style="width:60px;">所属区域</span></div>
                         <div><span class="overflow" style="width:60px;">数据来源</span></div>
                         <div><span class="overflow" style="width:80px;">所属厂商</span></div>
-                        <div><span class="overflow" style="width:50px;">操作</span></div>
+                        <div><span class="overflow" style="width:65px;">操作</span></div>
                     </li>
                 </ul>
                 <div class="content">
@@ -127,19 +127,19 @@
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showData" class="item" >
-                                <div  :title="d.equipment_id" ><span class="overflow" style="width:215px;">{{d.equipment_id}}</span></div>
+                                <div  :title="d.equipment_id" ><span class="overflow" style="width:170px;">{{d.equipment_id}}</span></div>
                                 <div class="align" :title="d.equipment_name" ><span class="overflow" style="width:150px;">{{d.equipment_name}}</span></div>
-                                <div class="align" :title="d.mac"><span class="overflow" style="width:130px;">{{d.mac}}</span></div>
-                                <div  :title="d.online_state" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]"><span class="overflow" style="width:70px;">{{d.online_state}}</span></div>                                
+                                <div class="align" :title="d.mac"><span class="overflow" style="width:120px;">{{d.mac}}</span></div>
+                                <div  :title="d.online_state" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]"><span class="overflow" style="width:63px;">{{d.online_state}}</span></div>                                
                                 <div  :title="d.capture_time"><span class="overflow" style="width:140px;">{{d.capture_time}}</span></div>
-                                <div  :title="d.last_upload_num" @click="dataStatus(d.equipment_id,d.equipment_name)"><span class="overflow sit-click" style="width:80px;">{{d.last_upload_num}}</span></div>
-                                <div :title="d.equipment_type"><span class="overflow" style="width:100px;">{{d.equipment_type}}</span></div>
+                                <div  :title="d.last_upload_num" @click="dataStatus(d.equipment_id,d.equipment_name)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
+                                <div :title="d.equipment_type"><span class="overflow" style="width:85px;">{{d.equipment_type}}</span></div>
                                 <!-- <div  :title="d.business_state"><span class="overflow" style="width:65px;">{{d.business_state}}</span></div> -->
                                 <div class="align" :title="d.netbar_name"><span class="overflow" style="width:140px;">{{d.netbar_name}}</span></div>
                                 <div  :title="d.county"><span class="overflow" style="width:60px;">{{d.county}}</span></div>
                                 <div  :title="d.microprobe_type"><span class="overflow" style="width:60px;">{{d.microprobe_type}}</span></div>
                                 <div class="align" :title="d.security_software_orgname"><span class="overflow" style="width:80px;">{{d.security_software_orgname}}</span></div>
-                                <div  title="查看详情" @click="searchDeviceDetail(d.equipment_id)"><span class="overflow sit-click" style="width:50px">详细</span></div>
+                                <div  title="查看详情" @click="searchDeviceDetail(d.equipment_id)"><span class="overflow sit-click" style="width:65px">详细</span></div>
 
                             </li>
                         </ul>
@@ -157,14 +157,22 @@
                 <MapSite :blnInit="true" :data="newObject" :showData="showData" :isSite="false"/>
             </div>
             <!--统计图表显示区域-->
-            <div class="chart_container" v-show="viewTable=='statistics'">
+            <div class="chart_container" v-show="viewTable=='statistics'" style="height: calc(100% - 30px);width:100%;position:relative">
                 <!--扇形图（昨日状况）-->
-                <div name="pie_chart_container" class="" style="width:500px;height:370px;margin:0 20px;display:inline-block" ></div>
+                <div style="width:30%;height:50%;display:inline-block">
+                     <div name="pie_chart_container" class="" style="width:100%;height:100%;text-align:left"></div>
+                </div> 
+
+
+                <!-- <div name="pie_chart_container" class="" style="width:500px;height:370px;margin:0 20px;display:inline-block" ></div> -->
                 <!--柱状图(问题总览)-->
-                <div name="bar_chart_container" style="height:370px;display:inline-block" :style="{ width: elWidth-600+'px' }"></div>
+                <div style="width:67%;height:50%;display:inline-block" >
+                    <div name="bar_chart_container" style="width:100%%;height:100%;" ></div>
+                </div>
+                <!-- <div name="bar_chart_container" style="height:370px;display:inline-block" :style="{ width: elWidth-600+'px' }"></div> -->
                 <!--线形图（在离线率）-->
-                <div name="line_chart_container" style="width:100%;height:400px;display:inline-block">
-                     <div class="his-row">
+                <div name="line_chart_container"  style="width:95%;height:50%;display:inline-block;margin:0 auto">
+                     <div class="his-row" style="height:13%">
                         <div class="his-title">设备在离线</div>
                         <div class="his-term item">
                             <span>统计方式：</span>
@@ -198,11 +206,11 @@
                         </div>       
                     </div>
                     <!--在离线率图表显示区域-->
-                    <div class="chart_container" style="width:100%;height:320px;display:inline-block">
+                    <div class="chart_container"  style="width:100%;height:87%;display:inline-block">
                         <!--在离线率柱状图-->
-                        <div name="his_bar_chart_container" style="height:420px;margin:0 auto" :style="{ width: elWidth-100+'px',height:elHeight-450+'px' }" v-show="changeChart=='bar'"></div>
+                        <div name="his_bar_chart_container" style="margin:0 auto;width:100%;height:100%" v-show="changeChart=='bar'"></div>
                         <!--在离线率线形图-->
-                        <div name="his_line_chart_container" style="height:420px;margin:0 auto" :style="{ width: elWidth-100+'px',height:elHeight-450+'px'}" v-show="changeChart=='line'"></div>
+                        <div name="his_line_chart_container" style="margin:0 auto;width:100%;height:100%" v-show="changeChart=='line'"></div>
                     </div>
                 </div>
             </div>
@@ -244,7 +252,41 @@ export default {
     watch:{
         collType () {
             this.getOnOffLineData();
-        }
+        },
+        viewTable(){
+            if(this.viewTable=="statistics"){
+                if(this.myLineChart){
+                    setTimeout(()=>{
+                        this.myLineChart.resize(); 
+                    })                          
+                };
+                if(this.myOnOffBarChart){
+                    setTimeout(()=>{
+                        this.myOnOffBarChart.resize();
+                    })                                                      
+                };
+                if(this.myPieChart){
+                    setTimeout(()=>{
+                        this.myPieChart.resize(); 
+                    })                                                    
+                } ;        
+                if(this.myBarChart){
+                    setTimeout(()=>{
+                        this.myBarChart.resize();
+                    })                                                     
+                }                  
+            }
+        },
+        changeChart(){
+            if(!this.myLineChart)return;
+                setTimeout(()=>{
+                    this.myLineChart.resize();
+            },0);            
+            if(!this.myOnOffBarChart)return;
+                setTimeout(()=>{
+                    this.myOnOffBarChart.resize();
+            },0);  
+        }        
     },
   data () {
     return {
@@ -304,24 +346,26 @@ export default {
     this.bodyClickId=tool.SingleBind('mousedown',$('body'),()=>{
        this.blnShowStatus=false;
     });
-    this.elWidth=$(this.$el).width();
-    this.elHeight=$(this.$el).height();
+   // this.elWidth=$(this.$el).width();
+    //this.elHeight=$(this.$el).height();
 
     this.refreshPage();
     this.getOnOffLineData();
-    this.getYesdayData()
+    this.getYesdayData();
 
     this.$store.commit(BODY_RESIZE,()=>{
-          this.elWidth=$(this.$el).width();
-          this.elHeight=$(this.$el).height();
-          if(!this.myLineChart)return;
-           this.myLineChart.resize();
-          if(!this.myOnOffBarChart)return;
-          this.myOnOffBarChart.resize();
-          if(!this.myPieChart)return;          
-          this.myPieChart.resize();
-          if(!this.myBarChart)return;                 
-          this.myBarChart.resize();
+            if(this.myLineChart){
+                this.myLineChart.resize();              
+            };
+            if(this.myOnOffBarChart){
+                this.myOnOffBarChart.resize();              
+            };
+            if(this.myPieChart){
+                this.myPieChart.resize();             
+            } ;        
+            if(this.myBarChart){
+                this.myBarChart.resize();             
+            }                
     });
   },
   computed:{
@@ -372,8 +416,6 @@ export default {
                 }
                
             }
-           //  console.log(this.query.microprobe_type);
-
         },
       //刷新页面
       refreshPage(){
@@ -392,7 +434,6 @@ export default {
             //获取数据来源
           this.$store.dispatch(getDictTables).then(res=>{
              if(res.msg.code!='successed')return;
-             //console.log(res.biz_body);
             this.dict_tables= res.biz_body;
           });
 
@@ -696,7 +737,8 @@ export default {
      },
     //  加载在离线柱状图
     addOfflineBarChart(data){
-        let offlineLineChart=$(this.$el).find('div[name="his_bar_chart_container"]')[0]
+        let offlineLineChart=$(this.$el).find('div[name="his_bar_chart_container"]')[0];
+        
         this.myOnOffBarChart = echarts.init(offlineLineChart);
         let time=[],inLineData=[],offLineData=[],abnormalsData=[];
         for(let i=0;i<data.length;i++){
@@ -708,6 +750,12 @@ export default {
         option = {
             tooltip: {
                 trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow',
+                        label: {
+                            show: true
+                        }
+                    }                   
             },
             legend: {
                 orient : 'horizontal',  
@@ -720,6 +768,11 @@ export default {
                 }, 
                 data:['在线数','异常数','离线数']  
             },
+            grid:{	//设置图标上面和下面的距离
+                    left: 50,
+                    right: 50,
+                    //y:20
+            },            
             xAxis: {
 
                 type: 'category',
