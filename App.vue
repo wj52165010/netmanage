@@ -151,10 +151,11 @@ socket.on('alarm_data',function(data){
 
 //监听强制退出信息
 socket.on('loginout',function(data){
+  
   if(!data)return;
   let res=eval('('+data+')');
   if(tool.cookie.get('token')!=res.token)return;
-
+  
   tool.info('您的账号在其他地方登录,您将会在5秒后退出!');
   setTimeout(()=>{
       ser.LoginOut(tool.cookie.get('account')).then(res=>{

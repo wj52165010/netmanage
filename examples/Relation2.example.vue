@@ -346,7 +346,9 @@ export default {
         ctx.fillText(p.subTextOne,p.x-size.w/2+10,p.y-size.h/2+15+rect.h+10);
 
         //画复制粘贴按钮
-        this.drawOption(p.x-size.w/2+10 + rectOne.w +20,p.y-size.h/2+15+rect.h+12,this.iconPaste);//画警告路径
+        if(p.subTextOne){
+            this.drawOption(p.x-size.w/2+10 + rectOne.w +20,p.y-size.h/2+15+rect.h+12,this.iconPaste);//画警告路径
+        }
 
         if(p.subTextTwo){
             ctx.font="12px 微软雅黑";
@@ -819,20 +821,21 @@ export default {
                 }
 
                 //判断是否进入复制图标
-                let rectOne={w:s.ctx.measureText(point.subTextOne).width,h:s.ctx.measureText('W').width};
-                s.drawOption(point.x-size.w/2+10 + rectOne.w +20,point.y-size.h/2+15+rectOne.h+12);//画警告路径
-                if(s.ctx.isPointInPath(pos.x,pos.y)){
-                    let tipW = s.tipDom.width();
-                    s.tipTop=pos.py-size.h/2-10;
-                    s.tipLeft=pos.px-size.w/2+10 + rectOne.w +5;
-                    s.curShowTipId=point.id;
-                    s.tipInfo='复制';
-                }else if(s.curShowTipId == point.id){
-                    s.tipTop=-1000;
-                    s.tipLeft=-1000;
-                    s.curShowTipId='';
+                if(point.subTextOne){
+                    let rectOne={w:s.ctx.measureText(point.subTextOne).width,h:s.ctx.measureText('W').width};
+                    s.drawOption(point.x-size.w/2+10 + rectOne.w +20,point.y-size.h/2+15+rectOne.h+12);//画警告路径
+                    if(s.ctx.isPointInPath(pos.x,pos.y)){
+                        let tipW = s.tipDom.width();
+                        s.tipTop=pos.py-size.h/2-10;
+                        s.tipLeft=pos.px-size.w/2+10 + rectOne.w +5;
+                        s.curShowTipId=point.id;
+                        s.tipInfo='复制';
+                    }else if(s.curShowTipId == point.id){
+                        s.tipTop=-1000;
+                        s.tipLeft=-1000;
+                        s.curShowTipId='';
+                    }
                 }
-                
 
             }
             
@@ -984,11 +987,12 @@ export default {
             point.isOver=res.biz_body.is_over;
         
 
+ 
             let childs=[
                 ...this.converData('vid',virtuals),
-                ...this.converData('mac',macs),
-                ...this.converData('cert',customers),
-                ...this.converData('mobile',mobiles),
+                ...this.converData('mac',_.filter(macs,m=>m.id!=point.id)),
+                ...this.converData('cert',_.filter(customers,m=>m.id!=point.id)),
+                ...this.converData('mobile',_.filter(mobiles,m=>m.id!=point.id)),
                 ];
 
             point.isNone=true;
@@ -1120,7 +1124,10 @@ export default {
 
         let data=res.biz_body.data;
 
+        console.log(res.biz_body);
         let rootPointers=this.converData(this.serachInfo.code,res.biz_body.selfData);
+
+        //return;
         let root=null;
         if(res.biz_body.selfData.length==0){tool.info('未找到相关数据!'); return;}
 
@@ -1260,7 +1267,7 @@ export default {
                         active:false,
                         parent:false,
                         text:`${v.mac}`,
-                        subTextOne:tool.DateByTimestamp(v.last_time,'yyyy-MM-dd'),
+                        subTextOne:v.last_time || '',
                         type:'MAC',
                         keyword:v.mac,
                         typeCode:'mac',
@@ -1297,7 +1304,7 @@ export default {
                         active:false,
                         parent:false,
                         text:`${v.mobile}`,
-                        subTextOne:tool.DateByTimestamp(v.last_time,'yyyy-MM-dd'),
+                        subTextOne:v.last_time,
                         type:'Mobile',
                         keyword:v.mac,
                         typeCode:'mobile',

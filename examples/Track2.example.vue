@@ -192,7 +192,7 @@
 
               <div class="item" v-show="detailInfo.site_top10.length>0">
                 <div class="label">常驻场所Top</div>
-                <div class="child" v-for="v in detailInfo.site_top10">{{v.netbar_name}} <span style="float:right;">{{v.count}}次</span></div>
+                <div class="child" style="cursor:pointer;" @click="posPointer(v)" v-for="v in detailInfo.site_top10">{{v.netbar_name}} <span style="float:right;">{{v.count}}次</span></div>
                 <!--<div class="child">常青藤网咖 <span style="float:right;">5所</span></div>
                 <div class="child">清河时尚网咖网咖 <span style="float:right;">1所</span></div>-->
               </div>
@@ -282,6 +282,7 @@ export default {
       curLookTask:{},//当前正在查看任务对象
       pm:'',//热力图对象
       rangeMap:null,//范围地图对象
+      posPointers:[],
     }
   },
   watch:{
@@ -428,6 +429,41 @@ export default {
 
       this.analyTraceData();
     },
+    //根据多个点指定最佳地图显示位置
+    setZoom(points){  
+      var maxLng = points[0].lng;  
+      var minLng = points[0].lng;  
+      var maxLat = points[0].lat;  
+      var minLat = points[0].lat;  
+      var res;  
+      for (var i = points.length - 1; i >= 0; i--) {  
+          res = points[i];  
+          if(res.lng > maxLng) maxLng =res.lng;  
+          if(res.lng < minLng) minLng =res.lng;  
+          if(res.lat > maxLat) maxLat =res.lat;  
+          if(res.lat < minLat) minLat =res.lat;  
+      };  
+      var cenLng =(parseFloat(maxLng)+parseFloat(minLng))/2;  
+      var cenLat = (parseFloat(maxLat)+parseFloat(minLat))/2;  
+      var zoom = this.getZoom(maxLng, minLng, maxLat, minLat);  
+      this.map.centerAndZoom(new BMap.Point(cenLng,cenLat), zoom);    
+ 
+    }, 
+    getZoom(maxLng, minLng, maxLat, minLat) {  
+        var zoom = ["50","100","200","500","1000","2000","5000","10000","20000","25000","50000","100000","200000","500000","1000000","2000000"]//级别18到3。  
+        var pointA = new BMap.Point(maxLng,maxLat);  // 创建点坐标A  
+        var pointB = new BMap.Point(minLng,minLat);  // 创建点坐标B  
+        var distance = this.map.getDistance(pointA,pointB).toFixed(1);  //获取两点距离,保留小数点后两位  
+        for (var i = 0,zoomLen = zoom.length; i < zoomLen; i++) {  
+            if(zoom[i] - distance > 0){  
+                return 18-i+2;//之所以会多3，是因为地图范围常常是比例尺距离的10倍以上。所以级别会增加3。  
+            }  
+        };  
+    },
+    //定位点
+    posPointer(d){
+     this.posPointers.push(this.drawPoint(this.map,0,d,false,{},d.netbar_name));
+    },
     //获取轨迹分析数据
     analyTraceData(){
       this.blnSearch=true;
@@ -548,16 +584,13 @@ export default {
       // }());
     },
     //描点(单个点)
-    drawPoint(map,index,d,blnPanTo,pointOps){
+    drawPoint(map,index,d,blnPanTo,pointOps,extraInfo){
       pointOps=pointOps || {};
       pointOps.size=pointOps.size || 30;
       pointOps.color=pointOps.color || 'red'
 
       let point=new BMap.Point(d.longitude || d.equipment_longitude, d.latitude || d.equipment_latitude);
-      var label= new BMap.Label(`<div style="background:url(static/map_${pointOps.color}.png);background-size: contain;width:${pointOps.size}px;height:${pointOps.size}px;line-height:${pointOps.size}px;text-align:center;color:white;">
-                                    
-                                  </div>`,{position:point,offset:new BMap.Size(-pointOps.size/2,-pointOps.size)});
-      label.setStyle({
+      let labelStyle={
                           fontSize : "12px",
                           lineHeight : "20px",
                           fontFamily:"微软雅黑",
@@ -565,7 +598,14 @@ export default {
                           border:'0px solid black',
                           'background-color':'transparent',
                           'max-width':'none'
-                      });
+                      };
+
+      var label= new BMap.Label(`<div style="background:url(static/map_${pointOps.color}.png);background-size: contain;width:${pointOps.size}px;height:${pointOps.size}px;line-height:${pointOps.size}px;text-align:center;color:white;">
+                                  <div style="display:${extraInfo?'block':'none'};position:absolute;bottom:0px;color:white;bottom:-20px;line-height:20px;left:${extraInfo?((-extraInfo.length*12-20)/2+15)+'px':'0px'};background-color:#30cc73;border-radius:5px;padding:0px 10px;"> 
+                                    ${extraInfo}
+                                  </div>
+                                  </div>`,{position:point,offset:new BMap.Size(-pointOps.size/2,-pointOps.size)});
+      label.setStyle(labelStyle);
       map.addOverlay(label);
 
 
@@ -589,7 +629,7 @@ export default {
      return []; //BaiduHelper.arrows(this.map,polyline,length,angleValue,distance,strokeColor,width);
     },
     //操作MAC路径显示
-    macPath(map,res,mainPath,sOps,dOps,pOps){
+    macPath(map,res,mainPath,sOps,dOps,pOps,blnEnd){
       let startPointOps=sOps || {size:30,color:'green'},//路径起点样式
           drawPointOps=dOps || {size:30,color:'red'}, //画过后的点样式
           pointOps=pOps || {size:30,color:'blue'}; //正在画的点样式
@@ -598,11 +638,20 @@ export default {
 
       switch(res.flag){
         case 'Add':
-          _.each(res.data,(d)=>{
+          _.each(res.data,(d,i)=>{
+
+            if(mainPath.length<=1){
+              //map.panTo(new BMap.Point(d.longitude || d.equipment_longitude, d.latitude || d.equipment_latitude));
+              let points=_.map(this.cTraceData,d=>{
+                return new BMap.Point(d.longitude || d.equipment_longitude, d.latitude || d.equipment_latitude);
+              });
+              // map.setViewport(points);
+              this.setZoom(points);
+            }
 
             let lastPoint=mainPath.length<=0?
-              this.drawPoint(map,mainPath.length,d,false,startPointOps) :
-              this.drawPoint(map,mainPath.length,d,false,pointOps);
+              this.drawPoint(map,mainPath.length,d,false,startPointOps,'起点') :
+              this.drawPoint(map,mainPath.length,d,false,pointOps,blnEnd?'终点':'');
       
 
             //从第二个点开始画线
@@ -622,9 +671,9 @@ export default {
                 mainPath[0].setContent(`<div style="background:url(static/map_${drawPointOps.color}.png);background-size: contain;width:${drawPointOps.size}px;height:${drawPointOps.size}px;line-height:${drawPointOps.size}px;text-align:center;color:white;"> </div>`);
                 mainPath[0]._relLine.setStrokeColor(drawPointOps.color);
               }
-            }else{
-              map.panTo(new BMap.Point(d.longitude || d.equipment_longitude, d.latitude || d.equipment_latitude));
+
             }
+
 
             mainPath.unshift(lastPoint);
             
@@ -651,13 +700,20 @@ export default {
     countChange(count){
       let res = this.getCountData(count,this.addData,this.unAddData,this.cTraceData);
 
-      this.macPath(this.map,res,this.mainPath);
+      //清除定位点信息
+      _.each(this.posPointers,this.map.removeOverlay);
+ 
+      this.macPath(this.map,res,this.mainPath,null,null,null,this.cTraceData.length==count);
     },
     //播放器时间改变事件
     timeChange(start,end){
       end=parseInt(end);
+
+      //清除定位点信息
+      _.each(this.posPointers,this.map.removeOverlay);
+
       let res = this.getOptData(end,this.addData,this.unAddData,this.endTime,this.range);
-      this.macPath(this.map,res,this.mainPath);
+      this.macPath(this.map,res,this.mainPath,null,null,null,parseInt(this.range[1])==end);
       
       
       this.endTime=end;
@@ -725,7 +781,7 @@ export default {
         let removeIndex=0;
 
         for(let i=0;i<unAddData.length;i++){
-          let time =parseInt(unAddData[i].logtime || unAddData[i].primary.log_time);
+          let time =parseInt(unAddData[i].start_time || unAddData[i].primary.log_time);
           if(time>end){break;}
           data.push(unAddData[i]);
           addData.unshift(unAddData[i]);
@@ -760,7 +816,7 @@ export default {
         let removeIndex=0;
         //获取删除点内容
         for(let i=0;i<addData.length;i++){
-            let time =parseInt(addData[i].logtime || addData[i].primary.log_time);
+            let time =parseInt(addData[i].start_time || addData[i].primary.log_time);
             if(time<end){removeIndex=i;break;}
             data.push(addData[i]);
             unAddData.unshift(addData[i]);

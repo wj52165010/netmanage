@@ -696,7 +696,7 @@ export default {
 
  //栏目选择页面样式
  @barCenterH:300px;
-.bar_page{height:100%;width:100%;position:absolute;background-color: white;z-index: 300;top: 0px;left:0px;}
+.bar_page{height:100%;width:100%;position:absolute;background-color: white;z-index: 100;top: 0px;left:0px;}
 .bar_page .center_bar{width:80%;height:@barCenterH;position:absolute;top:~'calc(50% - @{barCenterH}/2)';left:10%;}
 .bar_item {margin: 0 60px 0 0; padding: 0px; width:300px;.border('');border-top-left-radius:5px;border-top-right-radius:5px;}
 .bar_item:hover{
