@@ -23,7 +23,7 @@
             </div>
             
         </div>
-        <canvas :id="id"></canvas>
+        <canvas :id="id" @click="regPosClick($event)"></canvas>
         <!--提示信息-->
         <div  class="tip_pop" :id="tipId" :style="{top:tipTop+'px',left:tipLeft+'px'}">{{tipInfo}}</div>
     </div>
@@ -130,7 +130,7 @@ export default {
         this.initDraw();
         this.inPath();
         this.initDrag();
-        this.regPosClick();
+        //this.regPosClick();
         //this.regPosDblclick();
 
         if(this.searchVal){this.searchKey=this.searchVal;this.$nextTick(()=>{this.Search()});}
@@ -822,12 +822,13 @@ export default {
 
                 //判断是否进入复制图标
                 if(point.subTextOne){
+                    s.ctx.font="12px 微软雅黑";
                     let rectOne={w:s.ctx.measureText(point.subTextOne).width,h:s.ctx.measureText('W').width};
                     s.drawOption(point.x-size.w/2+10 + rectOne.w +20,point.y-size.h/2+15+rectOne.h+12);//画警告路径
                     if(s.ctx.isPointInPath(pos.x,pos.y)){
                         let tipW = s.tipDom.width();
                         s.tipTop=pos.py-size.h/2-10;
-                        s.tipLeft=pos.px-size.w/2+10 + rectOne.w +5;
+                        s.tipLeft=pos.px-size.w/2 + rectOne.w + 5;
                         s.curShowTipId=point.id;
                         s.tipInfo='复制';
                     }else if(s.curShowTipId == point.id){
@@ -847,91 +848,88 @@ export default {
             s.ticked();
         });
     },
-
     //canvas鼠标单击事件
-    regPosClick(){
-        $(this.canvas[0]).on('click',(e)=>{
-            let res=this.blnOpiton(e);
+    regPosClick(e){
 
-            _.each(this.points,p=>p.clicked=false);
-            //判断鼠标单击节点数据
-            let point = this.blnInPoint(e);
-           
-            if (point) {
-                
-                //判断点击过多标签显示隐藏数据
-                let size =this.rectSize;
-                this.drawTip(point.x + size.w/2 - 45,point.y-size.h/2+15);
-                let {x,y} = this.computePos(point,e);
-                if(this.ctx.isPointInPath(x,y)) {
-                    _.each(point.moreData,m=>{
-                        _.find(this.points,c=>c.id==m.id).blnMoreHide=false;
+        let res=this.blnOpiton(e);
+
+        _.each(this.points,p=>p.clicked=false);
+        //判断鼠标单击节点数据
+        let point = this.blnInPoint(e);
+        
+        if (point) {
+            
+            //判断点击过多标签显示隐藏数据
+            let size =this.rectSize;
+            this.drawTip(point.x + size.w/2 - 45,point.y-size.h/2+15);
+            let {x,y} = this.computePos(point,e);
+            if(this.ctx.isPointInPath(x,y)) {
+                _.each(point.moreData,m=>{
+                    _.find(this.points,c=>c.id==m.id).blnMoreHide=false;
+                });
+
+                return;
+            }
+            point.clicked=!point.clicked;
+            if(!point.anmalcomplete) point.anmalTime=(new Date()).getTime();//当前动画开始时间
+        }
+        
+
+        res= res.flag ?res : this.blnOpiton(e);
+
+        //判断鼠标单击节点操作栏
+        let clickP=null,optIndex=-1;
+        
+        if(res.flag){
+            clickP=res.p;
+            optIndex=res.index;
+        }
+        
+
+        if(clickP && optIndex>=0){
+            switch(optIndex){
+                case 0: //删除
+                    let data=[];
+                    this.recursionChild(clickP,data);
+                    _.each(data,c=>{c.blnHide=true;c.blnExtend=false;});
+                    clickP.blnExtend=false;
+                    clickP.blnHide=true;
+                    //设置删除点关联点为不完全展开状态
+                    _.each(this.edges,e=>{
+                        if(e.source.id==clickP.id){
+                            e.target.blnExtend=false;
+                        }else if(e.target.id==clickP.id){
+                            e.source.blnExtend=false;
+                        }
                     });
- 
-                    return;
-                }
-                point.clicked=!point.clicked;
-                if(!point.anmalcomplete) point.anmalTime=(new Date()).getTime();//当前动画开始时间
-            }
-            
 
-            res= res.flag ?res : this.blnOpiton(e);
-
-            //判断鼠标单击节点操作栏
-            let clickP=null,optIndex=-1;
-            
-            if(res.flag){
-                clickP=res.p;
-                optIndex=res.index;
-            }
-            
-
-            if(clickP && optIndex>=0){
-                switch(optIndex){
-                    case 0: //删除
+                    break;
+                case 1://展示子节点
+                    if(clickP.blnExtend){//已展开则隐藏 
                         let data=[];
                         this.recursionChild(clickP,data);
                         _.each(data,c=>{c.blnHide=true;c.blnExtend=false;});
                         clickP.blnExtend=false;
-                        clickP.blnHide=true;
-                        //设置删除点关联点为不完全展开状态
-                        _.each(this.edges,e=>{
-                            if(e.source.id==clickP.id){
-                                e.target.blnExtend=false;
-                            }else if(e.target.id==clickP.id){
-                                e.source.blnExtend=false;
-                            }
-                        });
-
-                        break;
-                    case 1://展示子节点
-                        if(clickP.blnExtend){//已展开则隐藏 
-                            let data=[];
-                            this.recursionChild(clickP,data);
-                            _.each(data,c=>{c.blnHide=true;c.blnExtend=false;});
-                            clickP.blnExtend=false;
-                        }else if(clickP.childs && clickP.childs.length>0){//子节点被隐藏则重新显示
-                            _.each(clickP.childs,c=>c.blnHide=false);
-                            clickP.blnExtend=true;
-                        }else if (clickP) {
-                            this.showChildPoint(clickP);
-                        }
-                        break;
-                    case 2://解锁
-                        if(clickP.parent){return;}//父节点不用解锁
-                        // clickP.x=clickP.fx;
-                        // clickP.x=clickP.fy;
-                        clickP.fx=null;
-                        clickP.fy=null;
-                        break;
-                    case 3://复制
-                        clipboard.writeText(point.subTextOne);
-                        tool.info('复制成功!');
-                        break;
-                }
+                    }else if(clickP.childs && clickP.childs.length>0){//子节点被隐藏则重新显示
+                        _.each(clickP.childs,c=>c.blnHide=false);
+                        clickP.blnExtend=true;
+                    }else if (clickP) {
+                        this.showChildPoint(clickP);
+                    }
+                    break;
+                case 2://解锁
+                    if(clickP.parent){return;}//父节点不用解锁
+                    // clickP.x=clickP.fx;
+                    // clickP.x=clickP.fy;
+                    clickP.fx=null;
+                    clickP.fy=null;
+                    break;
+                case 3://复制
+                    clipboard.writeText(point.subTextOne);
+                    tool.info('复制成功!');
+                    break;
             }
-
-        });
+        }
     },
     //节点双击事件
     regPosDblclick(){
@@ -1058,6 +1056,7 @@ export default {
         }
 
         //判断是否进入复制图标
+        s.ctx.font="12px 微软雅黑";
         let rectOne={w:s.ctx.measureText(point.subTextOne).width,h:s.ctx.measureText('W').width};
         s.drawOption(point.x-size.w/2+10 + rectOne.w +20,point.y-size.h/2+15+rectOne.h+12);//画警告路径
         if(s.ctx.isPointInPath(x,y)){
@@ -1124,7 +1123,6 @@ export default {
 
         let data=res.biz_body.data;
 
-        console.log(res.biz_body);
         let rootPointers=this.converData(this.serachInfo.code,res.biz_body.selfData);
 
         //return;
