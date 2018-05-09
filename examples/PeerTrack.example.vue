@@ -550,9 +550,12 @@ export default {
 
   .PeerTrack .childMac{float:right;width:~'calc(50% - @{leftW}/2)';height:100%;.border('left',@Font_Hover_Col);}
 
+  html{.TCol(~".PeerTrack .childMac",'blc');}
+
   @titleH:40px;
   .PeerTrack .left_container .nav_item .title{height:@titleH;line-height:@titleH;cursor:pointer;padding:0px 10px;font-size:14px;}
-  .PeerTrack .left_container .nav_item .title:hover{background-color:@Font_Hover_Col;color:white;}
+  .PeerTrack .left_container .nav_item .title:hover{color:white;}
+  html{.TCol(~".PeerTrack .left_container .nav_item .title:hover",'bg');}
 
   .PeerTrack .left_container .nav_item .title .option_bar{float:right;}
   .PeerTrack .left_container .nav_item .title .option_bar .fa.active{color:@btn_Bg_Col_4;}
@@ -561,7 +564,10 @@ export default {
   .PeerTrack .left_container .nav_item .content .content_item{margin-bottom:10px;.border('bottom');}
   .PeerTrack .left_container .nav_item .content .content_item:last-child{margin-bottom:0px;}
 
-  .PeerTrack .left_container .nav_item .content .content_item:hover{color:@Font_Hover_Col;cursor:pointer;.border('bottom',@Font_Hover_Col);}
+  .PeerTrack .left_container .nav_item .content .content_item:hover{cursor:pointer;.border('bottom',@Font_Hover_Col);}
+  html{.TCol(~".PeerTrack .left_container .nav_item .content .content_item:hover");}
+  html{.TCol(~".PeerTrack .left_container .nav_item .content .content_item:hover",'bbc');}
+
 
   .PeerTrack .left_container .nav_item .content .content_item .info{float:right;width:~'calc(100% - 18px)';padding:0px 10px;}
 

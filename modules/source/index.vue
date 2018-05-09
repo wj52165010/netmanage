@@ -437,8 +437,13 @@ export default {
 
     .SourceSet .source .LeftCol .item.active,
     .SourceSet .source .LeftCol .item:hover{cursor:pointer;.border('',@Font_Hover_Col);}
+
+    html{.TCol(~".SourceSet .source .LeftCol .item:hover",'bc');}
+
     .SourceSet .source .LeftCol .item.active i,
-    .SourceSet .source .LeftCol .item:hover i{color:@Font_Hover_Col;}
+    //.SourceSet .source .LeftCol .item:hover i{color:@Font_Hover_Col;}
+    html{.TCol(~".SourceSet .source .LeftCol .item:hover i");}
+
     .SourceSet .source .LeftCol .item .icon{position:absolute;left:-16px;top:18px;color:@FontCol;z-index:100;line-height:0px;background-color:white;}
     .SourceSet .source .LeftCol .item .icon i{font-size:40px;}
     
@@ -480,11 +485,13 @@ export default {
   .source_item .option .item:hover{cursor:pointer;}
   .source_item .option .item:hover i{color:white ;}
 
-  .source_item:hover{background-color:@Font_Hover_Col;color:white;}
+  .source_item:hover{color:white;}
+  html{.TColIm(~".source_item:hover",'bg');}
   .source_item:hover .desc{color:white;}
   .source_item:hover .option{background-color:@HeaderBgCol;}
   .source_item:hover .option .item i{color:white;}
-  .source_item:hover .option .item:hover i{color:@Font_Hover_Col;}
+  //.source_item:hover .option .item:hover i{color:@Font_Hover_Col;}
+  html{.TCol(~".source_item:hover .option .item:hover i");}
 
   .source_item .iden_container{
         position: absolute;
@@ -492,9 +499,9 @@ export default {
         right: 0px;
         width: 30px;
         height: 30px;
-        background-image:linear-gradient(45deg,transparent 50%,@Font_Hover_Col 50%),
-                         linear-gradient(45deg,transparent 49%,@Font_Hover_Col 10%) ;
    }
+
+   html{.TCol(~".source_item .iden_container",'lineLoopgen',45deg,transparent,50%,@Font_Hover_Col,50%,45deg,transparent,49%,@Font_Hover_Col,10%);}
   .source_item .iden{position:absolute;right: 3px; top: 2px;color: white;}
 
 //列表样式
@@ -503,7 +510,8 @@ export default {
 .table_header{height:@tableRowH;.border('bottom');}
 .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
 .table_header th{padding-left:0px;padding-right:0px;}
-.table_header{background-color:@Font_Hover_Col;color:white;}
+.table_header{color:white;}
+html{.TColIm(~".table_header",'bg');}
 .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
 .table_body td{padding-left:0px;padding-right:0px;}
 </style>

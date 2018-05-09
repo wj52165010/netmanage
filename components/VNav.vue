@@ -39,5 +39,7 @@ export default {
  .VNav .item{color:@FrontCol;padding:10px 0px;width:100%;text-align:center;cursor:pointer;}
  .VNav .item i{color:@FrontCol;font-size:20px;}
  .VNav .item.active i,
- .VNav .item:hover i{color:@btn_Bg_Col_hover_0;}
+ //.VNav .item:hover i{color:@btn_Bg_Col_hover_0;}
+
+ html{.TColImAdd(~".VNav .item:hover i");}
 </style>

@@ -287,7 +287,9 @@ export default {
   @import "../../css/variables.less";
   .LineCount{width:100%;height:100%;.border('');}
   @titleH:60px;
-  .LineCount .title{height:@titleH;.border('bottom');width:100%;background-color:@Font_Hover_Col;text-align:left;}
+  .LineCount .title{height:@titleH;.border('bottom');width:100%;text-align:left;}
+  html{.TCol(~".LineCount .title",'bg');}
+
   .LineCount .title .tip{color:white;line-height:30px;padding:0px 10px;}
   .LineCount .title .sub{width:100%;line-height:30px;height:30px;padding:0px 10px;font-size:12px;color:@HeaderBgCol;}
   .LineCount .title .sub .totle{color:white;font-weight:600;}
@@ -301,10 +303,12 @@ export default {
   .LineCount .dateSel i{font-size:20px;height:@dateSelH;display:table-cell;vertical-align: middle;}
   .LineCount .dateSel span{height:@dateSelH;display:table-cell;vertical-align: middle;padding: 0px 10px;}
 
-  .LineCount .dateSel i:hover{cursor:pointer;color:@Font_Hover_Col;}
+  .LineCount .dateSel i:hover{cursor:pointer;}
+  html{.TCol(~".LineCount .dateSel i:hover");}
 
   .LineCount .chart_container{height:~'calc(100% - @{titleH} - @{dateSelH})';width:100%;position:relative;}
 
-  .LineCount .numberInfo{position:absolute;top:5px;width: 100%;text-align: center;color:@Font_Hover_Col;font-size:18px;}
+  .LineCount .numberInfo{position:absolute;top:5px;width: 100%;text-align: center;font-size:18px;}
+  html{.TCol(~".LineCount .numberInfo");}
   .disabled{color:@FontCol;}
 </style>

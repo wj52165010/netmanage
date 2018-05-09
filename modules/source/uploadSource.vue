@@ -99,15 +99,17 @@ export default {
 .UploadSource .selItem{width:150px;height:150px;float:left;.border('');margin-right:15px;border-radius:5px;overflow:hidden;position:relative;text-align:center;}
 .UploadSource .selItem:hover{.border('',@Font_Hover_Col);cursor:pointer;}
 
+html{.TCol(~".UploadSource .selItem:hover",'bc');}
+
 .UploadSource .selItem .iden_container{
         position: absolute;
         top: 0px;
         right: 0px;
         width: 30px;
         height: 30px;
-        background-image:linear-gradient(45deg,transparent 50%,@Font_Hover_Col 50%),
-                         linear-gradient(45deg,transparent 49%,@Font_Hover_Col 10%) ;
 }
+
+html{.TCol(~".UploadSource .selItem .iden_container",'lineLoopgen',45deg,transparent,50%,@Font_Hover_Col,50%,45deg,transparent,49%,@Font_Hover_Col,10%);}
 .UploadSource .selItem .iden{position:absolute;right: 3px; top: 2px;color: white;}
 .UploadSource .selItem .icon {font-size:80px;}
 .UploadSource .selItem .info{font-style:italic;color:@FontCol;}

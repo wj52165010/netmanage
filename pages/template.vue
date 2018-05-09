@@ -949,13 +949,17 @@ export default {
     .el-table{border:none;}
     .el-table__header th div,
     .el-table__header th{background-color:transparent !important;color:white;}
-    .el-table__header tr{background-color:@Font_Hover_Col;}
+    //.el-table__header tr{background-color:@Font_Hover_Col;}
+
+    html{.TCol(~".el-table__header tr",'bg');}
+
     .el-table__fixed-right{box-shadow:none !important;}
     .el-table__fixed-right:before{background-color: transparent;}
     
     .el-table--border th:nth-last-child(1){border-right:none;}
     .el-table--striped .el-table__body tr:nth-child(2n) td {background:transparent;}
-    .el-table--enable-row-hover tr:hover > td{background-color:@Font_Hover_Col !important;color:white !important;}
+    .el-table--enable-row-hover tr:hover > td{color:white !important;}
+    html{.TColIm(~".el-table--enable-row-hover tr:hover > td",'bg');}
     //.el-table__body-wrapper{overflow-x:hidden !important;}
     .template .overflow,
     .template .el-table .cell div{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
@@ -987,8 +991,10 @@ export default {
     .template .page .condition .item .input{float:right;}
 
 
-    .template .table_container .option_btn{margin-right:10px;cursor:pointer;color:@Font_Hover_Col;}
-    .template .table_container .option_btn:hover{color:@Font_Hover_Col;}
+    .template .table_container .option_btn{margin-right:10px;cursor:pointer;}
+    html{.TCol(~".template .table_container .option_btn");}
+    //.template .table_container .option_btn:hover{color:@Font_Hover_Col;}
+    html{.TCol(~".template .table_container .option_btn:hover");}
 
     //加载中动画
     .loading{position: absolute;top:0px;left:0px;right:0px;bottom:0px;}
@@ -1000,7 +1006,8 @@ export default {
 
     //远程数据项
     .remote_item{padding:0px 10px;font-size:12px;.border('bottom');}
-    .remote_item:hover{cursor:pointer;color:white;background-color:@Font_Hover_Col;}
+    .remote_item:hover{cursor:pointer;color:white;}
+    html{.TColIm(~".remote_item:hover",'bg');}
 
     .template .iden_container{
         position: absolute;

@@ -531,9 +531,11 @@ export default {
   .allData .title{.border('bottom');line-height:@titlH;text-align:center;}
   .allData .subject{width:100%;height:~"calc(100% - @{titlH} - 1px)";}
   .allData .subject .tag_item{
-      line-height:30px;.border('bottom');background-color:@Font_Hover_Col;color:white;text-align:left;padding:0px 20px 0px 10px;
+      line-height:30px;.border('bottom');color:white;text-align:left;padding:0px 20px 0px 10px;
       cursor:pointer;
   }
+  html{.TCol(~".allData .subject .tag_item",'bg');}
+
   .allData .subject .tag_item .number{font-style:italic;font-weight:600;float:left;}
   .allData .subject .tag_item .option{float:right;display:none;}
   .allData .subject .tag_item:hover .option{display:block;}

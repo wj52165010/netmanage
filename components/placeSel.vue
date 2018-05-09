@@ -1,7 +1,7 @@
 <!--场所选择基础插件-->
 <template>
     <div class="PlaceSel" name="placeDir" v-on:click="click">
-        <div><i class="fa fa-reorder" style="font-size:16px;"></i></div>
+        <div class="inputContainer"><i class="fa fa-reorder" style="font-size:16px;"></i></div>
     </div>
 </template>
 
@@ -41,7 +41,7 @@ export default {
      let btn=$(this.$el);
      btn.css({'display':'inline-block','background-color': 'transparent'});
      btn.find('div').css(
-         _.extend({ 'background-color':'white','color':'#a0d989','line-height':'34px','border':'none','text-align':'center','cursor':'pointer','width':'34px','height':'34px'},this.btnStyle || {})
+         _.extend({ 'background-color':'white','line-height':'34px','border':'none','text-align':'center','cursor':'pointer','width':'34px','height':'34px'},this.btnStyle || {})
      );
 
  },
@@ -458,7 +458,9 @@ export default {
                             var searchTreeStartTime = (new Date()).getTime();
                             let placeSerachKind = searchKind.replace('1','3').replace('0','1');
                             //code:'410500', type:'1' || placeSerachKind //测试属性控件卡属性
+                         
                             store.dispatch(GET_PLACE,{code:'', type: placeSerachKind, defaultVal:defVal}).then(function (code) {
+   
                                 var searchTreeEndTime = (new Date()).getTime();
                                 var rangeTreeTime = parseInt(searchTreeEndTime) - parseInt(searchTreeStartTime);
                                 //treeContainer.find('.load6').remove();
@@ -875,5 +877,7 @@ export default {
 </style>
 
 <style scoped lang="less">
-
+    @import "../css/variables.less";
+    //.PlaceSel .inputContainer{color:@Font_Hover_Col;}
+    html{.TCol(~".PlaceSel .inputContainer");}
 </style>

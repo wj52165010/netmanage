@@ -350,13 +350,17 @@ export default {
     .trans(.2s);
 }
 .listShow .container .row:hover{
-    background-color:@Font_Hover_Col;color:white;
+    color:white;
 }
 
+html{.TColIm(~".listShow .container .row:hover",'bg');}
+
 .listShow .row.header{
-    background-color: @Font_Hover_Col;
     color: white;
 }
+
+html{.TColIm(~".listShow .row.header",'bg');}
+
 .listShow .container .row .fragment{
     display:table-cell;.border('bottom');.border('right');padding:0px 0px 0px 0px;vertical-align: middle;
 }

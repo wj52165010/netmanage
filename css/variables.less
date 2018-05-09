@@ -6,11 +6,11 @@
 @BgCol:#ebedee;//页面背景色
 @FrontCol:#ffffff;//页面前景色
 @FontCol:#728499;//字体颜色
-@Font_Hover_Col:rgb(3, 171, 103);//#03c1d7;//鼠标放上字体颜色
+@Font_Hover_Col:#007acc;//rgb(3, 171, 103);//#03c1d7;//鼠标放上字体颜色
 @Active_Bg_Col:@Font_Hover_Col;//导航激活背景色
 @Active_Front_Col:white;//导航激活前景色
 @borderCol:#e7eaec;//表框颜色
-@btn_Bg_Col_hover_0:#98e32c;//#98e32c按钮背景色0
+@btn_Bg_Col_hover_0:#fdc305;//#98e32c;//#98e32c按钮背景色0
 @btn_Bg_Col_0:shade(@btn_Bg_Col_hover_0,10%);//按钮前景色1(#638ca6)备选颜色
 @btn_Bg_Col_hover_1:@Font_Hover_Col;//按钮背景色1
 @btn_Bg_Col_1:shade(@btn_Bg_Col_hover_1,10%);//按钮前景色1(#638ca6)备选颜色
@@ -72,4 +72,160 @@
     -ms-transition: all @start_time cubic-bezier(.35, .52,.33, .98) 0s;
     -webkit-transition: all @start_time cubic-bezier(.35, .52,.33, .98) 0s;
     -o-transition:all @start_time cubic-bezier(.35, .52,.33, .98) 0s;
+}
+
+//设置主题
+@Theme: defTheme, blueTheme;
+@ThemeCol:rgb(3, 171, 103),@Font_Hover_Col;
+@ThemeColAdd:#98e32c,@btn_Bg_Col_0;
+
+.loop(@class,@pro,@Theme:@Theme,@counter:length(@Theme)) when (@counter>0) {
+    .loop(@class,@pro,@Theme,@counter - 1);
+  
+    @abc:extract(@Theme, @counter); 
+    @val:extract(@ThemeCol,@counter);
+
+    .@{abc} @{class}{
+      @{pro}:@val;
+    }
+}
+
+.loopAdd(@class,@pro,@Theme:@Theme,@counter:length(@Theme)) when (@counter>0) {
+    .loopAdd(@class,@pro,@Theme,@counter - 1);
+  
+    @abc:extract(@Theme, @counter); 
+    @val:extract(@ThemeColAdd,@counter);
+
+    .@{abc} @{class}{
+      @{pro}:@val;
+    }
+}
+
+.loopImportantAdd(@class,@pro,@Theme:@Theme,@counter:length(@Theme)) when (@counter>0) {
+    .loopImportantAdd(@class,@pro,@Theme,@counter - 1);
+  
+    @abc:extract(@Theme, @counter); 
+    @val:extract(@ThemeColAdd,@counter);
+
+    .@{abc} @{class}{
+      @{pro}:@val !important;
+    }
+}
+
+.loopFade(@class,@pro,@number,@Theme:@Theme,@counter:length(@Theme)) when (@counter>0) {
+    .loopFade(@class,@pro,@number,@Theme,@counter - 1);
+  
+    @abc:extract(@Theme, @counter); 
+    @val:extract(@ThemeCol,@counter);
+
+    .@{abc} @{class}{
+      @{pro}:fade(@val,@number);
+    }
+}
+
+.loopImportant(@class,@pro,@Theme:@Theme,@counter:length(@Theme)) when (@counter>0) {
+    .loopImportant(@class,@pro,@Theme,@counter - 1);
+  
+    @abc:extract(@Theme, @counter); 
+    @val:extract(@ThemeCol,@counter);
+
+    .@{abc} @{class}{
+      @{pro}:@val !important;
+    }
+}
+
+.lineLoop(@class,@pro,@rote:0deg,@opacity:100%,@size,@col,@colSize,@Theme:@Theme,@counter:length(@Theme)) when (@counter>0) {
+    .lineLoop(@class,@pro,@rote,@opacity,@size,@col,@colSize,@Theme,@counter - 1);
+  
+    @abc:extract(@Theme, @counter); 
+    @val:extract(@ThemeCol,@counter);
+
+    .@{abc} @{class}{
+        @{pro}:linear-gradient(@rote,fade(@val,@opacity) @size,@col @colSize);
+    }
+}
+
+.lineLoopReverse(@class,@pro,@rote:0deg,@opacity:100%,@size,@col,@colSize,@Theme:@Theme,@counter:length(@Theme)) when (@counter>0) {
+    .lineLoopReverse(@class,@pro,@rote,@opacity,@size,@col,@colSize,@Theme,@counter - 1);
+  
+    @abc:extract(@Theme, @counter); 
+    @val:extract(@ThemeCol,@counter);
+
+    .@{abc} @{class}{
+        @{pro}:linear-gradient(@rote,@col @colSize,fade(@val,@opacity) @size)
+    }
+}
+
+.lineLoopgen(@class,@pro,@rote:0deg,@col1,@size1,@col2,@size2,@rote2,@col3,@size3,@col4,@size4,@Theme:@Theme,@counter:length(@Theme)) when (@counter>0) {
+    .lineLoopgen(@class,@pro,@rote,@col1,@size1,@col2,@size2,@rote2,@col3,@size3,@col4,@size4,@Theme,@counter - 1);
+  
+    @abc:extract(@Theme, @counter); 
+    @val:extract(@ThemeCol,@counter);
+
+    .@{abc} @{class}{
+        @{pro}:linear-gradient(@rote,@col1 @size1,@val @size2),
+               linear-gradient(@rote2,@col3 @size3,@col4 @size4) ;
+    }
+}
+
+
+
+.TCol(@class,@pro:"") when(@pro=""){//设置字体颜色
+  .loop(@class,color);
+}
+
+.TCol(@class,@pro:"") when(@pro="bg"){//设置背景颜色
+    .loop(@class,background-color);
+}
+
+.TColAdd(@class,@pro:"") when(@pro=""){//设置字体颜色
+    .loopAdd(@class,color);
+  }
+  
+.TColAdd(@class,@pro:"") when(@pro="bg"){//设置背景颜色
+    .loopAdd(@class,background-color);
+}
+
+.TColIm(@class,@pro:"") when(@pro="bg"){//设置背景颜色
+    .loopImportant(@class,background-color);
+}
+
+.TColImAdd(@class,@pro:"") when(@pro="bg"){//设置背景颜色
+    .loopImportantAdd(@class,background-color);
+}
+
+.TColFade(@class,@number,@pro:"") when(@pro="bg"){//设置背景颜色
+    .loopFade(@class, background-color, @number)
+}
+
+.TCol(@class,@pro:"") when(@pro="bbc"){//设置下边框
+    .loop(@class,border-bottom-color);
+}
+
+.TCol(@class,@pro:"") when(@pro="btc"){//设置上边框
+    .loop(@class,border-top-color);
+}
+
+.TCol(@class,@pro:"") when(@pro="blc"){//设置左边框
+    .loop(@class,border-left-color);
+}
+
+.TCol(@class,@pro:"") when(@pro="brc"){//设置右边框
+    .loop(@class,border-right-color);
+}
+
+.TCol(@class,@pro:"") when(@pro="bc"){//设置右边框
+    .loop(@class,background-color);
+}
+
+.TCol(@class,@pro:"",@rote,@opacity,@size,@col,@colSize) when(@pro="bgLine"){//设置背景线性渐变
+    .lineLoop(@class,background,@rote,@opacity,@size,@col,@colSize);
+}
+
+.TCol(@class,@pro:"",@rote,@opacity,@size,@col,@colSize) when(@pro="bgLineRerver"){//设置背景线性渐变
+    .lineLoopReverse(@class,background,@rote,@opacity,@size,@col,@colSize);
+}
+
+.TCol(@class,@pro:"",@rote,@col1,@size1,@col2,@size2,@rote2,@col3,@size3,@col4,@size4) when(@pro="lineLoopgen"){//设置背景线性渐变
+    .lineLoopgen(@class,background-image,@rote,@col1,@size1,@col2,@size2,@rote2,@col3,@size3,@col4,@size4);
 }

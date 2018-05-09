@@ -264,7 +264,8 @@ export default {
 .table_header{height:@tableRowH;.border('bottom');}
 .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
 .table_header th{padding-left:0px;padding-right:0px;}
-.table_header .table_title{color:@Font_Hover_Col;}
+//.table_header .table_title{color:@Font_Hover_Col;}
+html{.TCol(~".table_header .table_title");}
 .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
 .table_body td{padding-left:0px;padding-right:0px;}
 </style>

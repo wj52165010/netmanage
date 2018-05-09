@@ -201,7 +201,9 @@ export default {
 
   .sideMenu .kind_container{background-color:@HeaderBgCol;}
 
-  .sideMenu .sideMenu_conatiner .kind_item.active{background-color:#1a1e27;color:@Font_Hover_Col;}
+  .sideMenu .sideMenu_conatiner .kind_item.active{background-color:#1a1e27;}
+
+  html{.TCol(~".sideMenu .sideMenu_conatiner .kind_item.active",'bg');}
 
   .sideMenu .kind_menu_container{
       position:absolute;background-color:@backgrounImg;height:100%;width:340px;top:0px;left:340px;.transLine(.3s);z-index:0;
@@ -215,13 +217,15 @@ export default {
       float:left;width:33.3%;height:100px;margin-top:0px;border-radius:0px;position:relative;.border('bottom');.border('right');
    }
    .sideMenu .kind_menu_container .content .menu_item:hover{z-index:100 !important;}
-  .sideMenu .kind_menu_container .content .menu_item i{font-size:30px;margin-bottom:10px;color:@btn_Bg_Col_hover_1;}
+  .sideMenu .kind_menu_container .content .menu_item i{font-size:30px;margin-bottom:10px;}
+  
+  html{.TCol(~".sideMenu .kind_menu_container .content .menu_item i");}
+
   .sideMenu .kind_menu_container .content .menu_item.complete:hover i{color:white;}
   .sideMenu .kind_menu_container .content .menu_item.complete:hover{cursor: pointer;}
   .sideMenu .kind_menu_container .content .menu_item ._container {padding:20px 10px;.transLine();}
   .sideMenu .kind_menu_container .content .menu_item.complete:hover ._container{
       transform:translate(-5px,-5px);
-      background-color:@btn_Bg_Col_hover_1;
       color:white;
       z-index:100;
     //   box-shadow:
@@ -236,6 +240,8 @@ export default {
     //     9px 9px 0 #bcc0c9; /* end of 4 level deep dark shadow */
     -moz-box-shadow:2px 2px 2px #BFBFBF; -webkit-box-shadow:2px 2px 2px #BFBFBF; box-shadow:2px 2px 2px #BFBFBF;
   }
+
+  html{.TCol(~".sideMenu .kind_menu_container .content .menu_item.complete:hover ._container",'bg');}
 
   .sideMenu .kind_menu_container .content .menu_item .info_mask{position:absolute;width:100%;height:100%;top:0px;left:0px;background:rgba(0,0,0,.6);color:white;}
   .sideMenu .kind_menu_container .content .menu_item .info_mask .info_mask_container{display:table;width:100%;height:100%;}

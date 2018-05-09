@@ -223,9 +223,11 @@ export default {
       }
 
       .KSearchIndex .settingRegion .content .item:hover .option_bar .removeBtn{
-        width:30px;height:30px; border-radius:50%;background-color:@Font_Hover_Col;
+        width:30px;height:30px; border-radius:50%;
         line-height:30px;color:white;margin: auto; margin-top:2px;
       }
+
+      html{.TCol(~".KSearchIndex .settingRegion .content .item:hover .option_bar .removeBtn",'bg');}
 
       .KSearchIndex .settingRegion .content .item:hover{background-color:rgba(0,0,0,.4);color:white;}
 
@@ -245,11 +247,13 @@ export default {
         right: 0px;
         width: 30px;
         height: 30px;
-        background-image:linear-gradient(45deg,transparent 50%,@Font_Hover_Col 50%),
-                         linear-gradient(45deg,transparent 49%,@Font_Hover_Col 10%) ;
 
 
       }
+
+      html{.TCol(~".KSearchIndex .settingRegion .content .item .iden_container",'lineLoopgen',45deg,transparent,50%,@Font_Hover_Col,50%,45deg,transparent,49%,@Font_Hover_Col,10%);
+      }
+
       .KSearchIndex .settingRegion .option{width:100%;text-align:right;height:@barH;line-height:@barH;}
 
       //数据源样式
@@ -267,6 +271,8 @@ export default {
         border-top-right-radius:5px;
         .border('',@Font_Hover_Col);
       }
+
+      html{.TCol(~".KSearchIndex .sources .content .item .title",'bc');}
       .KSearchIndex .sources .content .item .desc{
         line-height:~'calc(@{content_itemH} - 40px)';padding:0px 5px;font-style:italic;
         text-overflow: ellipsis;
@@ -279,4 +285,6 @@ export default {
         border-top:0px;
         font-size:12px;
       }
+
+      html{.TCol(~".KSearchIndex .sources .content .item .desc",'bc');}
 </style>

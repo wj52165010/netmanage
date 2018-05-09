@@ -1058,7 +1058,8 @@ export default {
   .table_show .option_bar_right .item{cursor:pointer;margin-left:10px;}
   .table_show .option_bar_left .item:hover,
   .field_cond .option_bar_right .item:hover,
-  .table_show .option_bar_right .item:hover{color:@Font_Hover_Col;}
+  //.table_show .option_bar_right .item:hover{color:@Font_Hover_Col;}
+  html{.TCol(~".table_show .option_bar_right .item:hover");}
 
   .table_show .option_bar_left{padding:0px 10px;height:100%;font-weight:400;font-size:14px;font-style:italic;display:inline-block;}
   .table_show .option_bar_left .item{padding:5px 10px;}
@@ -1073,7 +1074,9 @@ export default {
   .field_cond .content .item .info{float:left;width:110px;line-height:36px;text-align:center;font-style:italic;}
   .field_cond .content .item .bar{float:right;}
 
-  .active{background-color:@Font_Hover_Col;color:white;}
+  .active{color:white;}
+
+  html{.TColIm(~".active",'bg');}
 
   //操作按钮项
   .btn_item{display:inline-block;background: #1d365d;margin: 10px;

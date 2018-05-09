@@ -357,7 +357,9 @@ export default {
 
 .FieldSetting .option_bar{float:right;height:100%;font-weight:600;font-style:italic;}
 .FieldSetting .option_bar .item{cursor:pointer;margin-left:10px;}
-.FieldSetting .option_bar .item:hover{color:@Font_Hover_Col;}
+//.FieldSetting .option_bar .item:hover{color:@Font_Hover_Col;}
+
+html{.TCol(~".FieldSetting .option_bar .item:hover");}
 
 //列表样式
 @tableRowH:40px;
@@ -365,7 +367,8 @@ export default {
 .table_header{height:@tableRowH;.border('bottom');}
 .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
 .table_header th{padding-left:0px;padding-right:0px;}
-.table_header .table_title{color:@Font_Hover_Col;}
+//.table_header .table_title{color:@Font_Hover_Col;}
+html{.TCol(~".table_header .table_title");}
 .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
 .table_body td{padding-left:0px;padding-right:0px;}
 </style>

@@ -50,7 +50,8 @@ export default {
   }
   .sourceList .item .desc{font-size:13px;}
   .sourceList .item .close_icon{position:absolute;right:0px;height:100%;line-height:@itemH;.border('right');padding-right:10px;}
-  .sourceList .item .close_icon:hover{color:@Font_Hover_Col;}
+  //.sourceList .item .close_icon:hover{color:@Font_Hover_Col;}
+  html{.TCol(~".sourceList .item .close_icon:hover");}
 
   .sourceList .item .icon.item_0{background-color:@btn_Bg_Col_1;}
   .sourceList .item .icon.item_1{background-color:@btn_Bg_Col_2;}

@@ -83,5 +83,7 @@ export default {
   .drop_content >div{
       cursor:pointer;padding:0px 10px;
   }
-  .drop_content > div:hover{color:white;background-color:@Font_Hover_Col;}
+  .drop_content > div:hover{color:white;}
+
+  html{.TCol(~".drop_content > div:hover",'bg');}
 </style>

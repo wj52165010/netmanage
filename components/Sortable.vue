@@ -138,7 +138,8 @@ export default {
 
     .sortable .draggable_item .tableName{text-align:left;padding:0px 10px;height:@titleH;line-height:25px;}
     .sortable .draggable_item .tableName i{float:right;margin-top:5px;cursour:pointer;margin-left:5px;}
-    .sortable .draggable_item .tableName i:hover{color:@Font_Hover_Col;}
+    //.sortable .draggable_item .tableName i:hover{color:@Font_Hover_Col;}
+    html{.TCol(~".sortable .draggable_item .tableName i:hover");}
     
     .sortable .draggable_item .tableName {background-color:black;color:@FrontCol;border-top-left-radius:5px;border-top-right-radius:5px;}
     .sortable .draggable_item.item_0 .tableName{background-color:@btn_Bg_Col_1;color:@FrontCol;border-top-left-radius:5px;border-top-right-radius:5px;}

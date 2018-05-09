@@ -338,10 +338,16 @@ export default {
        cursor:pointer;
    }
 
-   .QueryCond_option_bar .requried{background-color:@Font_Hover_Col;color:@FrontCol;}
-   .QueryCond_option_bar .no_requried{background-color:@Font_Hover_Col;color:@FrontCol;}
+   .QueryCond_option_bar .requried{color:@FrontCol;}
+   
+   html{.TColIm(~".QueryCond_option_bar .requried",'bg');}
+
+   .QueryCond_option_bar .no_requried{color:@FrontCol;}
+   html{.TColIm(~".QueryCond_option_bar .no_requried",'bg');}
 
    @removeBtnSize:20px;
-   .QueryCond .removeBtn{height:@removeBtnSize;width:@removeBtnSize;border-radius:50%;background-color:@Font_Hover_Col;cursor:pointer;
+   .QueryCond .removeBtn{height:@removeBtnSize;width:@removeBtnSize;border-radius:50%;cursor:pointer;
                          text-align:center;line-height:@removeBtnSize;color:white;position:absolute;right:-@removeBtnSize/2;top:-@removeBtnSize/2;}
+
+   html{.TColIm(~".QueryCond .removeBtn",'bg');}
 </style>

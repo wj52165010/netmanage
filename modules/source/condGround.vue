@@ -259,5 +259,7 @@ export default {
 .CondGround .groundInfo .ground_item{.border('bottom');text-align:center;}
 
 .CondGround .addBtn{position:absolute;right:2px;width:20px;height:20px;border-radius:50%;margin-top:10px;
-                        background-color:@Font_Hover_Col;color:white;cursor:pointer;text-align:center;}
+                        color:white;cursor:pointer;text-align:center;}
+
+html{.TColIm(~".CondGround .addBtn",'bg');}
 </style>

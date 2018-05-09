@@ -1065,7 +1065,8 @@ export default {
   .DeployContrl .case_detail{.border('top');}
   .DeployContrl .case_detail .left{float:left;width:@detailLW;height:100%;.border('right')}
   .DeployContrl .case_detail .right{margin-left:@detailLW;margin-right:0px;height:100%;}
-  .DeployContrl .case_detail .left .title{.border('bottom');text-align:center;line-height:@detail_title_H;background-color:@Font_Hover_Col;color:white;}
+  .DeployContrl .case_detail .left .title{.border('bottom');text-align:center;line-height:@detail_title_H;color:white;}
+  html{.TCol(~".DeployContrl .case_detail .left .title",'bg');}
   .DeployContrl .case_detail .left .title > span{margin-left:10px;}
   .DeployContrl .case_detail .left .info{width:100%;height:~'calc(100% - @{detail_title_H})';}
   .DeployContrl .case_detail .left .info .info_item{

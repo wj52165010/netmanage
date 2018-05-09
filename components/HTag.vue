@@ -53,8 +53,10 @@ export default {
      color:@FontCol;
     }
  .HTag .tag_item.active:before{content:'';width: 100%;height: 2px;position: absolute;background-color: white;left: 0px;bottom: -1px;}
- .HTag .tag_item:hover{cursor:pointer;background-color:@Font_Hover_Col;color:white;}
- .HTag .tag_item.active:after{content:'';width: 100%;height: 2px;position: absolute;background-color:@Font_Hover_Col;left:0px;top:0px;}
+ .HTag .tag_item:hover{cursor:pointer;color:white;}
+ html{.TCol(~".HTag .tag_item:hover",'bg');}
+ .HTag .tag_item.active:after{content:'';width: 100%;height: 2px;position: absolute;left:0px;top:0px;}
+ html{.TCol(~".HTag .tag_item.active:after",'bg');}
 
  .HTag .item{height:~'calc(100% -  @{tagH})';width:100%;}
 </style>

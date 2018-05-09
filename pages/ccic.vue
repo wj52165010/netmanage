@@ -920,7 +920,8 @@ export default {
 
 <style lang="less">
     @import "../css/variables.less";
-    .person_run_pop .el-button.active{background-color:@Font_Hover_Col;color:white;}
+    .person_run_pop .el-button.active{color:white;}
+    html{.TCol(~".person_run_pop .el-button.active",'bg');}
 </style>
 
 <style scoped lang="less">
@@ -935,7 +936,8 @@ export default {
   .action_bar{position:absolute;text-align:right;width:100%;line-height:40px;padding-right:15px;}
   .action_bar .action_item{margin-left:10px;}
   .action_bar .action_item i{ margin-right:3px;}
-  .action_bar .action_item:hover{color:@Font_Hover_Col;cursor:pointer;}
+  .action_bar .action_item:hover{cursor:pointer;}
+  html{.TCol(~".action_bar .action_item:hover");}
 
   .CCIC .content_container{width:100%;height:~"calc(100%  - 55px)";}
   
@@ -948,10 +950,14 @@ export default {
   .CCIC .table_header{height:@header_H;display:table;width:100%;border:none;}
   .CCIC .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
   .CCIC .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');}
-  .CCIC .table_header .column .sort_item .triangle-up:hover{border-bottom-color:@Font_Hover_Col;cursor:pointer;}
-  .CCIC .table_header .column .sort_item .triangle-down:hover{border-top-color:@Font_Hover_Col;cursor:pointer;}
-  .CCIC .table_header .column .sort_item .triangle-up.active{border-bottom-color:@Font_Hover_Col;}
-  .CCIC .table_header .column .sort_item .triangle-down.active{border-top-color:@Font_Hover_Col;}
+  .CCIC .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
+  html{.TCol(~".CCIC .table_header .column .sort_item .triangle-up:hover",'bbc');}
+  .CCIC .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
+  html{.TCol(~".CCIC .table_header .column .sort_item .triangle-down:hover",'btc');}
+  //.CCIC .table_header .column .sort_item .triangle-up.active{border-bottom-color:@Font_Hover_Col;}
+  html{.TCol(~".CCIC .table_header .column .sort_item .triangle-up.active",'bbc');}
+  //.CCIC .table_header .column .sort_item .triangle-down.active{border-top-color:@Font_Hover_Col;}
+  html{.TCol(~".CCIC .table_header .column .sort_item .triangle-down.active",'btc');}
   
   .CCIC .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
   .CCIC .table_conatienr{width:100%;display:table;width:100%;border:none;}

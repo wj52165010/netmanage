@@ -166,7 +166,8 @@ export default {
     .hnav .historyBar li{.border('right');float:left;height:100%;width:@historyBar_li_width;cursor:pointer;background-color:#393d4d;color:white;text-align:center;position:relative;}
     .hnav .historyBar li:first-child:nth-last-child(1),.hnav .historyBar li:nth-last-child(1){border:none;}
 
-    .hnav .historyBar li:hover{color:@Font_Hover_Col;background-color:@BgCol;.trans(.2s)}
+    .hnav .historyBar li:hover{background-color:@BgCol !important;.trans(.2s)}
+    html{.TCol(~".hnav .historyBar li:hover");}
     .hnav .historyBar li .close_container{
       position:absolute;
       bottom:-20px;
@@ -180,11 +181,14 @@ export default {
       .trans(.3s);
     }
     .hnav .historyBar li:hover .close_container{bottom:0px;}
-    .hnav .historyBar li .close_container i:hover{color:@btn_Bg_Col_hover_0;}
+    //.hnav .historyBar li .close_container i:hover{color:@btn_Bg_Col_hover_0;}
+
+    html{.TColAdd(~".hnav .historyBar li .close_container i:hover");}
 
     .hnav .historyBar .historyBar_icon{line-height:@headerH/1.8;font-size:18px;}
     .hnav .historyBar .historyBar_name{font-size:12px;}
-    .hnav .historyBar .active_item{background-color:@Font_Hover_Col;color:@Active_Front_Col;}
+    .hnav .historyBar .active_item{color:@Active_Front_Col;}
+    html{.TCol(~".hnav .historyBar .active_item",'bg');}
     .hnav .historyBar li .close_btn{position:absolute;right:5px;top:5px;cursor:pointer;}
 
     .hnav .arrow_left{float:left;display:none;height:-(1-@headerH);width:@navW;background: @btn_Bg_Col_1;color:white;line-height:-(1-@headerH);text-align:center;cursor:pointer;}
@@ -198,13 +202,14 @@ export default {
 
     //提示框样式
     .nav_tip{width:@historyBar_li_width;position:absolute;z-index:1000;
-             background-color: @btn_Bg_Col_hover_0;
              border-bottom-left-radius:5px;
              border-bottom-right-radius:5px;
              .trans(.3s);
              text-align:center;
              -moz-box-shadow:1px 1px 2px #333333; -webkit-box-shadow:1px 1px 2px #333333; box-shadow:1px 1px 2px #333333;
             }
+    
+    html{.TColAdd(~".nav_tip",'bg');}
 
   .nav_tip i:hover{color:white;cursor:pointer;}
 </style>

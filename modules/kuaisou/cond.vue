@@ -349,7 +349,10 @@ export default {
 
   .content .option_bar_right{float:right;height:100%;}
   .content .option_bar_right .item{cursor:pointer;margin-left:10px;}
-  .content .option_bar_right .item:hover{color:@Font_Hover_Col;}
+  //.content .option_bar_right .item:hover{color:@Font_Hover_Col;}
+  
+  html{.TCol(~".content .option_bar_right .item:hover");}
+  
 
   @titleH:40px;
   .sourceList .title,.content .title{
@@ -373,7 +376,8 @@ export default {
   }
 
   .sourceList .source_list .source_item .item{position:absolute;right:18px;}
-  .sourceList .source_list .source_item .item:hover{color:@Font_Hover_Col;}
+  //.sourceList .source_list .source_item .item:hover{color:@Font_Hover_Col;}
+  html{.TCol(~".sourceList .source_list .source_item .item:hover");}
 
   .sourceList .source_list .source_item.active:before,
   .sourceList .source_list .source_item:hover:before{
@@ -383,17 +387,24 @@ export default {
     left:-10px;
     right:-10px;
     height:2px;
-    background-color:@Font_Hover_Col;
     cursor:pointer;
   }
+
+  html{.TCol(~".sourceList .source_list .source_item:hover:before",'bg');}
+
   .sourceList .source_list .source_item_child{width:100%;.border('bottom');padding:5px;font-size:12px;}
   .sourceList .source_list .source_item_child .child_container{width:100%;height:100%;.border('');border-radius:5px;padding:10px;}
   .sourceList .source_list .source_item_child:hover .child_container{cursor:pointer;.border('',@Font_Hover_Col);}
+  
+  html{.TCol(~".sourceList .source_list .source_item_child:hover .child_container",'bc');}
+
   .sourceList .source_list .source_item_child .child_container .labelTitle{font-style:italic;font-weight:600;.border('bottom');text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: block;}
   .sourceList .source_list .source_item_child .child_container .desc{margin:5px 0px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: block;}
   .sourceList .source_list .source_item_child .child_container .val{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: block;}
 
   .dragDom{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: block;z-index:100;background-color:white;padding:10px;border-radius:5px;}
 
-  .cond .hasSet{color:@Font_Hover_Col;}
+  //.cond .hasSet{color:@Font_Hover_Col;}
+
+  html{.TCol(~".cond .hasSet");}
 </style>

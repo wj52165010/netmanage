@@ -1182,7 +1182,9 @@ export default {
     }
     .AttentPerson .detailInfo .info_item{margin-left:0px;margin-bottom:5px;}
     .AttentPerson .detailInfo .info_item .del{float:right;display:none;}
-    .AttentPerson .detailInfo .info_item .del:hover{color:@Font_Hover_Col;cursor:pointer;}
+    .AttentPerson .detailInfo .info_item .del:hover{cursor:pointer;}
+    html{.TCol(~".AttentPerson .detailInfo .info_item .del:hover");}
+
     .AttentPerson .detailInfo .info_item:hover i{display:block;}
     .AttentPerson .detailInfo .el-select input{border-radius:0px !important;}
 
@@ -1198,7 +1200,8 @@ export default {
     .AttentPerson .detailInfo .inputDropDown .dropDownItem .vidTypeInput{width:50px;border:none;outline:none;height:20px;}
 
     .AttentPerson .detailInfo .inputDropDown .dropDownItem .selectItem{line-height:25px;padding:0px 5px;}
-    .AttentPerson .detailInfo .inputDropDown .dropDownItem .selectItem:hover{background-color:@Font_Hover_Col;color:white;}
+    .AttentPerson .detailInfo .inputDropDown .dropDownItem .selectItem:hover{color:white;}
+    html{.TCol(~".AttentPerson .detailInfo .inputDropDown .dropDownItem .selectItem:hover",'bg');}
 
     .AttentPerson .detailInfo .inputDropDown .input.double{margin-left:180px;}
 
@@ -1234,8 +1237,10 @@ export default {
     .addAttention_pop .label_set .label_item:hover .del_btn{display:block;}
 
     .addAttention_item_sel .label_item{line-height:25px;padding:0px 10px;font-size:12px;.border('bottom');}
-    .addAttention_item_sel .label_item i{color:@Font_Hover_Col;float:right;margin-right:10px;margin-top: 7px;}
-    .addAttention_item_sel .label_item:hover{background-color:@Font_Hover_Col;color:white;cursor:pointer;}
+    .addAttention_item_sel .label_item i{float:right;margin-right:10px;margin-top: 7px;}
+    html{.TCol(~".addAttention_item_sel .label_item i");}
+    .addAttention_item_sel .label_item:hover{color:white;cursor:pointer;}
+    html{.TCol(~".addAttention_item_sel .label_item:hover",'bg');}
 
     //标签样式
     @LableH:200px;
@@ -1329,8 +1334,12 @@ export default {
     color: white;
 }
 .AttentPerson .right_container .content_bar .card.active .info .iden_container{display:block;}
-.AttentPerson .right_container .content_bar .card.active{border:2px solid @Font_Hover_Col;}
-.AttentPerson .right_container .content_bar .card.active .bottom{background-color:@Font_Hover_Col;color:white;}
+.AttentPerson .right_container .content_bar .card.active{border:2px solid;}
+html{.TCol(~".AttentPerson .right_container .content_bar .card.active",'bc');}
+
+
+.AttentPerson .right_container .content_bar .card.active .bottom{color:white;}
+html{.TCol(~".AttentPerson .right_container .content_bar .card.active .bottom",'bg');}
 
 .AttentPerson .right_container .content_bar .card .info .info_bar{margin-left:@photo_barW;height:100%;text-align:left;padding-left:10px;}
 .AttentPerson .right_container .content_bar .card .info .info_bar .item{margin-bottom:7px;}
@@ -1359,7 +1368,8 @@ export default {
     margin-top:-2.5px;
 }
 
-.AttentPerson .right_container .content_bar .card .info .info_bar .item .icon{color:@Font_Hover_Col;}
+//.AttentPerson .right_container .content_bar .card .info .info_bar .item .icon{color:@Font_Hover_Col;}
+html{.TCol(~".AttentPerson .right_container .content_bar .card .info .info_bar .item .icon");}
 //.AttentPerson .right_container .content_bar .card:hover .info .info_bar .item .icon{color:white;}
 
 //.AttentPerson .right_container .content_bar .card:hover .info .info_bar .item .labelTip{background-color:white;color:@Font_Hover_Col;}
@@ -1369,7 +1379,8 @@ export default {
 .AttentPerson .pop{.border('',@bgColor);border-radius:5px;background-color:white;text-align:left;font-size:12px;}
 
 @title_barH:30px;
-.AttentPerson .pop .title_bar{width:100%;height:@title_barH;background-color:@Font_Hover_Col;color:white;padding:0px 10px;line-height:@title_barH;border-top-right-radius:5px;border-top-left-radius:5px;}
+.AttentPerson .pop .title_bar{width:100%;height:@title_barH;color:white;padding:0px 10px;line-height:@title_barH;border-top-right-radius:5px;border-top-left-radius:5px;}
+html{.TCol(~".AttentPerson .pop .title_bar",'bg');}
 .AttentPerson .pop .contentinfo_bar{width:100%;padding:10px;}
 
 </style>

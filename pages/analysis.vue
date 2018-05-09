@@ -1338,10 +1338,15 @@ export default {
     @label_H:130px;
     @label_header_H:30px;
     .analysis .label_info{height:@label_H;display:inline-block;background-color:@BgCol;}
-    .analysis .label_info .header{height:@label_header_H;padding:0px 10px;background-color:@btn_Bg_Col_hover_5;line-height:@label_header_H;}  
+    .analysis .label_info .header{height:@label_header_H;padding:0px 10px;line-height:@label_header_H;}  
+    html{.TCol(~".analysis .label_info .header",'bg');}
+
     .analysis .label_info .header .title{font-size:14px;font-weight:600;color:@FrontCol;}
     .analysis .label_info .label_info_container{height:~"calc(100% - @{label_header_H} )";position: relative;}
-    .analysis .label_info .label_info_container .complete{color:@btn_Bg_Col_hover_5;display:table-cell;vertical-align: middle;}
+    .analysis .label_info .label_info_container .complete{display:table-cell;vertical-align: middle;}
+
+    html{.TCol(~".analysis .label_info .label_info_container .complete");}
+    
     .analysis .label_info .label_info_container .analy{color:@FontCol;display:table-cell;vertical-align: middle;}
 
     .analysis .label_info .label_info_container .analy .num,
@@ -1353,9 +1358,11 @@ export default {
 
     @addBtnSize:30px;
     .analysis .label_info .label_info_container .addBtn{
-        width:@addBtnSize;height:@addBtnSize;background-color:@btn_Bg_Col_hover_5;color:white;text-align:center;line-height:@addBtnSize;font-size:20px;
+        width:@addBtnSize;height:@addBtnSize;color:white;text-align:center;line-height:@addBtnSize;font-size:20px;
         position:absolute;bottom:0px;right:0px;cursor:pointer;
     }
+
+    html{.TCol(~".analysis .label_info .label_info_container .addBtn",'bg');}
 
     //任务标签样式
     .analysis .label_info.task{width:~"calc(25% - 9px)";text-align: left;margin-right:12px;margin-bottom:10px;}
@@ -1395,7 +1402,9 @@ export default {
   .scrollContainer{width:100%;height:100%;position: relative;}
   .scrollbar:hover {cursor:pointer;}
   .scrollbar { border:1px solid @borderCol;border-radius:5px;width: 10px; height: ~"calc(100% - @{titleH} - 20px)"; position: absolute;right: 5px;top:10px;background:white;margin-top:10px;}
-  .scrollbar .handle {width: 100%;height: 100px;background: @btn_Bg_Col_1;}
+  .scrollbar .handle {width: 100%;height: 100px;}
+
+  html{.TCol(~".scrollbar .handle",'bg');}
 
   //列表显示样式
   @header_H:40px;
@@ -1409,10 +1418,16 @@ export default {
   .analysis .table_header .item .progress_bar .gain{width:33.3%;background-color: @gainCol;height:100%;display:inline-block;}
   .analysis .table_header .item .progress_bar .collect{width:33.3%;background-color: @collectCol;height:100%;display:inline-block;}
   .analysis .table_header .item .progress_bar .result{width:33.3%;background-color: @resultCol;height:100%;display:inline-block;}
-  .analysis .table_header .item .sort_item .triangle-up:hover{border-bottom-color:@Font_Hover_Col;cursor:pointer;}
-  .analysis .table_header .item .sort_item .triangle-down:hover{border-top-color:@Font_Hover_Col;cursor:pointer;}
-  .analysis .table_header .item .sort_item .triangle-up.active{border-bottom-color:@Font_Hover_Col;}
-  .analysis .table_header .item .sort_item .triangle-down.active{border-top-color:@Font_Hover_Col;}
+  .analysis .table_header .item .sort_item .triangle-up:hover{cursor:pointer;}
+  html{.TCol(~".analysis .table_header .item .sort_item .triangle-up:hover",'bbc');}
+
+  .analysis .table_header .item .sort_item .triangle-down:hover{cursor:pointer;}
+  html{.TCol(~".analysis .table_header .item .sort_item .triangle-down:hover",'btc');}
+
+  //.analysis .table_header .item .sort_item .triangle-up.active{border-bottom-color:@Font_Hover_Col;}
+  html{.TCol(~".analysis .table_header .item .sort_item .triangle-up.active",'bbc');}
+  //.analysis .table_header .item .sort_item .triangle-down.active{border-top-color:@Font_Hover_Col;}
+  html{.TCol(~".analysis .table_header .item .sort_item .triangle-down.active",'btc');}
    
   .analysis .tipInfo{font-size:12px;float:right;margin-right:10px;margin-top:10px; line-height:15px;}
   .analysis .tipInfo .color.gain{height:15px;width:15px;float:left;margin-right:5px;background-color:@gainCol;}

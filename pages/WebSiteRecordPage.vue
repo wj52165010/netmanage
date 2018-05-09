@@ -649,7 +649,10 @@ export default {
   .areapage .body,
   .areapage .header{width: 100% !important;list-style: none;padding-left: 0px;padding: 0px;margin-bottom:0px;display:table;}
   .areapage .body .item,
-  .areapage .header .item{line-height: @rowH;height: @rowH;text-align: left;margin: 0px;display: table-row;width: 100%;background-color: @Font_Hover_Col;color: white;}
+  .areapage .header .item{line-height: @rowH;height: @rowH;text-align: left;margin: 0px;display: table-row;width: 100%;color: white;}
+  
+  html{.TCol(~".areapage .header .item",'bg');}
+  
   .areapage .body .item > div,
   .areapage .header .item > div{display: table-cell;.border('bottom');.border('right');padding: 0px 0px 0px 0px;vertical-align: middle;text-align:center;}
 
@@ -663,7 +666,9 @@ export default {
   .areapage .header .item .count_item{width:80px;}
 
   .areapage .body .item .option .overflow > span{border:none;font-size:12px;display: initial;margin-right:5px;}
-  .areapage .body .item .option .overflow > span:hover{cursor:pointer;color:@Font_Hover_Col;}
+  .areapage .body .item .option .overflow > span:hover{cursor:pointer;}
+  html{.TCol(~".areapage .body .item .option .overflow > span:hover");}
+
   .areapage .item .overflow{margin:0 auto;}
   .areapage .body .item .align .overflow{text-align:left}
   .areapage .body .item .overflow.sit-click,.firmpage .body .item .overflow .sit-click{
@@ -690,7 +695,8 @@ export default {
   }
 
   .areapage .header .item .dropDown div{.border('bottom');line-height:25px;padding:0px 10px;}
-  .areapage .header .item .dropDown div:hover{background-color:@Font_Hover_Col;color:white;cursor:pointer;}
+  .areapage .header .item .dropDown div:hover{color:white;cursor:pointer;}
+  html{.TCol(~".areapage .header .item .dropDown div:hover",'bg');}
 
   .areapage .header .item .title_content{position:relative;}
 
@@ -699,7 +705,9 @@ export default {
   .areapage .option .item .input{display:inline-block;}
   .areapage .tag_label:hover{color:@btn_Bg_Col_hover_1;}
 
-  .areapage .body .item .count_item:hover{color:@Font_Hover_Col;cursor:pointer;}
+  .areapage .body .item .count_item:hover{cursor:pointer;}
+  html{.TCol(~".areapage .body .item .count_item:hover");}
+
   .overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
   .areapage .tagComp[data-v-033fe12d]{
     height: 100%;

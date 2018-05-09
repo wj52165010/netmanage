@@ -158,7 +158,8 @@ export default {
     .FieldCond .fieldSet{width:100%;height:~'calc(100% - @{headerH})';}
 
     .FieldCond .addBtn{position:absolute;right:2px;width:20px;height:20px;border-radius:50%;margin-top:10px;
-                        background-color:@Font_Hover_Col;color:white;cursor:pointer;}
+                        color:white;cursor:pointer;}
+    html{.TColIm(~".FieldCond .addBtn",'bg');}
 
     @previewW:150px;//预览数据宽度
     @operatorW:130px;//运算符宽度

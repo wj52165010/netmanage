@@ -252,14 +252,18 @@ export default {
 
   @RowH:30px;
   .row{margin-bottom:15px;margin-left:0px;margin-right:0px;}
-  .row .info:hover{cursor:pointer;color:@Font_Hover_Col;}
+  .row .info:hover{cursor:pointer;}
+  html{.TCol(~".row .info:hover");}
+
   .row_title{height:@RowH;line-height:@RowH;width:100%;font-size:12px;font-style:italic;font-weight:600;}
   .row_title.underline{text-decoration:underline;}
   .row .content{width:100%;}
 
   .row .content .item{line-height:@RowH;height:@RowH;}
   .row .content .item .field{font-size: 12px;float:left;margin-right:5px;word-break: break-all;}
-  .row .content .item .field .title{font-style:italic;color:@Font_Hover_Col;}
+  .row .content .item .field .title{font-style:italic;}
+  html{.TCol(~".row .content .item .field .title");}
+
   .row .content .item .field .colon{margin:0px 5px;}
 
   .flowhide{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: block;position:relative;}

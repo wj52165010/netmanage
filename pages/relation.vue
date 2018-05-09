@@ -1083,7 +1083,9 @@ export default {
     .relation_item .number{height:100%;width:@numberW;position:absolute;}
     .relation_item .number div{height: 100%;display: table;width: 100%;text-align: center;}
     .relation_item .number div div{display: table-cell;vertical-align: middle;}
-    .relation_item .number div div span{width: 26px;display: block;height: 26px;font-size: 12px;border-radius: 13px;background-color: @Font_Hover_Col;color: white;padding-top: 5px;}
+    .relation_item .number div div span{width: 26px;display: block;height: 26px;font-size: 12px;border-radius: 13px;color: white;padding-top: 5px;}
+    html{.TCol(~".relation_item .number div div span",'bg');}
+    
     .relation_item .content{display:inline-block;width:~"calc(100% - @{numberW})";margin-left:@numberW;}
 
 </style>
@@ -1126,9 +1128,12 @@ export default {
     }
     .Relation .infoContent .holder{height:100%;width:100%;position:relation;}
     .Relation .infoContent .holder .closeBtn{
-        position:absolute;background-color:@Font_Hover_Col;top:50%;left:-28px;padding:15px 10px;margin-top:-25px;border-top-left-radius:5px;border-bottom-left-radius:5px;
+        position:absolute;top:50%;left:-28px;padding:15px 10px;margin-top:-25px;border-top-left-radius:5px;border-bottom-left-radius:5px;
         cursor:pointer;display:none;
     }
+    
+    html{.TCol(~".Relation .infoContent .holder .closeBtn",'bg');}
+
     .Relation .infoContent .holder .closeBtn:hover{background-color:green;}
     .Relation .infoContent .holder .closeBtn i{font-size:20px;color:white;}
     .Relation .infoContent.infoShow{right:0px;-moz-box-shadow:-1px 1px 2px #666; -webkit-box-shadow:-1px 1px 5px #666; box-shadow:-1px 1px 5px #666;}

@@ -447,12 +447,14 @@ export default {
   @import "../css/variables.less";
   .LayoutCmp{width:100%;height:100%;position:relative;-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none}
   .Hline{width:100%;height:1px;background-color:transparent;}
-  .Hline.active{background-color:@Font_Hover_Col;}
+  //.Hline.active{background-color:@Font_Hover_Col;}
+  html{.TCol(~".Hline.active",'bg');}
   .Vline{width:1px;height:100%;background-color:transparent;float:left;position:relative;}
   .Vline .fa-caret-down{position:absolute;top:-12px;left:-4px;display:none;}
   .Vline .fa-caret-up{position:absolute;bottom:-12px;left:-4px;display:none;}
   .Vline.active .fa-caret-down,
-  .Vline.active .fa-caret-up{display:block;color:@Font_Hover_Col;}
+  .Vline.active .fa-caret-up{display:block;}
+   html{.TCol(~".Vline.active .fa-caret-up");}
 
   @rowH:40px;
   .row{width:100%;height:@rowH;margin:0px;margin:10px 0px;}
@@ -461,6 +463,7 @@ export default {
     height: 38px;background-color:white;float:left;padding:10px;font-size:12px;.border('');border-radius:5px;margin-left:5px;position:relative;
   }
   .column:hover{cursor:pointer;.border('',@Font_Hover_Col);}
+   html{.TCol(~".column:hover",'bc');}
   .column .content{width:100%;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: block;position:relative;}
   .column .title{font-weight:600;font-style:italic;}
   .column .colon{margin:0px 5px;}
@@ -468,12 +471,14 @@ export default {
     position:absolute;right:0px;top:0px;height:100%;width:30px;text-align:right;.border('left',@Font_Hover_Col);background-color:white;
     border-top-right-radius:5px;border-bottom-right-radius:5px;display:none;
     }
+  html{.TCol(~".column .option_bar",'blc');}
   .column .option_bar .i_container{width:30px;height:100%;}
   .column .option_bar .item{
     display:none;width:100%;height:50%;line-height:20px;
     text-align:center;
     }
   .column .option_bar .item:first-child{.border('bottom',@Font_Hover_Col);}
+  html{.TCol(~".column .option_bar .item:first-child",'bbc');}
   .column:hover .option_bar{display:block;}
   .column:hover .option_bar .item{display:block;}
 
@@ -488,9 +493,13 @@ export default {
   .setting .content .option_item{margin-bottom:10px;}
   .setting .content .option_item_title{font-size:12px;font-style:italic;margin-bottom:5px;}
   .setting .btn_bar{width:100%;height:@setBtn;line-height:@setBtn;.border('top');text-align:center;font-style:italic;border-bottom-left-radius:5px;border-bottom-right-radius:5px;}
-  .setting .btn_bar:hover{cursor:pointer;background-color:@Font_Hover_Col;color:white;}
+  .setting .btn_bar:hover{cursor:pointer;color:white;}
+  html{.TCol(~".setting .btn_bar:hover",'bg');}
+
   .setting .remove_btn{position:absolute;top:-10px;right:-10px;width:20px;height:20px;line-height:20px;text-align:center;background-color:@FontCol;color:white;border-radius:50%;}
-  .setting .remove_btn:hover{cursor:pointer;background-color:@Font_Hover_Col;}
+  .setting .remove_btn:hover{cursor:pointer;}
+
+  html{.TCol(~".setting .remove_btn:hover",'bg');}
 
   .dragDom{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: block;z-index:100;}
 </style>

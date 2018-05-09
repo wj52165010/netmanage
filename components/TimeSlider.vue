@@ -193,7 +193,10 @@ export default {
         user-select: none;
   }
   .RangeSlider .middleLine{width:100%;height:@LineH;background-color:@FontCol;border-radius:5px;position:absolute;top:(@H - @LineH)/2;}
-  .RangeSlider .rang_bar{height:@LineH;background-color:@Font_Hover_Col;border-radius:5px;position:absolute;top:(@H - @LineH)/2;}
+  .RangeSlider .rang_bar{height:@LineH;border-radius:5px;position:absolute;top:(@H - @LineH)/2;}
+
+  html{.TCol(~".RangeSlider .rang_bar",'bg');}
+
   .RangeSlider .drag,
   .RangeSlider .movePoint{
       position:absolute;width:@PointNormalSize;height:@PointNormalSize;background-color:@Font_Hover_Col;top:(@H - @PointNormalSize)/2;cursor:pointer;

@@ -1147,9 +1147,12 @@ export default {
   .filter_container .optionBar .item,
   .header .optionBar .item{width:auto;margin-right:10px;}
   .filter_container .optionBar .item:hover,
-  .header .optionBar .item:hover{cursor:pointer;color:@Font_Hover_Col;}
+  .header .optionBar .item:hover{cursor:pointer;}
+  html{.TCol(~".header .optionBar .item:hover");}
+
   .filter_container .optionBar .item.active,
-  .header .optionBar .item.active{color:@Font_Hover_Col;}
+  //.header .optionBar .item.active{color:@Font_Hover_Col;}
+  html{.TCol(~".header .optionBar .item.active");}
 
   .count_item{display:inline-block;width:33%;margin-right:.5%;height:49.75%;margin-bottom:.5%;}
   .count_item:nth-child(6),

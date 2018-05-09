@@ -187,12 +187,16 @@ export default {
     float:right;
     margin-top:8px;
     margin-right:10px;
-    color:@Font_Hover_Col;
 }
+
+html{.TCol(~".ParsingRulesColSet .active:before");}
 
 @ItemH:30px;
 .ParsingRulesColSet .colShow .item{height:@ItemH;line-height:@ItemH;padding:0px 10px;.border('bottom');font-style:italic;position:relative;}
-.ParsingRulesColSet .colShow .item:hover{cursor:pointer;background-color:@Font_Hover_Col;color:white;}
+.ParsingRulesColSet .colShow .item:hover{cursor:pointer;color:white;}
+
+html{.TColIm(~".ParsingRulesColSet .colShow .item:hover",'bg');}
+
 .ParsingRulesColSet .colShow .content{height:~'calc(100% - @{titleH})';width:100%;}
 
 .ParsingRulesColSet .proSet{margin-left:@colShowW;margin-right:0px;height:100%;}

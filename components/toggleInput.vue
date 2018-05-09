@@ -120,7 +120,10 @@ export default {
   @import "../css/variables.less";
   .ToggleInput{position: relative;}
   .ToggleInput input{border:none;background-color:transparent;width:~'calc(100% - 20px)';}
-  .ToggleInput .line{border-top:1px solid @Font_Hover_Col;}
+  .ToggleInput .line{border-top:1px solid;}
+  
+  html{.TCol(~".ToggleInput .line",'btc');}
+
   .ToggleInput .label_info{width:100%;cursor:pointer;height:30px;line-height:30px;}
   .ToggleInput .input_info{width:100%;position:relative;line-height:20px;}
   .ToggleInput .fa-pencil{position:absolute;right:0px;top:5px;}

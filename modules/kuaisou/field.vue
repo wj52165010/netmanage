@@ -125,7 +125,9 @@ export default {
      .KSearchField .source .item.hover:hover{cursor:pointer;}
      .KSearchField .source .item .content{margin-left:10px;font-size:14px;}
      .KSearchField .source .item .number{font-style: italic;}
-     .KSearchField .source .item.active{background-color:@Font_Hover_Col;color:white;}
+     .KSearchField .source .item.active{color:white;}
+
+     html{.TCol(~".KSearchField .source .item.active",'bg');}
 
      .KSearchField .info{width:~'calc(100% - @{sourceW})';height:100%;margin-left:@sourceW;}
 
@@ -135,7 +137,10 @@ export default {
      .KSearchField .info .fieldList .title{height:@sourceItemH;.border('bottom');line-height:@sourceItemH;font-size:16px;}
      .KSearchField .info .fieldList .table_header{height:@headerH;.border('bottom');}
      .KSearchField .info .fieldList .table_header tr{height:~'calc(@{headerH} - 1px)';}
-     .KSearchField .info .fieldList .table_header .table_title{color:@Font_Hover_Col;}
+     //.KSearchField .info .fieldList .table_header .table_title{color:@Font_Hover_Col;}
+     
+     html{.TCol(~".KSearchField .info .fieldList .table_header .table_title");}
+
      .KSearchField .info .fieldList .content{height:~'calc(100% - @{sourceItemH} - @{headerH})';}
      .KSearchField .info .fieldList .hover{cursor:pointer;}
 

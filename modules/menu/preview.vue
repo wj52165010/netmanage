@@ -448,10 +448,14 @@ export default {
 
     //远程数据项
     .remote_item{padding:0px 10px;font-size:12px;.border('bottom');}
-    .remote_item:hover{cursor:pointer;color:white;background-color:@Font_Hover_Col;}
+    .remote_item:hover{cursor:pointer;color:white;}
+
+    html{.TColIm(~".remote_item:hover",'bg');}
 
     .Preview .option_btn{position:absolute;top:-20px;right:0px;display:none;}
-    .Preview .option_btn i:hover{cursor:pointer;color:@Font_Hover_Col;}
+    .Preview .option_btn i:hover{cursor:pointer;}
+
+    html{.TCol(~".Preview .option_btn i:hover");}
 
     .Preview .queryItem:hover .option_btn{display:block;}
 
@@ -464,7 +468,9 @@ export default {
     .slideBar .item{color:@FrontCol;padding:10px 0px;width:100%;text-align:center;cursor:pointer;}
     .slideBar .item i{color:@FrontCol;font-size:20px;}
     .slideBar .item.active i,
-    .slideBar .item:hover i{color:@btn_Bg_Col_hover_0;}
+    //.slideBar .item:hover i{color:@btn_Bg_Col_hover_0;}
+
+    html{.TColAdd(~".slideBar .item:hover i");}
 
     .Preview .SetMenu{margin-left:@slideBarW;height:100%;}
     .Preview.simplePage .SetMenu{margin-left:0px;}

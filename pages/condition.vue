@@ -1820,7 +1820,9 @@ export default {
     .blnPage .scrollbar{display:block;}
 
     .FieldSetItem_group_list .group_item{.border('bottom');line-height:30px;padding-left:10px;cursor:pointer;}
-    .FieldSetItem_group_list .group_item.active{background-color:@Font_Hover_Col;color:@FrontCol;}
+    .FieldSetItem_group_list .group_item.active{color:@FrontCol;}
+
+    html{.TCol(~".FieldSetItem_group_list .group_item.active",'bg');}
 
     @itemH:30px;
     @item_numberW:30px;
@@ -1837,8 +1839,12 @@ export default {
     .add_query_condition{padding:10px;}
     .add_query_condition label{font-weight:300;}
     .add_query_condition .form-group{margin-bottom:10px !important;}
-    .add_query_condition .requried{background-color:@Font_Hover_Col;color:@FrontCol;}
-    .add_query_condition .no_requried{background-color:@Font_Hover_Col;color:@FrontCol;}
+    .add_query_condition .requried{color:@FrontCol;}
+
+    html{.TCol(~".add_query_condition .requried",'bg');}
+    .add_query_condition .no_requried{color:@FrontCol;}
+
+    html{.TCol(~".add_query_condition .no_requried",'bg');}
 
     //编辑索引
     .editer_index{height:100%;}
@@ -1851,7 +1857,8 @@ export default {
     .editer_index .index_content .item .option_bar{float:right;width:60px;line-height:30px;padding:0px;}
     .editer_index .index_content .item .option_bar span{width:50%;display:inline-block;text-align:center;cursor:pointer;}
     .editer_index .index_content .item .option_bar span:first-child{.border('right');}
-    .editer_index .index_content .item .option_bar span:hover{color:@Font_Hover_Col;}
+    //.editer_index .index_content .item .option_bar span:hover{color:@Font_Hover_Col;}
+    html{.TCol(~".editer_index .index_content .item .option_bar span:hover");}
 
     .editer_index .option_bar{text-align:right;padding: 0px 15px;line-height:54px;}
 
@@ -1862,9 +1869,13 @@ export default {
     //模板配置弹窗页面样式
     .tagSetting_pop .option_container{width:100%;.border('bottom');text-align:right;}
     .tagSetting_pop .option_container > i{margin-right:10px;cursor:pointer;}
-    .tagSetting_pop .option_container > i:hover{color:@btn_Bg_Col_hover_0;}
+    //.tagSetting_pop .option_container > i:hover{color:@btn_Bg_Col_hover_0;}
+    
+    html{.TColAdd(~".tagSetting_pop .option_container > i:hover");}
+
     .tagSetting_pop .option_content{width:100%;}
-    .tagSetting_pop .option_content .tag{line-height:30px;padding:0px 10px;background-color:@Font_Hover_Col;color:white;.border('bottom');cursor:pointer;}
+    .tagSetting_pop .option_content .tag{line-height:30px;padding:0px 10px;color:white;.border('bottom');cursor:pointer;}
+    html{.TCol(~".tagSetting_pop .option_content .tag",'bg');}
     .tagSetting_pop .option_content .setting_content{min-height:100px;}
     
 
@@ -1897,7 +1908,7 @@ export default {
   }
   .condition .content_item .title{
     padding:0px 20px 0px 5px;
-    color:@FrontCol;background-color:@Font_Hover_Col;
+    color:@FrontCol;
     font-size:13px;
     width: 120px;
     position: relative;
@@ -1905,6 +1916,8 @@ export default {
     text-align: left;
     display:inline-block;
   }
+  html{.TCol(~".condition .content_item .title",'bg');}
+
   .condition .content_item .content_item_title{padding:5px;.border('bottom',shade(@borderCol,10%));margin-bottom:10px;}
   .condition .content_item .content_item_title .title{font-size:14px;background-color: transparent;color:black;}
   .condition .content_item .content_item_title .title_icon{margin-right:5px;font-size:18px;}
@@ -1919,7 +1932,9 @@ export default {
   }
 
   .condition .content_item .editer{float:right;margin-top: 5px;margin-right: 5px;cursor:pointer;}
-  .condition .content_item .editer i:hover{color:@Font_Hover_Col;}
+  //.condition .content_item .editer i:hover{color:@Font_Hover_Col;}
+  html{.TCol(~".condition .content_item .editer i:hover");}
+
   .condition .content_item .content{text-align:left;position:relative;}
 
   .condition .limit_condition_content{padding:10px;}
@@ -1935,7 +1950,10 @@ export default {
 
   .condition .query_item .query_title i{margin-right:5px;cursor:pointer;}
   .condition .query_item .query_title .item:hover{cursor:pointer;}
-  .condition .query_item .query_title .item:hover i{color:@btn_Bg_Col_hover_0;}
+  //.condition .query_item .query_title .item:hover i{color:@btn_Bg_Col_hover_0;}
+  
+  html{.TColAdd(~".condition .query_item .query_title .item:hover i");}
+
   .condition .query_item .query_item_content .query_content_item{
       line-height:30px;padding-right:10px;.border('bottom');font-size:12px;
       overflow: hidden;white-space: nowrap;text-overflow: ellipsis;

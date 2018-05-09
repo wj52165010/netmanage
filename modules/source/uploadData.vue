@@ -211,7 +211,10 @@ export default {
 .UploadData .title{font-size:12px;text-align:right;width:100%;
 height:@titleH;line-height:@titleH;padding:0px 10px;.border('bottom');font-style: italic;}
 .UploadData .item{padding:5px;}
-.UploadData .item:hover{.border('',@Font_Hover_Col);border-radius:5px;cursor:pointer;color:@Font_Hover_Col;}
+.UploadData .item:hover{.border('',@Font_Hover_Col);border-radius:5px;cursor:pointer;}
+
+html{.TCol(~".UploadData .item:hover",'bc');}
+html{.TCol(~".UploadData .item:hover");}
 
 .UploadData .option_bar{text-align:right;padding-right:15px;line-height: @OptionBarH;}
 .UploadData .content{height:~'calc(100% - @{titleH} - @{OptionBarH} - 1px)';.border('bottom');}

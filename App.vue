@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="app">
     <!--<div style="padding:10px;width:300px;background-color:white;">
       <dropdwonBtn :btn="{name:'定位',action:''}">
         <div>12321</div>
@@ -65,6 +65,10 @@ import PlaceSearch from './components/PlaceSearch'
 
 import {Reg_Navigation_Func,Reg_Del_Nav_Func,Reg_Navigation_Refresh,Get_Operate,Set_System_Menus,Add_System_Menus,SetSource,FieldType,SetFieldKind,FormatDatas,SetFormatData,FormatSearch,SetFormatSearch,
         RSet_System_Menus,Reg_Rx,Add_History_Menu,RegVirType,GetUser,Date_Source,SET_ALL_TABLE_DATA,GetFirm,GetMenuKind,SetMenuKind,MenuChangeEven,DelMenu,broastBacktrack} from './store/mutation-types'
+
+//设置皮肤
+if(localStorage.theme)$('body').removeClass();
+$('body').addClass(localStorage.theme);
 
 //设置用户ID和请求令牌
 ser.baseBag.userid=tool.cookie.get('userid');
@@ -573,10 +577,17 @@ export default {
  .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;.border('bottom');}
  .table_body .row,
  .table_header .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');}
- .table_header .column .sort_item .triangle-up:hover{border-bottom-color:@Font_Hover_Col;cursor:pointer;}
- .table_header .column .sort_item .triangle-down:hover{border-top-color:@Font_Hover_Col;cursor:pointer;}
- .table_header .column .sort_item .triangle-up.active{border-bottom-color:@Font_Hover_Col;}
- .table_header .column .sort_item .triangle-down.active{border-top-color:@Font_Hover_Col;}
+ .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
+ .app{.TCol(~".table_header .column .sort_item .triangle-up:hover","bbc");}
+
+ .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
+ .app{.TCol(~".table_header .column .sort_item .triangle-down:hover","btc");}
+
+ //.table_header .column .sort_item .triangle-up.active{border-bottom-color:@Font_Hover_Col;}
+ .app{.TCol(~".table_header .column .sort_item .triangle-up.active","bbc");}
+
+ //.table_header .column .sort_item .triangle-down.active{border-top-color:@Font_Hover_Col;}
+ .app{.TCol(~".table_header .column .sort_item .triangle-down.active","btc");}
 
 .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
 .table_conatienr{width:100%;display:table;width:100%;border:none;}
@@ -606,5 +617,9 @@ border-top: 5px solid black;
   white-space: nowrap;
   display: block;
 }
-.layui-layer-title{background-color:@Font_Hover_Col !important;color:white !important;}
+.layui-layer-title{color:white !important;}
+html {.TCol(~".layui-layer-title","bg");}
+.layui-layer{.TCol(~".font_col");}
+
+
 </style>

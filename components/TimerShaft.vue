@@ -85,7 +85,10 @@ export default {
 
     .timerShaft{position:relative;padding-top:0px;height:100%;}
     .timerShaft .scrollBar_container{height:100%;}
-    .timerShaft .active{background-color:@Font_Hover_Col !important;}
+    //.timerShaft .active{background-color:@Font_Hover_Col !important;}
+    
+    html{.TColIm(~".timerShaft .active",'bg');}
+
     .timerShaft .Hline{
         position:absolute;
         width:@timerLineW;
@@ -110,9 +113,10 @@ export default {
         color:white;
         .trans(.3s);
     }
-    .timerShaft .node:hover{
-        background-color:@Font_Hover_Col;
-    }
+    // .timerShaft .node:hover{
+    //     background-color:@Font_Hover_Col;
+    // }
+    html{.TCol(~".timerShaft .node:hover",'bg');}
     .timerShaft .node:hover .icon{
         -webkit-animation: toRightFromLeft 0.3s forwards;
         -moz-animation: toRightFromLeft 0.3s forwards;

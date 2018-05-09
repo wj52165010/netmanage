@@ -643,9 +643,12 @@ export default {
     .setting_page .right_container .list .content .list_content{width:100%;height:100%;}
     .setting_page .right_container .list .header .title {float:left;}
     .setting_page .right_container .list .header .title .icon{
-        color:white;height:-(20px-@list_headerH);width:-(20px-@list_headerH);background-color:@Font_Hover_Col;
+        color:white;height:-(20px-@list_headerH);width:-(20px-@list_headerH);
         display: inline-block;border-radius: 50%;line-height: -(20px-@list_headerH);margin-right:5px;
     }
+    
+    html{.TCol(~".setting_page .right_container .list .header .title .icon",'bg');}
+
     .setting_page .right_container .list .header .title .icon i {font-size:12px;}
     .setting_page .right_container .list .header .btn-group {float: right;margin-top: 10px;}
     
@@ -698,9 +701,11 @@ export default {
 
     //菜单按钮样式
     .setting_page .menu_btn{
-        position:absolute;right:0px;top:20px;width:10px;height:50px;background-color:@Font_Hover_Col;color:white;
+        position:absolute;right:0px;top:20px;width:10px;height:50px;color:white;
         font-size:16px;line-height:50px;text-align:left;cursor:pointer;
     }
+    html{.TCol(~".setting_page .menu_btn",'bg');}
+
     .blnShowMenu .menu_btn{display:none;}
     .setting_page .menu_btn .menu_container{position:relative;height:100%;width:100%;}
     .setting_page .menu_btn .menu_container .content{
@@ -744,22 +749,28 @@ export default {
         width: 100%;
         height: 2px;
         position: absolute;
-        background-color: @Font_Hover_Col;
         left: 0px;
         top: 0px;
     }
 
+    html{.TCol(~".tag_item.active::after",'bg');}
+
     .tag_item:hover{
         cursor: pointer;
-        background-color: @Font_Hover_Col;
         color: white;
     }
 
+    html{.TCol(~".tag_item:hover",'bg');}
+
     .localBtn{line-height:30px;.border('');color:@FontCol;cursor:pointer;}
-    .localBtn:hover{background-color:@Font_Hover_Col;color:white;}
+    .localBtn:hover{color:white;}
+
+    html{.TCol(~".localBtn:hover",'bg');}
 
     .header_close_btn{float:right;font-size:12px;height:20px;width:20px;line-height:20px;text-align:center;
-                      .border('');color:@Font_Hover_Col;cursor:pointer;border-radius:50%;margin-top:15px;margin-left:5px;}
+                      .border('');cursor:pointer;border-radius:50%;margin-top:15px;margin-left:5px;}
+
+    html{.TCol(~".header_close_btn");}
 
     /**快搜右边栏提示框样式**/
     .searchInfo{width:100%;height:100%;padding:25px;text-align:left;}

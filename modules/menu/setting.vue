@@ -700,12 +700,17 @@ export default {
 .bar_page .center_bar{width:80%;height:@barCenterH;position:absolute;top:~'calc(50% - @{barCenterH}/2)';left:10%;}
 .bar_item {margin: 0 60px 0 0; padding: 0px; width:300px;.border('');border-top-left-radius:5px;border-top-right-radius:5px;}
 .bar_item:hover{
-    background-color:@Font_Hover_Col;color:white;
+    color:white;
     -moz-box-shadow:2px 2px 10px #333333; -webkit-box-shadow:2px 2px 10px #333333; box-shadow:2px 2px 10px #333333;
     border:none;
 }
+
+html{.TColIm(~".bar_item:hover",'bg');}
+
 .bar_item:hover .bar_info{background-color:@HeaderBgCol;}
-.bar_item:hover .bar_icon .small_icon{background-color:@Font_Hover_Col;}
+//.bar_item:hover .bar_icon .small_icon{background-color:@Font_Hover_Col;}
+
+html{.TColIm(~".bar_item:hover .bar_icon .small_icon",'bg');}
 
 .bar_item .bar_title{text-align:left;font-size:20px;font-weight:600;text-align:center;margin-top:10px;}
 .bar_item .bar_icon{width:100%;height:@barCenterH/5*3;line-height:@barCenterH/5*3;text-align:center;font-size:100px;position:relative;}
@@ -717,6 +722,7 @@ export default {
 .bar_item .bar_info div{float:right;}
 
 .Setting .colorBlue{background-color:#6f859a;color:white;}
-.Setting .colorGreen{background-color:@Font_Hover_Col;color:white;}
+.Setting .colorGreen{color:white;}
+html{.TColIm(~".Setting .colorGreen",'bg');}
 .Setting .colorGray{background-color:#999999;color:white;}
 </style>

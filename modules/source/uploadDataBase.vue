@@ -253,13 +253,17 @@ export default {
     .UploadDataBase .title{font-size:12px;text-align:right;width:100%;
     height:@titleH;line-height:@titleH;padding:0px 10px;.border('bottom');font-style: italic;}
     .UploadDataBase .item{padding:5px;}
-    .UploadDataBase .item:hover{.border('',@Font_Hover_Col);border-radius:5px;cursor:pointer;color:@Font_Hover_Col;}
+    .UploadDataBase .item:hover{.border('',@Font_Hover_Col);border-radius:5px;cursor:pointer;}
+
+    html{.TCol(~".UploadDataBase .item:hover",'bc');}
+    html{.TCol(~".UploadDataBase .item:hover");}
 
     .UploadDataBase .option_bar{text-align:right;padding-right:15px;line-height: @OptionBarH;}
     .UploadDataBase .content{height:~'calc(100% - @{titleH} - @{OptionBarH} - 1px)';.border('bottom');}
     .UploadDataBase .notitle_content{height:~'calc(100% - @{OptionBarH} - 1px)';.border('bottom');}
     
-    .UploadDataBase .table_body .option:hover{cursor:pointer;color:@Font_Hover_Col;}
+    .UploadDataBase .table_body .option:hover{cursor:pointer;}
+    html{.TCol(~".UploadDataBase .table_body .option:hover");}
     .UploadDataBase .table_body .option:last-child{margin-left:15px;}
 
     //列表样式
@@ -268,7 +272,8 @@ export default {
     .table_header{height:@tableRowH;.border('bottom');}
     .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
     .table_header th{padding-left:0px;padding-right:0px;}
-    .table_header .table_title{color:@Font_Hover_Col;}
+    //.table_header .table_title{color:@Font_Hover_Col;}
+    html{.TCol(~".table_header .table_title");}
     .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
     .table_body td{padding-left:0px;padding-right:0px;}
 </style>

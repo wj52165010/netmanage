@@ -57,14 +57,14 @@
                     <div class="item">
                         <div style="position:absolute;font-size:14px;font-weight:600;top:0px;left:40px;">每日进入人数趋势</div>
                         <div name="chartone" style="width:100%;height:100%;"></div>
-                        <div style="position:absolute;font-size:14px;top:0px;right:40px;color:rgb(3, 171, 103);cursor:pointer;" @click="lookList('in')">
+                        <div class="font_col" style="position:absolute;font-size:14px;top:0px;right:40px;cursor:pointer;" @click="lookList('in')">
                             <i class="fa fa-navicon"></i>
                         </div>
                     </div>
                     <div class="item">
                         <div style="position:absolute;font-size:14px;font-weight:600;top:0px;left:40px;">每日离开人数趋势</div>
                         <div name="charttwo" style="width:100%;height:100%;"></div>
-                        <div style="position:absolute;font-size:14px;top:0px;right:40px;color:rgb(3, 171, 103);cursor:pointer;" @click="lookList('out')">
+                        <div class="font_col" style="position:absolute;font-size:14px;top:0px;right:40px;cursor:pointer;" @click="lookList('out')">
                             <i class="fa fa-navicon"></i>
                         </div>
                     </div>
@@ -467,7 +467,9 @@ export default {
     .ShipCar .content .content_container .info_conatienr .left_nav .item{line-height:30px;padding:0px 15px;}
 
     .ShipCar .content .content_container .info_conatienr .left_nav .item.active,
-    .ShipCar .content .content_container .info_conatienr .left_nav .item:hover{cursor:pointer;background-color:@Font_Hover_Col;color:white;}
+    .ShipCar .content .content_container .info_conatienr .left_nav .item:hover{cursor:pointer;color:white;}
+    html{.TCol(~".ShipCar .content .content_container .info_conatienr .left_nav .item:hover",'bg');}
+
 
     .ShipCar .content .content_container .info_conatienr .right_container{margin-left:@navW;height:100%;.border('left',#d9d9d9);padding:10px;}
 
@@ -501,10 +503,13 @@ export default {
     cursor:pointer;.trans();
   }
 
-  .ShipCar .left_pop .pop_lable:hover{background-color:@Font_Hover_Col;}
+  //.ShipCar .left_pop .pop_lable:hover{background-color:@Font_Hover_Col;}
+  html{.TCol(~".ShipCar .left_pop .pop_lable:hover",'bg');}
+  
 
   .ShipCar .left_pop .item{font-size:12px;padding:10px;.trans();.border('bottom');}
-  .ShipCar .left_pop .item:hover{background-color:@Font_Hover_Col;cursor:pointer;}
+  .ShipCar .left_pop .item:hover{cursor:pointer;}
+  html{.TCol(~".ShipCar .left_pop .item:hover",'bg');}
   .ShipCar .left_pop .item .child{margin-bottom:10px;}
   .ShipCar .left_pop .item .item_type{
     padding:2px 8px;position:relative;display:inline-block;

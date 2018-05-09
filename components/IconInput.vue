@@ -49,8 +49,11 @@ export default {
   .IconInput .icon{
       width: @IconW;height:@H;line-height:@H;text-align:center;float:left;
       .border('');border-top-left-radius:5px;border-bottom-left-radius:5px;background:#EEEEEE;
-      color:@Font_Hover_Col;
       .border('right',@Font_Hover_Col);
   }
+
+  html{.TCol(~".IconInput .icon");}
+  html{.TCol(~".IconInput .icon",'brc');}
+
   .IconInput .icon i{font-size: 14px;}
 </style>

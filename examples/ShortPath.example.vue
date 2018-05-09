@@ -739,10 +739,13 @@ export default {
     cursor:pointer;.trans();
   }
 
-  .ShortPath .left_pop .pop_lable:hover{background-color:@Font_Hover_Col;}
+  //.ShortPath .left_pop .pop_lable:hover{background-color:@Font_Hover_Col;}
+  html{.TCol(~".ShortPath .left_pop .pop_lable:hover",'bg');}
 
   .ShortPath .left_pop .item{font-size:12px;padding:10px;.trans();.border('bottom');}
-  .ShortPath .left_pop .item:hover{background-color:@Font_Hover_Col;cursor:pointer;}
+  .ShortPath .left_pop .item:hover{cursor:pointer;}
+  html{.TCol(~".ShortPath .left_pop .item:hover",'bg');}
+
   .ShortPath .left_pop .item .child{margin-bottom:10px;}
   .ShortPath .left_pop .item .item_type{
     padding:2px 8px;position:relative;display:inline-block;

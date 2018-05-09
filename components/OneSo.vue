@@ -431,7 +431,10 @@ export default {
     .OneSo .search_bar .search .input_container .SearchDropdown input::-ms-placeholder{ color:#99a9bf;}
     .OneSo .search_bar .search .input_container .SearchDropdown input::-moz-placeholder{ color:#99a9bf;}
 
-    .OneSo .el-input-group__prepend{background-color:@Font_Hover_Col;.border('',@Font_Hover_Col);color:white;}
+    .OneSo .el-input-group__prepend{.border('',@Font_Hover_Col);color:white;}
+
+    html{.TCol(~".OneSo .el-input-group__prepend",'bg');}
+    html{.TCol(~".OneSo .el-input-group__prepend",'bc');}
 </style>
 
 <style scoped lang="less">
@@ -446,8 +449,12 @@ export default {
   @iconW:34px;
   .OneSo .search_bar .search .icon_container{
       float:left;height:36px;width:@iconW;line-height:@iconW;text-align:center;color:#99a9bf;.border('',@Font_Hover_Col);
-      border-top-left-radius:5px;border-bottom-left-radius:5px;background-color:@Font_Hover_Col;color:white;
+      border-top-left-radius:5px;border-bottom-left-radius:5px;color:white;
   }
+
+  html{.TCol(~".OneSo .search_bar .search .icon_container",'bc');}
+  html{.TCol(~".OneSo .search_bar .search .icon_container",'bg');}
+
   .OneSo .search_bar .search .input_container{margin-left:@iconW;}
   
 
@@ -465,17 +472,24 @@ export default {
   @titleH:26px;
   .OneSo .content_bar .title_bar{height:@titleH;line-height:@titleH;width:100%;background-color:#d2d2d2;padding-right:10px;}
   .OneSo .content_bar .title_bar .tag{float:left;font-size:12px;padding:0px 5px;height:100%;}
-  .OneSo .content_bar .title_bar .tag:hover{color:white;background-color:@Font_Hover_Col;cursor:pointer;}
+  .OneSo .content_bar .title_bar .tag:hover{color:white;cursor:pointer;}
+  html{.TCol(~".OneSo .content_bar .title_bar .tag:hover",'bg');}
 
   .OneSo .content_bar .info_bar{height:~'calc(100% - @{titleH})';width:100%;position:relative;font-size:12px;padding:10px;}
   .OneSo .content_bar .info_bar .btn_container{position:absolute;bottom:5px;right:0px;}
   .OneSo .content_bar .info_bar .btn_container .btn_item{
-    float:left;font-size:12px;.border('',@Font_Hover_Col);border-radius:5px;margin-right:5px;padding:3px 10px;color:@Font_Hover_Col;
+    float:left;font-size:12px;.border('',@Font_Hover_Col);border-radius:5px;margin-right:5px;padding:3px 10px;
   }
-  .OneSo .content_bar .info_bar .btn_container .btn_item:hover{background-color:@Font_Hover_Col;color:white;cursor:pointer;}
+  html{.TCol(~".OneSo .content_bar .info_bar .btn_container .btn_item",'bc');}
+  html{.TCol(~".OneSo .content_bar .info_bar .btn_container .btn_item");}
+
+  .OneSo .content_bar .info_bar .btn_container .btn_item:hover{color:white !important;cursor:pointer;}
+  html{.TCol(~".OneSo .content_bar .info_bar .btn_container .btn_item:hover",'bg');}
 
   .OneSo .content_bar .info_bar .iden_item{display:inline-block;margin-right:10px;}
-  .OneSo .content_bar .info_bar .iden_item:hover{cursor:pointer;color:@Font_Hover_Col;}
+  .OneSo .content_bar .info_bar .iden_item:hover{cursor:pointer;}
+  html{.TCol(~".OneSo .content_bar .info_bar .iden_item:hover");}
+
   .OneSo .content_bar .info_bar .iden_item span{margin-left:2px;}
 
   .OneSo .content_bar .info_bar .scroll_container{width:100%;height:~'calc(100% - 25px)';}
@@ -495,11 +509,17 @@ export default {
   .OneSo .content_bar .list_bar .right_info .body .row{height:@headerH;width:100%;margin:0px;}
 
   .OneSo .content_bar .title_bar .delbtn{cursor:pointer;float:right;margin-top:6px;}
-  .OneSo .content_bar .title_bar .delbtn:hover{color:@Font_Hover_Col;}
+  //.OneSo .content_bar .title_bar .delbtn:hover{color:@Font_Hover_Col;}
+
+  html{.TCol(~".OneSo .content_bar .title_bar .delbtn:hover");}
 
   .OneSo .list_bar .focus_item{line-height:25px;padding:0px 10px;}
-  .OneSo .list_bar .focus_item i:hover{cursor:pointer;color:@Font_Hover_Col;}
+  .OneSo .list_bar .focus_item i:hover{cursor:pointer;}
 
-  .OneSo .tag.active{background-color:@Font_Hover_Col;color:white;}
+  html{.TCol(~".OneSo .list_bar .focus_item i:hover");}
+
+  .OneSo .tag.active{color:white;}
+
+  html{.TCol(~".OneSo .tag.active",'bg');}
   .OneSo .tag:first-child{border-top-left-radius:5px;}
 </style>

@@ -84,7 +84,10 @@ export default {
     .item.active .content{.border('',@btn_Bg_Col_2);}
     .item.active .content:before{border-right:5px solid @btn_Bg_Col_2;}
 
-    .item.option .icon_container .icon{background-color:@Font_Hover_Col;}
+    //.item.option .icon_container .icon{background-color:@Font_Hover_Col;}
+    html{.TCol(~".item.option .icon_container .icon",'bg');}
     .item.option .content{.border('',@Font_Hover_Col);}
-    .item.option .content:before{border-right:5px solid @Font_Hover_Col;}
+    html{.TCol(~".item.option .content",'bc');}
+    .item.option .content:before{border-right:5px solid;}
+    html{.TCol(~".item.option .content:before",'brc');}
 </style>

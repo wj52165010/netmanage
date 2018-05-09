@@ -739,8 +739,12 @@ export default {
                     cursor:pointer;
     }
 
-    .content .item:hover{background-color:@Font_Hover_Col;-moz-box-shadow:2px 0px 2px #6E6E6E; -webkit-box-shadow:2px 0px 2px #6E6E6E; box-shadow:2px 0px 2px #6E6E6E;}
-    .content .menuItem:hover .icon{background-color:white !important;color:@Font_Hover_Col;}
+    .content .item:hover{-moz-box-shadow:2px 0px 2px #6E6E6E; -webkit-box-shadow:2px 0px 2px #6E6E6E; box-shadow:2px 0px 2px #6E6E6E;}
+    html{.TColIm(~".content .item:hover",'bg');}
+    
+    .content .menuItem:hover .icon{background-color:white !important;}
+    html{.TCol(~".content .menuItem:hover .icon");}
+
     .content .menuItem:hover .title{color:white;}
     .content .menuItem:hover .bottom{background-color:@HeaderBgCol;color:white;}
     
@@ -766,9 +770,10 @@ export default {
         left: -3px;
     }
     .content .item .icon{
-        margin:0px auto;width:42px;border-radius:50%;height:42px;line-height:42px;font-size:20px;background-color:@Font_Hover_Col;color:white;text-align:center;
+        margin:0px auto;width:42px;border-radius:50%;height:42px;line-height:42px;font-size:20px;color:white;text-align:center;
         float:left;margin-left:10px;
     }
+    html{.TColIm(~".content .item .icon",'bg');}
     .content .item .title{
         width:auto;
         text-align:center;
@@ -791,7 +796,9 @@ export default {
     .content .item .bottom .date{float:right;margin-right:10px;font-style:italic;}
     .content .item .bottom .option_bar{float:left;}
     .content .item .bottom .option_bar .btn_item{float:left;cursor:pointer;height:100%;}
-    .content .item .bottom .option_bar .btn_item:hover{color:@Font_Hover_Col;}
+    //.content .item .bottom .option_bar .btn_item:hover{color:@Font_Hover_Col;}
+
+    html{.TCol(~".content .item .bottom .option_bar .btn_item:hover");}
     .content .item .iden_container{
         position: absolute;
         top: 0px;
@@ -808,12 +815,14 @@ export default {
 
    .content .item .iden_container.active{
        display:block;
-       background-image:linear-gradient(45deg,transparent 50%,@Font_Hover_Col 50%),
-                         linear-gradient(45deg,transparent 49%,@Font_Hover_Col 10%) ;
     }
+
+    html{.TCol(~"  .content .item .iden_container.active",'lineLoopgen',45deg,transparent,50%,@Font_Hover_Col,50%,45deg,transparent,49%,@Font_Hover_Col,10%);}
 
     .bar_right{float:right;}
     .bar_right .btn_item{cursor:pointer;height:25px;width:25px;line-height:25px;
-        text-align:center;margin-top:8px;color:white;border-radius:50%;background-color:@Font_Hover_Col;
+        text-align:center;margin-top:8px;color:white;border-radius:50%;
     }
+
+    html{.TColIm(~".bar_right .btn_item",'bg');}
 </style>

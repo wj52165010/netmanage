@@ -783,7 +783,9 @@ export default {
     cursor:pointer;
   }
   .handle .field_btn_container .content .close_btn:hover,
-  .handle .option_btn_container .content .close_btn:hover{color:@Font_Hover_Col;}
+  //.handle .option_btn_container .content .close_btn:hover{color:@Font_Hover_Col;}
+
+  html{.TCol(~".handle .option_btn_container .content .close_btn:hover");}
 
   //下拉框样式
   .scrollContainer{width:100%;height:100%;position: relative;}
@@ -793,5 +795,7 @@ export default {
 
   .blnPage .scrollbar{display:block;}
 
-  .optionInfo:hover{cursor:pointer;color:@btn_Bg_Col_hover_0;}
+  //.optionInfo:hover{cursor:pointer;color:@btn_Bg_Col_hover_0;}
+
+  html{.TColAdd(~".optionInfo:hover");}
 </style>

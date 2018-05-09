@@ -134,7 +134,8 @@ export default {
    .fieldList .item{height:@itemH;.border('bottom');}
    .fieldList .checkIcon{text-align:right;cursor:pointer;font-size:24px;color:shade(@BgCol,30%);}
    .fieldList th,.fieldList td{padding:0px;line-height:@itemH;}
-   .fieldList .active{color:@Font_Hover_Col;background-color:transparent !important;}
+   .fieldList .active{background-color:transparent !important;}
+   html{.TCol(~".fieldList .active");}
    .fieldList .option i{cursor:pointer;}
    .fieldList.table > thead > tr > th{border-bottom: 1px solid #ddd !important;}
 </style>

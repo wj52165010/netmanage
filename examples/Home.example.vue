@@ -669,14 +669,18 @@ export default {
   }
 
   .Home .showCenter {position: absolute;width:30px;height:30px;line-height:30px;border-radius:5px;background-color:@bgColor;color:white;text-align:center;right:@Distance*2 + @LeftW;bottom:@Distance;}
-  .Home .showCenter:hover{color:@Font_Hover_Col;cursor:pointer;}
+  //.Home .showCenter:hover{color:@Font_Hover_Col;cursor:pointer;}
+  html{.TCol(~".Home .showCenter:hover");cursor:pointer;}
 
   @InfoTitleH:40px;
   .Home .right_container .title,
   .Home .left_container .title{
-    height:@InfoTitleH;line-height:@InfoTitleH;color:white;width:100%;background-color:@Font_Hover_Col;border-top-left-radius:@Distance;border-top-right-radius:@Distance;
+    height:@InfoTitleH;line-height:@InfoTitleH;color:white;width:100%;border-top-left-radius:@Distance;border-top-right-radius:@Distance;
     padding:0px 10px;text-align:left;overflow:hidden;
   }
+  html{.TCol(~".Home .right_container .title",'bg');}
+  html{.TCol(~".Home .left_container .title",'bg');}
+
   .Home .right_container .title .label,
   .Home .left_container .title .label{font-size:14px;}
   .Home .right_container .title .info,
@@ -693,7 +697,9 @@ export default {
   .Home .left_container .content .item .bar .icon{float:right;margin-top:5px;cursor:pointer;}
 
   .Home .navpop .item:hover .circlebg i,
-  .Home .navpop .item:hover{cursor:pointer;color:@Font_Hover_Col;}
+  .Home .navpop .item:hover{cursor:pointer;}
+  html{.TCol(~".Home .navpop .item:hover .circlebg i");}
+  html{.TCol(~".Home .navpop .item:hover");}
 
   .Home .navpop .item .circlebg,
   .Home .right_container .top_show .content .item .circlebg,
@@ -702,7 +708,8 @@ export default {
   .Home .right_container .top_show .content .item .circlebg i,
   .Home .left_container .content .item .bar .icon .circlebg i{color:black;font-size:11px;}
 
-  .Home .navpop .item .fa-check{color:@Font_Hover_Col;}
+  //.Home .navpop .item .fa-check{color:@Font_Hover_Col;}
+  html{.TCol(~".Home .navpop .item .fa-check");}
 
 
   .Home .right_container .top_show .content .item .info,
@@ -720,7 +727,8 @@ export default {
   .Home .center_bottom_show .item,
   .Home .right_container .bottom_show .item{color:white;text-align:left;line-height:30px;padding:0px 10px;font-size:12px;}
 
-  .Home .center_bottom_show .item:hover{cursor:pointer;background-color:@Font_Hover_Col;color:white;}
+  .Home .center_bottom_show .item:hover{cursor:pointer;color:white;}
+  html{.TCol(~".Home .center_bottom_show .item:hover","bg");}
 
   .Home .navpop{
     position:absolute;border-radius:5px;padding:10px;top:@Distance;left:@Distance*2 + @LeftW;background-color:@bgColor;color:white;font-size:12px;
@@ -736,45 +744,67 @@ export default {
   .Home .top_left{top:@Distance;left:@Distance*2 + @LeftW;position:absolute;width:@AngleSize;height:@AngleSize;overflow:hidden;border-radius:5px;}
   .Home .top_left:before{
     content:'';position:absolute;left:0px;
-    width:100%;height:@lineW;background:linear-gradient(135deg,fade(@Font_Hover_Col,90%) @AngleSize - 20px,transparent 0)
+    width:100%;height:@lineW;//background:linear-gradient(135deg,fade(@Font_Hover_Col,90%) @AngleSize - 20px,transparent 0)
   }
+  html{.TCol(~".Home .top_left:before","bgLine",135deg,90%,@AngleSize - 20px,transparent,0);}
+
   .Home .top_left:after{
     content:'';position:absolute;left:0px;
-    height:100%;width:@lineW;background:linear-gradient(135deg,fade(@Font_Hover_Col,90%) @AngleSize - 20px,transparent 0)
+    height:100%;width:@lineW;//background:linear-gradient(135deg,fade(@Font_Hover_Col,90%) @AngleSize - 20px,transparent 0)
   }
+
+  html{.TCol(~".Home .top_left:after","bgLine",135deg,90%,@AngleSize - 20px,transparent,0);}
   
   .Home .top_right{top:@Distance;right:@Distance*2 + @LeftW;position:absolute;width:@AngleSize;height:@AngleSize;overflow:hidden;border-radius:5px;}
   .Home .top_right:before{
     content:'';position:absolute;left:0px;
-    width:100%;height:@lineW;background:linear-gradient(-135deg,fade(@Font_Hover_Col,90%) @AngleSize - 20px,transparent 0)
+    width:100%;height:@lineW;//background:linear-gradient(-135deg,fade(@Font_Hover_Col,90%) @AngleSize - 20px,transparent 0)
   }
+
+  html{.TCol(~".Home .top_right:before","bgLine",-135deg,90%,@AngleSize - 20px,transparent,0);}
+
   .Home .top_right:after{
     content:'';position:absolute;right:0px;
-    height:100%;width:@lineW;background:linear-gradient(-135deg,fade(@Font_Hover_Col,90%) @AngleSize - 20px,transparent 0)
+    height:100%;width:@lineW;//background:linear-gradient(-135deg,fade(@Font_Hover_Col,90%) @AngleSize - 20px,transparent 0)
   }
+
+  html{.TCol(~".Home .top_right:after","bgLine",-135deg,90%,@AngleSize - 20px,transparent,0);}
 
   .Home .bottom_left{bottom:@Distance*2 + @RBH;left:@Distance*2 + @LeftW;position:absolute;width:@AngleSize;height:@AngleSize;overflow:hidden;border-radius:5px;}
   .Home .bottom_left:before{
     content:'';position:absolute;left:0px;bottom:0px;
-    width:100%;height:@lineW;background:linear-gradient(-135deg,transparent 10px,fade(@Font_Hover_Col,90%) 10px)
+    width:100%;height:@lineW;//background:linear-gradient(-135deg,transparent 10px,fade(@Font_Hover_Col,90%) 10px)
   }
+
+  html{.TCol(~".Home .bottom_left:before","bgLineRerver",-135deg,90%,10px,transparent,10px);}
+
   .Home .bottom_left:after{
     content:'';position:absolute;left:0px;bottom:0px;
     height:100%;width:@lineW;background:linear-gradient(-135deg,transparent 10px,fade(@Font_Hover_Col,90%) 10px)
   }
 
+  html{.TCol(~".Home .bottom_left:after","bgLineRerver",-135deg,90%,10px,transparent,10px);}
+
   .Home .bottom_right{bottom:@Distance*2 + @RBH;right:@Distance*2 + @LeftW;position:absolute;width:@AngleSize;height:@AngleSize;overflow:hidden;border-radius:5px;}
   .Home .bottom_right:before{
     content:'';position:absolute;right:0px;bottom:0px;
-    width:100%;height:@lineW;background:linear-gradient(135deg,transparent 10px,fade(@Font_Hover_Col,90%) 10px)
-  }
-  .Home .bottom_right:after{
-    content:'';position:absolute;right:0px;bottom:0px;
-    height:100%;width:@lineW;background:linear-gradient(135deg,transparent 10px,fade(@Font_Hover_Col,90%) 10px)
+    width:100%;height:@lineW;//background:linear-gradient(135deg,transparent 10px,fade(@Font_Hover_Col,90%) 10px)
   }
 
+  html{.TCol(~".Home .bottom_right:before","bgLineRerver",135deg,90%,10px,transparent,10px);}
+
+  .Home .bottom_right:after{
+    content:'';position:absolute;right:0px;bottom:0px;
+    height:100%;width:@lineW;//background:linear-gradient(135deg,transparent 10px,fade(@Font_Hover_Col,90%) 10px)
+  }
+
+  html{.TCol(~".Home .bottom_right:before","bgLineRerver",135deg,90%,10px,transparent,10px);}
+
   .Home .scaleBtn{position:absolute;top:5px;right:15px;color:white;z-index:100;}
-  .Home .scaleBtn:hover{color:@Font_Hover_Col;cursor:pointer;}
+  .Home .scaleBtn:hover{cursor:pointer;}
+
+  html{.TCol(~".Home .scaleBtn:hover");}
+
 
 
   //地图提示框样式
@@ -797,18 +827,23 @@ export default {
 
   .Home .TipInfo .left-top{
     position:absolute;left:0px;top:0px;width:50px;height:50px;
-    border-top:5px solid @Font_Hover_Col;
-    border-left:5px solid @Font_Hover_Col;
+    border-top:5px solid;
+    border-left:5px solid;
     border-top-left-radius:10px;
   }
 
+  html{.TCol(~".Home .TipInfo .left-top",'btc');}
+  html{.TCol(~".Home .TipInfo .left-top",'blc');}
+
   .Home .TipInfo .right-bottom{
     position:absolute;right:0px;bottom:0px;width:50px;height:50px;
-    border-right:5px solid @Font_Hover_Col;
-    border-bottom:5px solid @Font_Hover_Col;
+    border-right:5px solid ;
+    border-bottom:5px solid ;
     border-bottom-right-radius:10px;
   }
 
+  html{.TCol(~".Home .TipInfo .right-bottom",'brc');}
+  html{.TCol(~".Home .TipInfo .right-bottom",'bbc');}
 
   //列表样式
 @tableRowH:30px;
@@ -816,7 +851,9 @@ export default {
 .table_header{height:@tableRowH;.border('bottom');}
 .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
 .table_header th{padding-left:0px;padding-right:0px;}
-.table_header{background-color:@Font_Hover_Col;color:white;}
+.table_header{color:white;}
+
+html{.TCol(~"table_header",'bg');}
 .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
 .table_body td{padding-left:0px;padding-right:0px;}
 </style>

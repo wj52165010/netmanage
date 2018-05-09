@@ -1170,13 +1170,16 @@ export default {
 .HighRisk .kind_bar .btn_bar{width:100%;height:@kindShowH;.border('bottom');text-align:left;}
 .HighRisk .kind_bar .btn_bar .item{display:inline-block;width:50%;height:100%;font-size:12px;text-align:center;line-height:@kindShowH;.border('right');}
 .HighRisk .kind_bar .btn_bar .item:last-child{border:0px;}
-.HighRisk .kind_bar .btn_bar .item:hover{color:white;background-color:@Font_Hover_Col;cursor:pointer;}
+.HighRisk .kind_bar .btn_bar .item:hover{color:white;cursor:pointer;}
+html{.TCol(~".HighRisk .kind_bar .btn_bar .item:hover",'bg');}
+
 .HighRisk .kind_bar .kind_show_bar{width:100%;height:~'calc(100% - @{kindShowH})';}
 .HighRisk .kind_bar .kind_show_bar .item{height:50px;line-height:50px;text-align:center;font-size:12px;.border('bottom');}
 
 .HighRisk .action_bar{position:absolute;width:100%;height:40px;line-height:40px;text-align:right;}
 
-.HighRisk .tag_label:hover{color:@Font_Hover_Col;}
+//.HighRisk .tag_label:hover{color:@Font_Hover_Col;}
+html{.TCol(~".HighRisk .tag_label:hover");}
 
 //列表显示样式
 @header_H:40px;
@@ -1186,10 +1189,18 @@ export default {
 .HighRisk .table_header{height:@header_H;display:table;width:100%;border:none;}
 .HighRisk .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 .HighRisk .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');}
-.HighRisk .table_header .column .sort_item .triangle-up:hover{border-bottom-color:@Font_Hover_Col;cursor:pointer;}
-.HighRisk .table_header .column .sort_item .triangle-down:hover{border-top-color:@Font_Hover_Col;cursor:pointer;}
-.HighRisk .table_header .column .sort_item .triangle-up.active{border-bottom-color:@Font_Hover_Col;}
-.HighRisk .table_header .column .sort_item .triangle-down.active{border-top-color:@Font_Hover_Col;}
+.HighRisk .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
+html{.TCol(~".HighRisk .table_header .column .sort_item .triangle-up:hover",'bbc');}
+
+.HighRisk .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
+html{.TCol(~".HighRisk .table_header .column .sort_item .triangle-down:hover",'btc');}
+
+//.HighRisk .table_header .column .sort_item .triangle-up.active{border-bottom-color:@Font_Hover_Col;}
+html{.TCol(~".HighRisk .table_header .column .sort_item .triangle-up.active",'bbc');}
+
+//.HighRisk .table_header .column .sort_item .triangle-down.active{border-top-color:@Font_Hover_Col;}
+
+html{.TCol(~".HighRisk .table_header .column .sort_item .triangle-down.active",'btc');}
 
 .HighRisk .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
 .HighRisk .table_conatienr{width:100%;display:table;width:100%;border:none;}
@@ -1212,6 +1223,7 @@ border-top: 5px solid black;
 }
 
 .openSMS{color:@Font_Hover_Col;}
+html{.TCol(~".openSMS");}
 .closeSMS{color:gray;}
 
 .overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}

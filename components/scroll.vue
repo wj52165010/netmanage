@@ -88,5 +88,7 @@ export default {
     .Scroll .scroll_container{width:100%;height:100%;position: relative;}
     .Scroll .scrollbar:hover {cursor:pointer;}
     .Scroll .scrollbar { border:1px solid #d8d8d8;border-radius:5px;width: 10px; height: ~"calc(100% - 20px)"; position: absolute;right: 5px;top:10px;background:white;}
-    .Scroll .scrollbar .handle {width: 100%;height: 100px;background: @btn_Bg_Col_1;border-radius: 5px;}
+    .Scroll .scrollbar .handle {width: 100%;height: 100px;border-radius: 5px;}
+
+    html{.TCol(~".Scroll .scrollbar .handle",'bg');}
 </style>

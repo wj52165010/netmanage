@@ -266,8 +266,10 @@ export default {
 
 @group_itemH:40px;
 .condGroup_container .content .left .group_item{height:@group_itemH;line-height:@group_itemH;.border('');border-radius:5px;margin-bottom:10px;font-style:italic;}
-.condGroup_container .content .left .group_item:hover{background-color:@Font_Hover_Col;color:white;cursor:pointer;}
-.condGroup_container .content .left .group_item.active{background-color:@Font_Hover_Col;color:white;}
+.condGroup_container .content .left .group_item:hover{color:white;cursor:pointer;}
+html{.TColIm(~".condGroup_container .content .left .group_item:hover",'bg');}
+.condGroup_container .content .left .group_item.active{color:white;}
+html{.TColIm(~".condGroup_container .content .left .group_item.active",'bg');}
 
 @condShowH:100px;
 .condGroup_container .content .right .groupSet{width:100%;height:~'calc(100% - @{condShowH})';.border('bottom');display:table;text-align:center;}
@@ -276,7 +278,8 @@ export default {
 
 .SpecialSourceCond .option_bar_right{float:right;height:100%;font-weight:600;font-style:italic;}
 .SpecialSourceCond .option_bar_right .item{cursor:pointer;margin-left:10px;}
-.SpecialSourceCond .option_bar_right .item:hover{color:@Font_Hover_Col;}
+//.SpecialSourceCond .option_bar_right .item:hover{color:@Font_Hover_Col;}
+html{.TCol(~".SpecialSourceCond .option_bar_right .item:hover");}
 
 
 .SpecialSourceCond .FieldSetItem{display:inline-block;position: relative;margin-right: 30px;}
@@ -288,7 +291,8 @@ export default {
 .table_header{height:@tableRowH;.border('bottom');}
 .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
 .table_header th{padding-left:0px;padding-right:0px;}
-.table_header .table_title{color:@Font_Hover_Col;}
+//.table_header .table_title{color:@Font_Hover_Col;}
+html{.TCol(~".table_header .table_title");}
 .table_body{height:~'calc(100% - @{tableRowH})';width:100%;}
 .table_body td{padding-left:0px;padding-right:0px;}
 </style>

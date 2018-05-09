@@ -301,16 +301,23 @@ export default {
   .RemoteTable .table_container{height:~'calc(100% - @{pageH})';width:100%;}
 
   @titleH:39px;
-  .RemoteTable .left .title{height:@titleH;text-align:center;line-height:@titleH;background-color:@Font_Hover_Col;color:white;}
+  .RemoteTable .left .title{height:@titleH;text-align:center;line-height:@titleH;color:white;}
+
+  html{.TCol(~".RemoteTable .left .title",'bg');}
   .RemoteTable .left .content{width:100%;height:~'calc(100%  - @{titleH})';}
   .RemoteTable .left .content .item{
       width:@leftW;line-height:30px;.border('bottom');padding:0px 10px; cursor:pointer;
       overflow: hidden;text-overflow: ellipsis;white-space: nowrap;
    }
 
-   .RemoteTable .left .content .item.active{background-color:@btn_Bg_Col_hover_0;color:white;}
+   .RemoteTable .left .content .item.active{color:white;}
+   
+   html{.TColAdd(~".RemoteTable .left .content .item.active",'bg');}
+
    .RemoteTable .table_container .option_btn{margin-right:10px;cursor:pointer;}
-   .RemoteTable .table_container .option_btn:hover{color:@Font_Hover_Col;}
+   //.RemoteTable .table_container .option_btn:hover{color:@Font_Hover_Col;}
+
+   html{.TCol(~".RemoteTable .table_container .option_btn:hover");}
 
    //加载中动画
     .loading{position: absolute;top:0px;left:0px;right:0px;bottom:0px;}

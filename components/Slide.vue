@@ -92,7 +92,8 @@ export default {
 
 .pages{width:100%;height:@PageH;text-align:center;line-height:@PageH;}
 .pages .item{display:inline-block;width:@PageH/2;height:@PageH/2;border-radius:50%;.border('',gray);margin-left:10px;cursor:pointer;}
-.pages .item.active{background-color:@Font_Hover_Col;}
+//.pages .item.active{background-color:@Font_Hover_Col;}
+html{.TCol(~".pages .item.active",'bg');}
 
 .before_Btn{position:absolute;height:@btnH;width:@btnW;line-height:@btnH;text-align:center;top:50%;margin-top:-@btnH/2;left:10px;font-size:30px;font-weight:600;}
 .back_Btn{position:absolute;height:@btnH;width:@btnW;line-height:@btnH;text-align:center;top:50%;margin-top:-@btnH/2;right:10px;font-size:30px;font-weight:600;}

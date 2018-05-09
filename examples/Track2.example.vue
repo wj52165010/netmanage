@@ -912,7 +912,8 @@ export default {
     font-size:12px;margin-right:10px;
   }
 
-  .Track .left_container .taginfo .item:hover{cursor:pointer;background-color:@Font_Hover_Col;}
+  .Track .left_container .taginfo .item:hover{cursor:pointer;}
+  html{.TCol(~".Track .left_container .taginfo .item:hover",'bg');}
 
   .Track .left_container .option{
     background-color:rgba(47, 51, 65, 0.3);padding:10px;border-radius:5px;margin-top:5px;
@@ -929,9 +930,11 @@ export default {
     position:absolute;left:0px;right:@detailBtnSize + 30px;padding-left: 10px;
   }
   .Track  .bottom_info .detailbtn{
-    width:@detailBtnSize;height:@detailBtnSize;background-color:@Font_Hover_Col;
+    width:@detailBtnSize;height:@detailBtnSize;
     color:white;border-radius:5px;padding-top:10px;float:right;cursor:pointer;
   }
+  html{.TCol(~".Track  .bottom_info .detailbtn",'bg');}
+
   @Distance:5px;
   @bgColor:fade(@HeaderBgCol,90%);
   .Track .right_container{padding-top:14px;padding-bottom:10px;}
@@ -943,9 +946,10 @@ export default {
 
   @InfoTitleH:40px;
   .Track .right_container .title{
-    height:@InfoTitleH;line-height:@InfoTitleH;color:white;width:100%;background-color:@Font_Hover_Col;border-top-left-radius:@Distance;border-top-right-radius:@Distance;
+    height:@InfoTitleH;line-height:@InfoTitleH;color:white;width:100%;border-top-left-radius:@Distance;border-top-right-radius:@Distance;
     padding:0px 10px;text-align:left;overflow:hidden;
   }
+  html{.TCol(~".Track .right_container .title",'bg');}
 
   .Track .right_container .tipInfo{color:white;font-size:20px;padding:20px;}
   .Track .right_container .info{padding:10px 0px;width:100%;height:~'calc(100% - @{InfoTitleH})';}
@@ -959,27 +963,35 @@ export default {
   .Track .right_container .info .item .child .process{width:120px;height:8px;background-color:#808080;margin-top:5px;margin-right:10px;}
   .Track .right_container .info .item .child .process .child{background-color:#85c226;height:100%;float:right;padding:0px;}
 
-  .Track .right_container .info .item .childClick:hover{background:@Font_Hover_Col;cursor:pointer;}
+  .Track .right_container .info .item .childClick:hover{cursor:pointer;}
+  html{.TColIm(~".Track .right_container .info .item .childClick:hover",'bg');}
 
   .Track .historyList{
     position:absolute;top:14px;right:@rightW;left:10px;bottom:10px;
   }
 
   .Track .dropdownItem{line-height:30px;cursor:pointer;}
-  .Track .dropdownItem:hover{color:@Font_Hover_Col;}
+  //.Track .dropdownItem:hover{color:@Font_Hover_Col;}
+  html{.TCol(~".Track .dropdownItem:hover");}
 
-  .Track .active{background-color:@Font_Hover_Col !important;}
+  //.Track .active{background-color:@Font_Hover_Col !important;}
+  html{.TColIm(~".Track .item.active",'bg');}
 
   .Track .fa-eye:hover,
-  .Track .fa-remove:hover{color:@Font_Hover_Col;cursor:pointer;}
+  .Track .fa-remove:hover{cursor:pointer;}
+  html{.TCol(~".Track .fa-remove:hover");}
+  html{.TCol(~".Track .fa-eye:hover");}
 
   .Track .optionBar i{margin-right:10px;}
 
   .Track .historyList .delBtn{
-    position:absolute;right:-10px;top:-10px;width:20px;height:20px;border-radius:50%;background-color:@Font_Hover_Col;color:white;cursor:pointer;z-index:100;
+    position:absolute;right:-10px;top:-10px;width:20px;height:20px;border-radius:50%;color:white;cursor:pointer;z-index:100;
   }
+  html{.TCol(~".Track .historyList .delBtn",'bg');}
 
-  .Track .historyList .delBtn .fa-remove:hover{color:white;}
+
+  //.Track .historyList .delBtn .fa-remove:hover{color:white;}
+  html{.TCol(~".Track .historyList .delBtn .fa-remove:hover");}
 
   .Track .historyList.border_black{
     border:5px solid @bgColor;border-radius:5px;
@@ -1002,10 +1014,13 @@ export default {
     cursor:pointer;.trans();
   }
 
-  .Track .left_pop .pop_lable:hover{background-color:@Font_Hover_Col;}
+  //.Track .left_pop .pop_lable:hover{background-color:@Font_Hover_Col;}
+  html{.TCol(~".Track .left_pop .pop_lable:hover",'bg');}
 
   .Track .left_pop .item{font-size:12px;padding:10px;.trans();.border('bottom');}
-  .Track .left_pop .item:hover{background-color:@Font_Hover_Col;cursor:pointer;}
+  .Track .left_pop .item:hover{cursor:pointer;}
+  html{.TCol(~".Track .left_pop .item:hover","bg");}
+
   .Track .left_pop .item .child{margin-bottom:10px;}
   .Track .left_pop .item .item_type{
     padding:2px 8px;position:relative;display:inline-block;
@@ -1030,23 +1045,31 @@ export default {
   .Track .top_left{top:@Distance;left:@Distance*2 + @LeftW;position:absolute;width:@AngleSize;height:@AngleSize;overflow:hidden;}
   .Track .top_left:before{
     content:'';position:absolute;left:0px;
-    width:100%;height:@lineW;background:fade(@Font_Hover_Col,90%);
+    width:100%;height:@lineW;
   }
+  html{.TColFade(~".Track .top_left:before",90%,'bg');}
+  
   .Track .top_left:after{
     content:'';position:absolute;left:0px;
-    height:100%;width:@lineW;background:fade(@Font_Hover_Col,90%);
+    height:100%;width:@lineW;
   }
   
+  html{.TColFade(~".Track .top_left:after",90%,'bg');}
 
   .Track .bottom_right{bottom:@Distance*2 + @RBH;right:@Distance*2 + @LeftW;position:absolute;width:@AngleSize;height:@AngleSize;overflow:hidden;}
   .Track .bottom_right:before{
     content:'';position:absolute;right:0px;bottom:0px;
-    width:100%;height:@lineW;background:fade(@Font_Hover_Col,90%);
+    width:100%;height:@lineW;
   }
+
+  html{.TColFade(~".Track .bottom_right:before",90%,'bg');}
+
   .Track .bottom_right:after{
     content:'';position:absolute;right:0px;bottom:0px;
-    height:100%;width:@lineW;background:fade(@Font_Hover_Col,90%);
+    height:100%;width:@lineW;
   }
+
+  html{.TColFade(~".Track .bottom_right:after",90%,'bg');}
 
 //列表样式
 @tableRowH:40px;
@@ -1054,7 +1077,9 @@ export default {
 .table_header{height:@tableRowH;.border('bottom');border-top-right-radius:5px;border-top-left-radius:5px;}
 .table_header tr{height:~'calc(@{tableRowH} - 1px)';}
 .table_header th{padding-left:0px;padding-right:0px;}
-.table_header{background-color:@Font_Hover_Col;color:white;}
+.table_header{color:white;}
+html{.TCol(~".table_header",'bg');}
+
 .table_body{height:~'calc(100% - @{tableRowH})';width:100%;background-color:@bgColor;border-bottom-right-radius:5px;border-bottom-left-radius:5px;}
 .table_body td{padding-left:0px;padding-right:0px;}
 </style>

@@ -712,9 +712,11 @@ export default {
  .NetAboutCar .right_container{width:@rightContainerW;position:absolute;right:10px; top:10px;bottom:10px;background-color:@bgColor;border-radius:10px;overflow:hidden;}
  
  @titleH:40px;
- .NetAboutCar .right_container .title{width:100%;height:@titleH;line-height:@titleH;background-color:@Font_Hover_Col;color:white;text-align:left;padding:0px 10px;}
+ .NetAboutCar .right_container .title{width:100%;height:@titleH;line-height:@titleH;color:white;text-align:left;padding:0px 10px;}
+ html{.TCol(~".NetAboutCar .right_container .title",'bg');}
 
- .NetAboutCar .right_container .tipInfo{color:white;font-size:20px;padding:20px;background-color:@Font_Hover_Col;}
+ .NetAboutCar .right_container .tipInfo{color:white;font-size:20px;padding:20px;}
+ html{.TCol(~".NetAboutCar .right_container .tipInfo",'bg');}
 
  .NetAboutCar .option_bar{
    position:absolute;top:10px;left:10px;right:@rightContainerW + 20px;background-color:rgba(47, 51, 65, 0.3);text-align:left;padding:2px 10px;border-radius:10px;color:white;
@@ -727,7 +729,8 @@ export default {
   .NetAboutCar .right_container .content .item  .item_number{float:right;margin-right:0px;}
   .NetAboutCar .right_container .content .item  .item_icon{float:right;width:60px;height:100%;display:inline-block;text-align:right;}
   .NetAboutCar .right_container .content .item  .item_icon i{margin-left:10px;cursor:pointer;}
-  .NetAboutCar .right_container .content .item  .item_icon i:hover{color:@Font_Hover_Col;}
+  //.NetAboutCar .right_container .content .item  .item_icon i:hover{color:@Font_Hover_Col;}
+  html{.TCol(~".NetAboutCar .right_container .content .item  .item_icon i:hover");}
 
   .NetAboutCar .right_container .content .item .child_item{margin-bottom:5px;}
 
@@ -752,10 +755,13 @@ export default {
     cursor:pointer;.trans();
   }
 
-  .NetAboutCar .left_pop .pop_lable:hover{color:@Font_Hover_Col;}
+  //.NetAboutCar .left_pop .pop_lable:hover{color:@Font_Hover_Col;}
+  html{.TCol(~".NetAboutCar .left_pop .pop_lable:hover");}
 
   .NetAboutCar .left_pop .item{font-size:12px;padding:10px;.trans();.border('bottom');}
-  .NetAboutCar .left_pop .item:hover{background-color:@Font_Hover_Col;cursor:pointer;}
+  .NetAboutCar .left_pop .item:hover{cursor:pointer;}
+  html{.TCol(~".NetAboutCar .left_pop .item:hover",'bg');}
+
   .NetAboutCar .left_pop .item .child{margin-bottom:10px;}
   .NetAboutCar .left_pop .item .item_type{
     padding:2px 8px;position:relative;display:inline-block;

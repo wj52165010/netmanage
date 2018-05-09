@@ -108,17 +108,20 @@ export default {
     @itemH:52px;
     @titleH:26px;
     .item{width:12%;float:left;margin-left:2%;.border('',@Font_Hover_Col);margin-top:10px;border-radius:5px;height:@itemH;text-align:left;}
+
+    html{.TCol(~".item",'bc');}
     .item .title_bar{
       width:100%;
       height:@titleH;
       line-height:@titleH;
-      background-color:@Font_Hover_Col;
       color:white;padding:0px 40px 0px 10px;
       position:relative;    
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
     }
+
+    html{.TCol(~".item .title_bar",'bg');}
     .item .content{width:100%;height:~"calc(@{itemH} - @{titleH} - 2px)";white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 
     @media (max-width:1600px){

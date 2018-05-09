@@ -12,6 +12,19 @@
              <li class="user_imgae"><img id="user_imgae" class="user_img" src="../assets/noperson.png" style="width:40px;height:40px;" /></li>
              <li class="user_info"><div class="user_info_name" :title="userInfo.name" :class="{simpleName:!userInfo.department}">{{userInfo.name}}</div><div class="user_info_desc" :title="userInfo.department">{{userInfo.department}}</div></li>
             </ul>
+
+            <!--切换皮肤-->
+            <div class="skin">
+              <el-tooltip class="item" effect="light" content="切换主题" placement="right">
+                <i class="fa fa-qq"></i>
+              </el-tooltip>
+
+              <!--皮肤选择区域-->
+              <div class="fadeIn skin_container">
+                <div class="item" @click="changeSkin('defTheme')" style="background-color:rgb(3, 171, 103);"></div>
+                <div class="item" @click="changeSkin('blueTheme')" style="background-color:#007acc;"></div>
+              </div>
+            </div>
          </div>
          <div class="setting" @click="settingMenu_click()">
           <el-tooltip class="item" effect="light" content="定制" placement="left">
@@ -88,6 +101,12 @@ export default {
     },
     mouseleave(){
       this.$emit('mouseleave');
+    },
+    //切换皮肤
+    changeSkin(theme){
+      $('body').removeClass();
+      $('body').addClass(theme);
+      localStorage.theme=theme;
     }
   },
   mounted(){
@@ -137,9 +156,11 @@ export default {
   .header .title .titleExtra{color:#98e32c;font-style: italic;}
   .header .extra_title{font-size: 12px;font-style: italic;margin-top:-5px;}
   /*系统信息栏*/
-  .header .info > div{background-color:@btn_Bg_Col_6;}
+  //.header .info > div{background-color:@btn_Bg_Col_6;}
+
+  html{.TColAdd(~".header .info > div",'bg');}
   .header .info{float:right;height:100%;width:@infoW;}
-  .header .info .user{float:left;width:62%;height:100%;}
+  .header .info .user{float:left;width:62%;height:100%;position:relative;}
   .header .info .user ul{list-style:none;padding:10px;padding-right:0px;margin:0px;height:100%;width:100%;}
   .header .info .user ul li{float:left;height:100%;}
   .header .info .user ul .user_img{border-radius:50%;}
@@ -152,4 +173,25 @@ export default {
   .header .info .setting{float: left;width: 19%;.border('left');height:100%;text-align:center;font-size:25px;cursor:pointer;}
 
   .simpleName{margin-top:10px;}
+
+  .Header .info .user .skin{position:absolute;right:10px;top:5px;}
+
+  .Header .info .user .skin:hover{cursor:pointer;}
+  html{.TCol(~".Header .info .user .skin:hover");}
+
+  @skin_containerW:50px;
+  @bgColor:fade(@HeaderBgCol,90%);
+  .Header .info .user .skin .skin_container{
+    display:none;
+    position:absolute;width:@skin_containerW;height:20px;right:0px;
+    .border('',@bgColor);border-radius:5px;background-color:@bgColor;overflow:hidden;
+  }
+
+  .Header .info .user .skin:hover .skin_container{display:block;}
+
+  .Header .info .user .skin .skin_container .item{float:left;width:50%;height:20px;}
+
+  .Header .info .user .skin .skin_container .item:hover{cursor:pointer;}
+
+
 </style>

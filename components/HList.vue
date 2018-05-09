@@ -376,7 +376,8 @@ export default {
   .HList .tag_label:hover{color:@btn_Bg_Col_hover_1;}
 
   .HList .row_item{overflow: hidden;text-overflow:ellipsis;white-space:nowrap}
-  .HList .row.header{background-color:@Font_Hover_Col;color:white;}
+  .HList .row.header{color:white;}
+  html{.TCol(~".HList .row.header",'bg');}
   .HList .page_container{.border('top');.border('bottom');}
 
   .HList .blnClick{cursor:pointer;}

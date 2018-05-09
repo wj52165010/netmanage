@@ -1016,11 +1016,15 @@ export default {
 
 <style lang="less">
   @import "../../css/variables.less";
-  .openFileParse_active{background-color:@Font_Hover_Col;color:white !important;}
+  .openFileParse_active{color:white !important;}
+
+  html{.TColIm(~".openFileParse_active",'bg');}
 
   .openFileParse_column .column_item{line-height:30px; padding:0px 10px;width: 150px;.border('bottom');}
-  .openFileParse_column .column_item:hover{cursor:pointer;background-color:@Font_Hover_Col;color:white;}
-  .openFileParse_column .active{background-color:@Font_Hover_Col;color:white;}
+  .openFileParse_column .column_item:hover{cursor:pointer;color:white;}
+  html{.TColIm(~".openFileParse_column .column_item:hover",'bg');}
+  .openFileParse_column .active{color:white;}
+  html{.TColIm(~".openFileParse_column .active",'bg');}
 
 
   .openFileParse_column_sort .item{
@@ -1039,14 +1043,17 @@ export default {
     margin-top: 30px;}
   .openFileParse_column_sort .item .name{margin-top:10px;font-size:12px;}
 
-  .openFileParse_column_sort .item:hover{background-color:@Font_Hover_Col;color:white;}
+  .openFileParse_column_sort .item:hover{color:white;}
+  html{.TColIm(~".openFileParse_column_sort .item:hover",'bg');}
   .openFileParse_column_sort .column_sort_container{position:relative;}
   .openFileParse_column_sort .addFieldBtn{
     position:absolute;top:0px;right:0px;z-index:100;width:26px;height:26px;background-color:@HeaderBgCol;
     color:white;border-bottom-left-radius:26px;text-align:center;cursor:pointer;
   }
   .openFileParse_column_sort .addFieldBtn i{margin-left:5px;}
-  .openFileParse_column_sort .addFieldBtn:hover i{color:@Font_Hover_Col;}
+  //.openFileParse_column_sort .addFieldBtn:hover i{color:@Font_Hover_Col;}
+
+   html{.TColIm(~".openFileParse_column_sort .addFieldBtn:hover i");}
 
 </style>
 
@@ -1057,10 +1064,13 @@ export default {
 .timeShaft{width:100%;height:@timeH;.border('top');text-align:center;}
 .timeShaft .item{width:80px;height:@timeH - 7;display: inline-block;position:relative;}
 .timeShaft .item .iconContainer{position:absolute;left:0px;top:10px;width:40px; height:40px;cursor:pointer;z-index: 100;line-height:44px;border-radius:20px;background-color:@FontCol;color:white;text-align:center;}
-.timeShaft .item.active .iconContainer{background-color:@Font_Hover_Col;}
+//.timeShaft .item.active .iconContainer{background-color:@Font_Hover_Col;}
+html{.TColIm(~".timeShaft .item.active .iconContainer",'bg');}
+
 .timeShaft .item .iconContainer .icon{font-size:18px;}
 .timeShaft .item .line{height:3px;width:100%;position:absolute;background-color:@FontCol;top: 50%;margin-top: 2px;}
-.timeShaft .item.active .line{background-color:@Font_Hover_Col;}
+//.timeShaft .item.active .line{background-color:@Font_Hover_Col;}
+html{.TColIm(~".timeShaft .item.active .line",'bg');}
 .timeShaft .item.lastItem{width:40px;}
 
 .AddSource{width:100%;height:~'calc(100% - @{timeH})';}
@@ -1081,17 +1091,21 @@ export default {
   color:white;border-bottom-left-radius:26px;text-align:center;cursor:pointer;
   }
 .addFieldBtn i{margin-left:5px;}
-.addFieldBtn:hover i{color:@Font_Hover_Col;}
+//.addFieldBtn:hover i{color:@Font_Hover_Col;}
+html{.TColIm(~".addFieldBtn:hover i");}
 
-.addFieldPage .active{background-color:@Font_Hover_Col;color:white;}
+.addFieldPage .active{color:white;}
+html{.TColIm(~".addFieldPage .active",'bg');}
 
 @tagW:80px;
 .action .tag{height:100%;width:@tagW;float:left;.border('right');}
 .action .content{margin-left:@tagW;height:100%;}
 
 .tag .tag_item{height:@tagW/9*8;width:100%;.border('bottom');text-align:center;display:table;font-size:12px;}
-.tag .tag_item:hover{background-color:@Font_Hover_Col;color:white;cursor:pointer;}
-.tag .tag_item.active{background-color:@Font_Hover_Col;color:white;}
+.tag .tag_item:hover{color:white;cursor:pointer;}
+html{.TColIm(~".tag .tag_item:hover",'bg');}
+.tag .tag_item.active{color:white;}
+html{.TColIm(~".tag .tag_item.active",'bg');}
 
 
 @headerH:40px;
@@ -1107,11 +1121,13 @@ export default {
 .action .content .header .name{width:~'calc(100% - @{selItemW} )';display:inline-block;.border('left');text-align:center;font-size:12px;}
 
 
- .action .content .header {background-color:@Font_Hover_Col;color:white;}
+ .action .content .header {color:white;}
+ html{.TColIm(~".action .content .header",'bg');}
 
  .upload_info{font-size:30px;color:@FontCol;font-weight: 600;}
 
- .uploadPage .active{background-color:@Font_Hover_Col;color:white !important;}
+ .uploadPage .active{color:white !important;}
+ html{.TColIm(~".uploadPage .active",'bg');}
 
 
   .frame { width: 100%; height: 30px; line-height:30px;padding: 0; .border('');}
@@ -1130,6 +1146,7 @@ export default {
   .scrollbar .handle {
         width: 100px; 
         height: 100%;
-        background: @Font_Hover_Col;
     }
+
+  html{.TColIm(~".scrollbar .handle",'bg');}
 </style>

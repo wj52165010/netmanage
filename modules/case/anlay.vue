@@ -113,7 +113,9 @@ export default {
     .Relative_Anlay{width:100%;height:100%;}
     .caseManagePopCount .tag_item{width:100%;height:25%;.border('right');text-align:center;position:relative;}
     .caseManagePopCount .tag_item.active,
-    .caseManagePopCount .tag_item:hover{cursor:pointer;background-color:@Font_Hover_Col;color:white;}
+    .caseManagePopCount .tag_item:hover{cursor:pointer;color:white;}
+
+    html{.TCol(~".caseManagePopCount .tag_item:hover",'bg');}
     .caseManagePopCount .triangle-left {
             width: 0;
             height: 0;

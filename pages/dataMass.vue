@@ -301,6 +301,7 @@ export default {
  @optionH:50px;
  .optionBar{height:@optionH;width:100%;text-align:left;.border('bottom');}
  .optionBar .option_item{margin-right:10px;cursor:pointer;}
- .optionBar .option_item:hover{color:@Font_Hover_Col;}
+ //.optionBar .option_item:hover{color:@Font_Hover_Col;}
+ html{.TCol(~".optionBar .option_item:hover");}
  .chart_container{height:~'calc(100% - @{optionH})';width:100%;}
 </style>

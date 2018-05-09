@@ -105,8 +105,11 @@ export default {
  .iconSelector .iconSelector_scrollContainer,
  .iconSelector{width:100%;height:100%;}
  .iconSelector .icon_item{float:left;margin-right:30px;font-size:20px;width:30px;text-align:center;cursor:pointer;}
- .iconSelector .icon_item:hover{color:@Font_Hover_Col;}
- .iconSelector .icon_item.active{background-color:@Font_Hover_Col;color:@FrontCol;border-radius:5px;}
+ //.iconSelector .icon_item:hover{color:@Font_Hover_Col;}
+ html{.TCol(~".iconSelector .icon_item:hover");}
+
+ .iconSelector .icon_item.active{color:@FrontCol;border-radius:5px;}
+ html{.TCol(~".iconSelector .icon_item.active",'bg');}
 
  .scrollbar:hover {cursor:pointer;}
  .scrollbar { border:1px solid @borderCol;border-radius:5px;width: 10px; height: ~'calc(100% - 20px)'; position: absolute;right: 5px;top: 0px;background:white;display:none;margin-top:10px;}

@@ -105,6 +105,7 @@ export default {
 @itemH:30px;
 .drop_content:nth-child(n){line-height:@itemH;}
 .drop_content > *{.border('bottom');text-align:left;padding:0px 5px;}
-.drop_content > *:hover{background-color:@Font_Hover_Col;color:white;cursor:pointer;}
+.drop_content > *:hover{color:white;cursor:pointer;}
 
+html{.TCol(~".drop_content > *:hover",'bg');}
 </style>

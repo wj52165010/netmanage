@@ -174,7 +174,9 @@ export default {
  .list .item .name{font-style:italic;}
  .list .item .option_bar{float:right;height:@itemH;line-height:@itemH;margin-right:10px;}
  .list .item .option_bar .icon{color:black;}
- .list .item .option_bar .icon:hover{color:@Font_Hover_Col !important;}
+ //.list .item .option_bar .icon:hover{color:@Font_Hover_Col !important;}
+
+ html{.TCol(~".list .item .option_bar .icon:hover");}
 
  //图标选择器样式
   @optionBarH:50px;

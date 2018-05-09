@@ -225,9 +225,11 @@ export default {
 
 
 .CrashSecondDetail .tag_item{
-      line-height:30px;.border('bottom');background-color:@Font_Hover_Col;color:white;text-align:left;padding:0px 20px 0px 10px;
+      line-height:30px;.border('bottom');color:white;text-align:left;padding:0px 20px 0px 10px;
       cursor:pointer;.border('');border-radius:5px;
   }
+html{.TCol(~".CrashSecondDetail .tag_item",'bg');}
+
 .CrashSecondDetail .tag_item .number{font-style:italic;font-weight:600;float:left;}
 .CrashSecondDetail .tag_item .option{float:right;display:none;}
 .CrashSecondDetail .tag_item:hover .option{display:block;}

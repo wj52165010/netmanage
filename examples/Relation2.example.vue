@@ -1369,16 +1369,21 @@ export default {
 }
 
 .Relation .fliter_bar .fliter_item{font-style:italic;width:100px;}
-.Relation .fliter_bar .fliter_item:hover{color:@Font_Hover_Col;cursor:pointer;}
-.Relation .fliter_bar i.active{color:@Font_Hover_Col;}
+.Relation .fliter_bar .fliter_item:hover{cursor:pointer;}
+html{.TCol(~".Relation .fliter_bar .fliter_item:hover");}
+
+//.Relation .fliter_bar i.active{color:@Font_Hover_Col;}
+html{.TCol(~".Relation .fliter_bar i.active");}
+
 
 .Relation .tip_pop{
-    position:absolute;padding:5px 10px;border-radius:5px;background-color:@Font_Hover_Col;
+    position:absolute;padding:5px 10px;border-radius:5px;
     font-size:12px;color:white !important;
 }
+html{.TCol(~".Relation .tip_pop",'bg');}
 .Relation .tip_pop:before{
     content:'';
-    border-top: 5px solid @Font_Hover_Col;
+    border-top: 5px solid;
     border-right:5px solid transparent;
     border-bottom:5px solid transparent;
     border-left:5px solid transparent;
@@ -1387,4 +1392,6 @@ export default {
     left:50%;
     margin-left:-5px;
 }
+
+html{.TCol(~".Relation .tip_pop:before",'btc');}
 </style>

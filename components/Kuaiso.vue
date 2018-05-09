@@ -445,7 +445,7 @@ export default {
   @backgroundColor:@btn_Bg_Col_hover_1;
   .Kuaiso{position:absolute;}
   .Kuaiso .btnContainer{
-      width:@c_w;height:@c_w;background-color:@backgroundColor;border-radius:@c_w/2;line-height:@c_w;text-align:center;
+      width:@c_w;height:@c_w;border-radius:@c_w/2;line-height:@c_w;text-align:center;
       cursor:pointer;color:white;overflow:hidden;z-index: 300;position: relative;.trans();font-size:14px;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
@@ -454,6 +454,8 @@ export default {
         -ms-user-select: none;
         user-select: none;
    }
+
+   html{.TCol(~".Kuaiso .btnContainer",'bg');}
 
    .Kuaiso .btnContainer.Rotate{
     animation: rotateDom 1s  linear;

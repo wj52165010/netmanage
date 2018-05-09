@@ -109,17 +109,21 @@ export default {
       height:@btnH;width:100%;
       text-align:center;
       color:white;
-      background-color:@Font_Hover_Col;
       border-radius:50%;font-size:12px;line-height:@btnH;}
+   html{.TCol(~".addBtn",'bg');}
+   html{.TCol(~".removeBtn",'bg');}
+
   .addBtn:hover,
-  .removeBtn:hover{cursor:pointer;background-color:@btn_Bg_Col_hover_0;}
+  .removeBtn:hover{cursor:pointer;}
+
+  html{.TColImAdd(~".removeBtn:hover",'bg');}
+  html{.TColImAdd(~".addBtn:hover",'bg');}
   .dragLine{height:~"calc(100% - 2*@{btnH})";width:30%;margin-left:35%;.border('left',#999999);.border('right',#999999);position:relative;}
 
   .dragBtn{
       margin-left:-2px;
       width:@width;
       height:10px;
-      background-color:@Font_Hover_Col;
       line-height:2px;
       color:white;
       font-size:12px;
@@ -131,7 +135,10 @@ export default {
       z-index:100;
       text-align:center;
   }
-  .dragBtn:hover{background-color:@btn_Bg_Col_hover_0;}
+  html{.TCol(~".dragBtn",'bg');}
+
+  //.dragBtn:hover{background-color:@btn_Bg_Col_hover_0 !important;}
+  html{.TColImAdd(~".dragBtn:hover",'bg');}
   .colorLine{position:absolute;bottom:0px;background-color:#999999;width:100%;top:0px;}
   .numTip{position: absolute;color: black;right: -15px;top: 4px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
   .tickLine{position:absolute;width:100%;height:2px;background-color:#999999;}
