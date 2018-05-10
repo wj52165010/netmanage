@@ -274,7 +274,7 @@ export default {
     drawLine(p){
     
         let lineW = this.pointRectByDetal(p.source,p.target)
-
+       
         let start=this.pointPosByR(p.target,p.source,lineW),
               end=this.pointPosByR(p.source,p.target,lineW);
 
@@ -380,29 +380,36 @@ export default {
             return this.rectSize.w/2;
         }
 
+        let res=0;
         let detal=(pEnd.y-pStart.y)/(pEnd.x-pStart.x);//斜率
         let angle=Math.atan(detal);
         let constB=this.rectSize.w/2;
 
-        if(angle<Math.PI/4 && 0<=angle){
-            constB=this.rectSize.w/2;
-            return constB/Math.cos(angle);
-        }
-        if(angle>=Math.PI/4 && angle < Math.PI/2){
-            constB=this.rectSize.h/2;
-            return constB/Math.sin(angle);
-        }
+        // if(angle<Math.PI/4 && 0<=angle){
+        //     constB=this.rectSize.h/2;
+        //     res = Math.abs(constB/Math.sin(angle));
+        // }
+        // if(angle>=Math.PI/4 && angle < Math.PI/2){
+        //     constB=this.rectSize.h/2;
+        //     res = Math.abs(constB/Math.sin(angle));
+        // }
     
-        if(angle>=-Math.PI/2 && angle < -Math.PI/4){
-            constB=this.rectSize.h/2;
-            return constB/Math.sin(angle);
-        }
+        // if(angle>=-Math.PI/2 && angle < -Math.PI/4){
 
-        if(angle>=-Math.PI/4 && angle < 0){
-            constB=this.rectSize.w/2;
-            return constB/Math.cos(angle);
-        }
+        //     constB=this.rectSize.h/2;
+        //     res = Math.abs(constB/Math.sin(angle));
+        // }
 
+        // if(angle>=-Math.PI/4 && angle < 0){
+        //     constB=this.rectSize.h/2;
+        //     res = Math.abs(constB/Math.sin(angle));
+        // }
+
+        constB=this.rectSize.h/2;
+        res = Math.abs(constB/Math.sin(angle));
+        let maxLen = Math.sqrt(Math.pow(this.rectSize.w/2,2)+Math.pow(this.rectSize.h/2,2));
+
+        return res>maxLen?maxLen:res;
     },
     //根据直线斜率计算除开节点半径后的点位置
     pointPosByR(pixelStart,pixelEnd,distance){
