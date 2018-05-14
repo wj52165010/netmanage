@@ -966,7 +966,6 @@ export default {
     },
     //显示子节点
     showChildPoint(point){
-        
         point.isloading=true;
         this.$store.dispatch(RelationSecond,{
             task_target_type:point.typeCode,
@@ -1122,6 +1121,7 @@ export default {
         this.points=[];
 
         let data=res.biz_body.data;
+
 
         let rootPointers=this.converData(this.serachInfo.code,res.biz_body.selfData);
 
@@ -1304,7 +1304,7 @@ export default {
                         text:`${v.mobile}`,
                         subTextOne:v.last_time,
                         type:'Mobile',
-                        keyword:v.mac,
+                        keyword:v.mobile,
                         typeCode:'mobile',
                         typeHide:!(this.showTypes.indexOf('mobile')>=0),
                         color:this.typesParam['mobile'].color,

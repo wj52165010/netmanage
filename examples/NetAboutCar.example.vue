@@ -6,7 +6,7 @@
 
         <!--中间地图伸缩尺-->
         <div class="scaleContainer" :style="{left:blnShowHistoryPop?'300px':'0px'}">
-            <ScaleBar :start="13" :end="18" @change="zoomChange" ref="scaleBar" />
+            <ScaleBar :start="mapLevel[0]" :end="mapLevel[1]" :defVal="mapLevel[2]" @change="zoomChange" ref="scaleBar" />
         </div>
 
         <!--左边侧边框-->
@@ -110,7 +110,7 @@
                       </el-tooltip>
                     </span>
                   </div>
-                  <div class="child_item" v-for="v in detailData.fromplaceTop">
+                  <div class="child_item" v-for="v in detailData.fromplaceTop" @click="posPointer(v)" style="cursor:pointer;">
                     <span class="item_title divEllipsis" :title="v.address">{{v.address}}</span>
                     <span class="item_number">{{v.count}}次</span>
                   </div>
@@ -129,7 +129,7 @@
                       </el-tooltip>
                     </span>
                   </div>
-                  <div class="child_item" v-for="v in detailData.toplaceTop">
+                  <div class="child_item" v-for="v in detailData.toplaceTop" @click="posPointer(v)" style="cursor:pointer;">
                     <span class="item_title divEllipsis" :title="v.address">{{v.address}}</span>
     
                     <span class="item_number">{{v.count}}次</span>
@@ -191,6 +191,8 @@ export default {
       detailData:null,
       pm:null,
       tipInfo:'',
+      mapLevel:ser.map,
+      posPointers:[],
     }
   },
   watch:{
@@ -230,9 +232,9 @@ export default {
   methods:{
     //初始化地图
     initMap(){
-      this.map = new BMap.Map(this.mapid,{minZoom:13,maxZoom:18});
+      this.map = new BMap.Map(this.mapid,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1]});
       let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
-      this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);
+      this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),this.mapLevel[2]);
       this.map.enableScrollWheelZoom(true);
 
       //添加地图层级改变事件
@@ -240,6 +242,9 @@ export default {
           var zoom=this.map.getZoom();
           this.$refs.scaleBar.setVal(zoom);
       });
+    },
+    posPointer(d){
+      this.posPointers.push(this.drawPoint(this.map,d,true,d.address));
     },
     search(){
       if(this.timeRange.length<=0){return tool.info('时间范围必填!');}
@@ -286,7 +291,8 @@ export default {
     lookTask(t){
       if(!parseInt(t.result_count)){tool.info('没有相关结果!'); return;}
       this.getTaskDetail(t);
-      
+      _.each(this.posPointers,(l)=>this.map.removeOverlay(l));
+      this.posPointers=[];
     },
 
     //获取任务详细信息
@@ -645,13 +651,13 @@ export default {
       }());
     },
     //画点
-    drawPoint(map,d,blnPanTo){
+    drawPoint(map,d,blnPanTo,extraInfo){
+      pointOps= {};
+      pointOps.size=pointOps.size || 30;
+      pointOps.color=pointOps.color || 'red'
 
-      let point=new BMap.Point(d.longitude || d.equipment_longitude, d.latitude || d.equipment_latitude);
-      var label= new BMap.Label(`<div style="border:3px solid white;width:20px;height:20px;border-radius:50%;background-color:#0faaea;">
-                                    
-                                </div>`,{position:point,offset:new BMap.Size(-pointOps.size/2,-pointOps.size)});
-      label.setStyle({
+      let point=new BMap.Point(d.longitude || d.equipment_longitude || d.longti, d.latitude || d.equipment_latitude || d.lat);
+      let labelStyle={
                           fontSize : "12px",
                           lineHeight : "20px",
                           fontFamily:"微软雅黑",
@@ -659,7 +665,14 @@ export default {
                           border:'0px solid black',
                           'background-color':'transparent',
                           'max-width':'none'
-                      });
+                      };
+
+      var label= new BMap.Label(`<div style="background:url(static/map_${pointOps.color}.png);background-size: contain;width:${pointOps.size}px;height:${pointOps.size}px;line-height:${pointOps.size}px;text-align:center;color:white;">
+                                  <div style="display:${extraInfo?'block':'none'};position:absolute;bottom:0px;color:white;bottom:-20px;line-height:20px;left:${extraInfo?((-extraInfo.length*12-20)/2+15)+'px':'0px'};background-color:#30cc73;border-radius:5px;padding:0px 10px;"> 
+                                    ${extraInfo}
+                                  </div>
+                                  </div>`,{position:point,offset:new BMap.Size(-pointOps.size/2,-pointOps.size)});
+      label.setStyle(labelStyle);
       map.addOverlay(label);
 
 

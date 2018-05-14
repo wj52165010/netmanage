@@ -43,6 +43,7 @@ class server{
         this.url=url;
         this.uri=uri;
         this.baseBag=baseBag;
+        this.map=[6,19,13];//地图显示层级
         this.baseBag={
             ver:'1.1.0',
             timestamp:'100000',

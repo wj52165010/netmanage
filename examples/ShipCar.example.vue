@@ -152,6 +152,7 @@ export default {
             keysabroadOut=_.map(this.chartsData.outVehicle_abroad,d=>d.day),
             valsabroadOut=_.map(this.chartsData.outVehicle_abroad,d=>d.count);
         let optionOne = {
+                color:['#007acc','rgb(3, 171, 103)'],
                 tooltip : {
                     trigger: 'axis'
                 },
@@ -174,17 +175,30 @@ export default {
                     {
                         name:'国内',
                         type:'line',
-                        data:valsdomestic
+                        data:valsdomestic,
+                        smooth: true,
+                        areaStyle:{
+                            normal:{
+                                color:'#007acc'
+                            }
+                        }
                     },
                     {
                         name:'国际',
                         type:'line',
-                        data:valsabroad
+                        data:valsabroad,
+                        smooth: true,
+                        areaStyle:{
+                            normal:{
+                                color:'rgb(3, 171, 103)'
+                            }
+                        }
                     },
                 ]
             };
         
         let optionTwo = {
+                color:['#007acc','rgb(3, 171, 103)'],
                 tooltip : {
                     trigger: 'axis'
                 },
@@ -208,12 +222,22 @@ export default {
                     {
                         name:'国内',
                         type:'line',
-                        data:valsdomesticOut
+                        data:valsdomesticOut,
+                        areaStyle:{
+                            normal:{
+                                color:'#007acc'
+                            }
+                        }
                     },
                     {
                         name:'国际',
                         type:'line',
-                        data:valsabroadOut
+                        data:valsabroadOut,
+                        areaStyle:{
+                            normal:{
+                                color:'rgb(3, 171, 103)'
+                            }
+                        }
                     },
                 ]
             };

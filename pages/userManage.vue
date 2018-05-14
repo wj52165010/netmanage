@@ -296,7 +296,9 @@ export default {
   .UserManage_container{width:100%;height:100%;position:relative;}
 
   .group{height:@groupH;background-color:@FrontCol;overflow-y:auto;}
-  .group_header{height:@headerH;margin-top:0px;background-color:@FrontCol;}
+  .group_header{height:@headerH;margin-top:0px;color:white;}
+   html{.TCol(~".group_header",'bg');}
+
   .option_bar{
     height:@barH;
     background-color:@FrontCol;

@@ -214,6 +214,7 @@ export default {
       //除模板以外的菜单集合
       listMenus(){
           let data=_.filter(this.menus,m=>!m.kind && m.keyid!=='235');
+          //let data=_.filter(this.menus,m=>!m.kind);
           if(this.searchMenuVal){
               data=_.filter(data,m=>m.name.indexOf(this.searchMenuVal)>=0);
           }

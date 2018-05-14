@@ -6,7 +6,7 @@
 
       <!--中间地图伸缩尺-->
       <div class="scaleContainer" :style="{left:blnShowHistoryPop?'300px':'0px'}">
-          <ScaleBar :start="13" :end="18" @change="zoomChange" ref="scaleBar" />
+          <ScaleBar :start="mapLevel[0]" :end="mapLevel[1]" :defVal="mapLevel[2]" @change="zoomChange" ref="scaleBar" />
       </div>
 
       <!--左边侧边框-->
@@ -181,8 +181,8 @@
 
               <div class="item" v-show="detailInfo.weekday.length>0">
                 <div class="label">周活动Top</div>
-                <div class="child" v-for="d in detailInfo.weekday">
-                  周{{d.week}}
+                <div class="child" v-for="d in detailInfo.weekday" :title="'周'+chineseNum[d.week]+'出现频率'+(d.appear_count/d.count*100).toFixed(1)+'%'">
+                  周{{chineseNum[d.week]}}
                   <span class="right">{{(d.appear_count/d.count*100).toFixed(1)}}%</span> 
                   <div class="right process">
                     <div class="child" :style="{width:d.appear_count/d.count*100+'%'}"></div>
@@ -204,23 +204,23 @@
                 <div class="child">范围三 <span style="float:right;"><i class="fa fa-bell-o"></i></span></div>-->
               </div>
 
-              <div class="item" v-show="serachInfo.code=='certificate_code' || serachInfo.code=='mobile'">
+              <div class="item" v-show="serachInfo.code=='certificate_code' || serachInfo.code=='mobile'" style="display:none;">
                 <div class="label">每天活动时段Top</div>
-                <div class="child">
+                <div class="child" :title="`09:00-11:30时段出现频率52%`">
                   09:00-11:30
                   <span class="right">52%</span> 
                   <div class="right process">
                     <div class="child" style="width:20%;"></div>
                   </div>
                 </div>
-                <div class="child">
+                <div class="child" :title="`11:00-11:30时段出现频率62%`">
                   11:00-11:30
                   <span class="right">62%</span> 
                   <div class="right process">
                     <div class="child" style="width:30%;"></div>
                   </div>
                 </div>
-                <div class="child">
+                <div class="child" :title="`14:00-11:30时段出现频率12%`">
                   14:00-11:30
                   <span class="right">12%</span> 
                   <div class="right process">
@@ -266,6 +266,7 @@ export default {
       blnSearch:false,
       searchNum:'',
       searchResult:[],
+      mapLevel:ser.map,
       serachInfo:{color:'gray',val:'',code:''},
       timeRange:[],//时间范围
       region:'',//区域多个用逗号分隔
@@ -283,6 +284,7 @@ export default {
       pm:'',//热力图对象
       rangeMap:null,//范围地图对象
       posPointers:[],
+      chineseNum:['零','一','二','三','四','五','六','日']
     }
   },
   watch:{
@@ -393,9 +395,9 @@ export default {
   methods:{
     //初始化地图
     initMap(){
-      this.map = new BMap.Map(this.id,{minZoom:13,maxZoom:18});
+      this.map = new BMap.Map(this.id,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1]});
       let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
-      this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);
+      this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),this.mapLevel[2]);
       this.map.enableScrollWheelZoom(true);
 
       //添加地图层级改变事件
@@ -406,9 +408,9 @@ export default {
     },
     //初始化范围地图
     initRangeMap(){
-      this.rangeMap = new BMap.Map(this.rangeMapId,{minZoom:13,maxZoom:18});
+      this.rangeMap = new BMap.Map(this.rangeMapId,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1]});
       let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
-      this.rangeMap.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);
+      this.rangeMap.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),this.mapLevel[2]);
       this.rangeMap.enableScrollWheelZoom(true);
       this.pm=new HeatMap(this.rangeMap,{});
 
@@ -446,6 +448,7 @@ export default {
       var cenLng =(parseFloat(maxLng)+parseFloat(minLng))/2;  
       var cenLat = (parseFloat(maxLat)+parseFloat(minLat))/2;  
       var zoom = this.getZoom(maxLng, minLng, maxLat, minLat);  
+
       this.map.centerAndZoom(new BMap.Point(cenLng,cenLat), zoom);    
  
     }, 
@@ -456,13 +459,13 @@ export default {
         var distance = this.map.getDistance(pointA,pointB).toFixed(1);  //获取两点距离,保留小数点后两位  
         for (var i = 0,zoomLen = zoom.length; i < zoomLen; i++) {  
             if(zoom[i] - distance > 0){  
-                return 18-i+2;//之所以会多3，是因为地图范围常常是比例尺距离的10倍以上。所以级别会增加3。  
+                return 18-i+3;//之所以会多3，是因为地图范围常常是比例尺距离的10倍以上。所以级别会增加3。  
             }  
         };  
     },
     //定位点
     posPointer(d){
-     this.posPointers.push(this.drawPoint(this.map,0,d,false,{},d.netbar_name));
+     this.posPointers.push(this.drawPoint(this.map,0,d,true,{},d.netbar_name));
     },
     //获取轨迹分析数据
     analyTraceData(){
@@ -701,7 +704,8 @@ export default {
       let res = this.getCountData(count,this.addData,this.unAddData,this.cTraceData);
 
       //清除定位点信息
-      _.each(this.posPointers,this.map.removeOverlay);
+      _.each(this.posPointers,(l)=>this.map.removeOverlay(l));
+      this.posPointers=[];
  
       this.macPath(this.map,res,this.mainPath,null,null,null,this.cTraceData.length==count);
     },
@@ -710,7 +714,8 @@ export default {
       end=parseInt(end);
 
       //清除定位点信息
-      _.each(this.posPointers,this.map.removeOverlay);
+      _.each(this.posPointers,(l)=>this.map.removeOverlay(l));
+      this.posPointers=[];
 
       let res = this.getOptData(end,this.addData,this.unAddData,this.endTime,this.range);
       this.macPath(this.map,res,this.mainPath,null,null,null,parseInt(this.range[1])==end);
@@ -959,7 +964,7 @@ export default {
   .Track .right_container .info .item .sub{padding:10px 10px;}
   .Track .right_container .info .item .child{padding:0px 10px;}
 
-  .Track .right_container .info .item .child .right{float:right;width:20px;}
+  .Track .right_container .info .item .child .right{float:right;width:30px;}
   .Track .right_container .info .item .child .process{width:120px;height:8px;background-color:#808080;margin-top:5px;margin-right:10px;}
   .Track .right_container .info .item .child .process .child{background-color:#85c226;height:100%;float:right;padding:0px;}
 

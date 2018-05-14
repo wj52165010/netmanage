@@ -947,7 +947,9 @@ export default {
   @gainCol:#019cdc;
   @collectCol:#85c226;
   @resultCol:#f8c301;
-  .CCIC .table_header{height:@header_H;display:table;width:100%;border:none;}
+  .CCIC .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
+  html{.TCol(~".CCIC .table_header .row",'bg');}
+
   .CCIC .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
   .CCIC .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');}
   .CCIC .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}

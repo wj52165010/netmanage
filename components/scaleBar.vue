@@ -23,7 +23,7 @@
 import {scaleLinear} from "d3-scale";
 export default {
   name: 'ScaleBar',
-  props:['start','end'],
+  props:['start','end','defVal'],
   data () {
     return {
       dragBtn:null,
@@ -57,6 +57,11 @@ export default {
       for(let i=this.start;i<=this.end;i++){
         this.ticks.push(this.scaleVal(i));   
       }
+      
+      if(this.defVal){
+        this.setVal(this.defVal);
+      }
+      
   },
   destroyed(){
     Fx.ClearBind('mouseup',$('body'),this.mousedownid);

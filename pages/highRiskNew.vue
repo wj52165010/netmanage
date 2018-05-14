@@ -1186,7 +1186,9 @@ html{.TCol(~".HighRisk .tag_label:hover");}
 @gainCol:#019cdc;
 @collectCol:#85c226;
 @resultCol:#f8c301;
-.HighRisk .table_header{height:@header_H;display:table;width:100%;border:none;}
+.HighRisk .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
+html{.TCol(~".HighRisk .table_header .row",'bg');}
+
 .HighRisk .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 .HighRisk .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');}
 .HighRisk .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}

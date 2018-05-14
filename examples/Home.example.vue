@@ -218,7 +218,7 @@
 
       <!--中间地图伸缩尺-->
       <div class="scaleContainer">
-          <ScaleBar :start="13" :end="18" @change="zoomChange" ref="scaleBar" />
+          <ScaleBar :start="mapLevel[0]" :end="mapLevel[1]" :defVal="mapLevel[2]" @change="zoomChange" ref="scaleBar" />
       </div>
 
       <!--主操作框边角显示-->
@@ -279,6 +279,7 @@ export default {
       currentDate:tool.DateFormat(new Date(),'yyyy年MM月dd日 hh:mm'),
       showMapIndex:-1,//当前显示地图索引
       showData:[],
+      mapLevel:ser.map,
       //统计信息
       countData:{
         //场所统计数据
@@ -406,9 +407,9 @@ export default {
   methods:{
     //初始化地图
     initMap(){
-      this.map = new BMap.Map(this.id,{minZoom:13,maxZoom:18,enableMapClick: false});
+      this.map = new BMap.Map(this.id,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1],enableMapClick: false});
       let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
-      this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);//重庆中心点
+      this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),this.mapLevel[2]);//重庆中心点
       this.map.enableScrollWheelZoom(true);
       // this.map.setMapStyle({
       //     styleJson:theme

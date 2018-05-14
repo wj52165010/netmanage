@@ -154,7 +154,9 @@ export default {
   .OperLog{width:100%;height:100%;text-align:left;padding:5px;}
   .OperLog .OperLog_container{background-color:@FrontCol;margin-bottom:0px;position:relative;width:100%;height:100%;}
   .group{height:@groupH;background-color:@FrontCol;overflow-y:auto;.border('bottom');}
-  .group_header{height:@headerH;margin-top:0px;background-color:@FrontCol;line-height:@headerH;text-align:center;}
+  .group_header{height:@headerH;margin-top:0px;color:white;line-height:@headerH;text-align:center;}
+  html{.TCol(~".group_header",'bg');}
+
   .option_bar{
     height:@barH;
     background-color:@FrontCol;

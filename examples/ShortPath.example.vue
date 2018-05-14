@@ -83,6 +83,12 @@ export default {
       rectSize:{h:70,w:145},
       subtion:null,
       blnRect:true,
+      qqIcon:null,
+      weixinIcon:null,
+      vidPersonIcon:null,
+      macIcon:null,
+      phoneIcon:null,
+      idenIcon:null,
     }
   },
   watch:{
@@ -116,6 +122,23 @@ export default {
 
     let el=$(this.$el);
     this.canvas=el.find(`canvas[name="canvas"]`);
+
+    //加载图片
+    this.qqIcon = new Image(); //定义一个图片对象
+    this.qqIcon.src = 'static/QQ.png';
+    this.weixinIcon=new Image();
+    this.weixinIcon.src='static/weixin.png'
+    this.vidPersonIcon = new Image();
+    this.vidPersonIcon.src='static/vidperson.png';
+    this.macIcon = new Image();
+    this.macIcon.src='static/mac.png';
+    this.phoneIcon = new Image();
+    this.phoneIcon.src='static/iphone.png';
+    this.idenIcon = new Image();
+    this.idenIcon.src='static/idenperson.png'
+
+
+
     setTimeout(()=>{
         this.offset=el.offset();
         this.canvas.width=el.width();
@@ -505,8 +528,8 @@ export default {
     redraw(v){
         this.curTaskData.start_node.root=true;
         this.curTaskData.end_node.root=true;
-        let startP={id:this.curTaskData.start_node.data_id,x:0,y:0,text:this.curTaskData.start_node.key};
-        let endP={id:this.curTaskData.end_node.data_id,x:0,y:0,text:this.curTaskData.end_node.key};
+        let startP={id:this.curTaskData.start_node.data_id,x:0,y:0,text:'关键字1',subText:this.curTaskData.start_node.key};
+        let endP={id:this.curTaskData.end_node.data_id,x:0,y:0,text:'关键字2',subText:this.curTaskData.end_node.key};
         let childs=_.chain(this.curTaskData.paths).flatten().filter(r=>r.type=='data').map(r=>{r.x=0;r.y=0;r.radius=30;r.color='#009a44'; return r;}).value(); 
 
         this.points=[
@@ -551,12 +574,22 @@ export default {
             ctx.fillStyle='white';
             ctx.textBaseline='middle';
             if(p.blnChild){
-                ctx.fillText(p.text,p.x-rectSize.w/2 + 10,p.y-rectSize.h/2+15);
+
+                ctx.drawImage(p.icon,0,0,48,48,
+                              p.x-rectSize.w/2 + 10,
+                              p.y-rectSize.h/2 + 6,
+                              20,
+                              20);
+                ctx.fillText(p.text,p.x-rectSize.w/2 + 40,p.y-rectSize.h/2+15);
 
                 ctx.fillStyle='black';
                 ctx.fillText(p.subText,p.x-rectSize.w/2 + 10,p.y-rectSize.h/2+15 + rect.h+20);
             }else{
-                ctx.fillText(p.text,p.x-rect.w/2,p.y);
+                let rectText={w:ctx.measureText(p.text).width,h:ctx.measureText('W').width};
+                ctx.fillText(p.text,p.x-rectText.w/2,p.y - 10);
+
+                let rectsubText={w:ctx.measureText(p.subText).width,h:ctx.measureText('W').width};
+                ctx.fillText(p.subText,p.x-rectsubText.w/2,p.y +5);
             }
         }else{
             let rect={w:ctx.measureText(p.text+p.subText).width,h:ctx.measureText('W').width};
@@ -579,9 +612,23 @@ export default {
 
             // res.biz_body.paths[0].splice(2,1);
             // res.biz_body.paths[0].push({type:'line',value:"->"});
+            let iconMap={
+                vid:this.vidPersonIcon,
+                mobile:this.phoneIcon,
+                cert:this.idenIcon,
+                mac:this.macIcon,
+                '微信':this.weixinIcon,
+                QQ:this.qqIcon,
+            };
             res.biz_body.paths=_.map(res.biz_body.paths,arr=>{
 
-                return _.map(arr,a=>{a.id=a._id;a.text=(a.account_type_note || a.key_type_note);a.subText=`${a.key}`;a.blnChild=true;return a;})
+                return _.map(arr,a=>{
+                    a.id=a._id;a.text=(a.account_type_note || a.key_type_note);
+                    a.subText=`${a.key}`;
+                    a.blnChild=true;
+                    a.icon=iconMap[a.icon_type] || iconMap[a.key_type]
+                    return a;
+                })
             });
 
             this.curTaskData=res.biz_body;

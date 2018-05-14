@@ -16,7 +16,7 @@
         </div>
         <!--仿百度伸缩比例组建-->
         <div class="scaleBar_container">
-            <ScaleBar :start="13" :end="18" @change="zoomChange" ref="scaleBar" />
+            <ScaleBar :start="mapLevel[0]" :end="mapLevel[1]" :defVal="mapLevel[2]" @change="zoomChange" ref="scaleBar" />
         </div>
 
         <!--图标解释框-->
@@ -51,6 +51,7 @@ export default {
         }
      },
      id:'',
+     mapLevel:ser.map,
      blnLoading:false,
      hasInit:false,
      dateRange:[],
@@ -329,10 +330,10 @@ export default {
       //初始化路径
       initPath(){
         if(this.hasInit)return;
-        this.map = new BMap.Map(this.id,{minZoom:13,maxZoom:18});
+        this.map = new BMap.Map(this.id,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1]});
         //this.map.centerAndZoom(new BMap.Point(106.33,29.35),7);//重庆中心点
         let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
-        this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);//安阳中心点
+        this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),this.mapLevel[2]);//安阳中心点
         this.map.enableScrollWheelZoom(true);
 
         this.hasInit=true;
@@ -349,10 +350,10 @@ export default {
         if(this.hasInit)return;
 
         let store=this.$store,data=tool.Clone(this.data || {keyid:'',condtion:''}),primaryKey=this.data.primaryKey.split('|'),s=this;
-        this.map = map = new BMap.Map(this.id,{minZoom:13,maxZoom:18});
+        this.map = map = new BMap.Map(this.id,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1]});
         //map.centerAndZoom(new BMap.Point(106.33,29.35),13);//重庆中心点
         let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
-        map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);//安阳中心点
+        map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),this.mapLevel[2]);//安阳中心点
   
         map.enableScrollWheelZoom(true);
         
