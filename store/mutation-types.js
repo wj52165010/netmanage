@@ -334,6 +334,7 @@ export const GetSiteDeviceList='GetSiteDeviceList' //获取非网吧场所下挂
 export const GetSiteTerminalList='GetSiteTerminalList' //获取网吧场所下挂载终端列表
 export const getDictTables='getDictTables' //获取字典信息集合
 export const SiteDetectColl='SiteDetectColl' //获取数据采集趋势
+export const siteDetectYesterday='siteDetectYesterday' //获取场所昨日采集详情的柱状图
 export const SiteHisPercentage='SiteHisPercentage' //获取场所在离线数据
 export const LastPercentage='LastPercentage' //获取场所昨日在离线状况
 export const HisPercentageExport='HisPercentageExport' //导出统计场所状态率
@@ -363,9 +364,11 @@ export const GetRegionList='GetRegionList' //获取区域管理定制页面
 
 // 获取app定制页面信息
 export const GetAppList='GetAppList' //获取app定制页面列表信息
+export const GetViolationsAppList='GetViolationsAppList' //获取app定制页面违规app列表
 export const GetAppDetail='GetAppDetail' //获取app定制页面详情
 export const GetAppViolations='GetAppViolations' //app页面概况统计（用于饼图和右侧柱状图）
 export const GetAppGreenPre='GetAppGreenPre' //app页面健康率统计
+export const GetAppGreenPreExport='GetAppGreenPreExport' //app页面健康率导出
 
 // 获取网站备案定制页面信息
 export const GetWebList='GetWebList' //获取网站备案定制页面未备案网站列表

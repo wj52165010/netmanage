@@ -8,23 +8,23 @@
             </div>
             <!-- 标签切换 导航-->
             <div style="height:30px" name="tagcomp">
-              <div class="tagComp" style="text-align:left">
+              <div class="tagComp" style="text-align:left">                
+                <div class="item" @click="switchView('statistics')" :class="{active: viewTable=='statistics'}">
+                    <div class="item_container">
+                        <span class="content"><i class="fa fa-gear"></i>分析</span>
+                    </div>
+                </div>
+                <div class="item" @click="switchView('map')" :class="{active: viewTable=='map'}">
+                    <div class="item_container">
+                        <span class="content"><i class="fa fa-map-marker"></i>地图</span>
+                    </div>
+                </div>
                 <div class="item" @click="switchView('list')" :class="{active: viewTable=='list'}">
                     <div class="item_container">
                         <span class="content"><i class="fa fa-list"></i>列表</span>
                     </div>
                 </div>
-                <div class="item" @click="switchView('map')" :class="{active: viewTable=='map'}">
-                    <div class="item_container">
-                        <span class="content"><i class="fa fa-map-marker"></i>描点</span>
-                    </div>
-                </div>
-                <div class="item" @click="switchView('statistics')" :class="{active: viewTable=='statistics'}">
-                    <div class="item_container">
-                        <span class="content"><i class="fa fa-gear"></i>统计</span>
-                    </div>
-                </div>
-               </div>
+              </div>
             </div>
             <!--列表显示区域-->
             <div v-show="viewTable=='list'" style="height: calc(100% - 50px - -63px - 40px);position:relative">
@@ -60,7 +60,7 @@
                     <div class="item">
                         <span>数据来源:</span>
                         <div class="input">
-                            <el-select v-model="query.microprobe_type" :clearable="true" placeholder="数据来源" :multiple="true" :collapse-tags="true" @change=filterMicroprobe>
+                            <el-select v-model="query.microprobe_type" placeholder="数据来源" :multiple="true" :collapse-tags="true" @change=filterMicroprobe>
                                 <el-option v-for="kind in dict_tables.microprobe_type" :label="kind.name" :value="kind.value"></el-option>
                             </el-select>
                         </div>
@@ -101,9 +101,9 @@
                                 <div class="align" :title="d.netbar_name" ><span class="overflow" style="width:100px;">{{d.netbar_name}}</span></div>
                                 <div class="align" :title="d.netbar_address"><span class="overflow" style="width:230px;">{{d.netbar_address}}</span></div>
                                 <div  :title="d.online_state"><span class="overflow" style="width:63px;" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]">{{d.online_state}}</span></div>
-                                <div @click="moutType(d.netbar_wacode,d.netbar_name,d.microprobe_type)"><span class="overflow sit-click" style="width:80px;" v-html="d.situation"></span></div>
+                                <div  :title="d.situatioTitle" @click="moutType(d.netbar_wacode,d.netbar_name,d.microprobe_type)"><span class="overflow sit-click" style="width:80px;" v-html="d.situation"></span></div>
                                 <div  :title="d.capture_time"><span class="overflow" style="width:140px;">{{d.capture_time}}</span></div>
-                                <div  :title="d.last_upload_num" @click="dataStatus(d.netbar_wacode,d.netbar_name)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
+                                <div  :title="d.last_upload_num" @click="dataStatus(d.netbar_wacode,d.netbar_name,d.microprobe_type_code)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
                                 <div  :title="d.business_state"><span class="overflow" style="width:65px;">{{d.business_state}}</span></div>
                                 <div class="align" :title="d.netsite_type"><span class="overflow" style="width:90px;">{{d.netsite_type}}</span></div>
                                 <div  :title="d.region_name"><span class="overflow" style="width:60px;">{{d.region_name}}</span></div>
@@ -132,7 +132,7 @@
                      <div name="pie_chart_container" class="" style="width:100%;height:100%;text-align:left"></div>
                 </div>               
                 <!--柱状图(问题总览)-->
-                <div style="width:67%;height:50%;display:inline-block" >
+                <div style="width:67%;height:50%;display:inline-block">
                     <div name="bar_chart_container" style="width:100%%;height:100%;" ></div>
                 </div>
                 <!--线形图（在离线率）-->
@@ -172,6 +172,82 @@
                         <div name="his_line_chart_container" style="margin:0 auto;width:100%;height:100%" v-show="changeChart=='line'"></div>
                     </div>
                 </div>
+                <!--问题总览信息列表显示-->
+                <div class="analysis_list" :class="[problemTable=='1' ? 'animateShow' : '', problemTable=='2' ? 'animateHide' : '',problemTable=='3' ? 'noAnimateShow' : '',problemTable=='4' ? 'noAnimateHide' : ''] ">
+                    <div style="" class="drag-info"  @click="changeProblemFun(false)">
+                        <div>问题总览&nbsp;&nbsp;<span>﹀</span></div>                        
+                    </div>
+                    <div class="option">
+                        <div class="item">
+                            <span>紧急分类:</span>
+                            <div class="input">
+                                <el-select v-model="queryProblem.netsite_state" :clearable="true" placeholder="紧急分类" >
+                                    <el-option v-for="kind in dict_tables.score_level" :label="kind.name" :value="kind.value"></el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div class="item" >
+                            <span>所属厂商:</span>
+                            <div class="input" style="width:250px;display:inline-block;">
+                                <MulDropDwon :data="Selfirms" keyProp="name" id="code" placeholder="请选择厂商">
+                                    <div v-for="t in firms" @mousedown="firmClick(t)">{{t.name}}</div>
+                                </MulDropDwon>
+                            </div>
+                        </div>                   
+                        <div class="item">
+                            <span>所属区域:</span>
+                            <div class="input">
+                                <PlaceSearch  :blnClear="true" c_searchKind="0" @place_res="selectAreaProblem"></PlaceSearch>
+                            </div>
+                        </div>                                                       
+                        <div class="item" >
+                            <el-button type="primary" @click="query_problem_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
+                        </div> 
+
+                    </div>
+                    <ul class="header">
+                        <li class="item">
+                            <div><span class="overflow" style="width:115px;">场所编码</span></div>
+                            <div><span class="overflow" style="width:100px;">场所名称</span></div>
+                            <div><span class="overflow" style="width:230px;">所属厂商</span></div>
+                            <div><span class="overflow" style="width:63px;">所属区域</span></div>
+                            <div><span class="overflow" style="width:80px;">问题分类</span></div>
+                            <div><span class="overflow" style="width:140px;">场所状态</span></div>
+                            <div><span class="overflow" style="width:72px;">场所概况</span></div>
+                            <div><span class="overflow" style="width:65px;">最近联系时间</span></div>
+                            <div><span class="overflow" style="width:90px;">昨日采集</span></div>
+                            <div><span class="overflow" style="width:60px;">异常原因</span></div>
+                            <!--<div><span class="overflow" style="width:60px;">数据来源</span></div>
+                            <div><span class="overflow" style="width:80px;">所属厂商</span></div>
+                            <div><span class="overflow" style="width:65px;">操作</span></div>-->
+                        </li>
+                    </ul>
+                    <div class="content" style="background-color:#eee">
+                        <Scroll :listen="data">
+                            <ul class="body">
+                                <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
+                                <li v-for="(d,i) in showData" class="item" >
+                                    <div  :title="d.netbar_wacode" ><span class="overflow" style="width:115px;">{{d.netbar_wacode}}</span></div>
+                                    <div class="align" :title="d.netbar_name" ><span class="overflow" style="width:100px;">{{d.netbar_name}}</span></div>
+                                    <div class="align" :title="d.netbar_address"><span class="overflow" style="width:230px;">{{d.netbar_address}}</span></div>
+                                    <div  :title="d.online_state"><span class="overflow" style="width:63px;" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]">{{d.online_state}}</span></div>
+                                    <div  :title="d.situatioTitle" @click="moutType(d.netbar_wacode,d.netbar_name,d.microprobe_type)"><span class="overflow sit-click" style="width:80px;" v-html="d.situation"></span></div>
+                                    <div  :title="d.capture_time"><span class="overflow" style="width:140px;">{{d.capture_time}}</span></div>
+                                    <div  :title="d.last_upload_num" @click="dataStatus(d.netbar_wacode,d.netbar_name)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
+                                    <div  :title="d.business_state"><span class="overflow" style="width:65px;">{{d.business_state}}</span></div>
+                                    <div class="align" :title="d.netsite_type"><span class="overflow" style="width:90px;">{{d.netsite_type}}</span></div>
+                                    <div  :title="d.region_name"><span class="overflow" style="width:60px;">{{d.region_name}}</span></div>
+                                </li>
+                            </ul>
+                        </Scroll>
+                    </div>
+                    <div class="page_container">
+                        <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageNum+1}}</span></span>
+                        <div class="firstPage" @click="pageChangeProblem(0)">首页</div>
+                        <div class="prePage" @click="pageChangeProblem(pageNum-1)">上一页</div>
+                        <div class="nextPage" @click="pageChangeProblem(pageNum+1)">下一页</div>
+                    </div>                  
+                </div>
             </div>
         </div>
     </div>
@@ -194,10 +270,11 @@ import 'echarts/lib/component/tooltip'
 import 'echarts/lib/component/title'
 import 'echarts/lib/component/dataZoom'
 
+import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 import TaskType from '../enum/TaskType'
 import RelativeAnlay from '../modules/case/anlay'
 import AddPop from '../modules/case/addPop'
-import {HisPercentageExport,GetSiteTerminalList,BODY_RESIZE,GetSiteList,GetSiteDeviceList,getDictTables,SiteDetectColl,SiteDetail,SiteHisPercentage,LastPercentage} from '../store/mutation-types'
+import {HisPercentageExport,GetSiteTerminalList,GetFirm,BODY_RESIZE,GetSiteList,GetSiteDeviceList,getDictTables,SiteDetectColl,SiteDetail,SiteHisPercentage,LastPercentage} from '../store/mutation-types'
 export default {
   name: 'sitePage',
   components:{
@@ -205,6 +282,7 @@ export default {
       PlaceSearch,
       cSelect,
       MapSite,
+      MulDropDwon
     },
     watch:{
         collType () {
@@ -243,22 +321,25 @@ export default {
                 setTimeout(()=>{
                     this.myOnOffBarChart.resize();
             },0);  
-        }
+        },
+        Selfirms(){
+            this.queryProblem.selfirem=_.map(this.Selfirms,s=>s.code).join(',');
+        },
     },
   data () {
     return {
         siteType:[],          //场所类型
         siteState:[{name:'在线',val:true},{name:'离线',val:false}],
         siteSource:[],                  //数据来源
-        viewTable:"list",                //列表，地图和统计相互切换的标识
-        blnLoading:true,                //加载中标识
+        viewTable:"statistics",                //列表，地图和统计相互切换的标识
+        blnLoading:false,                //加载中标识
         pageNum:0,                      //当前页号（0开始计数）
         dict_tables:{},                 //字典信息集合
         myPieChart:"",  
         myBarChart:"",
         myLineChart:"",   
         myOnOffBarChart :"",
-
+        problemTable:"4",              //问题总览列表页面切换标识
         staticTime:[{name:'近一周',val:'week'},{name:'近一月',val:'month'}],
         collType:'week',              //数据采集趋势率统计状态默认为近一周    
         changeChart:"line",             //场所在线率柱状图与条形图的相互切换标识
@@ -281,7 +362,21 @@ export default {
             region_range:[],   //区域范围
             netsite_range:[],   //场所范围
         },
+        firms:[],            //所有厂商数据
+        Selfirms:[],         //厂商控件选中的厂商
+        queryProblem:{
+            limit:20,//每页20条
+            skip:0,//跳过0条
+            netbar_name:'',//场所名称 
+            netsite_type:'', //场所类型
+            netsite_state:'',//场所状态
+            microprobe_type:'',//数据来源&采集系统类型
+            region_range:[],   //区域范围
+            netsite_range:[],   //场所范围
+            selfirem:'',  
+        },
         data:[],
+        data2:[],
         newObject:{
             primaryKey:"netbar_info|netbar_wacode",
         }
@@ -291,6 +386,7 @@ export default {
     this.bodyClickId=tool.SingleBind('mousedown',$('body'),()=>{
        this.blnShowStatus=false;
     });
+    //this.query.microprobe_type=["120"];
     this.refreshPage();
     this.getOnOffLineData();
     this.getYesdayData();
@@ -325,8 +421,10 @@ export default {
                     netsite_type:r.netsite_type,
                     region_name:r.region_name,
                     microprobe_type:r.microprobe_type,
+                    microprobe_type_code:r.microprobe_type_code,
                     security_software_orgname:r.security_software_orgname,
                     situation:r.microprobe_type=="网吧"? r.net_terminal_num+"/"+r.actual_terminal+"/"+r.internet_users :"<span style='color:green'>"+ r.online_device+"</span>/<span style='color:red'>"+r.abnormal_device+"</span>/<span style='color:#000'>"+r.offline_device+"</span>",
+                    situatioTitle:r.microprobe_type=="网吧"? "申报终端："+r.net_terminal_num+"台/检测终端："+r.actual_terminal+"台/在线终端："+r.internet_users+"台" :"在线："+r.online_device+"台/异常："+r.abnormal_device+"台/离线："+r.offline_device+"台",               
                 }
             });
       }
@@ -357,18 +455,27 @@ export default {
       loadData(){
         //   加载时先清空数据在加载等待动画，请求完后数据加载
           this.data=[];
-          this.blnLoading=true;
-          //获取场所信息
-         this.$store.dispatch(GetSiteList,this.query).then(res=>{
-           if(res.msg.code!='successed')return;
-           this.data=res.biz_body;
-            this.blnLoading=false;  
-         });
-            //获取数据来源（下拉框序列化）
+          //this.blnLoading=true;
+          //获取数据来源（下拉框序列化）
           this.$store.dispatch(getDictTables).then(res=>{
              if(res.msg.code!='successed')return;
             this.dict_tables= res.biz_body;
+            this.query.microprobe_type=["120"];
+            //获取场所信息
+            this.$store.dispatch(GetSiteList,this.query).then(res=>{
+                if(res.msg.code!='successed')return;
+                this.data=res.biz_body;
+                this.blnLoading=false;
+                if(this.query.microprobe_type[0]=="120")   this.query.microprobe_type=["120"];
+            });
+
+            
           });
+        //获取厂商下拉框数据
+        this.$store.dispatch(GetFirm).then(res=>{
+            if(!tool.msg(res,'','获取厂商数据失败!'))return;
+            this.firms=res.biz_body;
+        });
       },
       //区域范围的事件回传，第一个参数为上下文环境，第二个参数为具体值,因为该页面为单独定制没有上下文，因此取第二个值即可
       selectArea(val,data){
@@ -376,6 +483,14 @@ export default {
             this.query.region_range=data.regions;
         }else{
             this.query.region_range="";
+        }
+      },
+      //问题总览列表下的区域范围选择
+      selectAreaProblem(val,data){
+        if(data){
+            this.queryProblem.region_range=data.regions;
+        }else{
+            this.queryProblem.region_range="";
         }
       },
       //场所范围的事件回传，第一个参数为上下文环境，第二个参数为具体值,和区域范围选择类似
@@ -390,6 +505,16 @@ export default {
       switchView(type){
           if(type==this.viewTable) return
           this.viewTable=type;
+          //切换到分析 时的特殊处理
+          if(type=="statistics"){
+              if(this.problemTable=="2"){
+                  this.problemTable="4";  
+              };
+              if(this.problemTable=="1"){
+                  this.problemTable="3";  
+              }
+          }
+          //this.problemTable="0";  
       },
         // 获取场所在离线数据
       getOnOffLineData(){
@@ -541,7 +666,7 @@ export default {
             },
             yAxis: {
                 type: 'category',
-                data: ['场所处罚','设备离线','场所维护','设备异常','采集异常','终端异常',"刷卡异常"],
+                data: ['场所维护','场所处罚','场所离线','设备故障','采集波动','采集失效',"刷卡异常",'终端异常'],
                 splitLine:{
                     show:false
                 },
@@ -582,7 +707,7 @@ export default {
                         },
 
                     },
-                    data: [data.hist.card_abnormals,data.hist.terminal_abnormals, data.hist.collection_abnormals, data.hist.netbar_maintenances, data.hist.netbar_punishments, data.hist.netbar_equip_abnormals,data.hist.netbar_equip_offlines]
+                    data: [data.hist.netbar_maintenances,data.hist.netbar_punishments, data.hist.netbar_offlines, data.hist.netbar_maintenances, data.hist.collection_undulate, data.hist.collection_abnormals,data.hist.card_abnormals,data.hist.terminal_abnormals]
                 }
                 
             ]
@@ -1129,19 +1254,20 @@ export default {
             }());                 
         },
         // 数据采集趋势
-        dataStatus(siteId,name){
+        dataStatus(siteId,name,type){
              let self=this;
+             //let wq111="<!--<div class="bar tit-bars" :class="isStateNo=='2'? 'active':''" @click="changeStatus('2')">采集详情</div>-->"
             tool.open(function(){
                 let html=`<div name="container" style="width:100%;height:100%;padding: 10px;">
                             <div class="tit-row">
-                                <div class="bar tit-bars active" @click=changeStatus(1)>采集趋势</div>
-                                <div class="bar tit-bars" @click=changeStatus(2)>采集状况</div>
+                                <div class="bar tit-bars" :class="isStateNo=='1'? 'active':''" @click="changeStatus('1')">采集趋势</div>
+                                
                             </div>
                             <!--加载中标识-->
                             <div v-if="DeviceblnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 10px;font-size: 50px;">
                                 <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
                             </div>
-                            <div style="width:100%;height:100%;border-top: 1px solid #ccc;" class="data-row">
+                            <div style="width:100%;height:100%;border-top: 1px solid #ccc;" class="data-row" v-show="isStateNo=='1'">
                                 <div class="tda-ert">
                                     <div class="lefts">
                                         <span>昨日采集：{{yesCollect}}</span>
@@ -1153,6 +1279,19 @@ export default {
                                     </div>
                                 </div>
                                 <div style="width:880px;height:400px;background-color:#eee" id="statusChar"></div>
+                            </div>  
+                            <div style="width:100%;height:100%;border-top: 1px solid #ccc;" class="data-row" v-show="isStateNo=='2'">
+                                <div class="tda-ert" style="margin: 6px 0 5px;">
+                                    <div class="lefts" style="font-size:20px;margin:0 15px">
+                                        <div class="el-tooltip item active" title="昨日采集详情" >
+                                                <div class="el-tooltip__rel" ><i class="fa fa-area-chart"></i></div>
+                                        </div> 
+                                        <div class="el-tooltip item" title="历史采集详情">
+                                            <div class="el-tooltip__rel"><i class="fa fa-line-chart"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="width:880px;height:400px;background-color:#eee" id="statusCharBar"></div>
                             </div>                        
                         </div>`;
                 let param={
@@ -1166,10 +1305,13 @@ export default {
                         sginData:[],
                         allCollect:"",
                         yesCollect:"",
-                        viewTime:"week",
+                        viewTime:"week",         //近一月与近一周的切换
+                        isStateNo:"1",          //采集趋势与采集详情的切换标识
                         DeviceblnLoading:true,  //加载中标识
                         changeStatus(val){
                             //点击采集情况时触发为以后预留 TODO
+                            console.log(val);
+                             param.selfData.isStateNo=val;
                         },
                         changeline(val){
                             if(val== param.selfData.viewTime) return;
@@ -1221,11 +1363,12 @@ export default {
                                         data:  param.selfData.sginData,
                                         type: 'line',
                                     }]
-                                };
-
-                                
+                                };                               
                                 lineChart.setOption(option);
                             });
+
+                            //self.$store.dispatch(siteDetectYesterday,{netbar_wacode:siteId,microprobe_type:microprobe_type}).then(res=>{
+
 
                         }                  
                     }, 
@@ -1236,6 +1379,21 @@ export default {
                 return param;           
             }())
         },
+        // 问题总览列表与分析图表页面相互切换
+      changeProblemFun(val){
+          if(val){
+            this.problemTable="1";
+          }else{
+            this.problemTable="2";  
+          }
+      },
+        //处理厂商选择控件的方法
+      firmClick(d){
+            if(_.findIndex(this.Selfirms,t=>t.code==d.code)>=0)return;
+            this.Selfirms.push(d);
+
+        },
+
   }
 }
 </script>
@@ -1328,6 +1486,7 @@ export default {
         border:1px solid #04AB66;
         border-radius: 6px;
     }
+
     .status-detail-container .tit-row .tit-bars:hover{
          background-color: #04AB66;
         color: #fff;
@@ -1512,4 +1671,76 @@ export default {
     cursor: pointer;
     color: #03ab67;
   }  
+  .stiepage .chart_container .analysis_list{
+     height: calc(100%);
+     width:100%;
+     position:absolute;
+    top:0px;
+
+  }
+  .stiepage .chart_container .analysis_list.noAnimateShow{
+    top:0;        //不加载动画直接显示
+  }
+  .stiepage .chart_container .analysis_list.noAnimateHide{
+   top:5000px;        //不加载动画直接影藏
+  }
+  /*动画显示*/
+  .stiepage .chart_container .analysis_list.animateShow{
+    animation: startAit 1s;
+    -moz-animation: startAit 1s;	/* Firefox */
+    -webkit-animation: startAit 1s;	/* Safari 和 Chrome */
+    -o-animation: startAit 1s;	/* Opera */
+    top:0;
+  }
+  .stiepage .chart_container .analysis_list.animateHide{
+    animation: finishAit 1s;
+    -moz-animation: finishAit 1s;	/* Firefox */
+    -webkit-animation: finishAit 1s;	/* Safari 和 Chrome */
+    -o-animation: finishAit 1s;	/* Opera */
+    top:5000px;        //将这个值改为一个较大的数值，必须远超屏幕高度，用于做动画效果
+  }
+   .stiepage .chart_container .analysis_list .drag-info{
+    height: 30px;
+    width:100%;
+    background-color:#eee;
+  }
+
+  .stiepage .chart_container .analysis_list .drag-info div{
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    background-color: #bbb;
+    text-align: center;
+    line-height: 34px;
+    cursor:pointer;
+    font-Weight:800;
+  }
+  .stiepage .chart_container .analysis_list .drag-info span{
+    font-size: 28px;
+    line-height: 13px;
+    display: inline-block;
+    position: relative;
+    top: 10px;
+  }
+    @keyframes startAit{
+        0% {
+            top:1000px;
+            display:block;
+        }
+        100% {
+            top:0px;
+            display:block;
+        }                
+    }
+    @keyframes  finishAit{
+        0% {
+            top:0;
+            display:block;
+        }
+        100% {
+            top:1000px;
+            display:none;
+        }                
+    }
+
 </style>

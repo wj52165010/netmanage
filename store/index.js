@@ -1638,6 +1638,14 @@ export default new Vuex.Store({
                 });
             });
         },
+        //获取场所昨日采集详情的柱状图
+        [types.siteDetectYesterday]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.siteDetectYesterday(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },        
         //获取场所详情
         [types.SiteDetail]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -1818,7 +1826,15 @@ export default new Vuex.Store({
                     resolve(res);
                 });
             });
-        },       
+        },   
+        //获取app定制页面违规app列表
+        [types.GetViolationsAppList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetViolationsAppList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },             
         //获取app定制页面详情
         [types.GetAppDetail]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -1839,6 +1855,14 @@ export default new Vuex.Store({
         [types.GetAppGreenPre]({commit},data){
             return new Promise((resolve,reject)=>{
                 ser.GetAppGreenPre(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        }, 
+        //app页面健康率导出
+        [types.GetAppGreenPreExport]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.GetAppGreenPreExport(data).then(res=>{
                     resolve(res);
                 });
             });

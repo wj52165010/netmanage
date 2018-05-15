@@ -9,11 +9,7 @@
             <!-- 标签切换 -->
             <div style="height:30px" name="tagcomp">
               <div class="tagComp" style="text-align:left">
-                <div class="item" @click="switchView('list')" :class="{active: viewTable=='list'}">
-                    <div class="item_container">
-                        <span class="content"><i class="fa fa-list"></i>列表</span>
-                    </div>
-                </div>
+
                 <!-- <div class="item" @click="switchView('map')" :class="{active: viewTable=='map'}">
                     <div class="item_container">
                         <span class="content"><i class="fa fa-map-marker"></i>描点</span>
@@ -21,9 +17,14 @@
                 </div> -->
                 <div class="item" @click="switchView('statistics')" :class="{active: viewTable=='statistics'}">
                     <div class="item_container">
-                        <span class="content"><i class="fa fa-gear"></i>统计</span>
+                        <span class="content"><i class="fa fa-gear"></i>分析</span>
                     </div>
                 </div>
+                <div class="item" @click="switchView('list')" :class="{active: viewTable=='list'}">
+                    <div class="item_container">
+                        <span class="content"><i class="fa fa-list"></i>列表</span>
+                    </div>
+                </div>                
                </div>
             </div>
             <!--列表显示区域-->
@@ -59,31 +60,6 @@
                             </el-select>
                         </div>
                     </div>
-
-
-
-
-                    <!-- <div class="item">
-                        <span>数据来源:</span>
-                        <div class="input">
-                            <el-select v-model="query.microprobe_type" :clearable="true" placeholder="数据来源" :multiple="true" :collapse-tags="true" @change=filterMicroprobe>
-                            <el-option 
-                            v-for="kind in dict_tables.microprobe_type"                            
-                            :label="kind.name"
-                            :value="kind.value">
-                            </el-option>
-                            </el-select>
-                        </div>
-                    </div>
-
-
-
-                    <div class="item">
-                        <span>场所范围:</span>
-                        <div class="input">
-                            <PlaceSearch :blnLike="true" :blnClear="true" c_searchKind="1" @place_res="selectSite"></PlaceSearch>
-                        </div>
-                    </div>-->
                     <div class="item" >
                         <el-button type="primary" @click="query_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
                     </div> 
@@ -92,32 +68,32 @@
                 <ul class="header">
                     <li class="item">
                         <div><span class="overflow" style="width:115px;">应用名称</span></div>
-                        <div><span class="overflow" style="width:100px;">应用ID</span></div>
+                        <!--<div><span class="overflow" style="width:100px;">应用分类</span></div>-->
                         <div><span class="overflow" style="width:230px;">来源应用市场</span></div>
                         <div><span class="overflow" style="width:70px;">版本号</span></div>
                         <div><span class="overflow" style="width:150px;">更新时间</span></div>
                         <div><span class="overflow" style="width:80px;">下载次数</span></div>
-                        <div><span class="overflow" style="width:90px;">综合评价指数</span></div>
-                        <div><span class="overflow" style="width:115px;">应用开发商</span></div>
+                        <div><span class="overflow" style="width:90px;">好评率</span></div>
+                        <div><span class="overflow" style="width:200px;">应用开发商</span></div>
                         <div><span class="overflow" style="width:70px;">是否违规</span></div>
-                        <div><span class="overflow" style="width:50px;">操作</span></div>
+                        <!--<div><span class="overflow" style="width:50px;">操作</span></div>-->
                     </li>
                 </ul>
                 <div class="content">
-                    <Scroll :listen="data">
+                    <Scroll :listen="data" ref="indList">
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showData" class="item" >
-                                <div  :title="d.app_name" ><span class="overflow" style="width:115px;">{{d.app_name}}</span></div>
-                                <div  :title="d.app_id" ><span class="overflow" style="width:100px;">{{d.app_id}}</span></div>
+                                <div  :title="d.app_name"  @click="searchSiteDetail(d.app_id)"><span class="overflow sit-click" style="width:115px;">{{d.app_name}}</span></div>
+                                <!--<div  :title="d.app_id" ><span class="overflow" style="width:100px;">{{d.app_id}}</span></div>-->
                                 <div class="align" :title="d.source_market"><span class="overflow" style="width:230px;">{{d.source_market}}</span></div>
                                 <div  :title="d.version"><span class="overflow" style="width:70px;">{{d.version}}</span></div>
                                 <div  :title="d.update_time"><span class="overflow" style="width:150px;" >{{d.update_time}}</span></div>
                                 <div  :title="d.donwload_times"><span class="overflow" style="width:80px;">{{d.download_times}}</span></div>
-                                <div  :title="d.evaluation_index"><span class="overflow sit-click" style="width:90px;">{{d.evaluation_index}}</span></div>
-                                <div  :title="d.app_devp"><span class="overflow" style="width:115px;">{{d.app_devp}}</span></div>
+                                <div  :title="d.evaluation_index"><span class="overflow" style="width:90px;">{{d.evaluation_index}}</span></div>
+                                <div  :title="d.app_devp"><span class="overflow" style="width:200px;">{{d.app_devp}}</span></div>
                                 <div  :title="d.is_illegal"><span class="overflow" style="width:70px;">{{d.is_illegal}}</span></div>
-                                <div  title="查看详情" @click="searchSiteDetail(d.app_id)"><span class="overflow sit-click" style="width:50px">详细</span></div>
+                                <!--<div  title="查看详情" @click="searchSiteDetail(d.app_id)"><span class="overflow sit-click" style="width:50px">详细</span></div>-->
 
                             </li>
                         </ul>
@@ -141,14 +117,14 @@
                      <div name="pie_chart_container" class="" style="width:100%;height:100%;text-align:left"></div>
                 </div>               
                 <!--柱状图(问题总览)-->
-                <div style="width:67%;height:50%;display:inline-block" >
+                <div style="width:67%;height:50%;display:inline-block"  @click="changeProblemFun(true)">
                     <div name="bar_chart_container" style="width:100%%;height:100%;" ></div>
                 </div>
                 <!--线形图（在离线率）-->
                 <div name="line_chart_container" style="width:95%;height:50%;display:inline-block;margin:0 auto">
                      <div class="his-row" style="height:13%">
-                        <div class="his-title">应用市场健康率</div>
-                        <div class="his-term item">
+                        <div class="his-title">应用市场监测</div>
+                        <!--<div class="his-term item">
                             <span>应用类型</span>
                             <div class="input">
                                 <el-select v-model="collType" placeholder="请选择" :clearable="true">
@@ -160,20 +136,26 @@
                                 </el-option>
                                 </el-select>
                             </div>
+                        </div>-->
+                        <div class="his-term item">
+                            <span>来源市场:</span>
+                            <div class="input">
+                                <el-input placeholder="来源市场" v-model="source_market"></el-input>
+                            </div>
                         </div>
-                        <!-- <div class="optionBar">
-                            <div class="el-tooltip item " title="场所在离线详情" :class="{active: changeChart=='bar'}" @click="changeChartSty('bar')">
+                        <div class="optionBar">
+                            <div class="el-tooltip item " :class="{active: changeChart=='bar'}" @click="changeChartSty('bar')">
                                     <div class="el-tooltip__rel" ><i class="fa fa-area-chart"></i></div>
                             </div> 
-                            <div class="el-tooltip item" title="场所在离线率" :class="{active: changeChart=='line'}" @click="changeChartSty('line')">
+                            <!--<div class="el-tooltip item" :class="{active: changeChart=='line'}" @click="changeChartSty('line')">
                                 <div class="el-tooltip__rel"><i class="fa fa-line-chart"></i></div>
-                            </div>
+                            </div>-->
                             <div class="el-tooltip item" title="导出数据" @click="ExportOnlineCount()">
                                 <div class="el-tooltip__rel">
                                     <i class="fa fa-level-down"></i>
                                 </div>
                             </div>  
-                        </div>        -->
+                        </div>        
                     </div>
                     <!--在离线率图表显示区域-->
                     <div class="chart_container" style="width:100%;height:87%;display:inline-block">
@@ -182,6 +164,72 @@
                         <!--在离线率线形图-->
                         <div name="his_line_chart_container" style="margin:0 auto;width:100%;height:100%" v-show="changeChart=='line'"></div>
                     </div>
+                </div>
+                <!--违规APP信息列表显示-->
+                <div class="analysis_list" style="height: calc(100%);width:100%;position:absolute;top:0" v-show="problemTable">
+                    <div style="" class="drag-info" @click="changeProblemFun(false)">
+                        <div>违规APP信息&nbsp;&nbsp;<span style="font-size:40px;line-height:10px">︿</span></div>                        
+                    </div>
+                    <div class="option">
+                        <div class="item">
+                            <span>违规分类:</span>
+                            <div class="input">
+                                <el-select v-model="queryProblem.violations_type" :clearable="true" placeholder="请选择" >
+                                <el-option
+                                v-for="kind in dict_tables.violations_type"                           
+                                :label="kind.name"
+                                :value="kind.value">
+                                </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div class="item" >
+                            <el-button type="primary" @click="queryProblem_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
+                        </div> 
+
+                    </div>
+                    <ul class="header">
+                        <li class="item">
+                            <div><span class="overflow" style="width:115px;">应用名称</span></div>
+                            <!--<div><span class="overflow" style="width:100px;">应用分类</span></div>-->
+                            <div><span class="overflow" style="width:150px;">来源应用市场</span></div>
+                            <div><span class="overflow" style="width:70px;">版本号</span></div>
+                            <!--<div><span class="overflow" style="width:150px;">更新时间</span></div>-->
+                            <div><span class="overflow" style="width:80px;">下载次数</span></div>
+                            <div><span class="overflow" style="width:60px;">好评率</span></div>
+                            <div><span class="overflow" style="width:135px;">应用开发商</span></div>
+                            <div><span class="overflow" style="width:60px;">违规分类</span></div>
+                            <div><span class="overflow" style="width:190px;">违规原因</span></div>
+                            <!--<div><span class="overflow" style="width:50px;">操作</span></div>-->
+                        </li>
+                    </ul>
+                    <div class="content" style="height: calc(100% - 50px - 60px - 60px);background-color: #eee;">
+                        <Scroll :listen="dataProblem" ref="ABC">
+                            <ul class="body">
+                                <li class="item" style="text-align:center;display: table-caption;" v-if="showDataProblem.length<=0&&!blnLoading">暂无数据</li>
+                                <li v-for="(d,i) in showDataProblem" class="item" >
+                                    <div  :title="d.app_name"  @click="searchSiteDetail(d.app_id)"><span class="overflow sit-click" style="width:115px;">{{d.app_name}}</span></div>
+                                    <!--<div  :title="d.app_id" ><span class="overflow" style="width:100px;">{{d.app_id}}</span></div>-->
+                                    <div class="align" :title="d.source_market"><span class="overflow" style="width:150px;">{{d.source_market}}</span></div>
+                                    <div  :title="d.version"><span class="overflow" style="width:70px;">{{d.version}}</span></div>
+                                    <!--<div  :title="d.update_time"><span class="overflow" style="width:150px;" >{{d.update_time}}</span></div>-->
+                                    <div  :title="d.donwload_times"><span class="overflow" style="width:80px;">{{d.download_times}}</span></div>
+                                    <div  :title="d.evaluation_index"><span class="overflow" style="width:60px;">{{d.evaluation_index}}</span></div>
+                                    <div  :title="d.app_devp"><span class="overflow" style="width:135px;">{{d.app_devp}}</span></div>
+                                    <div  :title="d.name"><span class="overflow" style="width:60px;">{{d.name}}</span></div>
+                                    <div class="align" :title="d.illegal_reason"><span class="overflow" style="width:190px;">{{d.illegal_reason}}</span></div>
+                                    <!--<div  title="查看详情" @click="searchSiteDetail(d.app_id)"><span class="overflow sit-click" style="width:50px">详细</span></div>-->
+
+                                </li>
+                            </ul>
+                        </Scroll>
+                    </div>
+                    <div class="page_container">
+                        <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageNumProblem+1}}</span></span>
+                        <div class="firstPage" @click="pageProblemChange(0)">首页</div>
+                        <div class="prePage" @click="pageProblemChange(pageNumProblem-1)">上一页</div>
+                        <div class="nextPage" @click="pageProblemChange(pageNumProblem+1)">下一页</div>
+                    </div>                    
                 </div>
             </div>
 
@@ -210,7 +258,7 @@ import 'echarts/lib/component/dataZoom'
 import TaskType from '../enum/TaskType'
 import RelativeAnlay from '../modules/case/anlay'
 import AddPop from '../modules/case/addPop'
-import {HisPercentageExport,GetAppList,GetAppDetail,BODY_RESIZE,GetAppViolations,GetAppGreenPre,Get_OPerate_Data,GetSiteList,GetSiteDeviceList,getDictTables,SiteDetectColl,SiteDetail,SiteHisPercentage,LastPercentage} from '../store/mutation-types'
+import {HisPercentageExport,GetAppList,GetAppDetail,BODY_RESIZE,GetViolationsAppList,GetAppGreenPreExport,GetAppViolations,GetAppGreenPre,Get_OPerate_Data,GetSiteList,GetSiteDeviceList,getDictTables,SiteDetectColl,SiteDetail,SiteHisPercentage,LastPercentage} from '../store/mutation-types'
 export default {
   name: 'mobileAppPage',
   components:{
@@ -218,9 +266,13 @@ export default {
       PlaceSearch,
       cSelect,
       MapSite,
+      
     },
     watch:{
         collType () {
+            this.getOnOffLineData();
+        },
+        source_market(){
             this.getOnOffLineData();
         },
         viewTable(){
@@ -254,15 +306,17 @@ export default {
         siteType:[],          //场所类型
         siteState:[{name:'在线',val:true},{name:'离线',val:false}],
         siteSource:[],                  //数据来源
-        viewTable:"list",                //列表，地图和统计相互切换的标识
+        viewTable:"statistics",                //列表，地图和统计相互切换的标识
         blnLoading:true,                //加载中标识
         pageNum:0,                      //当前页号（0开始计数）
+        pageNumProblem:0,                      //当前页号（0开始计数）违规列表
         dict_tables:{},                 //字典信息集合
         myPieChart:"",  
         myBarChart:"",
         myLineChart:"",   
         myOnOffBarChart :"",
-
+        source_market:"",          //来源市场  柱状图的筛选条件
+        problemTable:"",              //违规详情
         is_illegalAll:[{name:'否',val:'0'},{name:'是',val:'1'}],        //是否违规选择条件
 
 
@@ -292,19 +346,16 @@ export default {
             source_market:"",//来源市场
             app_devp:"",//应用开发商
             is_illegal:"",//是否违规，0否，1是
-
-
-
-
-            // netbar_name:'',//场所名称
-            // netsite_type:'', //场所类型
-            // netsite_state:'',//场所状态
-            // microprobe_type:'',//数据来源&采集系统类型
-            // region_range:[],   //区域范围
-            // netsite_range:[]   //场所范围
+        },
+        queryProblem:{
+            limit:20,//每页10条
+            skip:0,//跳过0条
+            violations_type:"",   //违规分类
         },
         case_address_w:0,
         data:[
+        ],
+        dataProblem:[
         ],
         newObject:{
             primaryKey:"netbar_info|netbar_wacode",
@@ -345,7 +396,7 @@ export default {
                     app_id:r.app_id,
                     source_market:r.source_market,
                     version:r.version,
-                    update_time:r.update_time?tool.DateByTimestamp(r.update_time,'yyyy-MM-dd hh:mm:ss'):'',
+                    update_time:r.update_time,
                     download_times:r.download_times,
                     evaluation_index:r.evaluation_index,
                     app_devp:r.app_devp,
@@ -353,7 +404,25 @@ export default {
                
                 }
             });
-      }
+      },
+      showDataProblem(){
+          return _.map(this.dataProblem,r=>{
+                return {
+                    app_name:r.app_name,
+                    app_id:r.app_id,
+                    source_market:r.source_market,
+                    version:r.version,
+                    update_time:r.update_time,
+                    download_times:r.download_times,
+                    evaluation_index:r.evaluation_index,
+                    app_devp:r.app_devp,
+                    is_illegal:r.is_illegal,
+                    name:r.name,
+                    illegal_reason:r.illegal_reason,
+
+                }
+            });
+      }      
   },
   destroyed(){
     tool.ClearBind(this.bodyClickId)
@@ -419,10 +488,19 @@ export default {
       switchView(type){
           if(type==this.viewTable) return
           this.viewTable=type;
+        if(type=="list"){
+            this.$nextTick(()=>{
+                this.$refs.indList.reloadyScroll();
+            });
+        }else{
+            this.$nextTick(()=>{
+                this.$refs.ABC.reloadyScroll();
+            });         
+        }          
       },
         // 获取场所在离线数据
       getOnOffLineData(){
-         this.$store.dispatch(GetAppGreenPre,{soft_type:this.collType}).then(res=>{
+         this.$store.dispatch(GetAppGreenPre,{source_market:this.source_market,soft_type:this.collType}).then(res=>{
            if(res.msg.code!='successed')return;
            this.weekOnOffLIne=res.biz_body;
            //this.addOfflineLineChart(this.weekOnOffLIne);     //加载折线图
@@ -524,7 +602,7 @@ export default {
         this.myBarChart = echarts.init(myaBarChart);
         option = {
             title: {
-               // text: '问题总览'
+                text: '违规App'
             },
 
             legend: {
@@ -551,7 +629,7 @@ export default {
             },
             yAxis: {
                 type: 'category',
-                data: ['VPN','博彩','病毒','涉黄','暴力',"反动"],
+                data: ['权限异常','VPN','博彩','病毒','色情','暴力'],
                 //inverse: false,
                 splitLine:{
                     show:false
@@ -593,7 +671,7 @@ export default {
                         },
 
                     },
-                    data: [data.hist.vpn,data.hist.gambling, data.hist.virus, data.hist.pornographic, data.hist.violence, data.hist.reactionary]
+                    data: [data.hist.authority,data.hist.vpn,data.hist.gambling, data.hist.virus, data.hist.pornographic, data.hist.violence]
                 }
                 
             ]
@@ -694,14 +772,14 @@ export default {
         let time=[],inLineData=[],offLineData=[];
         for(let i=0;i<data.length;i++){
             time.push(data[i].source_market);
-            inLineData.push((data[i].green_pre*100).toFixed(2))
-            offLineData.push((data[i].violations_pre*100).toFixed(2))
+            inLineData.push((data[i].green_num))
+            offLineData.push((data[i].violations_num))
             //abnormalsData.push(data[i].abnormals_num)
         }
         option = {
             tooltip: {
                 trigger: 'axis',
-                formatter: '{b}<br/>{a0}: {c0}% <br/>{a1}:{c1}%',                
+                formatter: '{b}<br/>{a0}: {c0} <br/>{a1}:{c1}',                
                 axisPointer: {
                     type: 'shadow',
                     label: {
@@ -718,7 +796,7 @@ export default {
                 textStyle: {  
                         fontSize: 13,
                 }, 
-                data:['健康率','违规率']  
+                data:['健康数','违规数']  
             },
             grid:{	//设置图标距离
                 left: 50,
@@ -732,19 +810,19 @@ export default {
             yAxis: {
                 type: 'value',
                 xisLabel: {
-                        formatter: '{value} %'
+                        formatter: '{value} '
                     },
                     axisLabel: {
-                        formatter: '{value} %'
+                        formatter: '{value} '
                     },
             },
             series: [{
-                name:"健康率",
+                name:"健康数",
                 itemStyle: {
                     normal: {
                         color:'#42ABDF',
                         label: {
-                            formatter: '{c}%'
+                            formatter: '{c}'
                         }
                     }
                 },
@@ -752,12 +830,12 @@ export default {
                 type: 'bar'
             },
             {
-                name:"违规率",
+                name:"违规数",
                 itemStyle: {
                     normal: {
                         color:'#93C24A',
                         label: {
-                            formatter: '{c}%'
+                            formatter: '{c}'
                         }
                     }
                 },                
@@ -771,7 +849,7 @@ export default {
     },
       //导出统计场所状态率
       ExportOnlineCount(){
-          this.$store.dispatch(HisPercentageExport,{coll_type:this.collType}).then(res=>{
+          this.$store.dispatch(GetAppGreenPreExport,{source_market:this.source_market,soft_type:this.collType}).then(res=>{
               if(!tool.msg(res,'','导出失败!'))return;
               window.location=res.biz_body.url;
           });
@@ -791,6 +869,21 @@ export default {
               this.data=res.biz_body;
           });
       },
+      //查询按钮(搜索)违规APP
+      queryProblem_click(){
+          //this.data=[];
+          //this.blnSearch=true;
+          //this.blnLoading=true;
+          this.pageNum= 0;
+          this.queryProblem.skip=this.pageNum*this.queryProblem.limit;
+          console.log(this.queryProblem);
+          this.$store.dispatch(GetViolationsAppList,this.queryProblem).then(res=>{
+              //this.blnSearch=false;
+              //this.blnLoading=false;
+              if(!tool.msg(res,'','搜索失败!'))return;
+              this.dataProblem=res.biz_body;
+          });
+      },      
       //页码切换(分页)
        pageChange(index){ 
           this.pageNum=index>0? index : 0;
@@ -808,75 +901,167 @@ export default {
             this.data=data;
           });
        },
+      //页码切换(分页违规APp
+       pageProblemChange(index){ 
+          this.pageNumProblem=index>0? index : 0;
+          this.queryProblem.skip=this.pageNumProblem*this.queryProblem.limit;
+          this.$store.dispatch(GetViolationsAppList,this.queryProblem).then(res=>{
+            if(!tool.msg(res))return;
+            let data=res.biz_body;
+
+            if(data.length<=0){
+                tool.msg({msg:{code:'successed'}},'已经到了最后页!','已经到了最后页!');
+                this.queryProblem =this.queryProblem-1;
+                return;
+            }
+
+            this.dataProblem=data;
+          });
+       },
+
        //查看详情
         searchSiteDetail(siteId){
             let self=this;
             tool.open(function(){
                 let html=`<div name="container" style="width:100%;height:100%;padding: 10px;" >
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">应用名称：</div>
-                                <div class="col-md-4">{{detailData.app_name}}</div>
-
-                                <div class="col-md-2 item_label_right">应用ID：</div>
-                                <div class="col-md-4">{{detailData.app_id}}</div>                                
+                            <div  class="row">
+                                <div class="col-md-12 item_label_left item_label_title">APP基础信息:</div>
                             </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">版本号：</div>
-                                <div class="col-md-4">{{detailData.version}}</div>
-                                <div class="col-md-2 item_label_right">更新时间：</div>
-                                <div class="col-md-4">{{detailData.update_time}}</div>                                
+                            <div class="row site-detail-row" >
+                                <div class="col-md-3 item_label_left" style="height:160px;">
+                                    <img :src="icon" class="item_label_img">                               
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="row" style="line-height:30px">
+                                        <div class="col-md-2 item_label_left">应用名称：</div>
+                                        <div class="col-md-3">{{detailData.app_name}}</div>
+                                        <div class="col-md-2 item_label_right">版本号：</div>
+                                        <div class="col-md-1">{{detailData.version}}</div>  
+                                        <div class="col-md-2 item_label_right">更新时间：</div>
+                                        <div class="col-md-2">{{detailData.update_time}}</div>  
+                                    </div>
+                                    <div class="row" style="line-height:30px">
+                                        <div class="col-md-2 item_label_left">下载次数：</div>
+                                        <div class="col-md-3">{{detailData.download_times}}</div>
+                                        <div class="col-md-2 item_label_right">好评率：</div>
+                                        <div class="col-md-1">{{detailData.evaluation_index}}</div>  
+                                        <div class="col-md-2 item_label_right">是否违规：</div>
+                                        <div class="col-md-2">{{detailData.is_illegal}}</div>  
+                                    </div>
+                                    <div class="row" style="line-height:30px">
+                                        <div class="col-md-2 item_label_right">下载地址：</div>
+                                        <div class="col-md-10">{{detailData.app_down_url}}</div> 
+                                    </div>
+                                    <div class="row" style="line-height:20px;text-align:center;color:#aaa;cursor:pointer" title="点击展开" @click="isShowfun">
+                                        查看权限要求&nbsp;
+                                        <span style="font-size: 19px;font-weight: 700;position: relative;top: 6px" v-show="!isShow">﹀</span>
+                                        <span style="font-size: 19px;font-weight: 700;position: relative;top: -3px" v-show="isShow">︿</span>
+                                    </div>
+                                    <div class="row" style="height:65px;" v-show="isShow">
+                                        <div  style="border:1px solid #ccc;padding:3px;height:65px;overflow:auto;margin-right:10px" v-if="detailData.authority">{{detailData.authority}}</div>
+                                        <div  style="border:1px solid #ccc;padding:3px;height:65px;overflow:auto;margin-right:10px" v-if="!detailData.authority">暂无数据</div>
+                                    </div>                               
+                                </div>                                
                             </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">下载次数：</div>
-                                <div class="col-md-4">{{detailData.download_times}}</div>
-                                <div class="col-md-2 item_label_right">综合评价指数：</div>
-                                <div class="col-md-4">{{detailData.evaluation_index}}</div>                                
+                            <div  class="row">
+                                <div class="col-md-3 item_label_left item_label_title">应用截图:</div>
+                                <div class="col-md-2 item_label_left" style="position:relative;top:10px;">应用介绍:</div>
                             </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">来源应用市场：</div>
-                                <div class="col-md-4">{{detailData.source_market}}</div>
-                                <div class="col-md-2 item_label_right">应用市场网址：</div>
-                                <div class="col-md-4">{{detailData.app_market_url}}</div>                                
+                            <div class="row site-detail-row" >
+                                <div class="col-md-3 item_label_left" style="height:160px;position:relative">
+                                    <div class="left-lunbo-Cli" @click="clickLeftFun()">〈</div>     
+                                    <img :src="img" class="item_label_img">    
+                                    <div class="right-lunbo-Cli" @click="clickRightFun()">〉</div> 
+                                                          
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="row" style="height:160px">                                        
+                                        <div style="border:1px solid #ccc;height:120px;overflow:auto;padding:5px;text-indent:10px;margin-right:10px;margin-top: 15px;">{{detailData.introduce}}</div>                                       
+                                    </div>
+                                
+                                </div>                                
                             </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">厂商电话：</div>
-                                <div class="col-md-4">{{detailData.org_tel}}</div>
-                                <div class="col-md-2 item_label_right">厂商邮箱：</div>
-                                <div class="col-md-4">{{detailData.org_mail}}</div>                                
+                            <div  class="row">
+                                <div class="col-md-12 item_label_left item_label_title">开发者信息:</div>
                             </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">应用开发商：</div>
-                                <div class="col-md-4">{{detailData.app_devp}}</div>
-                                <div class="col-md-2 item_label_right">开发商网址：</div>
-                                <div class="col-md-4">{{detailData.devp_url}}</div>                                
+                            <div class="row site-detail-row" >
+                                <div class="col-md-2 item_label_right">开发对象：</div>
+                                <div class="col-md-4">{{detailData.app_devp}}</div>  
+                                <div class="col-md-2 item_label_right">官网地址：</div>
+                                <div class="col-md-4">{{detailData.devp_url}}</div>                                                         
                             </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">开发商电话：</div>
-                                <div class="col-md-4">{{detailData.devp_tel}}</div>
-                                <div class="col-md-2 item_label_right">开发商邮箱：</div>
-                                <div class="col-md-4">{{detailData.devp_mail}}</div>                                
+                            <div class="row site-detail-row" >
+                                <div class="col-md-2 item_label_right">联系电话：</div>
+                                <div class="col-md-4">{{detailData.devp_tel}}</div>  
+                                <div class="col-md-2 item_label_right">联系邮箱：</div>
+                                <div class="col-md-4">{{detailData.devp_mail}}</div>                                                         
                             </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">违规原因：</div>
-                                <div class="col-md-10">{{detailData.illegal_reason}}</div>                            
+                            <div class="row site-detail-row" >
+                                <div class="col-md-2 item_label_right">联系地址：</div>
+                                <div class="col-md-10"></div>                                                          
+                            </div>                                                        
+                            <div  class="row">
+                                <div class="col-md-12 item_label_left item_label_title">上架市场:</div>
                             </div>
-
-
+                            <div class="row site-detail-row" >
+                                <div class="col-md-2 item_label_right">市场名称：</div>
+                                <div class="col-md-4">{{detailData.source_market}}</div>  
+                                <div class="col-md-2 item_label_right">市场地址：</div>
+                                <div class="col-md-4">{{detailData.app_market_url}}</div>                                                         
+                            </div>
+                            <div class="row site-detail-row" >
+                                <div class="col-md-2 item_label_right">联系电话：</div>
+                                <div class="col-md-4">{{detailData.org_tel}}</div>  
+                                <div class="col-md-2 item_label_right">联系邮箱：</div>
+                                <div class="col-md-4">{{detailData.org_mail}}</div>                                                         
+                            </div>
+                            <div class="row site-detail-row" >
+                                <div class="col-md-2 item_label_right">所属公司：</div>
+                                <div class="col-md-4">{{detailData.app_org}}</div>  
+                                <div class="col-md-2 item_label_right">联系地址：</div>
+                                <div class="col-md-4">{{detailData.app_org_addr}}</div>                                                         
+                            </div> 
                         </div>`;
                 let param={
                         title:'App详情',
                         content:html,
-                        skin:'site-detail-container',
-                        area:['900px','340px'],
+                        skin:'app-detail-container',
+                        area:['900px','690px'],
                         context:{
                             detailData:{},
+                            icon:'',
+                            height:'690px',
+                            imgs:'',
+                            img:"",
+                            indexNo:0,
+                            isShow:false,
                             loadDetail(){
                                 self.$store.dispatch(GetAppDetail,{app_id:siteId}).then(res=>{
                                     if(res.msg.code!='successed')return;
-                                    param.selfData.detailData=res.biz_body;
-                                    param.selfData.detailData.update_time = param.selfData.detailData.update_time ? tool.DateByTimestamp(param.selfData.detailData.update_time,'yyyy-MM-dd hh:mm:ss'):'';
+                                    param.selfData.detailData=res.biz_body.detail;
+                                    param.selfData.icon='data:image/jpg;base64,'+res.biz_body.pictrue.icon;
+                                    param.selfData.imgs=res.biz_body.pictrue.screen;
+                                    param.selfData.img='data:image/jpg;base64,'+res.biz_body.pictrue.screen[param.selfData.indexNo].pic;
+                                    //param.selfData.detailData.update_time = param.selfData.detailData.update_time ? tool.DateByTimestamp(param.selfData.detailData.update_time,'yyyy-MM-dd hh:mm:ss'):'';
                                 });
-                            }
+                            },
+                            isShowfun(){
+                                 param.selfData.isShow=! param.selfData.isShow
+                            },
+                            clickLeftFun(){
+                                param.selfData.indexNo=param.selfData.indexNo-1;
+                                if(param.selfData.indexNo<0){
+                                   param.selfData.indexNo =param.selfData.imgs.length-1
+                                }
+                                param.selfData.img='data:image/jpg;base64,'+param.selfData.imgs[param.selfData.indexNo].pic;
+                            },
+                            clickRightFun(){
+                                param.selfData.indexNo=param.selfData.indexNo+1
+                                if(param.selfData.indexNo+1>=param.selfData.imgs.length){
+                                   param.selfData.indexNo =0
+                                }
+                                param.selfData.img='data:image/jpg;base64,'+param.selfData.imgs[param.selfData.indexNo].pic;
+                            },                            
                         },
                         success(){
                             param.selfData.loadDetail();    
@@ -1070,30 +1255,87 @@ export default {
                 return param;           
             }())
         },
-
+        // 问题总览列表与分析图表页面相互切换
+      changeProblemFun(val){
+          if(val){
+                        
+            setTimeout(()=>{
+               // this.data=[];
+               // this.blnSearch=true;
+                //this.blnLoading=true;
+                //this.pageNum= 0;
+               // this.query.skip=this.pageNum*this.query.limit;
+                this.$store.dispatch(GetViolationsAppList,this.queryProblem).then(res=>{
+                   // this.blnSearch=false;
+                   // this.blnLoading=false;
+                    if(!tool.msg(res,'','搜索失败!'))return;
+                    this.dataProblem=res.biz_body;
+                    //console.log(this.dataProblem);
+                    this.problemTable=true;
+                    this.$nextTick(()=>{
+                        this.$refs.ABC.reloadyScroll();
+                    });
+                });
+            },40)            
+          }else{
+            this.problemTable=false;  
+          }
+      },
+      
   }
 }
 </script>
 <style lang="less">
     /* 场所详情样式*/
-   .site-detail-container .layui-layer-title{
+   .app-detail-container .layui-layer-title{
         background-color: #03ab67;
         font-weight: 700;
         color:#fff;
     }
-    .site-detail-container .site-detail-row{
+    .app-detail-container .site-detail-row{
         margin: 0px;
         line-height: 30px;
-        border-bottom: 1px solid #e7eaec;
+
     }
-    .site-detail-container .site-detail-row .item_label_left{
+    .app-detail-container .site-detail-row .item_label_left{
         text-align: right;
-        border-right: 1px solid #e7eaec;
+
     }
-    .site-detail-container .site-detail-row .item_label_right{
+    .app-detail-container .item_label_title{
+        font-weight: 900;
+        text-indent: 10px;
+        line-height: 25px;
+    }
+    .app-detail-container .item_label_img{
+        width: 120px;
+        height: 130px;
+        display: block;
+        margin: 9px auto;
+    }
+    .app-detail-container .left-lunbo-Cli{
+        position: absolute;
+        height: 100%;
+        left: 4px;
+        line-height: 160px;
+        font-size: 36px;
+        cursor: pointer;
+        color: #888;
+        user-select: none;
+    }
+    .app-detail-container .right-lunbo-Cli{
+        position: absolute;
+        height: 100%;
+        right: 4px;
+        line-height: 160px;
+        top: 0;
+        font-size: 36px;
+        cursor: pointer;
+        color: #888;
+        user-select: none;
+    }
+    .app-detail-container .site-detail-row .item_label_right{
         text-align: right;
-        border-right: 1px solid #e7eaec;
-        border-left: 1px solid #e7eaec;
+
     }
 
     /*挂在设备详情*/
@@ -1244,7 +1486,7 @@ export default {
   @optionH:50px;
   .CaseManage .option{width:100%;background-color: white;}
   .CaseManage .page_container{.border('top');.border('bottom');background-color:white;position: absolute;bottom: 2px; }
-  .CaseManage .content{width:100%;height:~'calc(100% - @{optionH} - 60px - 40px)';}
+  .CaseManage .content{width:100%;height:~'calc(100% - @{optionH} - 60px - 30px)';}
 
   .CaseManage .header .item .dropDown{position: absolute;z-index: 100;top: 35px;line-height: initial;margin-left: 5px;
         width: calc(100% - 10px);
@@ -1346,4 +1588,20 @@ export default {
     cursor: pointer;
     color: #03ab67;
   }  
+  .analysis_list .drag-info{
+    height: 30px;
+    width:100%;
+    background-color:#eee;
+  }
+  html{.TCol(~".analysis_list .drag-info div",'bg');}
+  .analysis_list .drag-info div{
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    text-align: center;
+    color:#fff;
+    line-height: 34px;
+    cursor:pointer;
+    font-Weight:800;
+  }
 </style>

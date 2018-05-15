@@ -201,18 +201,6 @@ export default {
           });
        },
 
-
-
-
-
-
-
-
-
-
-
-
-
        //查看详情
         searchSiteDetail(siteId){
             let self=this;

@@ -3,6 +3,7 @@
 //基地址192.168.100.80:3031(http://192.168.23.73:3030)
 //发布地址:172.23.90.8:3030
 let url='http://192.168.23.73:3030';
+
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
 
@@ -2559,6 +2560,14 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   } 
+  // 获取场所昨日采集详情的柱状图
+  siteDetectYesterday(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='site_detect_yesterday';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+
   // 获取场所详情
   SiteDetail(data){
     this.baseBag.target='custom';
@@ -2709,7 +2718,14 @@ GetVehicleChart(data){
     this.baseBag.method='app_list';
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
-  }   
+  }
+    // 获取app定制页面违规app列表
+  GetViolationsAppList(data){
+    this.baseBag.target='app_info';
+    this.baseBag.method='violations_app_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }      
   // 获取app定制页面详情
   GetAppDetail(data){
     this.baseBag.target='app_info';
@@ -2731,6 +2747,13 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   } 
+  // app页面健康率导出
+  GetAppGreenPreExport(data){
+    this.baseBag.target='app_info';
+    this.baseBag.method='app_green_pre_export';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
 
   // 获取网站备案定制页面列表信息
   GetWebList(data){

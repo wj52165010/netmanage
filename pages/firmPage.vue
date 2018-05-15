@@ -9,16 +9,17 @@
             <!-- 标签切换 -->
             <div style="height:30px" name="tagcomp">
               <div class="tagComp" style="text-align:left">
+                <div class="item" @click="switchView('statistics')" :class="{active: viewTable=='statistics'}">
+                    <div class="item_container">
+                        <span class="content"><i class="fa fa-gear"></i>分析</span>
+                    </div>
+                </div>                  
                 <div class="item" @click="switchView('list')" :class="{active: viewTable=='list'}">
                     <div class="item_container">
                         <span class="content"><i class="fa fa-list"></i>列表</span>
                     </div>
                 </div>
-                <div class="item" @click="switchView('statistics')" :class="{active: viewTable=='statistics'}">
-                    <div class="item_container">
-                        <span class="content"><i class="fa fa-gear"></i>统计</span>
-                    </div>
-                </div>
+
                </div>
             </div>
 
@@ -254,9 +255,9 @@ export default {
 
   data () {
     return {
-        blnLoading:true,                //加载中标识
+        blnLoading:false,                //加载中标识
         pageNum:0,                      //当前页号（0开始计数）
-        viewTable:"list",                //列表和统计相互切换的标识
+        viewTable:"statistics",                //列表和统计相互切换的标识
 
         taskType:TaskType,
         firms:[],            //所有厂商数据

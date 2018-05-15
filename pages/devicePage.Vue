@@ -9,19 +9,20 @@
             <!-- 标签切换 -->
             <div style="height:30px" name="tagcomp">
               <div class="tagComp" style="text-align:left">
-                <div class="item" @click="switchView('list')" :class="{active: viewTable=='list'}">
+
+                <div class="item" @click="switchView('statistics')" :class="{active: viewTable=='statistics'}">
                     <div class="item_container">
-                        <span class="content"><i class="fa fa-list"></i>列表</span>
+                        <span class="content"><i class="fa fa-gear"></i>分析</span>
                     </div>
                 </div>
                 <div class="item" @click="switchView('map')" :class="{active: viewTable=='map'}">
                     <div class="item_container">
-                        <span class="content"><i class="fa fa-map-marker"></i>描点</span>
+                        <span class="content"><i class="fa fa-map-marker"></i>地图</span>
                     </div>
                 </div>
-                <div class="item" @click="switchView('statistics')" :class="{active: viewTable=='statistics'}">
+                <div class="item" @click="switchView('list')" :class="{active: viewTable=='list'}">
                     <div class="item_container">
-                        <span class="content"><i class="fa fa-gear"></i>统计</span>
+                        <span class="content"><i class="fa fa-list"></i>列表</span>
                     </div>
                 </div>
                </div>
@@ -41,12 +42,18 @@
                             <el-input placeholder="设备名称" v-model="query.equipment_name"></el-input>
                         </div>
                     </div>
-                    <div class="item">
+                    <!--<div class="item">
                         <span>场所编码：</span>
                         <div class="input">
                             <el-input placeholder="场所编码" v-model="query.netbar_wacode"></el-input>
                         </div>
-                    </div>
+                    </div>-->
+                    <div class="item">
+                        <span>场所编码:</span>
+                        <div class="input">
+                            <PlaceSearch :blnLike="true" :blnClear="true" c_searchKind="1" @place_res="selectSite"></PlaceSearch>
+                        </div>
+                    </div>                    
                     <div class="item">
                         <span>场所名称：</span>
                         <div class="input">
@@ -293,8 +300,8 @@ export default {
         siteType:[],          //场所类型
         siteState:[{name:'在线',val:true},{name:'离线',val:false}],
         siteSource:[],                  //数据来源
-        viewTable:"list",                //列表，地图和统计相互切换的标识
-        blnLoading:true,                //加载中标识
+        viewTable:"statistics",                //列表，地图和统计相互切换的标识
+        blnLoading:false,                //加载中标识
         pageNum:0,                      //当前页号（0开始计数）
         dict_tables:{},                 //字典信息集合
         myPieChart:"",  
@@ -426,16 +433,21 @@ export default {
           //this.blnLoading=true;
           //this.blnLoading=false;
           //获取场所信息
-         this.$store.dispatch(GetDeviceList,this.query).then(res=>{
-           if(res.msg.code!='successed')return;
-           this.data=res.biz_body;
-            this.blnLoading=false;  
-         });
+            this.$store.dispatch(GetDeviceList,this.query).then(res=>{
+                if(res.msg.code!='successed')return;
+                this.data=res.biz_body;
+                this.blnLoading=false;  
+                //if(this.query.microprobe_type[0]=="120")   this.query.microprobe_type=["120"];
+            });          
+
             //获取数据来源
-          this.$store.dispatch(getDictTables).then(res=>{
-             if(res.msg.code!='successed')return;
+        this.$store.dispatch(getDictTables).then(res=>{
+            if(res.msg.code!='successed')return;
             this.dict_tables= res.biz_body;
-          });
+            //this.query.microprobe_type=["120"];
+            
+
+        });
 
       },
       //区域范围的事件回传，第一个参数为上下文环境，第二个参数为具体值,因为该页面为单独定制没有上下文，因此取第二个值即可
@@ -444,6 +456,14 @@ export default {
             this.query.region_range=data.regions;
         }else{
             this.query.region_range="";
+        }
+      },
+      //场所范围的事件回传，第一个参数为上下文环境，第二个参数为具体值,和区域范围选择类似
+      selectSite(val,data){ 
+        if(data){           
+            this.query.netbar_wacode=data.sites;
+        }else{
+            this.query.netbar_wacode="";
         }
       },
       //列表，地图和统计相互切换  
@@ -934,11 +954,12 @@ export default {
         // 数据采集趋势
         dataStatus(siteId,name){
              let self=this;
+              //                               <div class="bar tit-bars" @click=changeStatus(2)>采集状况</div>
             tool.open(function(){
                 let html=`<div name="container" style="width:100%;height:100%;padding: 10px;">
                             <div class="tit-row">
                                 <div class="bar tit-bars active" @click=changeStatus(1)>采集趋势</div>
-                                <div class="bar tit-bars" @click=changeStatus(2)>采集状况</div>
+
                             </div>
                             <!--加载中标识-->
                             <div v-if="DeviceblnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 10px;font-size: 50px;">

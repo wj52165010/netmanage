@@ -174,7 +174,7 @@ export default {
                     ssid:r.ssid,
                     channel:r.channel,
                     strength:r.strength,
-                    detect_time:r.detect_time?tool.DateByTimestamp(r.detect_time,'yyyy-MM-dd hh:mm:ss'):'',
+                    detect_time:(r.detect_time&&r.detect_time!='0')?tool.DateByTimestamp(r.detect_time,'yyyy-MM-dd hh:mm:ss'):'无',
                     equipment_id:r.equipment_id,
                     equipment_address:r.equipment_address,
                     security_software_orgname:r.security_software_orgname,
