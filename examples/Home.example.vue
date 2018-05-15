@@ -519,19 +519,19 @@ export default {
         });
     
         this.map.panTo(mask.point);
-        // var label= new BMap.Label('<div><i class="fa fa-check-circle" style="color:green;font-size:30px;"></i></dvi>',{offset:new BMap.Size(-5, -30)});
-        // label.setStyle({
-        // fontSize : "12px",
-        // lineHeight : "20px",
-        // fontFamily:"微软雅黑",
-        // fontWeight:'600',
-        // border:'0px solid black',
-        // 'background-color':'transparent',
-        // 'max-width':'none'
-        // });
-        // mask.setLabel(label);
+        var label= new BMap.Label('<div><i class="fa fa-check-circle" style="color:green;font-size:30px;"></i></dvi>',{offset:new BMap.Size(-5, -30)});
+        label.setStyle({
+        fontSize : "12px",
+        lineHeight : "20px",
+        fontFamily:"微软雅黑",
+        fontWeight:'600',
+        border:'0px solid black',
+        'background-color':'transparent',
+        'max-width':'none'
+        });
+        mask.setLabel(label);
         mask.setAnimation(BMAP_ANIMATION_BOUNCE);
-        //this.labels.push(label);
+        this.labels.push(label);
       });
   
     },
