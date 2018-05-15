@@ -391,6 +391,7 @@ export const ExportKeyIdentity='ExportKeyIdentity' //导出重点人员
 export const ExportKeyIdentityLog='ExportKeyIdentityLog' //导出重点人员报警
 export const ExportPolicy='ExportPolicy' //导出布控
 export const ExportPolicyLog='ExportPolicyLog' //导出布控报警
+export const ExportAnalyTraceTask='ExportAnalyTraceTask' //导出轨迹分析详细
 
 /**************** 例子接口 ******************/
 export const TogetherTeam='TogetherTeam' //获取同行分析组

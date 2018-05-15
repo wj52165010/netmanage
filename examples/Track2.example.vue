@@ -17,6 +17,14 @@
           </div>
           <Scroll ref="historyPopScroll" :listen="historyTrace">
             <div v-for="(h,i) in historyTrace" class="item" style="position:relative;" :class="{active:historyPopIndex==i}"  @click="lookTask(h);historyPopIndex=i;">
+                
+                <!--导出按钮-->
+              <div class="exportBtn" style="position:absolute;right:50px;bottom:5px;font-size:20px;" v-if="h.task_status=='completed'" @click="exportIndex=i;exportList(h);">
+                  <el-tooltip  effect="light" content="导出" placement="top">
+                    <i v-if="!blnExporting" class="fa fa-level-up" style="margin-right:5px;"></i>
+                    <i v-if="blnExporting && exportIndex == i" class="fa fa-spinner fa-spin" style="margin-right:5px;"></i>
+                  </el-tooltip>
+              </div>
                 <i class="fa fa-remove" style="position:absolute;right:20px;bottom:10px;font-size:20px;" @click.stop="removeTask(h.task_id,i)"></i>
                 <div class="child">
                   <div class="item_type">
@@ -244,7 +252,7 @@ import PlaceSearch from '../components/PlaceSearch'
 import BaiduHelper from '../helper/BaiduHelper'
 import HeatMap from './Home.HeatMap.js'
 import ScaleBar from 'components/scaleBar'
-import {BODY_RESIZE,AnalyTraceTask,AnalyTraceHistory,DelTraceHistory,GetAnalyTraceTask,MapDataRange} from '../store/mutation-types'
+import {BODY_RESIZE,AnalyTraceTask,AnalyTraceHistory,DelTraceHistory,GetAnalyTraceTask,MapDataRange,ExportAnalyTraceTask} from '../store/mutation-types'
 
 export default {
   name: 'Track',
@@ -284,7 +292,9 @@ export default {
       pm:'',//热力图对象
       rangeMap:null,//范围地图对象
       posPointers:[],
-      chineseNum:['零','一','二','三','四','五','六','日']
+      chineseNum:['零','一','二','三','四','五','六','日'],
+      blnExporting:false,
+      exportIndex:-1
     }
   },
   watch:{
@@ -423,6 +433,29 @@ export default {
       this.$store.dispatch(AnalyTraceHistory).then(res=>{
         this.historyTrace=res.biz_body;
         this.blnShowHistoryPop=this.historyTrace.length>0;
+      });
+    },
+    //导出详细信息
+    exportList(t){
+       this.blnExporting=true;
+
+        let timeRange=[tool.DateByTimestamp(t.start_time,'yyyy-MM-dd hh:mm:ss'),tool.DateByTimestamp(t.end_time,'yyyy-MM-dd hh:mm:ss')];
+        let region=t.locus_ids;
+        let searchNum=t.trace_key;
+        let key_type=t.key_type;
+        
+       this.$store.dispatch(ExportAnalyTraceTask,{
+        trace_key:searchNum,
+        key_type:key_type,
+        start_time:timeRange.length>0?tool.Timestamp(timeRange[0]):'',
+        end_time:timeRange.length>0?tool.Timestamp(timeRange[1]):'',
+        locus_ids:region
+      }).then(res=>{
+        this.blnExporting=false;
+        if(!tool.msg(res,'导出成功!','导出失败!')) return;
+        if(!res.biz_body.url) return;
+
+        window.location=res.biz_body.url;
       });
     },
     //搜索事件

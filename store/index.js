@@ -1978,6 +1978,14 @@ export default new Vuex.Store({
                     resolve(res);  
                 });
             });
+        },
+        //导出轨迹分析详细
+        [types.ExportAnalyTraceTask]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportAnalyTraceTask(data).then(res=>{
+                    resolve(res);  
+                });
+            });
         }
 
     },

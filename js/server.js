@@ -2,7 +2,7 @@
 
 //基地址192.168.100.80:3031(http://192.168.23.73:3030)
 //发布地址:172.23.90.8:3030
-let url='http://192.168.100.80:3031';
+let url='http://192.168.23.73:3030';
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
 
@@ -2857,6 +2857,14 @@ GetVehicleChart(data){
   ExportPolicyLog(data){
     this.baseBag.target='data_export';
     this.baseBag.method='audit_policy_log';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
+  //导出轨迹分析详细
+  ExportAnalyTraceTask(data){
+    this.baseBag.target='data_export';
+    this.baseBag.method='analy_trace_task';
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }
