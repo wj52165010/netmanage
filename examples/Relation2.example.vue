@@ -968,20 +968,20 @@ export default {
     showChildPoint(point){
         point.isloading=true;
         this.$store.dispatch(RelationSecond,{
-            task_target_type:point.typeCode,
+            task_target_type:point.root?point.type:point.typeCode,
             account_type:point.account_type,
             keyword:point.keyword,
         }).then(res=>{
-            let data=res.biz_body.data;
+            let data=res.biz_body.data || {macs:[],mobiles:[],customers:[],virtuals:[]};
             let macs=data.macs,
                 mobiles=data.mobiles,
                 customers=data.customers,
                 virtuals=data.virtuals;
 
             point.isloading=false;
-            if(data.length<=0){tool.info('暂无数据!');return;}
+            if(_.flatten(data)){tool.info('暂无数据!');return;}
             
-            point.isOver=res.biz_body.is_over;
+            point.isOver=point.root?false:res.biz_body.is_over;
         
 
  
@@ -1109,7 +1109,7 @@ export default {
     Search(){
       if(this.blnSearch){return;}
       if(!this.serachInfo.code){tool.info('请输入正确的关键字搜索条件!');return;}
-      
+     
       this.blnSearch=true;
       this.$store.dispatch(RelationSecond,{
           task_target_type:this.serachInfo.code,
@@ -1131,6 +1131,7 @@ export default {
 
         if(rootPointers.length==1 && this.serachInfo.code!='vid'){
             root=rootPointers[0];
+            root.type=root.typeCode;
             root.typeCode='start';
             root.root=true;
             root.blnExtend=data.length>0;
@@ -1155,6 +1156,7 @@ export default {
 
             }
             root.text=root.text || this.serachInfo.val;
+            root.type=root.typeCode;
             root.typeCode='start';
             root.root=true;
             root.blnExtend=data.length>0;

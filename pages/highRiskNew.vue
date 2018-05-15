@@ -95,6 +95,13 @@
                         <i  style="margin-right:5px;" class="fa fa-user"></i>添加
                     </el-tooltip>
                 </span>
+
+                <span  style="margin-left:10px;cursor:pointer;" class="tag_label" @click="exportList(pageIndex)">
+                    <el-tooltip effect="light" :content="pageIndex==0?'导出报警信息':'导出人员信息'" placement="top">
+                        <i v-if="!blnExporting" class="fa fa-level-up" ></i>
+                        <i v-if="blnExporting" class="fa fa-spinner fa-spin" ></i>导出
+                    </el-tooltip>
+                </span>
             </div>
             <!--内容框-->
             <div class="content_container">
@@ -274,7 +281,8 @@ import '../../static/jquery.particleground.js'
 
 import {GetIdenPerson,AddIdentity,GetIndentity,DelIndentity,AddIdenPerson,
         UpdateIdenPerson,DelIdenPerson,GetIdenPersonDetail,
-        GetAlarmMobile,AddAlarmMobile,DelAlarmMobile,BODY_RESIZE,Trigger_RESIZE
+        GetAlarmMobile,AddAlarmMobile,DelAlarmMobile,BODY_RESIZE,Trigger_RESIZE,
+        ExportKeyIdentity,ExportKeyIdentityLog
         } from '../store/mutation-types'
 export default {
   name: 'HighRisk',
@@ -312,6 +320,8 @@ export default {
       mobiles:[],//报警电话
       police_auto_column_w:0,//报警信息列表自适应列宽度
       person_auto_column_w:0,//人员信息列表自适应列宽度
+      mapLevel:ser.map,
+      blnExporting:false,
     }
   },
   computed:{
@@ -365,6 +375,32 @@ export default {
                     this.mobiles=_.map(res.biz_body,item=>{return {id:item.id,name:`${item.contact_name}`,contact_name:item.contact_name,mobile:item.mobile,children:[]}});
                 }
             });
+      },
+      //导出列表信息
+      exportList(i){
+        this.blnExporting=true;
+        let policeParam={
+            key_identity_name:this.police_name || '',
+            key_identity_cert:this.police_idNumber || '',
+            key_identity_mobile:this.police_phone || '',
+            key_identity_mac:this.police_mac || '',
+            key_identity_type:this.police_kind || '',
+        },
+        personParam={
+            key_identity_name:this.person_name || '',
+            key_identity_cert:this.person_idNumber || '',
+            key_identity_mobile:this.person_phone || '',
+            key_identity_mac:this.person_mac || '',
+            key_identity_type:this.person_kind || '',
+        };
+        this.$store.dispatch(i==0?ExportKeyIdentityLog:ExportKeyIdentity,i==0?policeParam:personParam
+        ).then(res=>{
+            this.blnExporting=false;
+
+            if(!tool.msg(res,'导出成功!','导出失败!')) return;
+            if(!res.biz_body.url) return;
+            window.location=res.biz_body.url;
+        });
       },
       tagChange(index){
           this.pageIndex=index;
@@ -539,7 +575,7 @@ export default {
             let html=`<div  style="width:100%;height:100%;position:relative;">
                         <div name="map_container" style="width:100%;height:100%;"></div>
                         <div style="position:absolute;top:10px;left:10px;">
-                            <ScaleBar :start="13" :end="18" @change="zoomChange" ref="scaleBar" />
+                            <ScaleBar :start="mapLevel[0]" :end="mapLevel[1]" :defVal="mapLevel[2]" @change="zoomChange" ref="scaleBar" />
                         </div>
                       </div>`;
             let param={
@@ -550,21 +586,21 @@ export default {
                     store:s.$store,
                     context:{
                         map:null,
+                        mapLevel:ser.map,
                         zoomChange(zoom){
                             param.selfData.map.setZoom(zoom);
                         }
                     },
                     success(layero){
                         let mapEl=layero.find('div[name="map_container"]');
-                        let map = new BMap.Map(mapEl[0],{minZoom:13,maxZoom:18});
+                        let map = new BMap.Map(mapEl[0],{minZoom:s.mapLevel[0],maxZoom:s.mapLevel[1]});
                         param.selfData.map=map;
                         let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
                         var point =new BMap.Point(d.equipment_longitude || centerPoint[0] || 0,d.equipment_latitude || centerPoint[1] || 0);
 
-                        map.centerAndZoom(point,13);//安阳中心点
+                        map.centerAndZoom(point,s.mapLevel[2]);//安阳中心点
                         map.enableScrollWheelZoom(true);
 
-                        map.centerAndZoom(point, 15);
                         var marker=new BMap.Marker(point);
 
                         map.addOverlay(marker);

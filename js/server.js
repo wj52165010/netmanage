@@ -2798,6 +2798,68 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   } 
+
+  //案件导出
+  ExportLawCase(data){
+    this.baseBag.target='data_export';
+    this.baseBag.method='law_case';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+  //综合分析任务导出
+  ExportAnalyTask(data){
+    this.baseBag.target='data_export';
+    this.baseBag.method='analy_task';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
+  //案件在逃人员导出
+  ExportCriminal(data){
+    this.baseBag.target='data_export';
+    this.baseBag.method='criminal';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
+  //案件在逃人员报警导出
+  ExportCriminalLog(data){
+    this.baseBag.target='data_export';
+    this.baseBag.method='criminal_audit_log';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
+  //重点人员导出
+  ExportKeyIdentity(data){
+    this.baseBag.target='data_export';
+    this.baseBag.method='key_identity';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+  //重点人员报警导出
+  ExportKeyIdentityLog(data){
+    this.baseBag.target='data_export';
+    this.baseBag.method='key_identity_log';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+  
+  //布控导出
+  ExportPolicy(data){
+    this.baseBag.target='data_export';
+    this.baseBag.method='audit_policy';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
+  //导出布控策略报警
+  ExportPolicyLog(data){
+    this.baseBag.target='data_export';
+    this.baseBag.method='audit_policy_log';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
 }
 
 module.exports = new server(baseBag,baseUri,url);

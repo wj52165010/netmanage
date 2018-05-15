@@ -9,10 +9,10 @@
         <div class="Search_bar" :style="{left:blnShowHistoryPop?'310px':'10px'}">
             <div class="option">
                 <div style="display:inline-block;width:200px;">
-                    <el-input placeholder="关键字1" v-model="keyOne" />
+                    <el-input placeholder="分析对象" v-model="keyOne" />
                 </div>
                 <div style="display:inline-block;width:200px;">
-                    <el-input placeholder="关键字2" v-model="keyTwo" />
+                    <el-input placeholder="目标对象" v-model="keyTwo" />
                 </div>
 
                 <button type="button" class="btn btn-default" style="float:right;background-color:#20a1ff;color:white;" @click="search()">
@@ -31,10 +31,10 @@
             <Scroll ref="historyPopScroll" :listen="historyData">
                 <div v-for="(h,i) in historyData" class="item" @click="getTaskRes(h.task_id);curShowTaskId=h.task_id;">
                     <div class="item_span">
-                        <span>关键字1:{{h.first_key}}</span>
+                        <span>分析对象:{{h.first_key}}</span>
                         <span style="float:right;">{{h.status_note || '分析中...'}}</span>
                     </div>
-                    <div><span style="margin-right:10px;">关键字2:{{h.second_key}}</span><span>结果数:{{h.result}}</span></div>
+                    <div><span style="margin-right:10px;">目标对象:{{h.second_key}}</span><span>结果数:{{h.result}}</span></div>
                     <div>
                         创建时间:{{converTime(h.log_time)}}
 
@@ -528,8 +528,8 @@ export default {
     redraw(v){
         this.curTaskData.start_node.root=true;
         this.curTaskData.end_node.root=true;
-        let startP={id:this.curTaskData.start_node.data_id,x:0,y:0,text:'关键字1',subText:this.curTaskData.start_node.key};
-        let endP={id:this.curTaskData.end_node.data_id,x:0,y:0,text:'关键字2',subText:this.curTaskData.end_node.key};
+        let startP={id:this.curTaskData.start_node.data_id,x:0,y:0,text:'分析对象',subText:this.curTaskData.start_node.key};
+        let endP={id:this.curTaskData.end_node.data_id,x:0,y:0,text:'目标对象',subText:this.curTaskData.end_node.key};
         let childs=_.chain(this.curTaskData.paths).flatten().filter(r=>r.type=='data').map(r=>{r.x=0;r.y=0;r.radius=30;r.color='#009a44'; return r;}).value(); 
 
         this.points=[
@@ -617,7 +617,7 @@ export default {
                 mobile:this.phoneIcon,
                 cert:this.idenIcon,
                 mac:this.macIcon,
-                '微信':this.weixinIcon,
+                WEIXIN:this.weixinIcon,
                 QQ:this.qqIcon,
             };
             res.biz_body.paths=_.map(res.biz_body.paths,arr=>{
@@ -626,7 +626,7 @@ export default {
                     a.id=a._id;a.text=(a.account_type_note || a.key_type_note);
                     a.subText=`${a.key}`;
                     a.blnChild=true;
-                    a.icon=iconMap[a.icon_type] || iconMap[a.key_type]
+                    a.icon=iconMap[a.ico_type] || iconMap[a.key_type]
                     return a;
                 })
             });

@@ -252,8 +252,8 @@ export default {
   props:['searchVal','defTimeRange'],
   data () {
     return {
-      id:'Track_map'+tool.guid(),
-      rangeMapId:'Range_map'+tool.guid(),
+      id:'Track_map_do'+tool.guid(),
+      rangeMapId:'Range_map_do'+tool.guid(),
       map:null,
       blnShowLoading:0,//0:不显示,1:正在分析中,2:分析完成显示结果
       blnShowHistory:false,//是否显示历史记录信息
@@ -364,8 +364,11 @@ export default {
         },100);
     });
 
-    this.initMap();
-    this.initData();
+    setTimeout(()=>{
+      this.initMap();
+      this.initData();
+    },100);
+    
 
     if(this.searchVal){this.searchNum=this.searchVal;}
 
@@ -995,8 +998,8 @@ export default {
   html{.TCol(~".Track .historyList .delBtn",'bg');}
 
 
-  //.Track .historyList .delBtn .fa-remove:hover{color:white;}
-  html{.TCol(~".Track .historyList .delBtn .fa-remove:hover");}
+  .Track .historyList .delBtn .fa-remove:hover{color:white;}
+  html{.TColAdd(~".Track .historyList .delBtn:hover",'bg');}
 
   .Track .historyList.border_black{
     border:5px solid @bgColor;border-radius:5px;

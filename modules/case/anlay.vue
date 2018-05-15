@@ -116,6 +116,7 @@ export default {
     .caseManagePopCount .tag_item:hover{cursor:pointer;color:white;}
 
     html{.TCol(~".caseManagePopCount .tag_item:hover",'bg');}
+    html{.TCol(~".caseManagePopCount .tag_item.active",'bg');}
     .caseManagePopCount .triangle-left {
             width: 0;
             height: 0;

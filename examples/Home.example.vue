@@ -409,6 +409,7 @@ export default {
     initMap(){
       this.map = new BMap.Map(this.id,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1],enableMapClick: false});
       let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
+
       this.map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),this.mapLevel[2]);//重庆中心点
       this.map.enableScrollWheelZoom(true);
       // this.map.setMapStyle({
@@ -781,7 +782,7 @@ export default {
 
   .Home .bottom_left:after{
     content:'';position:absolute;left:0px;bottom:0px;
-    height:100%;width:@lineW;background:linear-gradient(-135deg,transparent 10px,fade(@Font_Hover_Col,90%) 10px)
+    height:100%;width:@lineW;//background:linear-gradient(-135deg,transparent 10px,fade(@Font_Hover_Col,90%) 10px)
   }
 
   html{.TCol(~".Home .bottom_left:after","bgLineRerver",-135deg,90%,10px,transparent,10px);}
@@ -799,7 +800,7 @@ export default {
     height:100%;width:@lineW;//background:linear-gradient(135deg,transparent 10px,fade(@Font_Hover_Col,90%) 10px)
   }
 
-  html{.TCol(~".Home .bottom_right:before","bgLineRerver",135deg,90%,10px,transparent,10px);}
+  html{.TCol(~".Home .bottom_right:after","bgLineRerver",135deg,90%,10px,transparent,10px);}
 
   .Home .scaleBtn{position:absolute;top:5px;right:15px;color:white;z-index:100;}
   .Home .scaleBtn:hover{cursor:pointer;}

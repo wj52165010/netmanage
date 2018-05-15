@@ -478,7 +478,7 @@ export default {
   .OneSo .content_bar .info_bar{height:~'calc(100% - @{titleH})';width:100%;position:relative;font-size:12px;padding:10px;}
   .OneSo .content_bar .info_bar .btn_container{position:absolute;bottom:5px;right:0px;}
   .OneSo .content_bar .info_bar .btn_container .btn_item{
-    float:left;font-size:12px;.border('',@Font_Hover_Col);border-radius:5px;margin-right:5px;padding:3px 10px;
+    float:left;font-size:12px;.border('',@Font_Hover_Col);border-radius:5px;margin-right:5px;padding:3px 10px;color:white !important;
   }
   html{.TCol(~".OneSo .content_bar .info_bar .btn_container .btn_item",'bc');}
   html{.TCol(~".OneSo .content_bar .info_bar .btn_container .btn_item");}

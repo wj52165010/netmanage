@@ -67,6 +67,13 @@
                   <div class="tipInfo"><div class="color collect"></div><div class="content">执行中</div></div>
                   <div class="tipInfo"><div class="color result"></div><div class="content">完成</div></div>
               </div>-->
+
+              <div style="float:right;margin-top:10px;">
+                <span class="tag_label" style="margin-left:10px;cursor:pointer;" @click="exportList()">
+                    <i v-if="!blnExporting" class="fa fa-level-up" style="margin-right:5px;"></i>
+                    <i v-if="blnExporting" class="fa fa-spinner fa-spin" style="margin-right:5px;"></i>导出
+                </span>
+              </div>
         </div>
         <div class="task_container">
             <div class="scrollContainer">
@@ -193,7 +200,7 @@ import RelativeAnlay from '../modules/case/anlay'
 import CrashSecondDetail from 'components/crash_second_detail'
 import PeerTrack from '../examples/PeerTrack.example.vue'
 
-import {AddAnalyTask,GetAnalyTask,DelAnalyTask,GetAnalyTaskData,GetVirType,GetCase} from '../store/mutation-types'
+import {AddAnalyTask,GetAnalyTask,DelAnalyTask,GetAnalyTaskData,GetVirType,GetCase,ExportAnalyTask} from '../store/mutation-types'
 
 let preCrashFunc=null;
 let submitCrashFunc=null;
@@ -362,6 +369,7 @@ export default {
       pageTotal:0,//页号总数
       showCrash:false,
       store:null,
+      blnExporting:false,
     }
   },
   mounted(){
@@ -384,6 +392,34 @@ export default {
     
   },
   methods:{
+    //导出任务列表信息
+    exportList(){
+      this.blnExporting=true;
+
+      let startTime='',
+          endTime='';
+      if(this.rangDate && this.rangDate.length>1 && this.rangDate[0] && this.rangDate[1]){
+        startTime=tool.Timestamp(this.rangDate[0]);
+        endTime=tool.Timestamp(this.rangDate[1]);
+
+        let date=new Date();
+        date.setDate(this.rangDate[1].getDate()+1);
+        endTime=tool.Timestamp(date);
+      }
+
+      this.$store.dispatch(ExportAnalyTask,{
+        task_type:this.showKind=='all'?'':this.showKind,
+        task_status:this.showStatus=='all'?'':this.showStatus,
+        start_time:startTime,
+        end_time:endTime
+      }).then(res=>{
+          this.blnExporting=false;
+          if(!tool.msg(res,'导出成功!','导出失败!')) return;
+
+          window.location=res.biz_body.url;
+
+      });
+    },
     //获取过滤后的任务集合数据
     getFilterTasks(){
       let tasks=this.tasks;
@@ -404,11 +440,11 @@ export default {
       if(this.rangDate && this.rangDate.length>1 && this.rangDate[0] && this.rangDate[1]){
         let startTime=tool.Timestamp(this.rangDate[0]),endTime=tool.Timestamp(this.rangDate[1]);
 
-        if(startTime==endTime){
+        //if(startTime==endTime){
           let date=new Date();
           date.setDate(this.rangDate[1].getDate()+1);
           endTime=tool.Timestamp(date);
-        }
+        //}
 
         tasks=_.filter(tasks,t=>{return startTime<=parseInt(t.create_time) && parseInt(t.create_time) <=endTime; });
       }
@@ -1126,7 +1162,7 @@ export default {
             if(res.msg.code!='successed')return;
             self.tasks.unshift(res.biz_body[0]);
             tool.info('创建成功!');
-            param.close();
+            closeCrashFunc();
           });
         };
 

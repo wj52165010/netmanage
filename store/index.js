@@ -215,7 +215,7 @@ export default new Vuex.Store({
         },
         [types.TriggerMenuChange](state,menu){
             state.menuUpdateSub.next(menu)
-        }
+        },
     },
     actions:{
         //根据配置ID获取配置对象
@@ -1911,6 +1911,70 @@ export default new Vuex.Store({
         [types.GetIdentData]({commit},data){
             return new Promise((resolve,reject)=>{
                 ser.GetIdentData(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //导出案件
+        [types.ExportLawCase]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportLawCase(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //导出综合分析任务
+        [types.ExportAnalyTask]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportAnalyTask(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //导出在逃人员
+        [types.ExportCriminal]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportCriminal(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //导出在逃人员报警
+        [types.ExportCriminalLog]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportCriminalLog(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //导出重点人员
+        [types.ExportKeyIdentity]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportKeyIdentity(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //导出重点人员报警
+        [types.ExportKeyIdentityLog]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportKeyIdentityLog(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //导出布控
+        [types.ExportPolicy]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportPolicy(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //导出报警布控
+        [types.ExportPolicyLog]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportPolicyLog(data).then(res=>{
                     resolve(res);  
                 });
             });

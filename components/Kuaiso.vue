@@ -2,8 +2,9 @@
 <template>
     <div class="Kuaiso" :class="{bound:blnBound}" @mouseenter="mouserover()" @mouseleave="mouseout()">
         <div class="btnContainer" :class="{Rotate:blnShowInput}">
-            <span v-if="!blnLoadings">快搜</span>
-            <i class="fa fa-refresh fa-spin" v-if="blnLoadings" style="font-size:20px;margin-top:16px;"></i>
+            <span v-show="!blnNoShow">快搜</span>
+            <span v-show="blnNoShow"><i class="fa fa-search" :style="{left:iconPos.x+'px',top:iconPos.y+'px'}" style="font-size:20px;position:absolute;"></i></span>
+            <i class="fa fa-refresh fa-spin" v-if="blnLoadings" style="font-size:20px;margin-top:16px;" ></i>
         </div>
         <!--<div class="inputContainer fadeIn" :class="{left:inputDir,right:!inputDir,showSearchBottom:search.length>0 && contentDir,showSearchTop:search.length>0 && !contentDir}" v-show="blnShowInput">
             <div class="holder"></div>
@@ -48,6 +49,7 @@ import ripple from '../js/ripple_btn.js'
 import Scroll from 'components/scroll'
 import LayoutPreView from 'components/LayoutPreView'
 import OneSo from 'components/OneSo'
+import FaceSo from 'components/FaceSo'
 import HTag from 'components/HTag'
 import {BODY_RESIZE,GetSearch} from '../store/mutation-types'
 let Rx = require('rxjs/Rx');
@@ -59,11 +61,11 @@ export default {
       blnJoinSearch:false,
       blnLoadings:false,//是否正在请求远程数据
       blnBound:false,
-      dir:'center',//控件所在方位(right,left,top,bottom,center)
+      dir:'right',//控件所在方位(right,left,top,bottom,center)
       w:0,//拖动插件所在容器宽度
       h:0,//拖动插件所在容器高度
       blnDrag:false,
-      btnR:50,//拖动按钮直径
+      btnR:70,//拖动按钮直径
       blnShowInput:false,
       btnW:400,//整个插件展开后的宽度
       curX:0,//当前插件X轴坐标
@@ -81,6 +83,7 @@ export default {
       search:[],
       dragEl:null,//拖动元素
       RxSub:null,
+      blnNoShow:true,//搜索标签是否显示完全
     }
   },
   watch:{
@@ -135,17 +138,20 @@ export default {
                                 <LayoutPreView ref="LayoutPreView" :sources="sources" :pages="pages" :keyword="searchVal" :store="store" />
                             </div>
                         </div>
+                        <div slot="t2" style="height:100%;width:100%;">
+                            <FaceSo ref="FaceSo">
+                        </div>
                     </HTag> 
                 `;
                 let param={
                     title:'快搜信息',
-                    area:['800px','600px'],
+                    area:['1000px','600px'],
                     maxmin: true,
                     content:`<div class="kuaisearch_window_pop" style="width:100%;height:100%;">${html}</div>`,
-                    components:{LayoutPreView,HTag,OneSo},
+                    components:{LayoutPreView,HTag,OneSo,FaceSo},
                     store:self.$store,
                     context:{
-                        tags:[{name:'特征',icon:'fa fa-tag'},{name:'日志',icon:'fa fa-tag'}],
+                        tags:[{name:'特征',icon:'fa fa-address-book-o'},{name:'日志',icon:'fa fa-clock-o'},{name:'图像识别',icon:'fa fa-file-picture-o'}],
                         store:self.$store,
                         sources:sources,
                         pages:pages,
@@ -153,6 +159,7 @@ export default {
                         tagChange(){
                             param.$refs.LayoutPreView.layout();
                             param.$refs.OneSo.layout();
+                            param.$refs.FaceSo.layout();
                         },
                     },
                     success(layero,index){
@@ -170,12 +177,14 @@ export default {
                         setTimeout(()=>{
                             param.$refs.LayoutPreView.layout();
                             param.$refs.OneSo.layout();
+                            param.$refs.FaceSo.layout();
                         },300);
                     },
                     restore(e,index){ 
                         setTimeout(()=>{
                             param.$refs.LayoutPreView.layout();
                             param.$refs.OneSo.layout();
+                            param.$refs.FaceSo.layout();
                         },300);
                     }  
                 };
@@ -188,8 +197,29 @@ export default {
         this.initDrag();
     });
     this.$store.commit(BODY_RESIZE,()=>{
-        this.initDrag();
+       this.initDrag();
     });
+  },
+  computed:{
+    iconPos(){
+        let pos={x:0,y:0};
+        switch(this.dir){
+            case 'left':
+                pos={x:40,y:25};
+                break;
+            case 'right':
+                pos={x:10,y:25};
+                break;
+            case 'top':
+                pos={x:25,y:40};
+                break;
+            case 'bottom':
+                pos={x:25,y:10};
+                break;
+        }
+
+        return pos;
+    }
   },
   methods:{
     //初始化拖插件
@@ -261,7 +291,6 @@ export default {
                 let targetDom=e.target || e.srcElement;
                 if(targetDom && $(targetDom).parent('div[name="content_item"]').length>0){return;}
               }
-                
               self.blnBound=true;
               self.$nextTick(()=>{
                 setTimeout(()=>{
@@ -288,7 +317,7 @@ export default {
                     },300);
 
                     self.blnDrag=false;
-                },300);
+                },100);
               });
           }
       });
@@ -326,6 +355,7 @@ export default {
     mouserover(){
         if(this.blnDrag || this.blnShowInput){return;}
         let s=this,el=$(this.$el);
+        s.blnNoShow=false;
         switch(this.dir){
             case 'left':
                 s.blnBound=true;
@@ -368,27 +398,32 @@ export default {
                     s.$nextTick(()=>{
                         el.css('left',-s.btnR/2);
                         s.curX=-s.btnR/2;
+                        s.blnNoShow=true;
                     });
                     break;
                 case 'right':
                     s.$nextTick(()=>{
                         el.css('left',s.w+s.btnR/2);
                         s.curX=s.w+s.btnR/2;
+                        s.blnNoShow=true;
                     });
                     break;
                 case 'top':
                     s.$nextTick(()=>{
                         el.css('top',-s.btnR/2);
                         s.curY=-s.btnR/2;
+                        s.blnNoShow=true;
                     });
                     break;
                 case 'bottom':
                     s.$nextTick(()=>{
                         el.css('top',s.h+s.btnR/2);
                         s.curY=s.h+s.btnR/2;
+                        s.blnNoShow=true;
                     });
                     break;
                 case 'center':
+                    s.blnNoShow=false;
                     break;
             }
         },100)
@@ -440,7 +475,7 @@ export default {
 <style scoped lang="less">
   @import "../css/variables.less";
 
-  @c_w:50px;
+  @c_w:70px;
   @start_time:0.3s;
   @backgroundColor:@btn_Bg_Col_hover_1;
   .Kuaiso{position:absolute;}

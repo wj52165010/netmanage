@@ -382,6 +382,16 @@ export const GetCollMicroprobe='GetCollMicroprobe' //按数据来源统计采集
 export const GetIdentData='GetIdentData'//获取报警数据
 
 
+//导出接口
+export const ExportLawCase='ExportLawCase'//导出案例
+export const ExportAnalyTask='ExportAnalyTask' //综合分析任务导出
+export const ExportCriminal='ExportCriminal' //导出在逃人员
+export const ExportCriminalLog='ExportCriminalLog' //导出在逃人员报警
+export const ExportKeyIdentity='ExportKeyIdentity' //导出重点人员
+export const ExportKeyIdentityLog='ExportKeyIdentityLog' //导出重点人员报警
+export const ExportPolicy='ExportPolicy' //导出布控
+export const ExportPolicyLog='ExportPolicyLog' //导出布控报警
+
 /**************** 例子接口 ******************/
 export const TogetherTeam='TogetherTeam' //获取同行分析组
 export const TogetherTeamTrack='TogetherTeamTrack'//获取同行分析组MAC轨迹

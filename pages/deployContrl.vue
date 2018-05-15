@@ -4,15 +4,15 @@
       <!--报警-->
       <div class="page" v-show="curSelCase.val==-1">
         <div :style="{height:params.blnNoCaseHide?'100%':alarmShow?alarmNoShow?'50%':'calc(100% - 52px)':'auto'}">
-          <HList title="案侦报警" ref="alarm"  :class="{hasPage:curSelCase.val==-1,noPage:curSelCase.val!=-1}" :action="params.blnNoCaseHide?[]:[ctlaction[0]]" :data="alarmData" :header="alarmHeader" :column="alarmColumn" :showField="alarmShowField" :rowAction="[{name:'详细',action:'lookDetail',icon:'fa fa-plus'}]"
+          <HList title="案侦报警" ref="alarm"  :class="{hasPage:curSelCase.val==-1,noPage:curSelCase.val!=-1}" :action="params.blnNoCaseHide?[]:[ctlaction[0],ctlaction[2]]" :data="alarmData" :header="alarmHeader" :column="alarmColumn" :showField="alarmShowField" :rowAction="[{name:'详细',action:'lookDetail',icon:'fa fa-plus'}]"
           :searchAction="alarmSearchAction" @updateCase="updateCase" @delPolicy="delPolicy" @searchAlarmKey="searchAlarmKey" @lookDetail="lookDetail" @delCase="delCase" :blnNoSel="blnNoSel"
-          :expan="blnexpan" @addControl="addControl" @delControl="delControl" @addCase="addCase" :blnLoading="alarmLoading"
+          :expan="blnexpan" @addControl="addControl" @delControl="delControl" @exportList="exportList" @addCase="addCase" :blnLoading="alarmLoading"
           :tag_action="params.blnNoCaseHide?[]:kinds.slice(0,2)" @kindchange="kindchange" @personchange="personchange" @showChange="alarmShowFunc" @pageChange="pageChange" :pageNum="pageNum" :store="store"
           />
         </div>
         <div :style="{height:alarmShow?'50%':'calc(100% - 52px)'}" v-show="!params.blnNoCaseHide">
-          <HList title="非案侦报警" ref="alarmNo" :class="{hasPage:curSelCase.val==-1,noPage:curSelCase.val!=-1}" :action="[]" :data="alarmNoData" :header="alarmHeader" :column="alarmColumn" :showField="alarmShowField" :rowAction="[{name:'详细',action:'lookDetail',icon:'fa fa-plus'}]"
-          :searchAction="alarmSearchActionNoCase" @updateCase="updateCase" @delPolicy="delPolicy" @searchAlarmKeyNoCase="searchAlarmKeyNoCase" @lookDetail="lookDetail" @delCase="delCase" :blnNoSel="blnNoSel"
+          <HList title="非案侦报警" ref="alarmNo" :class="{hasPage:curSelCase.val==-1,noPage:curSelCase.val!=-1}" :action="[noctlaction[0]]" :data="alarmNoData" :header="alarmHeader" :column="alarmColumn" :showField="alarmShowField" :rowAction="[{name:'详细',action:'lookDetail',icon:'fa fa-plus'}]"
+          :searchAction="alarmSearchActionNoCase" @updateCase="updateCase" @delPolicy="delPolicy" @exportListNo="exportListNo" @searchAlarmKeyNoCase="searchAlarmKeyNoCase" @lookDetail="lookDetail" @delCase="delCase" :blnNoSel="blnNoSel"
           :expan="blnexpan" @addControl="addControl" @delControl="delControl" @addCase="addCase" @pageChange="alarmNoPageChange" :pageNum="alarmNoPageNum"
           @showChange="alarmNoShowFunc" :store="store"
           />
@@ -23,7 +23,7 @@
         <div :style="{height:params.blnNoCaseHide?'100%':ctlShow?ctlNoShow?'50%':'calc(100% - 52px)':'auto'}">
           <HList title="案侦布控" ref="policy" :blnNoPage="false" :class="{hasPage:curSelCase.val==-1,noPage:curSelCase.val!=-1}" :action="ctlaction" :data="ctlData" :header="ctlHeader" :column="ctlColumn" :showField="ctlShowField" :rowAction="ctlRowAction"
           :searchAction="ctlSearchAction" @updateCase="updateCase" @delPolicy="delPolicy" @seachPolicyName="seachPolicyName" @lookDetail="lookDetail" @delCase="delCase" :blnNoSel="blnNoSel"
-          :expan="blnexpan" @addControl="addControl" @delControl="delControl" @addCase="addCase" @pageChange="ctrlPageChange" :pageNum="ctlPageNum" 
+          :expan="blnexpan" @addControl="addControl" @delControl="delControl" @exportList="exportList" @addCase="addCase" @pageChange="ctrlPageChange" :pageNum="ctlPageNum" 
           :tag_action="kinds.slice(0,2)" @kindchange="kindchange" :check_action="items" @personchange="personchange"  @showChange="ctlShowFunc" :store="store"
           />
         </div>
@@ -76,7 +76,8 @@ import AlarmType from '../enum/AlarmType'
 import scroll from 'components/scroll'
 import addPop from '../modules/case/addPop.js'
 
-import {GetCase,AddCase,AddPolicy,GetPolicy,DelPolicy,UpdateCase,GetPolicyDetail,DelCase,GetAlarmMobile,AddAlarmMobile,DelAlarmMobile,BODY_RESIZE} from '../store/mutation-types'
+import {GetCase,AddCase,AddPolicy,GetPolicy,DelPolicy,UpdateCase,GetPolicyDetail,
+        DelCase,GetAlarmMobile,AddAlarmMobile,DelAlarmMobile,BODY_RESIZE,ExportPolicy,ExportPolicyLog} from '../store/mutation-types'
 
 export default {
   name: 'DeployContrl',
@@ -96,9 +97,12 @@ export default {
              {name:'布控',val:0,icon:'fa fa-sitemap',action:'kindchange'},
              {name:'案件',val:1,icon:'fa fa-suitcase',action:'kindchange'}
              ],
-      ctlaction:[{name:'添加布控',action:'addControl',icon:'fa fa-plus'},
-              {name:'撤销布控',action:'delControl',icon:'fa fa-remove'}
+      ctlaction:[
+              {name:'添加布控',action:'addControl',icon:'fa fa-plus'},
+              {name:'撤销布控',action:'delControl',icon:'fa fa-remove'},
+              {name:'导出',action:'exportList',icon:'fa fa-level-up'}
             ],
+      noctlaction:[{name:'导出',action:'exportListNo',icon:'fa fa-level-up'}],//非案件导出
       ctlRowAction:[{name:'撤销',action:'delPolicy',icon:'fa fa-plus'}],
       ctlSearchAction:[{name:'布控名称',action:'seachPolicyName'}],//布控(案件)名称搜索
       ctlSearchActionNoCase:[{name:'布控名称',action:'searchPolicyNameNoCase'}],//布控(非案件)名称搜索
@@ -165,7 +169,9 @@ export default {
       blnexpan:false,
       blnNoSel:false,//是否不显示多选框
       alarmRigtLoading:false,//判断数据是否正在加载中
-      law_case_id:''//案件ID用于过滤显示条件
+      law_case_id:'',//案件ID用于过滤显示条件
+      PolicyNameNoCase:'',
+      PolicyName:'',
     }
   },
   mounted(){
@@ -220,11 +226,60 @@ export default {
       //获取策略信息(不包含案件)
       this.ctrlNoPageChange(0);
     },
+    //导出列表数据(案件相关)
+    exportList(){
+        let policeParam={
+          law_case_id:this.law_case_id,
+          blnCase:true,
+          keywords:this.alarmSearch,
+        },
+        personParam={
+          user_id:this.curSelPerson.val?ser.baseBag.userid:'',
+          policy_title:this.PolicyName,
+          blnCase:true,
+          law_case:this.law_case_id,
+
+        };
+        this.$store.dispatch(this.curSelCase.val==-1?ExportPolicyLog:ExportPolicy,this.curSelCase.val==0?policeParam:personParam
+        ).then(res=>{
+            if(!tool.msg(res,'导出成功!','导出失败!')) return;
+            if(!res.biz_body.url) return;
+            window.location=res.biz_body.url;
+      });
+    },
+    //导出列表数据(非案件相关)
+    exportListNo(){
+      let policeParam={
+          law_case_id:this.law_case_id,
+          blnCase:false,
+          keywords:this.alarmNoSearch,
+        },
+        personParam={
+          user_id:this.curSelPerson.val?ser.baseBag.userid:'',
+          policy_title:this.PolicyNameNoCase,
+          blnCase:false,
+          law_case:this.law_case_id,
+
+        };
+        this.$store.dispatch(this.curSelCase.val==-1?ExportPolicyLog:ExportPolicy,this.curSelCase.val==0?policeParam:personParam
+        ).then(res=>{
+            if(!tool.msg(res,'导出成功!','导出失败!')) return;
+            if(!res.biz_body.url) return;
+            window.location=res.biz_body.url;
+      });
+    },
     //布控分页
     ctrlPageChange(pageNum){
       this.ctlPageNum=pageNum>0? pageNum : 0;
+
       //获取策略信息(包含案件)
-      this.$store.dispatch(GetPolicy,{user_id:this.curSelPerson.val?ser.baseBag.userid:'',blnCase:true,law_case:this.law_case_id,limit:this.showNum,skip:this.ctlPageNum*this.showNum}).then(res=>{
+      this.$store.dispatch(GetPolicy,{user_id:this.curSelPerson.val?ser.baseBag.userid:'',
+                          policy_title:this.PolicyName,
+                          blnCase:true,
+                          law_case:this.law_case_id,
+                          limit:this.showNum,
+                          skip:this.ctlPageNum*this.showNum
+      }).then(res=>{
         if(res.msg.code!='successed')return;
         //转换显示效果
         let data=this.converShowData(res.biz_body);
@@ -236,7 +291,12 @@ export default {
     //布控非案件分页
     ctrlNoPageChange(pageNum){
       this.ctlNoPageNum=pageNum>0? pageNum : 0;
-      this.$store.dispatch(GetPolicy,{user_id:this.curSelPerson.val?ser.baseBag.userid:'',law_case:this.law_case_id,limit:this.showNum,skip:this.ctlNoPageNum*this.showNum}).then(res=>{
+      this.$store.dispatch(GetPolicy,{user_id:this.curSelPerson.val?ser.baseBag.userid:'',
+                                      policy_title:this.PolicyNameNoCase,
+                                      law_case:this.law_case_id,
+                                      limit:this.showNum,
+                                      skip:this.ctlNoPageNum*this.showNum
+      }).then(res=>{
         if(res.msg.code!='successed')return;
         //转换显示效果
         let data=this.converShowData(res.biz_body);
@@ -543,6 +603,7 @@ export default {
     },
     //根据策略名称搜索(案件)
     seachPolicyName(val){
+      this.PolicyName=val;
       this.$store.dispatch(GetPolicy,{policy_title:val,blnCase:true,law_case:this.law_case_id}).then(res=>{
         if(res.msg.code!='successed')return;
         //转换显示效果
@@ -553,6 +614,7 @@ export default {
     },
     //根据策略名称搜索(非案件)
     searchPolicyNameNoCase(val){
+      this.PolicyNameNoCase=val;
       this.$store.dispatch(GetPolicy,{policy_title:val}).then(res=>{
         if(res.msg.code!='successed')return;
         //转换显示效果

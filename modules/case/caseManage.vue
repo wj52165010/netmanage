@@ -28,6 +28,10 @@
                     <span class="tag_label" style="margin-left:10px;cursor:pointer;" @click="addCase()">
                         <i class="fa fa-plus" style="margin-right:5px;"></i>新增
                     </span>
+                    <span class="tag_label" style="margin-left:10px;cursor:pointer;" @click="exportList()">
+                        <i v-if="!blnExporting" class="fa fa-level-up" style="margin-right:5px;"></i>
+                        <i v-if="blnExporting" class="fa fa-spinner fa-spin" style="margin-right:5px;"></i>导出
+                    </span>
                 </div>
             </div>
             <ul class="header">
@@ -91,7 +95,7 @@ import cInput from 'components/Input'
 import TaskType from '../../enum/TaskType'
 import RelativeAnlay from './anlay'
 import AddPop from './addPop'
-import {GetCase,AddCase,DelCase,UpdateCase,GetAnalyTask,BODY_RESIZE,Add_History_Menu} from '../../store/mutation-types'
+import {GetCase,AddCase,DelCase,UpdateCase,GetAnalyTask,BODY_RESIZE,Add_History_Menu,ExportLawCase} from '../../store/mutation-types'
 export default {
   name: 'CaseManage',
   components:{Scroll},
@@ -114,6 +118,7 @@ export default {
         blnSearch:false,
         query:{name:'',time:[]},
         case_address_w:0,
+        blnExporting:false,
         data:[
             // {
             //     status:'完成',
@@ -183,6 +188,21 @@ export default {
             if(!tool.msg(res))return;
             this.data=res.biz_body;
           });
+      },
+      //导出列表信息
+      exportList(){
+        this.blnExporting=true;
+        this.$store.dispatch(ExportLawCase,{
+            law_case_title:this.query.name,
+            law_case_status:this.curStatu,
+            law_case_time:this.query.time[0]?[tool.Timestamp(this.query.time[0]),tool.Timestamp(this.query.time[1])].join(','):'',
+        }).then(res=>{
+            this.blnExporting=false;
+            if(!tool.msg(res,'导出成功!','导出失败!')) return;
+
+            window.location=res.biz_body.url;
+
+        });
       },
       getTaskType(id){
         return _.find(this.taskType,t=>{return  t.id==id});

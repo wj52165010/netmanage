@@ -71,12 +71,24 @@
                     <el-tooltip effect="light" content="添加人员" placement="top">
                         <span class="action_item" @click="addPerson()"><i class="fa fa-user"></i>添加</span>
                     </el-tooltip>
+                    <el-tooltip effect="light" content="导出报警信息" placement="top">
+                        <span class="action_item" @click="exportList(0)">
+                            <i v-if="!blnExporting" class="fa fa-level-up" ></i>
+                            <i v-if="blnExporting" class="fa fa-spinner fa-spin" ></i>导出
+                        </span>
+                    </el-tooltip>
                     <!--<span class="action_item" @click="policeWay()"><i class="fa fa-cog fa-fw"></i>报警方式</span>-->
                 </div>
                 <!--人员信息操作栏-->
                 <div class="personOption" v-show="curPageIndex==1">
                     <el-tooltip effect="light" content="添加人员" placement="top">
                         <span class="action_item" @click="addPerson()"><i class="fa fa-user"></i>添加</span>
+                    </el-tooltip>
+                    <el-tooltip effect="light" content="导出人员信息" placement="top">
+                        <span class="action_item" @click="exportList(1)">
+                            <i v-if="!blnExporting" class="fa fa-level-up" ></i>
+                            <i v-if="blnExporting" class="fa fa-spinner fa-spin" ></i>导出
+                        </span>
                     </el-tooltip>
                 </div>
             </div>
@@ -218,7 +230,7 @@ import HTag from 'components/HTag'
 import PlaceSearch from 'components/PlaceSearch'
 import Scroll from 'components/scroll'
 import ScaleBar from 'components/scaleBar'
-import {BODY_RESIZE,GetCertificateType,CCICPoliceData,CCICGetPerson,CCICAddPerson,GetMatchMode,CCICDelPerson} from '../store/mutation-types'
+import {BODY_RESIZE,GetCertificateType,CCICPoliceData,CCICGetPerson,CCICAddPerson,GetMatchMode,CCICDelPerson,ExportCriminal,ExportCriminalLog} from '../store/mutation-types'
 import InputDir from 'components/Input'
 import MaskInput from 'components/maskInput'
 import '../../static/jquery-file-upload/jquery.ui.widget.js'
@@ -266,6 +278,8 @@ export default {
       timeSort:1,
       police_auto_column_w:0,//报警信息列表自适应列宽度
       person_auto_column_w:0,//人员信息列表自适应列宽度
+      mapLevel:ser.map,
+      blnExporting:false,
     }
   },
   mounted(){
@@ -321,6 +335,31 @@ export default {
 
           });
       },
+      //导出列表信息
+      exportList(i){
+        this.blnExporting=true;
+        let policeParam={
+            customer_name:this.police_name,
+            certificate_code:this.police_number,
+            certificate_type:this.police_card_type,
+            netbar_wacode:this.police_netbar_wacode,
+            mac:this.police_mac
+        },
+        personParam={
+            customer_name:this.person_name,
+            certificate_code:this.person_number,
+            crime_match_mode:this.person_match_mode
+        };
+        this.$store.dispatch(i==0?ExportCriminalLog:ExportCriminal,i==0?policeParam:personParam
+        ).then(res=>{
+            this.blnExporting=false;
+
+            if(!tool.msg(res,'导出成功!','导出失败!')) return;
+            if(!res.biz_body.url) return;
+            window.location=res.biz_body.url;
+
+        });
+      },
       //场所地址字段单击事件
       placeClick(d){
           if(!d.equipment_latitude || !d.equipment_longitude){return;}
@@ -329,7 +368,7 @@ export default {
               let html=`
                 <div name="map_container" style="width:100%;height:100%;"></div>
                 <div style="position:absolute;top:10px;left:10px;">
-                    <ScaleBar :start="13" :end="18" @change="zoomChange" ref="scaleBar" />
+                    <ScaleBar :start="mapLevel[0]" :end="mapLevel[1]" :defVal="mapLevel[2]" @change="zoomChange" ref="scaleBar" />
                 </div>
               `;
 
@@ -341,15 +380,16 @@ export default {
                 store:s.$store,
                 context:{
                     map:null,
+                    mapLevel:ser.map,
                     zoomChange(zoom){
                         param.selfData.map.setZoom(zoom);
                     }
                 },
                 success(layero){
 
-                    let map =  new BMap.Map(layero.find('div[name="map_container"]')[0],{minZoom:13,maxZoom:18});
+                    let map =  new BMap.Map(layero.find('div[name="map_container"]')[0],{minZoom:s.mapLevel[0],maxZoom:s.mapLevel[1]});
                     param.selfData.map=map;
-                    map.centerAndZoom(new BMap.Point(d.equipment_longitude,d.equipment_latitude),7);//重庆中心点
+                    map.centerAndZoom(new BMap.Point(d.equipment_longitude,d.equipment_latitude),s.mapLevel[2]);//重庆中心点
                     map.enableScrollWheelZoom(true);
 
                     var marker=new BMap.Marker(new BMap.Point(d.equipment_longitude,d.equipment_latitude));
