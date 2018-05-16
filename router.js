@@ -78,6 +78,7 @@ Vue.component('CrashSecondDetail',(resolve)=>{require(['./components/crash_secon
 Vue.component('NetAboutCar',(resolve)=>{require(['./examples/NetAboutCar.example'],resolve)});
 Vue.component('ShipCar',(resolve)=>{require(['./examples/ShipCar.example'],resolve)});
 Vue.component('Expressage',(resolve)=>{require(['./examples/Expressage.example'],resolve)});
+Vue.component('PublicOpinion',(resolve)=>{require(['./examples/PublicOpinion.example'],resolve)});
 
 
 export default[

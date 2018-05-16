@@ -3,7 +3,7 @@
     <div class="CaseManage">
         <div class="CaseManage_container">
             <!--加载中标识-->
-            <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;">
+            <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index:1000;">
                 <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;"><i class="fa fa-spinner fa-pulse"></i></div></div>
             </div>
             <div class="option">
@@ -176,15 +176,15 @@ export default {
   methods:{
       //刷新页面
       refreshPage(){
+          this.pageNum=0;
           this.loadData();
       },
       //加载数据
       loadData(){
           this.blnLoading=true;
-          this.blnLoading=false;
-
           //获取案件信息
           this.$store.dispatch(GetCase,{limit:this.limit,skip:this.pageNum*this.limit}).then(res=>{
+            this.blnLoading=false;
             if(!tool.msg(res))return;
             this.data=res.biz_body;
           });

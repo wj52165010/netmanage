@@ -143,6 +143,7 @@ export default {
         
     },
     chartsData(){
+        if(!this.chartsData) return;
         let keysdomestic=_.map(this.chartsData.inVehicle_domestic,d=>d.day),
             valsdomestic=_.map(this.chartsData.inVehicle_domestic,d=>d.count),
             keysabroad=_.map(this.chartsData.inVehicle_abroad,d=>d.day),
@@ -283,6 +284,21 @@ export default {
     
   },
   methods:{
+    //刷新页面
+    refreshPage(){
+        this.blnShowHistoryPop=false;
+        this.blnSearch=false;
+        this.curTask=null;
+        this.historyData=[];
+        this.timeRange=[];
+        this.nation='';
+        this.cert='';
+        this.nations=[];
+        this.chartsData=null;
+        this.personData=[];
+        this.curShowIndex=0;
+        this.getAnalyTask();
+    },
     initChart(){
         this.chartone = echarts.init($(this.$el).find(`div[name="chartone"]`)[0]);
         this.charttwo = echarts.init($(this.$el).find(`div[name="charttwo"]`)[0]);

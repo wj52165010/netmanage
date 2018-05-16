@@ -144,6 +144,7 @@ export default {
     curTask(){
       this.$nextTick(()=>{
         setTimeout(()=>{
+          if(!this.curTask) return;
           if(this.curTask.task_status!='completed') return;
           setTimeout(()=>{
             this.initEchart();
@@ -175,6 +176,21 @@ export default {
     
   },
   methods:{
+    //刷新页面
+    refreshPage(){
+      this.blnSearch=false;
+      this.num=0;
+      this.charts={};
+      this.timeRange=[];
+      this.curTask=null;
+      this.blnShowHistoryPop=false;
+      this.historyData=[];
+      this.detailData=null;
+      if(this.pm)this.pm.destroy();
+      this.pm=null;
+      this.posPointers=[];
+      this.getAnalyTask();
+    },
     //初始化地图
     initMap(){
       this.map = new BMap.Map(this.mapid,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1]});

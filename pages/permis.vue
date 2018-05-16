@@ -75,7 +75,6 @@ export default {
             this.blnLoading=false;
             if(!tool.msg(res,'','获取用户组数据失败!')){return;}
             this.data=res.biz_body;
-            console.log(tool.Clone(this.data));
         });
       },
       //显示日期

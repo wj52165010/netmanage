@@ -74,10 +74,10 @@
         <!--右边显示区域-->
         <div class="right_container" v-if="curTask" :style="{bottom:curTask && curTask.task_status=='completed'?'10px':'auto'}">
           <!--数据加载提示信息-->
-          <div class="tipInfo" v-if="curTask.task_status!=='completed'">
+          <div class="tipInfo" v-if="curTask && curTask.task_status!=='completed'">
             <i class="fa fa-clock-o" style="font-size:30px;"></i>{{curTask.task_status=='created'?'正在分析,请稍后...':'出现异常'}}
           </div>
-          <div v-if="curTask.task_status=='completed' && detailData" style="width:100%;height:100%;">
+          <div v-if="curTask && curTask.task_status=='completed' && detailData" style="width:100%;height:100%;">
             <!--列表栏-->
             <div class="title">网约车分析 <span style="float:right;font-size:12px;">完成时间&nbsp;&nbsp;&nbsp;{{converTime(curTask.task_conditions.end_time,'yyyy-MM-dd')}}</span></div>
             <!--内容栏-->
@@ -199,6 +199,7 @@ export default {
     curTask(){
       this.$nextTick(()=>{
         setTimeout(()=>{
+          if(!this.curTask) return;
           if(this.curTask.task_status!='completed') return;
           setTimeout(()=>{
             this.initEchart();
@@ -230,6 +231,24 @@ export default {
     
   },
   methods:{
+    //刷新页面
+    refreshPage(){
+      this.blnSearch=false;
+      this.num=0;
+      this.charts={};
+      this.timeRange=[];
+      this.startHour='';
+      this.endHour='';
+      this.curTask=null;
+      this.blnShowHistoryPop=false;
+      this.historyData=[];
+      this.detailData=null;
+      if(this.pm)this.pm.destroy();
+      this.pm=null;
+      this.tipInfo='';
+      this.posPointers=[];
+      this.getAnalyTask();
+    },
     //初始化地图
     initMap(){
       this.map = new BMap.Map(this.mapid,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1]});

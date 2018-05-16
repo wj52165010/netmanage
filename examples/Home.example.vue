@@ -405,6 +405,11 @@ export default {
     
   },
   methods:{
+    //刷新页面
+    refreshPage(){
+      this.initData();
+      this.showMapIndex=0;
+    },
     //初始化地图
     initMap(){
       this.map = new BMap.Map(this.id,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1],enableMapClick: false});

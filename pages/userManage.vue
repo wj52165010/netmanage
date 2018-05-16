@@ -101,9 +101,9 @@ export default {
     //显示用户信息
     showGroup(group){
         return _.map(group,id=>{
-            return _.find(this.groups,i=>{
+            return (_.find(this.groups,i=>{
                return i.user_group_id==id;
-            }).name;
+            }) || {name:''}).name;
         }).join(',');
     },
     //删除

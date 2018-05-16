@@ -89,6 +89,7 @@ export default {
       macIcon:null,
       phoneIcon:null,
       idenIcon:null,
+      blnClear:false,
     }
   },
   watch:{
@@ -108,11 +109,14 @@ export default {
         this.simulation.alphaTarget(0.3).restart();
     },
     curTaskData(){
-       if(!this.curTaskData.start_node){ tool.info('没有相关数据!'); return ;}
+       if(!this.curTaskData.start_node && !this.blnClear){ tool.info('没有相关数据!'); return ;}
+       if(this.blnClear){this.blnClear=false;return;}
 
        this.bindDataListen(this.curTaskData).subscribe(v=>{
            this.dataSubject.next(v);
        });
+
+       
     }
   },
   mounted(){
@@ -191,6 +195,21 @@ export default {
     this.subtion=null;
   },
   methods:{
+    //刷新页面
+    refreshPage(){
+      this.points=[];
+      this.edges=[];
+      this.blnSearch=false;
+      this.blnShowHistoryPop=false;
+      this.historyData=[];
+      this.curShowTaskId=0;
+      this.curTaskData={};
+      this.blnDrag=false;
+      this.keyOne='';
+      this.keyTwo='';
+      this.blnClear=true;
+      this.getHistory();
+    },
     //转化时间
     converTime(t){
         return tool.DateByTimestamp(t,'yyyy-MM-dd hh:mm:ss');

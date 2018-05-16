@@ -3,7 +3,7 @@
     <div class="HTag">
         <div class="tag_header">
             <div v-for="(t,i) in tags" class="tag_item" :class="{active:curIndex==i}" @click="tagClick(i,t)" :title="t.tip || ''">
-                <i :class="t.icon" style="margin-right:5px;"></i>{{t.name}}
+                <i :class="t.icon" style="margin-right:5px;"></i>{{t.name}}<i class="fa fa-remove" style="margin-left:5px;" @click.stop="remove(t)" v-if="t.blnRemove"></i>
             </div>
         </div>
         <div v-for="(t,i) in tags" v-show="curIndex==i" class="item" :class="{fadeIn:curIndex==i}">
@@ -36,6 +36,10 @@ export default {
         this.$nextTick(()=>{
             this.$emit('change',i);
         });
+    },
+    //删除
+    remove(item){
+        this.$emit('remove',item)
     }
   }
 }

@@ -20,7 +20,7 @@
             <SearchInput :holder="action.name" :extra="action.action" @btnClick="seachClick" />
           </div>
           
-          <div v-for="action in searchAction" v-if="action.type" style="display:inline-block;margin-top:-10px;margin-right:10px;" :style="{width:searchType['日期范围']==action.type?'260px':'auto'}">
+          <div v-for="action in searchAction" v-if="action.type" style="display:inline-block;margin-top:-10px;margin-right:10px;" :style="{width:searchType['日期范围']==action.type?'280px':'auto'}">
             <span>{{action.name}}</span>
             <div class="dataMass_datarange" style="display:inline-block;" v-if="searchType['日期范围']==action.type">
               <el-date-picker

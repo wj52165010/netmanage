@@ -33,6 +33,7 @@
 import {RelationSecond} from '../store/mutation-types'
 import SearchDropdown from 'components/SearchDropdown'
 import clipboard from 'clipboard-polyfill'
+import ZeroClipboard from '../../static/ZeroClipboard/ZeroClipboard.js'
 
 import * as d3 from 'd3'
 export default {
@@ -157,9 +158,26 @@ export default {
 
     this.tipDom=$(this.$el).find(`div[id="${this.tipId}"]`);
 
+    //初始化复制按钮
+    // setTimeout(()=>{
+    //     var clip = new ZeroClipboard.Client(); // 新建一个对象 
+    //     clip.setHandCursor( true ); 
+    //     clip.setText("哈哈"); // 设置要复制的文本。
+    //     clip.addEventListener('mouseOver', ()=>{
+    //         console.log(2);
+    //         clip.setText("哈哈");
+    //     });
+    //     clip.glue("copy_botton");
+    // },100);
     
+
   },
   methods:{
+    refreshPage(){
+        this.searchKey='';
+        this.points=[];
+        this.edges=[];
+    },
     //初始化画布力图控件
     initDraw(){
         let s=this;
@@ -850,7 +868,6 @@ export default {
     },
     //canvas鼠标单击事件
     regPosClick(e){
-
         let res=this.blnOpiton(e);
 
         _.each(this.points,p=>p.clicked=false);
@@ -925,8 +942,13 @@ export default {
                     clickP.fy=null;
                     break;
                 case 3://复制
-                    clipboard.writeText(point.subTextOne);
-                    tool.info('复制成功!');
+                    if(!document.execCommand("copy")){
+                        this.searchKey=point.subTextOne;
+                        tool.info('已经复制到搜索框!');
+                    }else{
+                        clipboard.writeText(point.subTextOne)
+                        tool.info('复制成功!');
+                    }
                     break;
             }
         }
@@ -1108,7 +1130,7 @@ export default {
     //搜索数据
     Search(){
       if(this.blnSearch){return;}
-      if(!this.serachInfo.code){tool.info('请输入正确的关键字搜索条件!');return;}
+      if(!this.serachInfo.code || !this.searchKey){tool.info('请输入正确的关键字搜索条件!');return;}
      
       this.blnSearch=true;
       this.$store.dispatch(RelationSecond,{
@@ -1344,7 +1366,7 @@ export default {
       if(phoneReg.test(v)){res.push({name:'手机号',val:'mobile'})}
       
       //如果没匹配则认为是虚拟身份
-      if(res.length<=0){
+      if(res.length<=0 && v){
         res.push({name:'虚拟身份',val:'vid'})
       }
 

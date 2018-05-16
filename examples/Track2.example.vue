@@ -406,6 +406,30 @@ export default {
     this.socket.close();
   },
   methods:{
+    refreshPage(){
+      this.blnShowLoading=0;
+      this.blnShowHistory=false;
+      this.blnShowDetail=false;
+      this.blnShowHistoryPop=false;
+      this.historyPopIndex=-1;
+      this.blnRangeMapShow=false;
+      this.descW=0;
+      this.detailW=0;
+      this.blnSearch=false;
+      this.searchNum='';
+      this.searchResult=[];
+      this.timeRange=[];
+      this.region='';
+      this.traceData=[];
+      this.cTraceData=[];
+      this.mainPath=[];
+      this.range=[];
+      this.unAddData=[];
+      this.addData=[];
+      this.endTime='';
+      this.historyTrace=[];
+      this.initData();
+    },
     //初始化地图
     initMap(){
       this.map = new BMap.Map(this.id,{minZoom:this.mapLevel[0],maxZoom:this.mapLevel[1]});

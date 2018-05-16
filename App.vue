@@ -311,7 +311,7 @@ export default {
       this.$store.commit(Reg_Navigation_Func,this.$refs.HPage.activePage);
       this.$store.commit(Reg_Navigation_Refresh,this.$refs.HPage.refresh);
       this.$store.commit(Reg_Del_Nav_Func,this.$refs.HPage.delPage);
-      this.menus=tool.Clone(MenuKind);
+      this.menus=_.map(tool.Clone(MenuKind),m=>{m.menus=m.menus || []; return m;});
       this.$store.commit(Set_System_Menus,this.menus);
       //定制菜单页面
       let fixMenus=[
@@ -330,6 +330,7 @@ export default {
         // {name:'碰撞分析详细',icon:'fa fa-dashboard',keyid:"11021",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"CrashDetailPage"},
         {name:'远程接口管理',icon:'fa fa-dashboard',keyid:"13023",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"remoteInterfacePage"},
         {name:'案件管理',icon:'fa fa-suitcase',keyid:"11024",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"CaseManagePage"},
+        {name:'舆情分析',icon:'fa fa-dashboard',keyid:"11054",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"PublicOpinion"},
         {name:'CCIC预警',icon:'fa fa-dashboard',keyid:"11025",menu_type:_.find(MenuKind,m=>m.id==9),blnShow:1,status:'{status:"completed"}',type:"CCICPage"},
         {name:'操作日志',icon:'fa fa-opera',keyid:"11027",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"OperLogPage"},
 

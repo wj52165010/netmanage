@@ -130,9 +130,12 @@ export default {
         this.myLineChart.resize();
     });
 
-    //获取数据质量详细页面配置菜单对象
-    let menus=_.flatten(_.pluck(this.$store.getters.Menus,'menus'));
+    // //获取数据质量详细页面配置菜单对象
+
+    let menus=_.compact(_.flatten(_.pluck(this.$store.getters.Menus,'menus')));
+
     let menu=tool.Clone(_.find(menus,m=>m.keyid=='235'));
+   
     menu.id=menu.keyid;
     menu.type=menu.type || 'templatePage';
     this.params.model=menu;
