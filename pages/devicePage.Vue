@@ -139,7 +139,7 @@
                                 <div class="align" :title="d.mac"><span class="overflow" style="width:120px;">{{d.mac}}</span></div>
                                 <div  :title="d.online_state" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]"><span class="overflow" style="width:63px;">{{d.online_state}}</span></div>                                
                                 <div  :title="d.capture_time"><span class="overflow" style="width:140px;">{{d.capture_time}}</span></div>
-                                <div  :title="d.last_upload_num" @click="dataStatus(d.equipment_id,d.equipment_name)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
+                                <div  :title="d.last_upload_num" @click="dataStatus(d.equipment_id,d.equipment_name,d.microprobe_type_code)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
                                 <div :title="d.equipment_type"><span class="overflow" style="width:85px;">{{d.equipment_type}}</span></div>
                                 <!-- <div  :title="d.business_state"><span class="overflow" style="width:65px;">{{d.business_state}}</span></div> -->
                                 <div class="align" :title="d.netbar_name"><span class="overflow" style="width:140px;">{{d.netbar_name}}</span></div>
@@ -247,7 +247,7 @@ import 'echarts/lib/component/dataZoom'
 import TaskType from '../enum/TaskType'
 import RelativeAnlay from '../modules/case/anlay'
 import AddPop from '../modules/case/addPop'
-import {GetDeviceList,DeviceDetectColl,LastDevicePercentage,DeviceDetail,DeviceHisPercentage,DeviceHisPercentageExport,BODY_RESIZE,Add_History_Menu,GetMicroprobe,Get_OPerate_Data,GetSiteList,getDictTables,SiteDetectColl} from '../store/mutation-types'
+import {GetDeviceList,DeviceDetectColl,LastDevicePercentage,DeviceDetail,DeviceHisPercentage,DeviceHisPercentageExport,BODY_RESIZE,Add_History_Menu,GetMicroprobe,Get_OPerate_Data,GetSiteList,getDictTables,DeviceDetectYesterday,DeviceDetectHistory} from '../store/mutation-types'
 export default {
   name: 'devicePage',
   components:{
@@ -398,6 +398,7 @@ export default {
                     netsite_type:r.netsite_type,
                     region_name:r.region_name,
                     microprobe_type:r.microprobe_type,
+                    microprobe_type_code:r.microprobe_type_code
                     //security_software_orgname:r.security_software_orgname,
 
 
@@ -432,23 +433,28 @@ export default {
       loadData(){
           //this.blnLoading=true;
           //this.blnLoading=false;
-          //获取场所信息
+
+        //   加载时先清空数据在加载等待动画，请求完后数据加载
+        if(this.data){
+          this.data=[];
+          this.blnLoading=true;
+        }
+
+          //获取数据来源（下拉框序列化）
+          this.$store.dispatch(getDictTables).then(res=>{
+             if(res.msg.code!='successed')return;
+            this.dict_tables= res.biz_body;
+            this.query.microprobe_type=["120"];
+            //获取场所信息
             this.$store.dispatch(GetDeviceList,this.query).then(res=>{
                 if(res.msg.code!='successed')return;
                 this.data=res.biz_body;
-                this.blnLoading=false;  
-                //if(this.query.microprobe_type[0]=="120")   this.query.microprobe_type=["120"];
-            });          
+                this.blnLoading=false;
+                if(this.query.microprobe_type[0]=="120")   this.query.microprobe_type=["120"];
+            });
 
-            //获取数据来源
-        this.$store.dispatch(getDictTables).then(res=>{
-            if(res.msg.code!='successed')return;
-            this.dict_tables= res.biz_body;
-            //this.query.microprobe_type=["120"];
             
-
-        });
-
+          });
       },
       //区域范围的事件回传，第一个参数为上下文环境，第二个参数为具体值,因为该页面为单独定制没有上下文，因此取第二个值即可
       selectArea(val,data){
@@ -952,7 +958,7 @@ export default {
             }());             
         },
         // 数据采集趋势
-        dataStatus(siteId,name){
+        dataStatus11(siteId,name){
              let self=this;
               //                               <div class="bar tit-bars" @click=changeStatus(2)>采集状况</div>
             tool.open(function(){
@@ -1060,6 +1066,295 @@ export default {
                 return param;           
             }())
         },
+
+        // 数据采集趋势
+        dataStatus(siteId,name,type){
+             let self=this;            
+            tool.open(function(){
+                let html=`<div name="container" style="width:100%;height:100%;padding: 10px;">
+                            <div class="tit-row">
+                                <div class="bar tit-bars" :class="isStateNo=='1'? 'active':''" @click="changeStatus('1')">采集趋势</div>
+                                <div class="bar tit-bars" :class="isStateNo=='2'? 'active':''" @click="changeStatus('2')">采集详情</div>
+                            </div>
+                            <!--加载中标识-->
+                            <div v-if="DeviceblnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 10px;font-size: 50px;">
+                                <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+                            </div>
+                            <div style="width:100%;height:100%;border-top: 1px solid #ccc;" class="data-row" >
+                                <div class="tda-ert">
+                                    <div class="lefts" v-show="isStateNo=='1'">
+                                        <span>昨日采集：{{yesCollect}}</span>
+                                        <span>累计采集：{{allCollect}}</span>
+                                    </div>
+                                    <div class="lefts" style="font-size:18px;margin:0 15px" v-show="isStateNo=='2'">
+                                        <div class="el-tooltip item" title="昨日采集详情" :class="chartType=='bar'? 'active':''" @click="yesOrHisFun('bar')">
+                                                <div class="el-tooltip__rel" ><i class="fa fa-area-chart"></i></div>
+                                        </div>&nbsp; &nbsp;
+                                        <div class="el-tooltip item" title="历史采集详情" :class="chartType=='line'? 'active':''" @click="yesOrHisFun('line')">
+                                            <div class="el-tooltip__rel"><i class="fa fa-line-chart"></i></div>
+                                        </div>
+                                    </div>                                    
+                                    <div class="rights" v-show="isStateNo=='1'">                                       
+                                        <div class="sele-time" @click="changeline('week')" :class="{active: viewTime=='week'}">近一周</div>
+                                        <div class="sele-time" @click="changeline('month')" :class="{active: viewTime=='month'}">近一月</div>
+                                    </div>
+                                    <div class="rights" v-show="isStateNo=='2'&&chartType=='line'">                                       
+                                        <div class="sele-time" @click="changelineDetail('week')" :class="{active: viewLineTime=='week'}">近一周</div>
+                                        <div class="sele-time" @click="changelineDetail('month')" :class="{active: viewLineTime=='month'}">近一月</div>
+                                    </div>                                    
+                                </div>
+                                <div style="width:880px;height:400px;background-color:#eee" id="statusChar"  v-show="isStateNo=='1'"></div>
+                                <div style="width:880px;height:400px;background-color:#eee" id="statusChar1" v-show="isStateNo=='2'&&chartType=='bar'"></div>
+                                <div style="width:880px;height:400px;background-color:#eee" id="statusChar2" v-show="isStateNo=='2'&&chartType=='line'"></div>
+                            </div>                        
+                        </div>`;
+                let param={
+                    title:'数据采集趋势（'+name+'）',
+                    content:html,
+                    skin:'status-detail-container',
+                    area:['900px','530px'],
+                    context:{
+                        pages:[{name:'手动添加',icon:'fa fa-tag'},{name:'批量导入',icon:'fa fa-tag',disable:false,tip:''}],
+                        xData:[],
+                        sginData:[],
+                        allCollect:"",
+                        yesCollect:"",
+                        viewTime:"week",         //近一月与近一周的切换(采集趋势)
+                        viewLineTime:"week",         //近一月与近一周的切换(采集详情)
+                        chartType:"bar",         //采集详情中柱状图与折线图的切换标识
+                        isStateNo:"1",          //采集趋势与采集详情的切换标识
+                        DeviceblnLoading:true,  //加载中标识
+                        lineHistoryChart:"",           //绘制采集详情折线图(历史详情)
+                        //采集详情中与采集趋势
+                        changeStatus(val){
+                            if(val== param.selfData.isStateNo) return;
+                             param.selfData.isStateNo=val;
+                        },
+                        //采集趋势中的近一月和近一周切换
+                        changeline(val){
+                            if(val== param.selfData.viewTime) return;
+                            param.selfData.viewTime = val;
+                            param.selfData.thisShowData()
+                        },
+                        //采集详情中的近一月和近一周切换
+                        changelineDetail(val){
+                            if(val== param.selfData.viewLineTime) return;
+                            param.selfData.viewLineTime = val;
+                            param.selfData.thisShowYesterDayLine();
+                        },
+                        //采集详情中的昨日与历史采集详情相互切换
+                        yesOrHisFun(val){
+                            if(val== param.selfData.chartType) return;
+                            param.selfData.chartType = val;
+                        },                        
+                        editDate(val){
+                            let times =val.substr (0,4)+"-"+val.substr (4,2)+"-"+val.substr (6,2);
+                            return times
+                        },
+                        // 绘制采集详情柱状图(昨日详情)
+                        thisShowYesterDayBar(){ 
+                            var barChart=echarts.init(document.getElementById('statusChar1'));                             
+                            self.$store.dispatch(DeviceDetectYesterday,{equipment_id:siteId,microprobe_type:type}).then(res=>{
+                                if(res.msg.code!='successed')return;
+                                let yesterday=res.biz_body;
+                                var xZData=[],numData=[];
+                                for( let ary of yesterday){
+                                    xZData.push(ary.title)
+                                    numData.push(ary.count)
+                                };
+                                option = {
+                                    title: {
+                                        text: '昨日采集详情',
+                                        x : 20, 
+                                        y :5, 
+                                        textStyle: {  
+                                            fontSize: 15,
+                                            fontWeight:700,
+                                        }, 
+                                    },                                    
+                                    tooltip: {
+                                        trigger: 'axis',
+                                        axisPointer: {
+                                            type: 'shadow',
+                                            label: {
+                                                    show: true
+                                            }
+                                        }                   
+                                    },
+                                    grid:{	//设置图标距离
+                                        left: 60,
+                                        right: 40,
+                                        y:45
+                                    },            
+                                    xAxis: {
+
+                                        type: 'category',
+                                        data: xZData
+                                    },
+                                    yAxis: {
+                                        type: 'value'
+                                    },
+                                    series: [{
+                                        name:"采集数",
+                                        itemStyle: {
+                                            normal: {
+                                                color:'#42ABDF'
+                                            }
+                                        },
+                                        data: numData,
+                                        type: 'bar'
+                                      },
+                                    ]
+                                };
+                                barChart.setOption(option);
+                            })
+                        },
+                        // 绘制采集详情折线图(历史详情)
+                        thisShowYesterDayLine(){
+                             param.selfData.DeviceblnLoading=true;
+                            // document.getElementById('statusChar2').html("");
+                            param.selfData.lineHistoryChart=echarts.init(document.getElementById('statusChar2'));                            
+                             self.$store.dispatch(DeviceDetectHistory,{equipment_id:siteId,coll_type:param.selfData.viewLineTime,microprobe_type:type}).then(res=>{
+                                if(res.msg.code!='successed')return;
+                                param.selfData.DeviceblnLoading=false;
+                                let allHistoryData=res.biz_body;
+                                let time=[],allData=[],firmNames=[];
+                                //获取所有类型
+                                for(let i=0;i<allHistoryData[0].coll.length;i++){
+                                    firmNames.push(allHistoryData[0].coll[i].title);           
+                                    allData.push({
+                                        name: allHistoryData[0].coll[i].title,
+                                        type: 'line',
+                                        data: [],
+                                        itemStyle: {
+                                            normal: {
+                                                label: {
+                                                    formatter: '{c}%'
+                                                }
+                                            }
+                                        }                
+                                    })
+                                }
+                                for(let i=0;i<allHistoryData.length;i++){
+                                    time.push(allHistoryData[i].date.substr (0,4)+"-"+allHistoryData[i].date.substr (4,2)+"-"+allHistoryData[i].date.substr (6,2));
+                                    for(let j=0;j<allHistoryData[i].coll.length;j++){
+                                        allData[j].data.push((allHistoryData[i].coll[j].count))
+                                    }
+                                }
+                                option = {      
+                                    title: {
+                                        text: '历史采集详情',
+                                        textStyle: {  
+                                            fontSize: 15,
+                                            fontWeight:700,
+                                        }, 
+                                    },                       
+                                    tooltip: {
+                                        trigger: 'axis',
+                                        formatter:function(param){
+                                            let str='';
+                                            _.each(param,p=>{
+                                                str+=`${p.seriesName}:${p.data}<br>`
+                                            });
+                                            return str;
+                                        }
+                                    },
+                                    legend: {
+                                        orient : 'horizontal',  
+                                        y:20,
+                                        textStyle: {  
+                                            fontSize: 13,
+                                        }, 
+                                        data:firmNames  
+                                    },
+                                    xAxis: {
+                                        type: 'category',
+                                        boundaryGap: false,
+                                        data:  time
+                                    },
+                                    grid:{	//设置图标上面和下面的距离
+                                        left: 60,
+                                        right: 40,
+                                        y:75
+                                    },
+                                    yAxis: {
+                                        type: 'value',     
+                                        //name: '历史采集详情',               
+                                        xisLabel: {
+                                            formatter: '{value}'
+                                        },
+                                        axisLabel: {
+                                            formatter: '{value} '
+                                        },
+                                        axisPointer: {
+                                            snap: true
+                                        }
+                                    },
+                                    series:allData
+                                };                               
+                                param.selfData.lineHistoryChart.setOption(option);
+                            });
+                        },  
+                        // 绘制采集趋势折线图
+                        thisShowData(){
+                             param.selfData.DeviceblnLoading=true;
+                            var lineChart=echarts.init(document.getElementById('statusChar'));                            
+                             self.$store.dispatch(DeviceDetectColl,{equipment_id:siteId,coll_type:param.selfData.viewTime}).then(res=>{
+                                if(res.msg.code!='successed')return;
+                                param.selfData.DeviceblnLoading=false;
+                                let allData=res.biz_body;
+                                param.selfData.allCollect =allData.total_num ? allData.total_num : '0';
+                                param.selfData.yesCollect =allData.last_num ? allData.last_num : '0';
+                                param.selfData.xData=[];
+                                param.selfData.sginData=[];
+                                for( let ary of allData.chart){
+                                    param.selfData.xData.push(param.selfData.editDate(ary.stat_date))
+                                    param.selfData.sginData.push(ary.detect_num)
+                                 };
+                                option = {                           
+                                    tooltip: {trigger: 'axis',},
+                                    xAxis: {
+                                        type: 'category',
+                                        boundaryGap: false,
+                                        data:  param.selfData.xData
+                                    },
+                                    grid:{	//设置图标上面和下面的距离
+                                        left: 60,
+                                        right: 40,
+                                        y:45
+                                    },
+                                    yAxis: {
+                                        type: 'value',                    
+                                        xisLabel: {
+                                            formatter: '{value} W'
+                                        },
+                                        axisPointer: {
+                                            snap: true
+                                        }
+                                    },
+                                    series: [{
+                                        name:"采集数",
+                                        data:  param.selfData.sginData,
+                                        type: 'line',
+                                    }]
+                                };                               
+                                lineChart.setOption(option);
+                            });
+                        }                  
+                    }, 
+                    success(){
+                        param.selfData.thisShowData();
+                        param.selfData.thisShowYesterDayBar();
+                        param.selfData.thisShowYesterDayLine();
+                    }
+                };
+                return param;           
+            }())
+        },
+
+
+
+
        //导出统计设备状态率
       ExportOnlineCount(){
           this.$store.dispatch(DeviceHisPercentageExport,{coll_type:this.collType}).then(res=>{
@@ -1159,6 +1454,14 @@ export default {
     .status-detail-container .data-row .rights .sele-time.active{
         border-bottom: 2px solid #04AB66;       
     }
+    .status-detail-container .data-row .el-tooltip:hover{
+    cursor: pointer;
+    color: #03ab67;
+  }  
+  .status-detail-container .data-row .el-tooltip.active{
+    cursor: pointer;
+    color: #03ab67;
+  } 
 </style>
 <style scoped lang="less">
   @import "../css/variables.less";

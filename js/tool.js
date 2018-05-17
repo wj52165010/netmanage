@@ -497,6 +497,19 @@ let tool={
 
         return context;
     },
+    browser:function(){  
+        var browser = {appname: 'unknown', version: 0},  
+            userAgent = window.navigator.userAgent.toLowerCase();  // 使用navigator.userAgent来判断浏览器类型
+        //msie,firefox,opera,chrome,netscape  
+        if ( /(msie|firefox|opera|chrome|netscape)\D+(\d[\d.]*)/.test( userAgent ) ){  
+            browser.appname = RegExp.$1;  
+            browser.version = RegExp.$2;  
+        } else if ( /version\D+(\d[\d.]*).*safari/.test( userAgent ) ){ // safari  
+            browser.appname = 'safari';  
+            browser.version = RegExp.$2;  
+        }  
+        return browser;  
+    },
     cookie:{
         set:function(name,value,time)
 		{

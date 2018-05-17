@@ -1,6 +1,7 @@
 <!-- 关系展示组件 -->
 <template>
     <div class="Relation">
+        <div id="copy_botton" style="width:20px;height:20px;position:absolute;top:0px;left:-1000px;">剪切</div>
         <!--搜索栏-->
         <div class="option_bar">
             <div style="display:inline-block;width:350px;">
@@ -33,7 +34,7 @@
 import {RelationSecond} from '../store/mutation-types'
 import SearchDropdown from 'components/SearchDropdown'
 import clipboard from 'clipboard-polyfill'
-import ZeroClipboard from '../../static/ZeroClipboard/ZeroClipboard.js'
+import  '../../static/ZeroClipboard/ZeroClipboard.js'
 
 import * as d3 from 'd3'
 export default {
@@ -83,6 +84,8 @@ export default {
       tipLeft:-1000,
       tipInfo:'',
       curShowTipId:'',//当前显示提示信息所属节点ID
+      clipObj:null,
+      clipText:'',
     }
   },
   watch:{
@@ -158,25 +161,38 @@ export default {
 
     this.tipDom=$(this.$el).find(`div[id="${this.tipId}"]`);
 
-    //初始化复制按钮
-    // setTimeout(()=>{
-    //     var clip = new ZeroClipboard.Client(); // 新建一个对象 
-    //     clip.setHandCursor( true ); 
-    //     clip.setText("哈哈"); // 设置要复制的文本。
-    //     clip.addEventListener('mouseOver', ()=>{
-    //         console.log(2);
-    //         clip.setText("哈哈");
-    //     });
-    //     clip.glue("copy_botton");
-    // },100);
+    //初始化复制按钮(浏览器不支持复制的情况需要用flash来做兼容)
+    if(!this.supportCopy()){
+        setTimeout(()=>{
+            var clip = new ZeroClipboard.Client(); // 新建一个对象 
+            this.clipObj=clip;
+            clip.setHandCursor( true ); 
+            clip.addEventListener('mouseup', ()=>{
+                clip.setText(this.clipText);
+                tool.info('复制成功!');
+            });
+            clip.glue("copy_botton");
+        },400);
+    }
     
 
+  },
+  destroyed(){
+    if(this.clipObj)this.clipObj.destroy();
   },
   methods:{
     refreshPage(){
         this.searchKey='';
         this.points=[];
         this.edges=[];
+    },
+    //判断复制功能是否被支持
+    supportCopy(){
+        let info=tool.browser();
+        if(info.appname=='chrome' && parseInt(info.version)<42){ return false;}
+        if(info.appname=='firefox' && parseInt(info.version)<40){ return false;}
+
+        return true;
     },
     //初始化画布力图控件
     initDraw(){
@@ -840,6 +856,8 @@ export default {
 
                 //判断是否进入复制图标
                 if(point.subTextOne){
+                    let copyDom=$('#clipcontainer');
+
                     s.ctx.font="12px 微软雅黑";
                     let rectOne={w:s.ctx.measureText(point.subTextOne).width,h:s.ctx.measureText('W').width};
                     s.drawOption(point.x-size.w/2+10 + rectOne.w +20,point.y-size.h/2+15+rectOne.h+12);//画警告路径
@@ -849,10 +867,22 @@ export default {
                         s.tipLeft=pos.px-size.w/2 + rectOne.w + 5;
                         s.curShowTipId=point.id;
                         s.tipInfo='复制';
+
+                        if(copyDom.length>0){
+                            s.clipText=point.subTextOne;
+                            $('#clipcontainer').css({top:(s.tipTop+40 + 60)+'px',left:(s.tipLeft + 10)+'px'});
+                        }
+        
                     }else if(s.curShowTipId == point.id){
                         s.tipTop=-1000;
                         s.tipLeft=-1000;
                         s.curShowTipId='';
+
+                        if(copyDom.length>0){
+                            $('#clipcontainer').css({top:(s.tipTop+40 + 60)+'px',left:'-1000px'});
+                            s.clipText='';
+                        }
+                        
                     }
                 }
 
@@ -1141,6 +1171,7 @@ export default {
      
         this.blnSearch=false;
         this.points=[];
+        this.edges=[];
 
         let data=res.biz_body.data;
 

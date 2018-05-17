@@ -335,6 +335,7 @@ export const GetSiteTerminalList='GetSiteTerminalList' //获取网吧场所下�
 export const getDictTables='getDictTables' //获取字典信息集合
 export const SiteDetectColl='SiteDetectColl' //获取数据采集趋势
 export const siteDetectYesterday='siteDetectYesterday' //获取场所昨日采集详情的柱状图
+export const siteDetectHistory='siteDetectHistory' //获取场所历史采集详情的折线图
 export const SiteHisPercentage='SiteHisPercentage' //获取场所在离线数据
 export const LastPercentage='LastPercentage' //获取场所昨日在离线状况
 export const HisPercentageExport='HisPercentageExport' //导出统计场所状态率
@@ -344,6 +345,9 @@ export const SiteMapRegion='SiteMapRegion' //获取按区域汇总场所集合
 /**获取设备管理定制页面信息*/
 export const GetDeviceList='GetDeviceList' //获取设备管理定制页面
 export const DeviceDetectColl='DeviceDetectColl' //获取设备采集趋势
+export const DeviceDetectYesterday='DeviceDetectYesterday' //获取设备昨日采集详情的柱状图
+export const DeviceDetectHistory='DeviceDetectHistory' //获取设备历史采集详情的折线图
+
 export const LastDevicePercentage='LastDevicePercentage' //获取设备昨日在离线状况
 export const DeviceDetail='DeviceDetail' //获取设备详情
 export const DeviceHisPercentage='DeviceHisPercentage' //获取设备在离线数据
@@ -357,6 +361,10 @@ export const GetFirmCollColumn='GetFirmCollColumn' //厂商状态数量统计[�
 export const GetFirmCollLine='GetFirmCollLine' //厂商状态数量统计[折线图]
 export const GetFirmSiteExport='GetFirmSiteExport' //厂商状态率按场所汇总导出
 export const GetFirmDeviceExport='GetFirmDeviceExport' //厂商状态率按设备汇总导出
+export const FirmDetectColl='FirmDetectColl' //获取厂商采集趋势
+export const FirmDetectYesterday='FirmDetectYesterday' //获取厂商昨日采集详情的柱状图
+export const FirmDetectHistory='FirmDetectHistory' //获取厂商历史采集详情的折线图
+
 
 // 获取区域管理定制页面信息
 export const GetRegionList='GetRegionList' //获取区域管理定制页面

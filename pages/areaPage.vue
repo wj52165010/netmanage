@@ -155,6 +155,11 @@ export default {
       },
       //加载数据
       loadData(){
+        //   加载时先清空数据在加载等待动画，请求完后数据加载
+        if(this.data){
+          this.data=[];
+          this.blnLoading=true;
+        }
          this.$store.dispatch(GetRegionList,this.query).then(res=>{
            if(res.msg.code!='successed')return;
            this.data=res.biz_body;

@@ -452,8 +452,11 @@ export default {
 
       //加载数据
       loadData(){
-          //this.blnLoading=true;
-          //this.blnLoading=false;
+        //   加载时先清空数据在加载等待动画，请求完后数据加载
+        if(this.data){
+          this.data=[];
+          this.blnLoading=true;
+        }
           //获取场所信息
          this.$store.dispatch(GetAppList,this.query).then(res=>{
            if(res.msg.code!='successed')return;
@@ -629,7 +632,7 @@ export default {
             },
             yAxis: {
                 type: 'category',
-                data: ['权限异常','VPN','博彩','病毒','色情','暴力'],
+                data: ['权限异常','反动','博彩','病毒','色情','暴力'],
                 //inverse: false,
                 splitLine:{
                     show:false
@@ -671,7 +674,7 @@ export default {
                         },
 
                     },
-                    data: [data.hist.authority,data.hist.vpn,data.hist.gambling, data.hist.virus, data.hist.pornographic, data.hist.violence]
+                    data: [data.hist.authority,data.hist.reactionary,data.hist.gambling, data.hist.virus, data.hist.pornographic, data.hist.violence]
                 }
                 
             ]
@@ -876,7 +879,6 @@ export default {
           //this.blnLoading=true;
           this.pageNum= 0;
           this.queryProblem.skip=this.pageNum*this.queryProblem.limit;
-          console.log(this.queryProblem);
           this.$store.dispatch(GetViolationsAppList,this.queryProblem).then(res=>{
               //this.blnSearch=false;
               //this.blnLoading=false;
@@ -936,7 +938,7 @@ export default {
                                         <div class="col-md-2 item_label_left">应用名称：</div>
                                         <div class="col-md-3">{{detailData.app_name}}</div>
                                         <div class="col-md-2 item_label_right">版本号：</div>
-                                        <div class="col-md-1">{{detailData.version}}</div>  
+                                        <div class="col-md-1" style="padding:0 3px">{{detailData.version}}</div>  
                                         <div class="col-md-2 item_label_right">更新时间：</div>
                                         <div class="col-md-2">{{detailData.update_time}}</div>  
                                     </div>
@@ -944,7 +946,7 @@ export default {
                                         <div class="col-md-2 item_label_left">下载次数：</div>
                                         <div class="col-md-3">{{detailData.download_times}}</div>
                                         <div class="col-md-2 item_label_right">好评率：</div>
-                                        <div class="col-md-1">{{detailData.evaluation_index}}</div>  
+                                        <div class="col-md-1" style="padding:0 3px">{{detailData.evaluation_index}}</div>  
                                         <div class="col-md-2 item_label_right">是否违规：</div>
                                         <div class="col-md-2">{{detailData.is_illegal}}</div>  
                                     </div>
@@ -959,7 +961,7 @@ export default {
                                     </div>
                                     <div class="row" style="height:65px;" v-show="isShow">
                                         <div  style="border:1px solid #ccc;padding:3px;height:65px;overflow:auto;margin-right:10px" v-if="detailData.authority">{{detailData.authority}}</div>
-                                        <div  style="border:1px solid #ccc;padding:3px;height:65px;overflow:auto;margin-right:10px" v-if="!detailData.authority">暂无数据</div>
+                                        <div  style="border:1px solid #ccc;padding:3px;height:65px;overflow:auto;margin-right:10px;text-align: center;color: #999;line-height: 53px;" v-if="!detailData.authority">暂无数据</div>
                                     </div>                               
                                 </div>                                
                             </div>

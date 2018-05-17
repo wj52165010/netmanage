@@ -2567,7 +2567,13 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   } 
-
+  // 获取场所历史采集详情的折线图
+  siteDetectHistory(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='site_detect_history';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
   // 获取场所详情
   SiteDetail(data){
     this.baseBag.target='custom';
@@ -2626,6 +2632,20 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }  
+  // 获取设备昨日采集详情的柱状图
+  DeviceDetectYesterday(data){
+    this.baseBag.target='device';
+    this.baseBag.method='device_detect_yesterday';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 获取设备历史采集详情的折线图
+  DeviceDetectHistory(data){
+    this.baseBag.target='device';
+    this.baseBag.method='device_detect_history';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
     // 获取设备昨日在离线状况
     LastDevicePercentage(data){
       this.baseBag.target='device';
@@ -2703,6 +2723,29 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }   
+  //获取厂商采集趋势
+  FirmDetectColl(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='firm_detect_coll';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+  //获取厂商昨日采集详情的柱状图
+  FirmDetectYesterday(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='firm_detect_yesterday';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+  //获取厂商历史采集详情的折线图
+  FirmDetectHistory(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='firm_detect_history';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+
+
 
   // 获取区域管理定制页面信息
   GetRegionList(data){

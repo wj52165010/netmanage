@@ -1645,7 +1645,15 @@ export default new Vuex.Store({
                     resolve(res);
                 });
             });
-        },        
+        },     
+        //获取场所历史采集详情的折线图
+        [types.siteDetectHistory]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.siteDetectHistory(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },            
         //获取场所详情
         [types.SiteDetail]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -1711,14 +1719,22 @@ export default new Vuex.Store({
                 });
             });
         },
-                //获取设备采集趋势
-        [types.DeviceDetectColl]({commit},data){
+        //获取设备昨日采集详情的柱状图
+        [types.DeviceDetectYesterday]({commit},data){
             return new Promise((resolve,reject)=>{
-                ser.DeviceDetectColl(data).then(res=>{
+                ser.DeviceDetectYesterday(data).then(res=>{
                     resolve(res);
                 });
             });
         },
+        //获取设备历史采集详情的折线图
+        [types.DeviceDetectHistory]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DeviceDetectHistory(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },        
         //获取设备昨日在离线状况
         [types.LastDevicePercentage]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -1809,6 +1825,31 @@ export default new Vuex.Store({
                 });
             });
         },
+        //获取厂商采集趋势
+        [types.FirmDetectColl]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.FirmDetectColl(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取厂商昨日采集详情的柱状图
+        [types.FirmDetectYesterday]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.FirmDetectYesterday(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取厂商历史采集详情的折线图
+        [types.FirmDetectHistory]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.FirmDetectHistory(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
 
         //获取区域管理定制页面
         [types.GetRegionList]({commit},data){
