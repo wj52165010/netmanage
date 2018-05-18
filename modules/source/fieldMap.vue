@@ -16,7 +16,7 @@
                     </el-select>
                 </div>
                 <span class="title">目标数据源:</span>
-                <div v-if="model" class="option divEllipsis" style="width: 120px;text-align:left;height:32px;">{{sourceName}}</div>
+                <div v-if="model" class="option divEllipsis" style="width: 120px;text-align:left;height:32px;float:right;">{{sourceName}}</div>
                 <div class="option" v-if="!model">
                     <el-select  
                         v-model="targetSource"
@@ -144,6 +144,10 @@ export default {
             []);
 
         this.$store.dispatch(PreviewSearch,{dbkey:[this.targetSource]}).then(res=>{
+            if(!res.biz_body[this.targetSource]){
+                return this.targetPreViewData={};
+            }
+
             this.targetPreViewData=res.biz_body[this.targetSource][0] || {};
         });
     },
