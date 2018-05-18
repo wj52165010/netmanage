@@ -16,7 +16,7 @@
         </div>
         <!--右边内容显示区域-->
         <div class="right_container">
-            <HTag :tags="itags" @change="tagChange" @remove="removeTag">
+            <HTag ref="HTag" :tags="itags" @change="tagChange" @remove="removeTag">
                 <div slot="t0" style="height:100%;width:100%;">
                     <Scroll ref="personScroll">
                         <div class="card" v-for="p in persons">
@@ -44,7 +44,7 @@
                 </div>
 
                 <div v-for="(i,index) in extraPage" :slot="'t'+(index+2)" style="height:100%;width:100%">
-                    <PublicOpiDetail />
+                    <PublicOpiDetail :ref="'PublicOpiDetail'+(index+2)" />
                 </div>
             </HTag>
         </div>
@@ -80,11 +80,30 @@ export default {
         this.$nextTick(()=>{
             this.$refs.personScroll.reloadyScroll();
             this.$refs.vidScroll.reloadyScroll();
+            if(this.$refs[`PublicOpiDetail${index}`]){
+                this.$refs[`PublicOpiDetail${index}`][0].layout();
+            }
         });
     },
     //查看详情
     lookDetail(){
-        this.extraPage.push({id:'page'+tool.guid(),name:'详细页面',icon:'fa fa-address-book-o',blnRemove:true});
+        let id='page'+tool.guid();
+        let index = _.findIndex(this.itags,t=>t.id==id);
+        if(index<0){
+            this.extraPage.push({id:id,name:'详细页面',icon:'fa fa-address-book-o',blnRemove:true});
+            //定位Tag
+            this.$nextTick(()=>{
+                index=this.itags.length-1;
+                this.posTag(index);
+            });
+        }else{
+            this.posTag(index);
+        }
+
+    },
+    //定位tag
+    posTag(i){
+        this.$refs.HTag.posTag(i);
     },
     //删除Tag项
     removeTag(item){

@@ -2,8 +2,8 @@
 
 //基地址192.168.100.80:3031(http://192.168.23.73:3030)
 //发布地址:172.23.90.8:3030
+//let url='http://192.168.23.23:3030';
 let url='http://192.168.100.80:3031';
-
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
 
@@ -2616,7 +2616,13 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }  
-
+  // 获取场所管理问题场所页面信息
+  siteScoreCollect(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='site_score_collect';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
 
   // 获取设备管理定制页面
   GetDeviceList(data){

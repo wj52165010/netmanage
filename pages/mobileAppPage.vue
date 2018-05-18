@@ -877,8 +877,8 @@ export default {
           //this.data=[];
           //this.blnSearch=true;
           //this.blnLoading=true;
-          this.pageNum= 0;
-          this.queryProblem.skip=this.pageNum*this.queryProblem.limit;
+          this.pageNumProblem= 0;
+          this.queryProblem.skip=this.pageNumProblem*this.queryProblem.limit;
           this.$store.dispatch(GetViolationsAppList,this.queryProblem).then(res=>{
               //this.blnSearch=false;
               //this.blnLoading=false;

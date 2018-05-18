@@ -1424,7 +1424,7 @@ export default {
         // 数据采集趋势
         dataStatus(siteId,name){
              let self=this;            
-            // <div class="sele-time" @click="changelineDetail('custom')" :class="{active: viewLineTime=='custom'}">自定义</div>
+             //<div class="sele-time" @click="changelineDetail('custom')" :class="{active: viewLineTime=='custom'}">自定义</div>
             tool.open(function(){
                 let html=`<div name="container" style="width:100%;height:100%;padding: 10px;">
                             <div class="tit-row">
@@ -1451,13 +1451,13 @@ export default {
                                     </div>    
                                     <div v-show="isStateNo=='2'&&chartType=='line'&&viewLineTime=='custom'" style="position:relative;left:100px">
                                         <div class="cond_item" >
-                                            <span>时间段</span>
+                                            <span>请选择时间范围</span>
                                             <el-date-picker
                                                 v-model="timeasa"
                                                 type="daterange"
                                                 align="right"
                                                 width="300"
-                                                placeholder="选择日期范围"
+                                                placeholder="选择时间范围"
                                                 >
                                             </el-date-picker>
                                         </div>                                    
@@ -1469,7 +1469,7 @@ export default {
                                     <div class="rights" v-show="isStateNo=='2'&&chartType=='line'">                                       
                                         <div class="sele-time" @click="changelineDetail('week')" :class="{active: viewLineTime=='week'}">近一周</div>
                                         <div class="sele-time" @click="changelineDetail('month')" :class="{active: viewLineTime=='month'}">近一月</div>
-                                        
+                                       
                                     </div>                                    
                                 </div>
                                 <div style="width:880px;height:400px;background-color:#eee" id="statusChar"  v-show="isStateNo=='1'"></div>
@@ -1500,17 +1500,21 @@ export default {
                             if(val== param.selfData.isStateNo) return;
                              param.selfData.isStateNo=val;
                         },
-                        //采集趋势中的近一月和近一周切换
+                        //采集趋势中的近一月和近一周切换,
                         changeline(val){
                             if(val== param.selfData.viewTime) return;
                             param.selfData.viewTime = val;
                             param.selfData.thisShowData()
                         },
-                        //采集详情中的近一月和近一周切换
+                        //采集详情中的近一月和近一周以及自定义切换
                         changelineDetail(val){
-                            if(val== param.selfData.viewLineTime) return;
-                            param.selfData.viewLineTime = val;
-                            param.selfData.thisShowYesterDayLine();
+                            if(val== param.selfData.viewLineTime) return;    
+                            param.selfData.viewLineTime = val;                       
+                            if(val!='custom'){
+                                
+                                param.selfData.thisShowYesterDayLine();
+                            }
+                            
                         },
                         //采集详情中的昨日与历史采集详情相互切换
                         yesOrHisFun(val){

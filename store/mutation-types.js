@@ -341,6 +341,7 @@ export const LastPercentage='LastPercentage' //获取场所昨日在离线状况
 export const HisPercentageExport='HisPercentageExport' //导出统计场所状态率
 export const GetSiteMap='GetSiteMap' //获取可视范围内场所集合
 export const SiteMapRegion='SiteMapRegion' //获取按区域汇总场所集合
+export const siteScoreCollect='siteScoreCollect' //获取场所管理问题场所页面信息
 
 /**获取设备管理定制页面信息*/
 export const GetDeviceList='GetDeviceList' //获取设备管理定制页面

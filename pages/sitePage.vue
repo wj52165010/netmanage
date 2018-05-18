@@ -93,7 +93,7 @@
                     </li>
                 </ul>
                 <div class="content">
-                    <Scroll :listen="data">
+                    <Scroll :listen="data" ref="indList">
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showData" class="item" >
@@ -132,7 +132,7 @@
                      <div name="pie_chart_container" class="" style="width:100%;height:100%;text-align:left"></div>
                 </div>               
                 <!--柱状图(问题总览)-->
-                <div style="width:67%;height:50%;display:inline-block">
+                <div style="width:67%;height:50%;display:inline-block" @click="changeProblemFun(true)">
                     <div name="bar_chart_container" style="width:100%%;height:100%;" ></div>
                 </div>
                 <!--线形图（在离线率）-->
@@ -172,81 +172,79 @@
                         <div name="his_line_chart_container" style="margin:0 auto;width:100%;height:100%" v-show="changeChart=='line'"></div>
                     </div>
                 </div>
-                <!--问题总览信息列表显示-->
-                <div class="analysis_list" :class="[problemTable=='1' ? 'animateShow' : '', problemTable=='2' ? 'animateHide' : '',problemTable=='3' ? 'noAnimateShow' : '',problemTable=='4' ? 'noAnimateHide' : ''] ">
-                    <div style="" class="drag-info"  @click="changeProblemFun(false)">
-                        <div>问题总览&nbsp;&nbsp;<span>﹀</span></div>                        
+                <!--问题总览列表信息列表显示-->
+                <div class="analysis_list" style="height: calc(100%);width:100%;position:absolute;top:0" v-show="problemTable">
+                    <div style="" class="drag-info" @click="changeProblemFun(false)">
+                        <div>问题总览&nbsp;&nbsp;<span style="font-size:40px;line-height:10px">︿</span></div>                        
                     </div>
                     <div class="option">
-                        <div class="item">
-                            <span>紧急分类:</span>
-                            <div class="input">
-                                <el-select v-model="queryProblem.netsite_state" :clearable="true" placeholder="紧急分类" >
-                                    <el-option v-for="kind in dict_tables.score_level" :label="kind.name" :value="kind.value"></el-option>
-                                </el-select>
-                            </div>
-                        </div>
-                        <div class="item" >
-                            <span>所属厂商:</span>
-                            <div class="input" style="width:250px;display:inline-block;">
-                                <MulDropDwon :data="Selfirms" keyProp="name" id="code" placeholder="请选择厂商">
-                                    <div v-for="t in firms" @mousedown="firmClick(t)">{{t.name}}</div>
-                                </MulDropDwon>
-                            </div>
-                        </div>                   
+                        <div class="item" style="font-size:12px;font-weight:normal;text-align:left">
+                                <span>所属厂商：</span>
+                                <div class="input" style="width:250px;display:inline-block;">
+                                    <MulDropDwon :data="Selfirms" keyProp="name" id="code" placeholder="请选择厂商">
+                                        <div v-for="t in firms" @mousedown="firmClick(t)">{{t.name}}</div>
+                                    </MulDropDwon>
+                                </div>
+                        </div>                         
                         <div class="item">
                             <span>所属区域:</span>
                             <div class="input">
                                 <PlaceSearch  :blnClear="true" c_searchKind="0" @place_res="selectAreaProblem"></PlaceSearch>
                             </div>
-                        </div>                                                       
+                        </div>
                         <div class="item" >
-                            <el-button type="primary" @click="query_problem_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
+                            <el-button type="primary" @click="queryProblem_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
                         </div> 
 
                     </div>
                     <ul class="header">
                         <li class="item">
-                            <div><span class="overflow" style="width:115px;">场所编码</span></div>
-                            <div><span class="overflow" style="width:100px;">场所名称</span></div>
-                            <div><span class="overflow" style="width:230px;">所属厂商</span></div>
-                            <div><span class="overflow" style="width:63px;">所属区域</span></div>
-                            <div><span class="overflow" style="width:80px;">问题分类</span></div>
-                            <div><span class="overflow" style="width:140px;">场所状态</span></div>
-                            <div><span class="overflow" style="width:72px;">场所概况</span></div>
-                            <div><span class="overflow" style="width:65px;">最近联系时间</span></div>
-                            <div><span class="overflow" style="width:90px;">昨日采集</span></div>
-                            <div><span class="overflow" style="width:60px;">异常原因</span></div>
-                            <!--<div><span class="overflow" style="width:60px;">数据来源</span></div>
-                            <div><span class="overflow" style="width:80px;">所属厂商</span></div>
-                            <div><span class="overflow" style="width:65px;">操作</span></div>-->
+                        <div><span class="overflow" style="width:115px;">场所编码</span></div>
+                        <div><span class="overflow" style="width:100px;">场所名称</span></div>
+                        <div><span class="overflow" style="width:80px;">所属厂商</span></div>
+                        <div><span class="overflow" style="width:60px;">所属区域</span></div>
+                        <!--<div><span class="overflow" style="width:230px;">问题分类</span></div>-->
+                        <div><span class="overflow" style="width:63px;">场所状态</span></div>
+                        <div><span class="overflow" style="width:80px;">场所概况</span></div>
+                        <div><span class="overflow" style="width:140px;">最近联系时间</span></div>
+                        <div><span class="overflow" style="width:72px;">昨日采集</span></div>
+                        <div><span class="overflow" style="width:240px;">异常原因</span></div>
+                        
+                        <!--<div><span class="overflow" style="width:60px;">处置状态</span></div>-->
+                        
+                            <!--<div><span class="overflow" style="width:50px;">操作</span></div>-->
                         </li>
                     </ul>
-                    <div class="content" style="background-color:#eee">
-                        <Scroll :listen="data">
+                    <div class="content" style="height: calc(100% - 50px - 60px - 60px);background-color: #eee;">
+                        <Scroll :listen="dataProblem" ref="ABC">
                             <ul class="body">
-                                <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
-                                <li v-for="(d,i) in showData" class="item" >
-                                    <div  :title="d.netbar_wacode" ><span class="overflow" style="width:115px;">{{d.netbar_wacode}}</span></div>
+                                <li class="item" style="text-align:center;display: table-caption;" v-if="showDataProblem.length<=0&&!blnLoading">暂无数据</li>
+                                <li v-for="(d,i) in showDataProblem" class="item" >
+                                    <div  :title="d.netbar_wacode" @click="searchSiteDetail(d.netbar_wacode,d.microprobe_type)"><span class="overflow sit-click" style="width:115px;">{{d.netbar_wacode}}</span></div>
                                     <div class="align" :title="d.netbar_name" ><span class="overflow" style="width:100px;">{{d.netbar_name}}</span></div>
-                                    <div class="align" :title="d.netbar_address"><span class="overflow" style="width:230px;">{{d.netbar_address}}</span></div>
-                                    <div  :title="d.online_state"><span class="overflow" style="width:63px;" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]">{{d.online_state}}</span></div>
-                                    <div  :title="d.situatioTitle" @click="moutType(d.netbar_wacode,d.netbar_name,d.microprobe_type)"><span class="overflow sit-click" style="width:80px;" v-html="d.situation"></span></div>
-                                    <div  :title="d.capture_time"><span class="overflow" style="width:140px;">{{d.capture_time}}</span></div>
-                                    <div  :title="d.last_upload_num" @click="dataStatus(d.netbar_wacode,d.netbar_name)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
-                                    <div  :title="d.business_state"><span class="overflow" style="width:65px;">{{d.business_state}}</span></div>
-                                    <div class="align" :title="d.netsite_type"><span class="overflow" style="width:90px;">{{d.netsite_type}}</span></div>
+                                    <div class="align" :title="d.security_software_orgname"><span class="overflow" style="width:80px;">{{d.security_software_orgname}}</span></div>
                                     <div  :title="d.region_name"><span class="overflow" style="width:60px;">{{d.region_name}}</span></div>
+                                    <!--<div class="align" :title="d.netbar_address"><span class="overflow" style="width:230px;">{{d.netbar_address}}</span></div>-->
+                                    <div  :title="d.online_state"><span class="overflow" style="width:63px;" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]">{{d.online_state}}</span></div>                                    
+                                    <div  :title="d.situatioTitle" @click="moutType(d.netbar_wacode,d.netbar_name,d.microprobe_type)"><span class="overflow sit-click" style="width:80px;" v-html="d.situation"></span></div>                                    
+                                    <div  :title="d.capture_time"><span class="overflow" style="width:140px;">{{d.capture_time}}</span></div>
+                                    
+                                    <div  :title="d.last_upload_num" @click="dataStatus(d.netbar_wacode,d.netbar_name,d.microprobe_type_code)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>                                                                    
+                                    <div class="align" :title="d.errors"><span class="overflow" style="width:240px;">{{d.errors}}</span></div>
+                                    
+                                  
+                                    
+
                                 </li>
                             </ul>
                         </Scroll>
                     </div>
                     <div class="page_container">
-                        <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageNum+1}}</span></span>
-                        <div class="firstPage" @click="pageChangeProblem(0)">首页</div>
-                        <div class="prePage" @click="pageChangeProblem(pageNum-1)">上一页</div>
-                        <div class="nextPage" @click="pageChangeProblem(pageNum+1)">下一页</div>
-                    </div>                  
+                        <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageNumProblem+1}}</span></span>
+                        <div class="firstPage" @click="pageProblemChange(0)">首页</div>
+                        <div class="prePage" @click="pageProblemChange(pageNumProblem-1)">上一页</div>
+                        <div class="nextPage" @click="pageProblemChange(pageNumProblem+1)">下一页</div>
+                    </div>                    
                 </div>
             </div>
         </div>
@@ -274,7 +272,7 @@ import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 import TaskType from '../enum/TaskType'
 import RelativeAnlay from '../modules/case/anlay'
 import AddPop from '../modules/case/addPop'
-import {HisPercentageExport,GetSiteTerminalList,GetFirm,BODY_RESIZE,GetSiteList,GetSiteDeviceList,getDictTables,SiteDetectColl,SiteDetail,SiteHisPercentage,LastPercentage,siteDetectYesterday,siteDetectHistory} from '../store/mutation-types'
+import {HisPercentageExport,GetSiteTerminalList,GetFirm,BODY_RESIZE,GetSiteList,GetSiteDeviceList,getDictTables,SiteDetectColl,SiteDetail,SiteHisPercentage,LastPercentage,siteDetectYesterday,siteDetectHistory,siteScoreCollect} from '../store/mutation-types'
 export default {
   name: 'sitePage',
   components:{
@@ -323,7 +321,7 @@ export default {
             },0);  
         },
         Selfirms(){
-            this.queryProblem.selfirem=_.map(this.Selfirms,s=>s.code).join(',');
+            this.queryProblem.security_software_orgcodes=_.map(this.Selfirms,s=>s.code).join(',');
         },
     },
   data () {
@@ -339,7 +337,7 @@ export default {
         myBarChart:"",
         myLineChart:"",   
         myOnOffBarChart :"",
-        problemTable:"4",              //问题总览列表页面切换标识
+        problemTable:false,              //问题总览列表页面切换标识
         staticTime:[{name:'近一周',val:'week'},{name:'近一月',val:'month'}],
         collType:'week',              //数据采集趋势率统计状态默认为近一周    
         changeChart:"line",             //场所在线率柱状图与条形图的相互切换标识
@@ -364,19 +362,16 @@ export default {
         },
         firms:[],            //所有厂商数据
         Selfirms:[],         //厂商控件选中的厂商
+        pageNumProblem:0,
         queryProblem:{
             limit:20,//每页20条
             skip:0,//跳过0条
-            netbar_name:'',//场所名称 
-            netsite_type:'', //场所类型
-            netsite_state:'',//场所状态
-            microprobe_type:'',//数据来源&采集系统类型
             region_range:[],   //区域范围
-            netsite_range:[],   //场所范围
-            selfirem:'',  
+            security_software_orgcodes:""
+
         },
         data:[],
-        data2:[],
+        dataProblem:[],
         newObject:{
             primaryKey:"netbar_info|netbar_wacode",
         }
@@ -420,6 +415,29 @@ export default {
                     latitude:r.latitude,
                     netsite_type:r.netsite_type,
                     region_name:r.region_name,
+                    microprobe_type:r.microprobe_type,
+                    microprobe_type_code:r.microprobe_type_code,
+                    security_software_orgname:r.security_software_orgname,
+                    situation:r.microprobe_type=="网吧"? r.net_terminal_num+"/"+r.actual_terminal+"/"+r.internet_users :"<span style='color:green'>"+ r.online_device+"</span>/<span style='color:red'>"+r.abnormal_device+"</span>/<span style='color:#000'>"+r.offline_device+"</span>",
+                    situatioTitle:r.microprobe_type=="网吧"? "申报终端："+r.net_terminal_num+"台/检测终端："+r.actual_terminal+"台/在线终端："+r.internet_users+"台" :"在线："+r.online_device+"台/异常："+r.abnormal_device+"台/离线："+r.offline_device+"台",               
+                }
+            });
+      },
+      showDataProblem(){
+          return _.map(this.dataProblem,r=>{
+                return {
+                    netbar_wacode:r.netbar_wacode,
+                    netbar_name:r.netbar_name,
+                    security_software_orgname:r.security_software_orgname,
+                    online_state:r.online_state,
+                    capture_time:(r.capture_time&&r.capture_time!='0') ? tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'无',
+                    business_state:r.business_state,
+                    last_upload_num:r.last_upload_num,
+                    longitude:r.longitude,
+                    latitude:r.latitude,
+                    netsite_type:r.netsite_type,
+                    region_name:r.region_name,
+                    errors:r.errors,
                     microprobe_type:r.microprobe_type,
                     microprobe_type_code:r.microprobe_type_code,
                     security_software_orgname:r.security_software_orgname,
@@ -507,16 +525,15 @@ export default {
       switchView(type){
           if(type==this.viewTable) return
           this.viewTable=type;
-          //切换到分析 时的特殊处理
-          if(type=="statistics"){
-              if(this.problemTable=="2"){
-                  this.problemTable="4";  
-              };
-              if(this.problemTable=="1"){
-                  this.problemTable="3";  
-              }
-          }
-          //this.problemTable="0";  
+        if(type=="list"){
+            this.$nextTick(()=>{
+                this.$refs.indList.reloadyScroll();
+            });
+        }else{
+            this.$nextTick(()=>{
+                this.$refs.ABC.reloadyScroll();
+            });         
+        }   
       },
         // 获取场所在离线数据
       getOnOffLineData(){
@@ -545,6 +562,10 @@ export default {
       loadPieChart(data){
         let myaPieChart=$(this.$el).find('div[name="pie_chart_container"]')[0]
         this.myPieChart = echarts.init(myaPieChart);
+        let allNum=data.pie.online+data.pie.abnormals+data.pie.offline;
+        let onlineNum="网吧："+data.pie.micprotype_120.online+' ( '+(data.pie.micprotype_120.online/allNum*100).toFixed(2)+'% )<br>WIFI：'+data.pie.micprotype_145.online+' ( '+(data.pie.micprotype_145.online/allNum*100).toFixed(2)+'% )<br>非经：'+data.pie.micprotype_123.online_num+' ( '+(data.pie.micprotype_123.online_num/allNum*100).toFixed(2)+'% )<br>特征：'+data.pie.micprotype_146.online_num+' ( '+(data.pie.micprotype_146.online_num/allNum*100).toFixed(2)+'% )';
+        let offlineNum="网吧："+data.pie.micprotype_120.offline+' ( '+(data.pie.micprotype_120.offline/allNum*100).toFixed(2)+'% )<br>WIFI：'+data.pie.micprotype_145.offline+' ( '+(data.pie.micprotype_145.offline/allNum*100).toFixed(2)+'% )<br>非经：'+data.pie.micprotype_123.offline_num+' ( '+(data.pie.micprotype_123.offline_num/allNum*100).toFixed(2)+'% )<br>特征：'+data.pie.micprotype_146.offline_num+' ( '+(data.pie.micprotype_146.offline_num/allNum*100).toFixed(2)+'% )';
+        let abnormalsNum="网吧："+data.pie.micprotype_120.abnormals+' ( '+(data.pie.micprotype_120.abnormals/allNum*100).toFixed(2)+'% )<br>WIFI：'+data.pie.micprotype_145.abnormals+' ( '+(data.pie.micprotype_145.abnormals/allNum*100).toFixed(2)+'% )<br>非经：'+data.pie.micprotype_123.abnormals_num+' ( '+(data.pie.micprotype_123.abnormals_num/allNum*100).toFixed(2)+'% )<br>特征：'+data.pie.micprotype_146.abnormals_num+' ( '+(data.pie.micprotype_146.abnormals_num/allNum*100).toFixed(2)+'% )';
         var option = {
             title: {
                 text: '昨日概况',
@@ -557,7 +578,17 @@ export default {
             },
             tooltip: {
                 trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
+                formatter:function(param){
+                        let str=param.name+'场所<br>总量：'+param.value+' ( '+param.percent+'% )<br>';
+                        if(param.name=='在线'){
+                            str+=onlineNum;
+                        }else if(param.name=='离线'){
+                            str+=offlineNum;
+                        }else{
+                            str+=abnormalsNum;
+                        }
+                        return str;
+                }
             },
             legend: {
                 orient : 'vertical',  
@@ -816,13 +847,14 @@ export default {
         }
         option = {
             tooltip: {
+               // triggerOn:'click',
                 trigger: 'axis',
-                    axisPointer: {
-                        type: 'shadow',
-                        label: {
-                            show: true
-                        }
-                    }                   
+                   axisPointer: {
+                       type: 'shadow',
+                       label: {
+                           show: true
+                       }
+                   }                   
             },
             legend: {
                 orient : 'horizontal',  
@@ -902,6 +934,20 @@ export default {
             });
         },400)
       },
+      //查询按钮(搜索)问题总览
+      queryProblem_click(){
+          //this.data=[];
+          //this.blnSearch=true;
+          //this.blnLoading=true;
+          this.pageNumProblem= 0;
+          this.queryProblem.skip=this.pageNumProblem*this.queryProblem.limit;
+          this.$store.dispatch(siteScoreCollect,this.queryProblem).then(res=>{
+              //this.blnSearch=false;
+              //this.blnLoading=false;
+              if(!tool.msg(res,'','搜索失败!'))return;
+              this.dataProblem=res.biz_body;
+          });
+      },  
       //页码切换(分页)
        pageChange(index){
           this.pageNum=index>0? index : 0;
@@ -919,6 +965,21 @@ export default {
             this.data=data;
           });
        },
+      //页码切换(问题总览)
+       pageProblemChange(index){ 
+          this.pageNumProblem=index>0? index : 0;
+          this.queryProblem.skip=this.pageNumProblem*this.queryProblem.limit;
+          this.$store.dispatch(siteScoreCollect,this.queryProblem).then(res=>{
+            if(!tool.msg(res))return;
+            let data=res.biz_body;
+            if(data.length<=0){
+                tool.msg({msg:{code:'successed'}},'已经到了最后页!','已经到了最后页!');
+                this.queryProblem =this.queryProblem-1;
+                return;
+            }
+            this.dataProblem=data;
+          });
+       },       
        //查看详情
         searchSiteDetail(siteId,type){
             let self=this;
@@ -1542,9 +1603,25 @@ export default {
         // 问题总览列表与分析图表页面相互切换
       changeProblemFun(val){
           if(val){
-            this.problemTable="1";
+            setTimeout(()=>{
+               // this.data=[];
+               // this.blnSearch=true;
+                //this.blnLoading=true;
+                //this.pageNum= 0;
+               // this.query.skip=this.pageNum*this.query.limit;
+                this.$store.dispatch(siteScoreCollect,this.queryProblem).then(res=>{
+                   // this.blnSearch=false;
+                   // this.blnLoading=false;
+                    if(!tool.msg(res,'','搜索失败!'))return;
+                    this.dataProblem=res.biz_body;
+                    this.problemTable=true;
+                    this.$nextTick(()=>{
+                        this.$refs.ABC.reloadyScroll();
+                    });
+                });
+            },40)            
           }else{
-            this.problemTable="2";  
+            this.problemTable=false;  
           }
       },
         //处理厂商选择控件的方法
@@ -1867,7 +1944,7 @@ export default {
     -o-animation: finishAit 1s;	/* Opera */
     top:5000px;        //将这个值改为一个较大的数值，必须远超屏幕高度，用于做动画效果
   }
-   .stiepage .chart_container .analysis_list .drag-info{
+ /*  .stiepage .chart_container .analysis_list .drag-info{
     height: 30px;
     width:100%;
     background-color:#eee;
@@ -1889,6 +1966,22 @@ export default {
     display: inline-block;
     position: relative;
     top: 10px;
+  }*/
+    .analysis_list .drag-info{
+    height: 30px;
+    width:100%;
+    background-color:#eee;
+  }
+  html{.TCol(~".analysis_list .drag-info div",'bg');}
+  .analysis_list .drag-info div{
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    text-align: center;
+    color:#fff;
+    line-height: 34px;
+    cursor:pointer;
+    font-Weight:800;
   }
     @keyframes startAit{
         0% {

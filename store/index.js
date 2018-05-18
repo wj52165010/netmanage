@@ -1702,6 +1702,15 @@ export default new Vuex.Store({
                 });
             });
         },
+        //获取场所管理问题场所页面信息
+        [types.siteScoreCollect]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.siteScoreCollect(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+
 
         //获取设备管理定制页面
         [types.GetDeviceList]({commit},data){
