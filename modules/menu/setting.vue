@@ -68,9 +68,10 @@
         </div>
         <!--配置页面展示区域-->
         <div class="content">
-            <transition name="fade">
-                <component v-for="(page,index) in navs" :is="page.page || ''" :params="page.params || {}" v-on:SendEvent="SendEvent"  v-bind:key="page" ref="pages"  v-if="curStep==index"></component>
-            </transition>
+            <!--<transition name="fade">-->
+                <!-- <component v-for="(page,index) in navs" :is="page.page || ''" :params="page.params || {}" v-on:SendEvent="SendEvent"  v-bind:key="page" ref="pages"  v-if="curStep==index"></component> -->
+                <component v-for="(page,index) in navs" :is="page.page || ''"  v-on:SendEvent="SendEvent"  v-bind:key="page" ref="pages"  v-if="curStep==index"></component>
+            <!--</transition>-->
         </div>
         <!--栏目选择页面-->
         <div class="bar_page" v-show="!curBarId">

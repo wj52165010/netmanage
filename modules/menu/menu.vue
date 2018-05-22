@@ -743,8 +743,10 @@ export default {
     .content .item:hover{-moz-box-shadow:2px 0px 2px #6E6E6E; -webkit-box-shadow:2px 0px 2px #6E6E6E; box-shadow:2px 0px 2px #6E6E6E;}
     html{.TColIm(~".content .item:hover",'bg');}
     
-    .content .menuItem:hover .icon{background-color:white !important;}
+   
     html{.TCol(~".content .menuItem:hover .icon");}
+   
+
 
     .content .menuItem:hover .title{color:white;}
     .content .menuItem:hover .bottom{background-color:@HeaderBgCol;color:white;}
@@ -775,6 +777,8 @@ export default {
         float:left;margin-left:10px;
     }
     html{.TColIm(~".content .item .icon",'bg');}
+
+    html .content .menuItem:hover .icon{background-color:white !important;}
     .content .item .title{
         width:auto;
         text-align:center;

@@ -5,7 +5,7 @@
       
       <input class="form-control date" @blur="validFormat()" v-model="value" :class="{empty:!value}" :disabled='blnDisabled' type="text" v-if="!type" />
       <input class="form-control date" @blur="validFormat()" v-model="value" :class="{empty:!value}" :disabled='blnDisabled' type="password" v-if="type=='pwd'" />
-      <div class="floating-label">{{label}}</div>
+      <div class="floating-label"><span style="color:red;" v-if="blnRequire">*</span>{{label}}</div>
       <div style="text-align:center;" v-show="blnLoad"><img src="../assets/loading-validator.gif" /></div>
       <div class="validInfo fadeIn" v-if="validInfo">{{validInfo}}</div>
     </div>
@@ -19,9 +19,11 @@ export default {
     return {
       value:'',
       validInfo:'',
+      blnRequire:false,
     }
   },
   mounted(){
+    this.blnRequire=!!this.require;
     this.value=this.val || '';
   },
   watch:{
@@ -29,11 +31,15 @@ export default {
       this.value=this.val || '';
     },
     value(){
-      if(!this.validFormat())return;
+      if(!this.validFormat() && !this.require)return;
       this.$emit('change',this.value.replace('，',','),this.extra);
     }
   },
   methods:{
+    //设置提示信息
+    setVaildInfo(v){
+      this.validInfo=v;
+    },
     //获取验证结果
     Valid(){
       return this.validFormat();
@@ -41,7 +47,7 @@ export default {
     //验证输入类容是否正确
     validFormat(){
       let blnValid=true;
-      
+
       if(this.require){blnValid = !(this.value=='');}
       if(!blnValid){this.validInfo=this.tip || '';return blnValid;}else{this.validInfo='';}
 

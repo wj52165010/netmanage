@@ -30,6 +30,7 @@ export default {
       info:'',
       mousedownPress:false,//为了兼容google会触发input失去焦点事件
       RxSub:null,
+      subScribe:null,
     }
   },
   watch:{
@@ -46,11 +47,14 @@ export default {
   mounted(){
     this.RxSub=new this.$store.getters.Rx.Subject();
     
-    this.RxSub.debounceTime(2500).subscribe(()=>{
+    this.subScribe = this.RxSub.debounceTime(2500).subscribe(()=>{
         this.inputBlur();
     });
 
     this.val=this.value;
+  },
+  destroyed(){
+    this.subScribe.unsubscribe();
   },
   methods:{
     //验证并设置显示

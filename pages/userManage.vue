@@ -120,9 +120,10 @@ export default {
         let self=this;
         tool.open(function(store){
             let html=`
-               <InputDir label="账号" @change="account_change" :val="account"/>
-               <InputDir label="名称" @change="name_change" :val="name"/>
-               <InputDir label="密码" type="pwd" @change="pwd_change" :val="pwd"/>
+               <InputDir v-if="blnAdd" label="账号" @change="account_change" :val="account" :require="true" tip="必填"/>
+               <InputDir label="名称" @change="name_change" :val="name" :require="true" tip="必填" />
+               <InputDir v-if="blnAdd" label="密码" type="pwd" @change="pwd_change" :val="pwd" :require="true" tip="必填" />
+               <InputDir v-if="blnAdd" label="确认密码" ref="confirmPwd" type="pwd" @change="confirmPwd_change" :require="true" tip="必填" :val="confirmPwd" />
                <InputDir label="电话" @change="tel_change" :val="tel"/>
                <InputDir label="邮箱" @change="email_change" :val="email"/>
                <InputDir label="部门" @change="department_change" :val="department"/>
@@ -135,7 +136,7 @@ export default {
                     </el-option>
                 </el-select>
                <div style="line-height:36px;padding:10px 0px;border-bottom: 1px solid #bdbdbd;">
-                    <span style="width:80px;float: left;color: #bdbdbd;padding-left: 5px;">区域编码</span>
+                    <span style="width:80px;float: left;color: #bdbdbd;padding-left: 5px;">区域编码<span style="color:red;float:left;margin-top:3px;">*</span></span>
                     <div style="margin-left:80px;"><PlaceSearch c_searchKind='0' :store="store" :blnRadio="true" :defautVal="defRegion" @place_res="region_change"></PlaceSearch></div>
                </div>
                <div style="line-height:36px;padding:10px 0px;border-bottom: 1px solid #bdbdbd;">
@@ -150,7 +151,7 @@ export default {
                </el-button-group>
                <InputDir label="描述" @change="note_change" :val="note"/>
                <div style="text-align:right;margin-top:10px;">
-                    <button type="button" class="btn btn-success" style="font-size:12px;" @click="complete()">完成</button>
+                    <button type="button" class="btn btn-success" style="font-size:12px;" :disabled="blnSubmit" @click="complete()">完成</button>
                     <button type="button" class="btn btn-default" style="font-size:12px;" @click="close()">关闭</button>
                </div>
             `;
@@ -160,11 +161,19 @@ export default {
                 area:'400px',
                 components:{InputDir,PlaceSearch},
                 content:`<div class="user_pop" style="width:100%;height:100%;overflow:hidden;padding:10px;">${html}</div>`,
+                computed:{
+                    blnSubmit(){
+                        return this.blnAdd?!(this.account && this.name && this.pwd && this.regionVal.length>0 && this.pwd==this.confirmPwd):
+                                           !(this.account && this.name && this.regionVal.length>0);
+                    },
+                },
                 context:{
                     store:store,
+                    blnAdd:!updateData,
                     account:updateData?updateData.account:'',//账号
                     name:updateData?updateData.name:'',//姓名
                     pwd:updateData?updateData.pwd:'',//密码
+                    confirmPwd:updateData?updateData.pwd:'',//确认密码
                     tel:updateData?updateData.tel:'',//电话
                     email:updateData?updateData.email:'',//邮箱
                     note:updateData?updateData.note:'',//描述
@@ -182,6 +191,15 @@ export default {
                     name_change(val){param.selfData.name=val;},
                     //密码改变事件
                     pwd_change(val){param.selfData.pwd=val;},
+                    //确认密码改变事件
+                    confirmPwd_change(val){
+                        param.selfData.confirmPwd=val;
+                        if(param.selfData.confirmPwd!=param.selfData.pwd){
+                            param.$refs.confirmPwd.setVaildInfo('两次输入的密码不一致')
+                        }else{
+                            param.$refs.confirmPwd.setVaildInfo('');
+                        }
+                    },
                     //电话改变事件
                     tel_change(val){param.selfData.tel=val;},
                     //邮箱改变事件

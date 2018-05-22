@@ -10,6 +10,7 @@
       <CHeader :userInfo="user" @mouseleave="menu_mouseleave" @mouseenter="menu_mouseenter"></CHeader>
     </div>
     <div class="Content">
+      <virtualIden v-if="false" />
       <!--<router-view></router-view>-->
       <NavPage ref="HPage"></NavPage>
       <div class="menu_c_container" :class="{active:blnShowMenu}"><SideMenu :menus="menus" @Blnshow="blnShow"></SideMenu></div>
@@ -27,10 +28,21 @@
       <img src="static/Loading6.gif" />
     </div>
 
+    <div style="position:absolute;top:10px;left:200px;color:white;" v-if="false">
+      <PlaceSearch @place_res="placechange" c_searchKind="1"></PlaceSearch>
+    </div>
+    <!--测试基础组件-->
+    <div style="position:absolute;top:10px;left:700px;color:white;" v-if="false">
+      <testCom />
+    </div>
   </div>
 </template>
 
 <script>
+import testCom from './components/testCom'
+import virtualIden from './components/virtualIden'
+import dropdwonBtn from 'components/dropdwonBtn'
+
 import 'webui-popover/dist/jquery.webui-popover.css'
 import 'webui-popover/dist/jquery.webui-popover.js'
 import CHeader from './components/Header'
@@ -48,6 +60,8 @@ import '../static/toast/jquery.toast.js'
 import NavPage from './components/NavPage'
 // import {tool} from './js/tool.js'
 let Rx = require('rxjs/Rx');
+
+import PlaceSearch from './components/PlaceSearch'
 
 import {Reg_Navigation_Func,Reg_Del_Nav_Func,Reg_Navigation_Refresh,Get_Operate,Set_System_Menus,Add_System_Menus,SetSource,FieldType,SetFieldKind,FormatDatas,SetFormatData,FormatSearch,SetFormatSearch,
         RSet_System_Menus,Reg_Rx,Add_History_Menu,RegVirType,GetUser,Date_Source,SET_ALL_TABLE_DATA,GetFirm,GetMenuKind,SetMenuKind,MenuChangeEven,DelMenu,broastBacktrack} from './store/mutation-types'
@@ -220,7 +234,11 @@ export default {
     NavPage,
     SideMenu,
     MenuTable,
+    PlaceSearch,
+    testCom,
     Kuaiso,
+    virtualIden,
+    dropdwonBtn,
   },
   data () {
     return {
