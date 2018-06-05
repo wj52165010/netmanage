@@ -478,7 +478,9 @@ export default {
          this.$store.dispatch(GetFirmList,this.query).then(res=>{
            if(res.msg.code!='successed')return;
            this.data=res.biz_body;
-            this.blnLoading=false;  
+            this.blnLoading=false; 
+
+            console.log(tool.Clone(res.biz_body));
          });        
         //获取厂商下拉框数据
         this.$store.dispatch(GetFirm).then(res=>{
@@ -543,6 +545,9 @@ export default {
          this.$store.dispatch(GetFirmCollColumn,this.siteSelect).then(res=>{
            if(res.msg.code!='successed')return;
            this.addSiteBarChart(res.biz_body);
+
+           console.log(tool.Clone(res.biz_body));
+
          })
       },
       // 获取设备在线柱状图数据

@@ -338,7 +338,7 @@ export default {
         {name:'数据质量',icon:'fa fa-dashboard',keyid:"11022",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"dataMassPage"},
         {name:'热点备案',icon:'fa fa-podcast',keyid:"11047",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"hotspotPage"},
         {name:'统计考核',icon:'fa fa-map',keyid:"11048",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"staticCheckPage"},   
-        {name:'数据总览',icon:'fa fa-dashboard',id:'11015',keyid:"11015",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:0,status:'{status:"completed"}',type:"BasePage"},
+        {name:'数据总览',icon:'fa fa-dashboard',id:'11015',keyid:"11015",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"BasePage"},
       ];
 
       app.menus=fixMenus;
@@ -381,6 +381,7 @@ export default {
                 allTables.push(tables[tableKey]);
             }
         }
+
 
         this.$store.commit(SetSource,data);
         this.$store.commit(SET_ALL_TABLE_DATA,allTables);

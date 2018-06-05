@@ -474,13 +474,13 @@ module.exports={
      * @param {菜单数据} menu
      * @param {所选数据源} tables 
      */
-    getSourceAction(menu,tables){
-        let selFields=menu.condtionsObj?menu.condtionsObj.query_fields:[];
+    getSourceAction(menu,tables,fields){
+     
+        let selFields=fields || (menu.condtionsObj?menu.condtionsObj.query_fields:[]);
         let tableKeys=_.chain(tables).pluck('key').value();
         let primeKeys=_.chain(tables).pluck('primeKey').value();
         let _actions=_.chain(tables).pluck('action').value();
 
-        
 
         let tabelPrimeKeys = _.chain(_.object(tableKeys,primeKeys)).map((val,key)=>{
             return key+sep+val;
@@ -502,8 +502,9 @@ module.exports={
                      tempItem['_primeKey']=fieldkey.split(sep)[1];
                      tempItem['_tableKey']=tablekey;
                      let tempFields=[];
+              
                      _.each(selFields,(field_)=>{
-                        if(field_.table==tablekey && tempItem.fields && (','+tempItem.fields.join(',')+',').indexOf(','+field_.key+',')>=0){
+                        if((field_.table==tablekey || field_.tableKey == tablekey) && tempItem.fields && (','+tempItem.fields.join(',')+',').indexOf(','+field_.key+',')>=0){
                             tempFields.push(field_.key);
                         }
                      });

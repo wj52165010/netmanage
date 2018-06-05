@@ -1,6 +1,6 @@
 import store from './store/index'
 import Vue from 'vue'
-import VueRouter from 'vue-router'
+//import VueRouter from 'vue-router'
 import App from './App'
 import routes from './router'
 import './css/app.less'
@@ -14,11 +14,11 @@ import {Dropdown,DropdownMenu,DropdownItem,Button,ButtonGroup,Select,Option,Opti
         Radio,Tabs,TabPane,Slider,Switch,TimePicker,TimeSelect
        } from 'element-ui'
 
-import ctable from 'components/table/table'
-import ccolumn from 'components/table/tableColumn'
+// import ctable from 'components/table/table'
+// import ccolumn from 'components/table/tableColumn'
 
-Vue.component(ctable.name,ctable);
-Vue.component(ccolumn.name,ccolumn);
+// Vue.component(ctable.name,ctable);
+// Vue.component(ccolumn.name,ccolumn);
 
 
 let Rx = require('rxjs/Rx');
@@ -107,39 +107,39 @@ Vue.directive('init-hook', {
 
 
 //地图定位指令
-Vue.directive('map-pos',{
-  bind:function(el,binding){
-    $(el).bind('click',(e)=>{
+// Vue.directive('map-pos',{
+//   bind:function(el,binding){
+//     $(el).bind('click',(e)=>{
       
-        tool.open(function(){
-          let html=``;
-          let {lng,lat}=binding.value;
+//         tool.open(function(){
+//           let html=``;
+//           let {lng,lat}=binding.value;
 
-          let param={
-            title:'显示位置',
-            area:'600px',
-            content:`<div name="map_container" style="width:100%;height:400px;">${html}</div>`,
-            context:{},
-            success(layero){
+//           let param={
+//             title:'显示位置',
+//             area:'600px',
+//             content:`<div name="map_container" style="width:100%;height:400px;">${html}</div>`,
+//             context:{},
+//             success(layero){
 
-                let map =  new BMap.Map(layero.find('div[name="map_container"]')[0],{minZoom:13,maxZoom:18});
-                map.centerAndZoom(new BMap.Point(lng,lat),7);//重庆中心点
-                map.enableScrollWheelZoom(true);
+//                 let map =  new BMap.Map(layero.find('div[name="map_container"]')[0],{minZoom:13,maxZoom:18});
+//                 map.centerAndZoom(new BMap.Point(lng,lat),7);//重庆中心点
+//                 map.enableScrollWheelZoom(true);
 
-                var marker=new BMap.Marker(new BMap.Point(lng,lat));
-                map.addOverlay(marker);
-            }
-          }
+//                 var marker=new BMap.Marker(new BMap.Point(lng,lat));
+//                 map.addOverlay(marker);
+//             }
+//           }
 
-          return param;
-      }());
+//           return param;
+//       }());
 
-    });
-  },
-  unbind:function(el){
-    $(el).unbind('click');
-  }
-});
+//     });
+//   },
+//   unbind:function(el){
+//     $(el).unbind('click');
+//   }
+// });
 
 //节流阀事件
 Vue.directive('throttle-even',{
@@ -155,7 +155,6 @@ Vue.directive('throttle-even',{
 Vue.directive('focus', {
   // 当被绑定的元素插入到 DOM 中时……
   inserted: function (el) {
-    console.log(el);
     // 聚焦元素
     el.focus()
   }

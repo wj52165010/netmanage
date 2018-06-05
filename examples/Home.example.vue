@@ -392,6 +392,7 @@ export default {
       });
 
       //获取MAC热力图数据
+      
       this.$store.dispatch(MacMapData,{lb,rt}).then(res=>{
         let data = res.biz_body;
         let groupData = _.groupBy(data,(d)=>{ return d.equipment_longitude+'_'+d.equipment_latitude;});

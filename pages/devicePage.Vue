@@ -944,6 +944,7 @@ export default {
                             loadDetail(){
                                 self.$store.dispatch(DeviceDetail,{equipment_id:siteId}).then(res=>{
                                     if(res.msg.code!='successed')return;
+                                    console.log(tool.Clone(res.biz_body));
                                     param.selfData.detailData=res.biz_body;
                                     param.selfData.detailData.capture_time = (param.selfData.detailData.capture_time&&param.selfData.detailData.capture_time!='0') ? tool.DateByTimestamp(param.selfData.detailData.capture_time,'yyyy-MM-dd hh:mm:ss'):'无';
                                 });

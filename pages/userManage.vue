@@ -118,15 +118,16 @@ export default {
     //新增修改
     add(updateData){
         let self=this;
+
         tool.open(function(store){
             let html=`
                <InputDir v-if="blnAdd" label="账号" @change="account_change" :val="account" :require="true" tip="必填"/>
                <InputDir label="名称" @change="name_change" :val="name" :require="true" tip="必填" />
                <InputDir v-if="blnAdd" label="密码" type="pwd" @change="pwd_change" :val="pwd" :require="true" tip="必填" />
                <InputDir v-if="blnAdd" label="确认密码" ref="confirmPwd" type="pwd" @change="confirmPwd_change" :require="true" tip="必填" :val="confirmPwd" />
-               <InputDir label="电话" @change="tel_change" :val="tel"/>
+               <InputDir label="电话" @change="tel_change" :val="tel" :require="true" tip="必填"/>
                <InputDir label="邮箱" @change="email_change" :val="email"/>
-               <InputDir label="部门" @change="department_change" :val="department"/>
+               <InputDir label="部门" @change="department_change" :val="department" :require="true" tip="必填"/>
                <el-select style="margin-top: 10px;" v-model="groupVal" multiple placeholder="请选择关联组">
                     <el-option
                     v-for="item in groups"
@@ -149,8 +150,16 @@ export default {
                     <el-button style="width:33.3%;" :class="{active:status=='lock'}" @click="status='lock';">锁定</el-button>
                     <el-button style="width:33.3%;" :class="{active:status=='disabled'}" @click="status='disabled';">禁用</el-button>
                </el-button-group>
-               <InputDir label="描述" @change="note_change" :val="note"/>
+               <el-select style="margin-top: 10px;" v-model="accountType" placeholder="请选择用户类型">
+                    <el-option
+                        v-for="item in [{name:'网安账号',val:'0'},{name:'厂商账号',val:'1'}]"
+                        :key="item.val"
+                        :label="item.name"
+                        :value="item.val">
+                    </el-option>
+               </el-select>
                <div style="text-align:right;margin-top:10px;">
+                    <div style="float:left;cursor:pointer;" @click="blnLoginApp=!blnLoginApp"><i :class="{'fa fa-check-square-o':blnLoginApp,'fa fa-square-o':!blnLoginApp}"></i> 允许登录APP</div>
                     <button type="button" class="btn btn-success" style="font-size:12px;" :disabled="blnSubmit" @click="complete()">完成</button>
                     <button type="button" class="btn btn-default" style="font-size:12px;" @click="close()">关闭</button>
                </div>
@@ -163,14 +172,16 @@ export default {
                 content:`<div class="user_pop" style="width:100%;height:100%;overflow:hidden;padding:10px;">${html}</div>`,
                 computed:{
                     blnSubmit(){
-                        return this.blnAdd?!(this.account && this.name && this.pwd && this.regionVal.length>0 && this.pwd==this.confirmPwd):
-                                           !(this.account && this.name && this.regionVal.length>0);
+                        return this.blnAdd?!(this.account && this.name && this.pwd && this.tel && this.department  && this.regionVal.length>0 && this.pwd==this.confirmPwd):
+                                           !(this.account && this.name && this.tel && this.department && this.regionVal.length>0);
                     },
                 },
                 context:{
                     store:store,
                     blnAdd:!updateData,
                     account:updateData?updateData.account:'',//账号
+                    accountType:updateData?updateData.accountType:'0', //账号类型
+                    blnLoginApp:updateData?updateData.blnLoginApp:false,//是否允许登录App
                     name:updateData?updateData.name:'',//姓名
                     pwd:updateData?updateData.pwd:'',//密码
                     confirmPwd:updateData?updateData.pwd:'',//确认密码

@@ -651,7 +651,7 @@ export default {
               w:0,
               data:[],
               converTime(time){
-                return tool.DateByTimestamp(time,'yyyy-MM-dd mm:hh:ss');
+                return tool.DateByTimestamp(time,'yyyy-MM-dd hh:mm:ss');
               }
             },
             success(layero){

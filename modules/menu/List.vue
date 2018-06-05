@@ -791,7 +791,7 @@ export default {
                 kind:null,//操作类型
                 icon:'',//具体操作项的icon值
                 commonOption:false,//是否为公共操作(false:对应的数据行操作,ture:针对整个列表的操作)
-                operateKind:optionHandle.getSourceAction(self.menu,[self.table]),//具体数据源允许执行的操作
+                operateKind:optionHandle.getSourceAction(self.menu,[self.table],tool.Clone(self.fields)),//具体数据源允许执行的操作
                 SpecificOps:SpecificOps,//特定操作执行项(如:路径)
                 submit_btn(){
                     let menu =param.selfData.menu,kind=param.selfData.kind;

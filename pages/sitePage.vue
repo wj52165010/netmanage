@@ -482,6 +482,7 @@ export default {
             this.dict_tables= res.biz_body;
             this.query.microprobe_type=["120"];
             //获取场所信息
+            
             this.$store.dispatch(GetSiteList,this.query).then(res=>{
                 if(res.msg.code!='successed')return;
                 this.data=res.biz_body;
@@ -540,6 +541,7 @@ export default {
          this.$store.dispatch(SiteHisPercentage,{coll_type:this.collType}).then(res=>{
            if(res.msg.code!='successed')return;
            this.weekOnOffLIne=res.biz_body;
+           console.log(tool.Clone(res.biz_body));
            this.addOfflineLineChart(this.weekOnOffLIne);     //加载折线图
            this.addOfflineBarChart(this.weekOnOffLIne)
          });
@@ -549,6 +551,7 @@ export default {
          this.$store.dispatch(LastPercentage).then(res=>{
            if(res.msg.code!='successed')return;
            this.myYesdayOnOffLIne=res.biz_body;
+    
             this.loadPieChart(this.myYesdayOnOffLIne);
             this.loadBarChart(this.myYesdayOnOffLIne);
          });
@@ -925,7 +928,7 @@ export default {
             this.blnLoading=true;
             this.pageNum= 0;
             this.query.skip=this.pageNum*this.query.limit;
-
+          
             this.$store.dispatch(GetSiteList,this.query).then(res=>{
                 this.blnSearch=false;
                 this.blnLoading=false;
