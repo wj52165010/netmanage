@@ -64,7 +64,7 @@ Vue.component('hotspotPage',(resolve)=>{require(['./pages/hotspotPage'],resolve)
 Vue.component('staticCheckPage',(resolve)=>{require(['./pages/staticCheckPage'],resolve)});//统计考核页面
 
 
-/***********************************************案例测试页面********************************************/
+/***********************************************案例页面********************************************/
 Vue.component('PeerTrack',(resolve)=>{require(['./examples/PeerTrack.example'],resolve)});
 Vue.component('Home',(resolve)=>{require(['./examples/Home.example'],resolve)});
 Vue.component('Relation',(resolve)=>{require(['./examples/Relation.example'],resolve)});
@@ -79,6 +79,7 @@ Vue.component('NetAboutCar',(resolve)=>{require(['./examples/NetAboutCar.example
 Vue.component('ShipCar',(resolve)=>{require(['./examples/ShipCar.example'],resolve)});
 Vue.component('Expressage',(resolve)=>{require(['./examples/Expressage.example'],resolve)});
 Vue.component('PublicOpinion',(resolve)=>{require(['./examples/PublicOpinion.example'],resolve)});
+Vue.component('Patrol',(resolve)=>{require(['./examples/Patrol.example'],resolve)});
 
 
 export default[

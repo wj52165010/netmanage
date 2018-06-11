@@ -454,7 +454,8 @@ export default {
             var lb=bounds.getSouthWest(),rt=bounds.getNorthEast();
             var zoom=map.getZoom();
             if(s.clus){s.clus.clearMarkers();s.cachePlace={};s.cacheData={};}
-            if(zoom<=13){
+            
+            if(zoom<=15){
                 if(s.clus){s.clus.clearMarkers();s.cachePlace={};s.cacheData={};}
                     if(s.isSite){
                         var statuUrl=SiteMapRegion;
@@ -502,6 +503,7 @@ export default {
             }else{
                 var statuUrl=GetDeviceMap;           
             }
+            
             store.dispatch(statuUrl,{
                                              keyid:"",
                                              condtionsObj:data.condtion,
@@ -513,7 +515,6 @@ export default {
 
                 var data = code.biz_body;
                // if(this.howData) data=this.howData;
-                
                 var tempMarker = [];          
                 for (var i = 0; i < data.length; i++) {
                      if (s.cachePlace[data[i][primaryKey[1]] || (data[i][primaryKey[0]]+'_'+data[i][primaryKey[1]])]) {
@@ -523,19 +524,23 @@ export default {
                     s.cacheData[parseFloat(data[i].longitude)+'-'+parseFloat(data[i].latitude)]=data[i];
 
                     var myIcon = new BMap.Icon(photo[data[i].microprobe_type+data[i].online], new BMap.Size(28,36));
-                   // console.log(photo[data[i].microprobe_type+data[i].online],data[i].microprobe_type+data[i].online);
+                    //console.log(photo[data[i].microprobe_type+data[i].online],data[i].microprobe_type+data[i].online);
                     var marker=new BMap.Marker(new BMap.Point(data[i].longitude, data[i].latitude),{icon:myIcon});
                     //添加数遍移上/移下事件(添加描述遮罩)
                     var marker_triangle_html='<div class="triangle pulse" style="background-color:rgb(0, 204, 102);color: white;padding: 0px 10px;border-radius: 5px;min-width:140px;padding:5px 10px;">{0}</div>';
                     var posSearchHtml=function(data){
+                        if(!s.isSite){                      
+                            data.netbar_name=data.equipment_name;
+                            data.netbar_address=data.equipment_address;
+                            data.netbar_wacode=data.equipment_id;
+                        }
                         var result='';
                         var template='<div>{0}&nbsp;&nbsp;:&nbsp;&nbsp;{1}</div>';
                         result+=Fx.format(template,'全称',data.netbar_name || '');
                         result+=Fx.format(template,'地址',data.netbar_address || '');
                         result+=Fx.format(template,'状态',data.online || '');
-                        result+=Fx.format(template,'类型',(data.netbar_type || '').replace('非经','宾馆酒店'));
+                        result+=Fx.format(template,'类型',(data.microprobe_type || '').replace('非经','宾馆酒店'));
                         result+=Fx.format(template,'编码',data.netbar_wacode || '');
-
                         return result;
                     };
                     

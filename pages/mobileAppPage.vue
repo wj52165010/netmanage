@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="item" @click="switchView('list')" :class="{active: viewTable=='list'}">
-                    <div class="item_container">
+                    <div class="item_container"> 
                         <span class="content"><i class="fa fa-list"></i>列表</span>
                     </div>
                 </div>                
@@ -67,14 +67,14 @@
                 </div>
                 <ul class="header">
                     <li class="item">
-                        <div><span class="overflow" style="width:115px;">应用名称</span></div>
+                        <div><span class="overflow" style="width:150px;">应用名称</span></div>
                         <!--<div><span class="overflow" style="width:100px;">应用分类</span></div>-->
-                        <div><span class="overflow" style="width:230px;">来源应用市场</span></div>
-                        <div><span class="overflow" style="width:70px;">版本号</span></div>
+                        <div><span class="overflow" style="width:130px;">来源应用市场</span></div>
+                        <div><span class="overflow" style="width:120px;">版本号</span></div>
                         <div><span class="overflow" style="width:150px;">更新时间</span></div>
                         <div><span class="overflow" style="width:80px;">下载次数</span></div>
                         <div><span class="overflow" style="width:90px;">好评率</span></div>
-                        <div><span class="overflow" style="width:200px;">应用开发商</span></div>
+                        <div><span class="overflow" style="width:270px;">应用开发商</span></div>
                         <div><span class="overflow" style="width:70px;">是否违规</span></div>
                         <!--<div><span class="overflow" style="width:50px;">操作</span></div>-->
                     </li>
@@ -84,14 +84,14 @@
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showData" class="item" >
-                                <div  :title="d.app_name"  @click="searchSiteDetail(d.app_id)"><span class="overflow sit-click" style="width:115px;">{{d.app_name}}</span></div>
+                                <div class="align" :title="d.app_name"  @click="searchSiteDetail(d.app_id)"><span class="overflow sit-click" style="width:150px;">{{d.app_name}}</span></div>
                                 <!--<div  :title="d.app_id" ><span class="overflow" style="width:100px;">{{d.app_id}}</span></div>-->
-                                <div class="align" :title="d.source_market"><span class="overflow" style="width:230px;">{{d.source_market}}</span></div>
-                                <div  :title="d.version"><span class="overflow" style="width:70px;">{{d.version}}</span></div>
+                                <div  :title="d.source_market"><span class="overflow" style="width:130px;">{{d.source_market}}</span></div>
+                                <div  :title="d.version"><span class="overflow" style="width:120px;">{{d.version}}</span></div>
                                 <div  :title="d.update_time"><span class="overflow" style="width:150px;" >{{d.update_time}}</span></div>
                                 <div  :title="d.donwload_times"><span class="overflow" style="width:80px;">{{d.download_times}}</span></div>
                                 <div  :title="d.evaluation_index"><span class="overflow" style="width:90px;">{{d.evaluation_index}}</span></div>
-                                <div  :title="d.app_devp"><span class="overflow" style="width:200px;">{{d.app_devp}}</span></div>
+                                <div class="align" :title="d.app_devp"><span class="overflow" style="width:270px;">{{d.app_devp}}</span></div>
                                 <div  :title="d.is_illegal"><span class="overflow" style="width:70px;">{{d.is_illegal}}</span></div>
                                 <!--<div  title="查看详情" @click="searchSiteDetail(d.app_id)"><span class="overflow sit-click" style="width:50px">详细</span></div>-->
 
@@ -117,7 +117,7 @@
                      <div name="pie_chart_container" class="" style="width:100%;height:100%;text-align:left"></div>
                 </div>               
                 <!--柱状图(问题总览)-->
-                <div style="width:67%;height:50%;display:inline-block"  @click="changeProblemFun(true)">
+                <div style="width:67%;height:50%;display:inline-block">
                     <div name="bar_chart_container" style="width:100%%;height:100%;" ></div>
                 </div>
                 <!--线形图（在离线率）-->
@@ -136,13 +136,26 @@
                                 </el-option>
                                 </el-select>
                             </div>
-                        </div>-->
+                        </div>
                         <div class="his-term item">
                             <span>来源市场:</span>
                             <div class="input">
                                 <el-input placeholder="来源市场" v-model="source_market"></el-input>
                             </div>
+                        </div>-->
+                        <div class="his-term item">
+                            <span>来源市场:</span>
+                            <div class="input">
+                                <el-select v-model="source_market" placeholder="请选择" :clearable="true">
+                                <el-option
+                                v-for="kind in dict_tables.app_markets"                           
+                                :label="kind.name"
+                                :value="kind.value">
+                                </el-option>
+                                </el-select>
+                            </div>
                         </div>
+
                         <div class="optionBar">
                             <div class="el-tooltip item " :class="{active: changeChart=='bar'}" @click="changeChartSty('bar')">
                                     <div class="el-tooltip__rel" ><i class="fa fa-area-chart"></i></div>
@@ -166,7 +179,7 @@
                     </div>
                 </div>
                 <!--违规APP信息列表显示-->
-                <div class="analysis_list" style="height: calc(100%);width:100%;position:absolute;top:0" v-show="problemTable">
+                <div class="analysis_list" :class="{ 'noAnimateHide': problemTable=='0', 'noAnimateShow': problemTable=='1','animateShow': problemTable=='2','animateHide': problemTable=='3'}">
                     <div style="" class="drag-info" @click="changeProblemFun(false)">
                         <div>违规APP信息&nbsp;&nbsp;<span style="font-size:40px;line-height:10px">︿</span></div>                        
                     </div>
@@ -174,7 +187,7 @@
                         <div class="item">
                             <span>违规分类:</span>
                             <div class="input">
-                                <el-select v-model="queryProblem.violations_type" :clearable="true" placeholder="请选择" >
+                                <el-select v-model="queryProblem.violations_type" placeholder="请选择" >
                                 <el-option
                                 v-for="kind in dict_tables.violations_type"                           
                                 :label="kind.name"
@@ -316,7 +329,7 @@ export default {
         myLineChart:"",   
         myOnOffBarChart :"",
         source_market:"",          //来源市场  柱状图的筛选条件
-        problemTable:"",              //违规详情
+        problemTable:'0',              //违规详情列表与页面切换标识（0:不显示，无动画    1： 显示 无动画  2：显示，临时动画   3：隐藏，临时动画）
         is_illegalAll:[{name:'否',val:'0'},{name:'是',val:'1'}],        //是否违规选择条件
 
 
@@ -680,6 +693,15 @@ export default {
             ]
         };
         this.myBarChart.setOption(option);
+        let that=this;
+        this.myBarChart.on('click', function (params) {
+            for(let any of that.dict_tables.violations_type){
+                if(any.name==params.name){
+                    that.queryProblem.violations_type=any.value;
+                }
+            }            
+            that.changeProblemFun(true);
+        });
       },
     //加载在离线折线图time横坐标时间 inLineData：在线 ,offLineData：离线,abnormalsData：异常
      addOfflineLineChart(data){
@@ -823,7 +845,7 @@ export default {
                 name:"健康数",
                 itemStyle: {
                     normal: {
-                        color:'#42ABDF',
+                        color:'#85C226',
                         label: {
                             formatter: '{c}'
                         }
@@ -836,7 +858,7 @@ export default {
                 name:"违规数",
                 itemStyle: {
                     normal: {
-                        color:'#93C24A',
+                        color:'#F8C301',
                         label: {
                             formatter: '{c}'
                         }
@@ -913,7 +935,7 @@ export default {
 
             if(data.length<=0){
                 tool.msg({msg:{code:'successed'}},'已经到了最后页!','已经到了最后页!');
-                this.queryProblem =this.queryProblem-1;
+                this.pageNumProblem =this.pageNumProblem-1;
                 return;
             }
 
@@ -1273,14 +1295,20 @@ export default {
                     if(!tool.msg(res,'','搜索失败!'))return;
                     this.dataProblem=res.biz_body;
                     //console.log(this.dataProblem);
-                    this.problemTable=true;
+                    this.problemTable='2';
+                    setTimeout(()=>{
+                        this.problemTable='1';    
+                    },1000)  
                     this.$nextTick(()=>{
                         this.$refs.ABC.reloadyScroll();
                     });
                 });
             },40)            
           }else{
-            this.problemTable=false;  
+                this.problemTable='3';
+                setTimeout(()=>{
+                    this.problemTable='0';    
+                },1000) 
           }
       },
       
@@ -1480,6 +1508,7 @@ export default {
   .CaseManage .body .item .align .overflow{text-align:left}
   .CaseManage .body .item .overflow.sit-click{
       color:#03ab67;
+      font-weight:bolder;
   }
  .CaseManage .body .item .overflow.sit-click:hover{
       cursor:pointer;
@@ -1590,6 +1619,12 @@ export default {
     cursor: pointer;
     color: #03ab67;
   }  
+ .stiepage .chart_container .analysis_list{
+    height: calc(100%);
+    width:100%;
+    position:absolute;
+    top:0px;
+  }  
   .analysis_list .drag-info{
     height: 30px;
     width:100%;
@@ -1606,4 +1641,53 @@ export default {
     cursor:pointer;
     font-Weight:800;
   }
+  //不加载动画直接显示
+  .stiepage .chart_container .analysis_list.noAnimateShow{
+    top:0;  
+    display: block;      
+  }
+  //不加载动画直接影藏
+  .stiepage .chart_container .analysis_list.noAnimateHide{
+   top:2000px;      
+   display: none;   
+  }
+  /*加载动画，逐渐出现 */
+  .stiepage .chart_container .analysis_list.animateShow{
+    animation: startAit 1s;
+    -moz-animation: startAit 1s;	/* Firefox */
+    -webkit-animation: startAit 1s;	/* Safari 和 Chrome */
+    -o-animation: startAit 1s;	/* Opera */
+    top:0;
+  }
+    /*加载动画，逐渐消失 */
+  .stiepage .chart_container .analysis_list.animateHide{
+    animation: finishAit 1s;
+    -moz-animation: finishAit 1s;	/* Firefox */
+    -webkit-animation: finishAit 1s;	/* Safari 和 Chrome */
+    -o-animation: finishAit 1s;	/* Opera */
+    top:2000px;        //将这个值改为一个较大的数值，必须远超屏幕高度，用于做动画效果
+  }
+  //css动画
+  @keyframes startAit{
+        0% {
+            top:1000px;
+            display:block;
+        }
+        100% {
+            top:0px;
+            display:block;
+        }                
+    }
+  @keyframes  finishAit{
+        0% {
+            top:0;
+            display:block;
+        }
+        100% {
+            top:1000px;
+            display:none;
+        }                
+  } 
+
+
 </style>

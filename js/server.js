@@ -2,8 +2,10 @@
 
 //基地址192.168.100.80:3030(http://192.168.23.73:3030)
 //发布地址:172.23.90.8:3030
+
 //let url='http://192.168.23.23:3031';
-let url='http://192.168.100.80:3030';
+let url='http://192.168.23.73:3030';
+
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
 
@@ -32,7 +34,7 @@ var post=function(url,data,callback){
         }
         //data:data
     }).then(function(res){
-        if(res.msg.code!='successed'){
+        if(res.msg.code!='successed' && res.msg.note){
             layer.msg(res.msg.note);
         }
         return res;
@@ -2622,7 +2624,21 @@ GetVehicleChart(data){
     this.baseBag.method='site_score_collect';
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
-  } 
+  }
+  // 获取场所管理待处理场所饼图数据
+  waitingHandleSite(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='waiting_handle_site';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 获取场所管理待处理场所列表数据
+  waitingHandleList(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='waiting_handle_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
 
   // 获取设备管理定制页面
   GetDeviceList(data){
@@ -2680,6 +2696,14 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   } 
+  // 获取设备管理异常设备列表信息
+  DeviceScoreCollect(data){
+    this.baseBag.target='device';
+    this.baseBag.method='device_score_collect';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+
   // 获取可视范围内场所集合
   GetDeviceMap(data){
     this.baseBag.target='device';
@@ -2729,6 +2753,14 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }   
+  //厂商采集统计（采集详情）
+  firmDetectRange(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='firm_detect_range';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+
   //获取厂商采集趋势
   FirmDetectColl(data){
     this.baseBag.target='firm';
@@ -2760,6 +2792,29 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   } 
+  // 区域采集统计（采集详情）
+  RegionDetectRange(data){
+    this.baseBag.target='region';
+    this.baseBag.method='region_detect_range';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  //区域状态数量统计[柱状图]
+  regionCollColumn(data){
+    this.baseBag.target='region';
+    this.baseBag.method='region_coll_column';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+  // 区域状态数量统计[折线图]
+  RegionCollLine(data){
+    this.baseBag.target='region';
+    this.baseBag.method='region_coll_line';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+
+
 
   // 获取app定制页面列表信息
   GetAppList(data){
@@ -2940,6 +2995,59 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }
+
+  /********************* 场所巡查 ***********************/
+  //获取场所巡查策略
+  //code:场所编码
+  GetSitePatrol(code){
+    this.baseBag.target='site_patrol';
+    this.baseBag.method='get_policy';
+    this.baseBag.data={netbar_wacode:code || ''};
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
+  //查看场所策略历史信息
+ HistoryPolicy=function({netbar_wacode:code,region,userName,is_pass,skip,limit}){
+  this.baseBag.target='site_patrol';
+  this.baseBag.method='get_patrol_log_web';
+  this.baseBag.data={netbar_wacode:code,region,userName,is_pass,skip,limit};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+ }
+
+ //查看场所策略详细信息
+ //查看查询历史记录
+DetailPolicy=function({code,policy_id,is_last}){
+  this.baseBag.target='site_patrol';
+  this.baseBag.method='get_patrol_log';
+  this.baseBag.data={netbar_wacode:code,policy_id:policy_id,is_last};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+
+}
+
+//查看场所策略详细信息
+DetailPlaceInfo=function({policy_id,netbar_wacode}){
+  this.baseBag.target='site_patrol';
+  this.baseBag.method='get_patrol_items_log';
+  this.baseBag.data={policy_id,netbar_wacode};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//查看场所策略具体项历史记录信息
+DetailPlacePolicy=function({patrol_id,policy_id,policy_item_id,netbar_wacode}){
+  this.baseBag.target='site_patrol';
+  this.baseBag.method='get_policy_items_history_log';
+  this.baseBag.data={patrol_id,policy_id,policy_item_id,netbar_wacode};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+ //查看具体策略项历史记录
+HistoryPlicyItem=function({policy_id,policy_item_id}){
+  this.baseBag.target='site_patrol';
+  this.baseBag.method='get_policy_items_log';
+  this.baseBag.data={policy_id,policy_item_id};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
 }
 
 module.exports = new server(baseBag,baseUri,url);

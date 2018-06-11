@@ -49,19 +49,19 @@
                 </div>
                 <ul class="header">
                     <li class="item">
-                        <div><span class="overflow" style="width:165px;">网站域名</span></div>
+                        <div><span class="overflow" style="width:170px;">网站域名</span></div>
                         <div><span class="overflow" style="width:100px;">网站名称</span></div>
-                        <div><span class="overflow" style="width:100px;">服务器IP</span></div>
+                        <div><span class="overflow" style="width:110px;">服务器IP</span></div>
                         <div><span class="overflow" style="width:70px;">网站负责人</span></div>
                         <div><span class="overflow" style="width:120px;">负责人电话</span></div>
-                        <div><span class="overflow" style="width:90px;">接入服务商</span></div>
-                        <div><span class="overflow" style="width:100px;">服务商电话</span></div>
-                        <div><span class="overflow" style="width:165px;">服务商地址</span></div>
+                        <div><span class="overflow" style="width:210px;">接入服务商</span></div>
+                        <div><span class="overflow" style="width:140px;">服务商电话</span></div>
+                        <div><span class="overflow" style="width:300px;">服务商地址</span></div>
                         <!-- <div><span class="overflow" style="width:90px;">设备采集量</span></div>
                         <div><span class="overflow" style="width:90px;">设备贡献率</span></div> -->
                         <!-- <div><span class="overflow" style="width:90px;">区域操作员</span></div> -->
                         <!-- <div><span class="overflow" style="width:80px;">所属厂商</span></div> -->
-                        <div><span class="overflow" style="width:100px;">操作</span></div>
+                        <!--<div><span class="overflow" style="width:100px;">操作</span></div>-->
                     </li>
                 </ul>
                 <div class="content">
@@ -69,21 +69,21 @@
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showData" class="item" >
-                                <div  :title="d.domain" ><span class="overflow" style="width:165px;">{{d.domain}}</span></div>
+                                <div class="align" :title="d.domain" @click="searchDetail(d.domain)"><span class="overflow sit-click" style="width:170px;">{{d.domain}}</span></div>
                                 <div class="align" :title="d.webname" ><span class="overflow" style="width:100px;">{{d.webname}}</span></div>
-                                <div ><span class="overflow" style="width:100px;">{{d.server_ip}}</span></div>
+                                <div class="align" :title="d.server_ip"><span class="overflow" style="width:110px;">{{d.server_ip}}</span></div>
                                 <div  :title="d.web_head"><span class="overflow" style="width:70px;">{{d.web_head}}</span></div>
                                 <div :title="d.web_head_tel"><span class="overflow " style="width:120px;">{{d.web_head_tel}}</span></div>
-                                <div  :title="d.service_prod_name"><span class="overflow" style="width:90px;">{{d.service_prod_name}}</span></div>
-                                <div ><span class="overflow" style="width:100px;">{{d.service_prod_tel}}</span></div>
-                                <div  :title="d.service_prod_addr"><span class="overflow" style="width:165px;">{{d.service_prod_addr}}</span></div>
+                                <div class="align" :title="d.service_prod_name"><span class="overflow" style="width:210px;">{{d.service_prod_name}}</span></div>
+                                <div ><span class="overflow" style="width:140px;">{{d.service_prod_tel}}</span></div>
+                                <div class="align" :title="d.service_prod_addr"><span class="overflow" style="width:300px;">{{d.service_prod_addr}}</span></div>
                                 <!-- <div  :title="d.equip_detect_num"><span class="overflow" style="width:90px;">{{d.equip_detect_num}}</span></div>
                                 <div  :title="d.equip_contribution"><span class="overflow" style="width:90px;">{{d.equip_contribution}}</span></div> -->
                                 <!-- <div  :title="d.microprobe_type"><span class="overflow" style="width:90px;">{{d.microprobe_type}}</span></div> -->
                                 <!-- <div class="align" :title="d.security_software_orgname"><span class="overflow" style="width:80px;">{{d.security_software_orgname}}</span></div> -->
-                                <div><span class="overflow" style="width:100px" @click="searchDetail(d.domain)">
+                                <!--<div><span class="overflow" style="width:100px" @click="searchDetail(d.domain)">
                                    <span class="overflow sit-click" style="width:50px" >详细</span>
-                                </div> 
+                                </div> -->
                             </li>
                         </ul>
                     </Scroll>
@@ -137,7 +137,7 @@
                         <div><span class="overflow" style="width:90px;">设备贡献率</span></div> -->
                         <!-- <div><span class="overflow" style="width:90px;">区域操作员</span></div> -->
                         <!-- <div><span class="overflow" style="width:80px;">所属厂商</span></div> -->
-                        <div><span class="overflow" style="width:100px;">操作</span></div>
+                        <!-- <div><span class="overflow" style="width:100px;">操作</span></div>-->
                     </li>
                 </ul>
                 <div class="content">
@@ -145,9 +145,9 @@
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showDataChange.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showDataChange" class="item" >
-                                <div  :title="d.domain" ><span class="overflow" style="width:165px;">{{d.domain}}</span></div>
+                                <div  :title="d.domain" @click="searchDetailChange(d.domain)"><span class="overflow sit-click" style="width:165px;">{{d.domain}}</span></div>
                                 <div class="align" :title="d.webname" ><span class="overflow" style="width:100px;">{{d.webname}}</span></div>
-                                <div ><span class="overflow" style="width:130px;">{{d.before_server_ip}}</span></div>
+                                <div :title="d.before_server_ip"><span class="overflow" style="width:130px;">{{d.before_server_ip}}</span></div>
                                 <div  :title="d.before_service_prod_name"><span class="overflow" style="width:130px;">{{d.before_service_prod_name}}</span></div>
                                 <div :title="d.after_server_ip"><span class="overflow " style="width:120px;">{{d.after_server_ip}}</span></div>
                                 <div  :title="d.after_service_prod_name"><span class="overflow" style="width:90px;">{{d.after_service_prod_name}}</span></div>
@@ -156,10 +156,10 @@
                                 <!-- <div  :title="d.equip_detect_num"><span class="overflow" style="width:90px;">{{d.equip_detect_num}}</span></div>
                                 <div  :title="d.equip_contribution"><span class="overflow" style="width:90px;">{{d.equip_contribution}}</span></div> -->
                                 <!-- <div  :title="d.microprobe_type"><span class="overflow" style="width:90px;">{{d.microprobe_type}}</span></div> -->
-                                <!-- <div class="align" :title="d.security_software_orgname"><span class="overflow" style="width:80px;">{{d.security_software_orgname}}</span></div> -->
+                                <!-- <div class="align" :title="d.security_software_orgname"><span class="overflow" style="width:80px;">{{d.security_software_orgname}}</span></div> 
                                 <div><span class="overflow" style="width:100px" @click="searchDetailChange(d.domain)">
                                    <span class="overflow sit-click" style="width:50px" >详情</span>
-                                </div>
+                                </div>-->
                             </li>
                         </ul>
                     </Scroll>
@@ -375,17 +375,6 @@ export default {
             this.dataChange=data;
           });
        },
-
-
-
-
-
-
-
-
-
-
-
 
        //查看未备案网站详情
         searchDetail(siteId){
@@ -678,6 +667,7 @@ export default {
   .areapage .body .item .align .overflow{text-align:left}
   .areapage .body .item .overflow.sit-click,.firmpage .body .item .overflow .sit-click{
       color:#03ab67;
+      font-weight:bolder;
   }
  .areapage .body .item .overflow.sit-click:hover,.firmpage .body .item .overflow .sit-click:hover{
       cursor:pointer;

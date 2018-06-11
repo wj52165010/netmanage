@@ -342,13 +342,15 @@ export const HisPercentageExport='HisPercentageExport' //导出统计场所状�
 export const GetSiteMap='GetSiteMap' //获取可视范围内场所集合
 export const SiteMapRegion='SiteMapRegion' //获取按区域汇总场所集合
 export const siteScoreCollect='siteScoreCollect' //获取场所管理问题场所页面信息
+export const waitingHandleSite='waitingHandleSite' //获取场所管理待处理场所饼图数据
+export const waitingHandleList='waitingHandleList' //获取场所管理待处理场所列表数据
 
 /**获取设备管理定制页面信息*/
 export const GetDeviceList='GetDeviceList' //获取设备管理定制页面
 export const DeviceDetectColl='DeviceDetectColl' //获取设备采集趋势
 export const DeviceDetectYesterday='DeviceDetectYesterday' //获取设备昨日采集详情的柱状图
 export const DeviceDetectHistory='DeviceDetectHistory' //获取设备历史采集详情的折线图
-
+export const DeviceScoreCollect='DeviceScoreCollect' //获取设备管理异常设备列表信息
 export const LastDevicePercentage='LastDevicePercentage' //获取设备昨日在离线状况
 export const DeviceDetail='DeviceDetail' //获取设备详情
 export const DeviceHisPercentage='DeviceHisPercentage' //获取设备在离线数据
@@ -362,6 +364,7 @@ export const GetFirmCollColumn='GetFirmCollColumn' //厂商状态数量统计[�
 export const GetFirmCollLine='GetFirmCollLine' //厂商状态数量统计[折线图]
 export const GetFirmSiteExport='GetFirmSiteExport' //厂商状态率按场所汇总导出
 export const GetFirmDeviceExport='GetFirmDeviceExport' //厂商状态率按设备汇总导出
+export const firmDetectRange='firmDetectRange' //厂商采集统计（采集详情）
 export const FirmDetectColl='FirmDetectColl' //获取厂商采集趋势
 export const FirmDetectYesterday='FirmDetectYesterday' //获取厂商昨日采集详情的柱状图
 export const FirmDetectHistory='FirmDetectHistory' //获取厂商历史采集详情的折线图
@@ -369,7 +372,11 @@ export const FirmDetectHistory='FirmDetectHistory' //获取厂商历史采集详
 
 // 获取区域管理定制页面信息
 export const GetRegionList='GetRegionList' //获取区域管理定制页面
-
+export const RegionDetectRange='RegionDetectRange' ///区域采集统计（采集详情）
+export const regionCollColumn='regionCollColumn' ///区域状态数量统计[柱状图]
+export const RegionCollLine='RegionCollLine' //区域状态数量统计[折线图]
+export const RegionSiteExport='RegionSiteExport' //区域状态率按场所汇总导出
+export const RegionDeviceExport='RegionDeviceExport' //区域状态率按设备汇总导出
 
 // 获取app定制页面信息
 export const GetAppList='GetAppList' //获取app定制页面列表信息
@@ -409,3 +416,12 @@ export const ExportAnalyTraceTask='ExportAnalyTraceTask' //导出轨迹分析详
 export const TogetherTeam='TogetherTeam' //获取同行分析组
 export const TogetherTeamTrack='TogetherTeamTrack'//获取同行分析组MAC轨迹
 export const TogetherTeamMainTrack='TogetherTeamMainTrack' //获取同行分析主MAC轨迹
+
+
+/*************** 巡查接口********************/
+export const GetSitePatrol='GetSitePatrol' //获取策略信息
+export const HistoryPolicy='HistoryPolicy' //获取场所策略历史信息
+export const HistoryPlicyItem='HistoryPlicyItem' //获取场所策略项历史信息
+export const DetailPolicy='DetailPolicy' //获取场所详细信息
+export const DetailPlaceInfo='DetailPlaceInfo' //获取场所巡查详细信息
+export const DetailPlacePolicy='DetailPlacePolicy' //获取场所巡查详细策略历史记录

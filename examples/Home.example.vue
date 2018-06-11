@@ -340,8 +340,11 @@ export default {
         this.em.hidden();
         this.pm.hidden();
         this.mainPerson.clear();
-
         this.macm.draw(this.macData);
+        if(_.keys(this.macData).length<=0){
+          tool.info('暂无相关数据');
+          return;
+        }
       }
 
       if(this.showMapIndex==4){

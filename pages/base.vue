@@ -5,7 +5,7 @@
        <!--加载中标识-->
         <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index:100;">
             <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;"><i class="fa fa-spinner fa-pulse" style="color:#98e32c;"></i></div></div>
-        </div>
+        </div>    
         <!--相关页面过滤条件-->
         <div class="filter_container">
 
@@ -74,7 +74,6 @@
                 </div>
             </div>
         </div>
-
         <HTag :tags="pages" @change="tagChange">
                 <div slot="t0" style="height:100%;width:100%;">
                     <!--基础数据-->
@@ -413,7 +412,8 @@ export default {
           {name:'虚拟身份采集',num:0,icon:'fa fa-id-card-o',info:[{name:'网吧',val:'0'},{name:'非经',val:'0'},{name:'WIFI',val:'0'}],tip:'截止时间:当前',subTip:'总数'},
           {name:'手机号码采集',num:0,icon:'fa fa-phone-square',info:[{name:'无线',val:'0'},{name:'非经',val:'0'},{name:'非经',val:'0'}],tip:'截止时间:当前',subTip:'总数'},
           {name:'Mac采集',num:0,icon:'fa fa-sticky-note-o',info:[{name:'围栏',val:'0'},{name:'无线',val:'0'}],tip:'截止时间:当前',subTip:'总数'},
-      ],
+      ],    
+      viewTable:"statistics",                        //考核和统计相互切换的标识
       pages:[{name:'数据总揽',icon:'fa fa-tag'},{name:'详情统计',icon:'fa fa-tag'}],
       pageIndex:0,
       curKind:null,

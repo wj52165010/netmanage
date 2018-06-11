@@ -1710,7 +1710,22 @@ export default new Vuex.Store({
                 });
             });
         },
-
+        //获取场所管理待处理场所饼图数据
+        [types.waitingHandleSite]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.waitingHandleSite(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //获取场所管理待处理场所列表数据
+        [types.waitingHandleList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.waitingHandleList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },        
 
         //获取设备管理定制页面
         [types.GetDeviceList]({commit},data){
@@ -1776,6 +1791,14 @@ export default new Vuex.Store({
                 });
             });
         },
+        //获取设备管理异常设备列表信息
+        [types.DeviceScoreCollect]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DeviceScoreCollect(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },        
         //获取可视范围内场所集合
         [types.GetDeviceMap]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -1841,6 +1864,14 @@ export default new Vuex.Store({
                     resolve(res);
                 });
             });
+        },        
+        //厂商采集统计（采集详情）
+        [types.firmDetectRange]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.firmDetectRange(data).then(res=>{
+                    resolve(res);
+                });
+            });
         },
         //获取厂商昨日采集详情的柱状图
         [types.FirmDetectYesterday]({commit},data){
@@ -1868,6 +1899,47 @@ export default new Vuex.Store({
                 });
             });
         },
+        //区域采集统计（采集详情）
+        [types.RegionDetectRange]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.RegionDetectRange(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //区域状态数量统计[柱状图]
+        [types.regionCollColumn]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.regionCollColumn(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },         
+        //区域状态数量统计[折线图]
+        [types.RegionCollLine]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.RegionCollLine(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },        
+        //区域状态率按场所汇总导出
+        [types.RegionSiteExport]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.RegionSiteExport(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },  
+        //区域状态率按设备汇总导出
+        [types.RegionDeviceExport]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.RegionDeviceExport(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },  
+
 
         //获取app定制页面列表信息
         [types.GetAppList]({commit},data){
@@ -2060,8 +2132,55 @@ export default new Vuex.Store({
                     resolve(res);  
                 });
             });
+        },
+        //获取场所策略
+        [types.GetSitePatrol]({commit},{code}){
+            return new Promise((resolve,reject)=>{
+                ser.GetSitePatrol(code).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //获取场所策略历史信息
+        [types.HistoryPolicy]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.HistoryPolicy(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //获取场所策略项历史记录
+        [types.HistoryPlicyItem]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.HistoryPlicyItem(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //获取场所详细信息
+        [types.DetailPolicy]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DetailPolicy(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //获取场所巡查详细信息
+        [types.DetailPlaceInfo]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DetailPlaceInfo(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //获取场所巡查详细策略历史记录
+        [types.DetailPlacePolicy]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.DetailPlacePolicy(data).then(res=>{
+                    resolve(res);  
+                });
+            });
         }
-
     },
     modules:{
         main,
