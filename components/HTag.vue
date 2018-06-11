@@ -62,6 +62,7 @@ export default {
             
         this.$store.commit(BODY_RESIZE,()=>{
             this.sly.reload();
+            this.sly.reload();
             this.blnPage=this.sly.pages.length>1;
         });
         

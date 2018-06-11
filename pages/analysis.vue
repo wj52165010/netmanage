@@ -806,6 +806,7 @@ export default {
       let self=this;
       let curLayerIndex=null;//当前弹窗实例索引
       let layero=null;
+
       tool.open(function(){
         let condition='';
         let taskKinds=tool.Clone(taskObject);
@@ -1197,6 +1198,7 @@ export default {
             curLayerIndex=index;
             layero=layeroa;
           },
+          store:self.$store,
           context:{
             pickerOptions2: {
               disabledDate(time) {
