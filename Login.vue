@@ -3,7 +3,7 @@
     <div id="login" class="Login">
         <!--动态登录页面-->
         <div class="dynLogin" v-if="!blnStaticShow">
-            <div class="title">互联网管理综合应用平台</div>
+            <div class="title">互联网管理综合应用系统</div>
             <div class="logo"><img src="/static/logo.png" style="width:100px;height:100px;" /></div>
             <div class="input"><div class="label"><i class="fa fa-user" /></div><div class="option"><input class="form-control" placeholder="请输入账号" type="text" v-model="name"  autocomplete="off"  /></div></div>
             <div class="input"><div class="label"><i class="fa fa-unlock-alt" /></div><div class="option"><input type="password" placeholder="请输入密码" v-model="password" /></div></div>

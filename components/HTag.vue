@@ -35,7 +35,6 @@ export default {
     tags(){
         this.$nextTick(()=>{
             this.sly.reload();
-            console.log(this.sly.pages);
             this.blnPage=this.sly.pages.length>1;
         });
     }

@@ -54,15 +54,15 @@
             <Scroll :listen="data" ref="scroll">
               <div class="table_conatienr">
                 <template v-for="d in data">
-                  <div class="row" @click="lookDeail(d)">
-                      <div class="column" :title="d.netbar_wacode" style="width:150px;"><span class="overflow" style="width:150px;">{{d.netbar_wacode}}</span></div>
+                  <div class="row">
+                      <div class="column" :title="d.netbar_wacode" style="width:150px;" @click.stop="searchSiteDetail(d.netbar_wacode,d.microprobe_type)"><span class="overflow bold" style="width:150px;">{{d.netbar_wacode}}</span></div>
                       <div class="column" :title="d.netbar_name" style="width:150px;"><span class="overflow" style="width:150px;">{{d.netbar_name}}</span></div>
                       <div class="column" :title="d.netbar_address"><span class="overflow" :style="{width:column_w+'px'}">{{d.netbar_address}}</span></div>
                       <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{converTime(d.log_time)}}</span></div>
                       <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">{{d.postNum}}</span></div>
-                      <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">{{d.itemNum}}</span></div>
+                      <div class="column" style="width:80px;" @click.stop="lookDeail(d)"><span class="overflow bold" style="width:80px;">{{d.itemNum}}</span></div>
                       <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.user_name}}</span></div>
-                      <div class="column" style="width:100px;" @click.stop="lookRes(d)"><span class="overflow" style="width:100px;text-decoration:underline;">{{d.is_pass=='1'?'合格':'不合格'}}</span></div>
+                      <div class="column" style="width:100px;" @click.stop="lookRes(d)"><span class="overflow bold" style="width:100px;">{{d.is_pass=='1'?'合格':'不合格'}}</span></div>
                   </div>
                 </template>
               </div>
@@ -83,7 +83,7 @@ import Vue from 'vue'
 import Scroll from 'components/scroll'
 import PlaceSearch from 'components/PlaceSearch'
 
-import {BODY_RESIZE,GetSitePatrol,HistoryPolicy,HistoryPlicyItem,DetailPolicy,DetailPlaceInfo,DetailPlacePolicy} from '../store/mutation-types'
+import {BODY_RESIZE,GetSitePatrol,HistoryPolicy,HistoryPlicyItem,DetailPolicy,DetailPlaceInfo,DetailPlacePolicy,SiteDetail} from '../store/mutation-types'
 export default {
   name: 'PatrolList',
   components:{
@@ -172,6 +172,224 @@ export default {
 
         //console.log(tool.Clone(this.data));
       });
+    },
+
+    //查看场所详情
+    searchSiteDetail(siteId,type){
+
+          let self=this;
+          tool.open(function(){
+              // 网吧和非网吧分开  html1：网吧    html2：非网吧
+              let html1=`<div name="container" style="width:100%;height:100%;padding: 10px;" >
+                          <!--加载中标识-->
+                          <div v-if="detaillnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 10px;font-size: 50px;">
+                              <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+                          </div>
+                          <div style="width:100%;height:100%" v-if="!detaillnLoading">
+                              <div  class="row">
+                                  <div class="col-md-12 item_label_left item_label_title">场所信息：</div>
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">场所名称：</div>
+                                  <div class="col-md-4">{{detailData.netbar_name}}</div>
+                                  <div class="col-md-2 item_label_right">场所编码：</div>
+                                  <div class="col-md-4">{{detailData.netbar_wacode}}</div>                                
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">营业状态：</div>
+                                  <div class="col-md-4">{{detailData.business_state}}</div>
+                                  <div class="col-md-2 item_label_right">场所状态：</div>
+                                  <div class="col-md-4">{{detailData.online_state}}</div>                                
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">上网方式：</div>
+                                  <div class="col-md-4">{{detailData.connect_mode  }}</div>
+                                  <div class="col-md-2 item_label_right">申报IP：</div>
+                                  <div class="col-md-4">{{detailData.access_ip}}</div>                                
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">终端状况：</div>
+                                  <div class="col-md-4">申报终端：{{detailData.net_terminal_num}}/检测终端：{{detailData.actual_terminal}}/在线终端：{{detailData.internet_users}}</div>
+                                  <div class="col-md-2 item_label_right">最近联系时间：</div>
+                                  <div class="col-md-4">{{detailData.capture_time}}</div>                                
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">所属派出所：</div>
+                                  <div class="col-md-4">{{detailData.policestation_name}}</div>
+                                  <div class="col-md-2 item_label_right">所属地区：</div>
+                                  <div class="col-md-4">{{detailData.region_name}}</div>                                
+                              </div>     
+                              <div  class="row">
+                                  <div class="col-md-12 item_label_left item_label_title">场所负责人：</div>
+                              </div>                                                                                  
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">法人姓名：</div>
+                                  <div class="col-md-2">{{detailData.law_principal_name}}</div>
+                                  <div class="col-md-1 item_label_right">证件号:</div>
+                                  <div class="col-md-3">{{detailData.law_principal_certificate_id}}</div>     
+                                  <div class="col-md-2 item_label_left">联系电话：</div>
+                                  <div class="col-md-2">{{detailData.law_principal_tel}}</div>                           
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_right">信息安全员：</div>
+                                  <div class="col-md-2">{{detailData.infoman_name}}</div> 
+                                  <div class="col-md-1 item_label_left">证件号:</div>
+                                  <div class="col-md-3">{{detailData.infoman_certificate_id}}</div>
+                                  <div class="col-md-2 item_label_right">联系电话：</div>
+                                  <div class="col-md-2">{{detailData.infoman_tel}}</div>                                  
+                              </div>
+                              <div  class="row">
+                                  <div class="col-md-12 item_label_left item_label_title">所属网监：</div>
+                              </div>     
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">所属网监部门：</div>
+                                  <div class="col-md-2">{{detailData.wa_department}}</div>   
+                                  <div class="col-md-2 item_label_left">网监负责人：</div>
+                                  <div class="col-md-2">{{detailData.supervisor}}</div>
+                                  <div class="col-md-2 item_label_left">联系电话：</div>
+                                  <div class="col-md-2">{{detailData.supervisor_tel_tel}}</div>                                     
+                              </div>
+                              <div  class="row">
+                                  <div class="col-md-12 item_label_left item_label_title">所属厂商：</div>
+                              </div>                                   
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_right">所属厂商：</div>
+                                  <div class="col-md-2">{{detailData.security_software_orgname}}</div>       
+                                  <div class="col-md-2 item_label_left">厂商负责人：</div>
+                                  <div class="col-md-2">{{detailData.contactor}}</div>     
+                                  <div class="col-md-2 item_label_right">联系电话：</div>
+                                  <div class="col-md-2">{{detailData.contactor_tel}}</div>                    
+                              </div>
+                              <div id="siteMapOne" style="width:94%;height:200px;margin:0 auto;border:1px solid #aaa">
+                              </div>
+                          </div>
+                      </div>`;
+              let html2=`<div name="container" style="width:100%;height:100%;padding: 10px;" >
+                          <!--加载中标识-->
+                          <div v-if="detaillnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 10px;font-size: 50px;">
+                              <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+                          </div>
+                          <div style="width:100%;height:100%" v-if="!detaillnLoading">
+                              <div  class="row">
+                                  <div class="col-md-12 item_label_left item_label_title">场所信息：</div>
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">场所名称：</div>
+                                  <div class="col-md-4">{{detailData.netbar_name}}</div>
+                                  <div class="col-md-2 item_label_right">场所编码：</div>
+                                  <div class="col-md-4">{{detailData.netbar_wacode}}</div>                                
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">营业状态：</div>
+                                  <div class="col-md-4">{{detailData.business_state}}</div>
+                                  <div class="col-md-2 item_label_right">场所状态：</div>
+                                  <div class="col-md-4">{{detailData.online_state}}</div>                                
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">挂载设备：</div>
+                                  <div class="col-md-4"><span style="color:green">在线：{{detailData.online_device}}</span>/<span style="color:red">异常：{{detailData.abnormal_device}}</span>/<span style="color:#000">离线：{{detailData.offline_device}}</span></div>
+                                  <div class="col-md-2 item_label_right">最近联系时间：</div>
+                                  <div class="col-md-4">{{detailData.capture_time}}</div>                                
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">经营性质：</div>
+                                  <div class="col-md-4">{{detailData.business_nature}}</div>
+                                  <div class="col-md-2 item_label_right">数据来源：</div>
+                                  <div class="col-md-4">{{detailData.microprobe_type}}</div>                                
+                              </div>
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">场所类型：</div>
+                                  <div class="col-md-4">{{detailData.netsite_type}}</div>
+                                  <div class="col-md-2 item_label_right">所属派出所：</div>
+                                  <div class="col-md-4">{{detailData.policestation}}</div>                                
+                              </div>     
+                              <div  class="row">
+                                  <div class="col-md-12 item_label_left item_label_title">网络接入信息：</div>
+                              </div>                                                                                  
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">网络服务商：</div>
+                                  <div class="col-md-2">{{detailData.access_servicecode}}</div>
+                                  <div class="col-md-1 item_label_right" style="padding-left:0">接入方式:</div>
+                                  <div class="col-md-3">{{detailData.connect_mode}}</div>     
+                                  <div class="col-md-2 item_label_left">账号或IP：</div>
+                                  <div class="col-md-2">{{detailData.access_ip}}&nbsp;&nbsp;&nbsp;&nbsp;{{detailData.auth_account}}</div>                           
+                              </div>
+                              <div  class="row">
+                                  <div class="col-md-12 item_label_left item_label_title">场所负责人：</div>
+                              </div>                                                                                  
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_left">法人姓名：</div>
+                                  <div class="col-md-2">{{detailData.law_principal_name}}</div>
+                                  <div class="col-md-1 item_label_right">证件号:</div>
+                                  <div class="col-md-3">{{detailData.law_principal_certificate_id}}</div>     
+                                  <div class="col-md-2 item_label_left">联系电话：</div>
+                                  <div class="col-md-2">{{detailData.law_principal_tel}}</div>                           
+                              </div>
+                              <div  class="row">
+                                  <div class="col-md-12 item_label_left item_label_title">所属厂商：</div>
+                              </div>                                   
+                              <div class="row site-detail-row">
+                                  <div class="col-md-2 item_label_right">所属厂商：</div>
+                                  <div class="col-md-2">{{detailData.security_software_orgname}}</div>       
+                                  <div class="col-md-2 item_label_left">厂商负责人：</div>
+                                  <div class="col-md-2">{{detailData.contactor}}</div>     
+                                  <div class="col-md-2 item_label_right">联系电话：</div>
+                                  <div class="col-md-2">{{detailData.contactor_tel}}</div>                    
+                              </div>
+                              <div id="siteMapOne" style="width:94%;height:200px;margin:0 auto;border:1px solid #aaa">
+                              </div>                   
+                          </div>
+                      </div>`;
+              let param={
+                      title:'场所详情',
+                      content:type=="120" ? html1 : html2,
+                      skin:'site-detail-container',
+                      area:['1000px','630px'],
+                      context:{
+                          detailData:{},
+                          detaillnLoading:true,
+                          map:null,
+                          loadDetail(){
+                              self.$store.dispatch(SiteDetail,{netbar_wacode:siteId}).then(res=>{
+                                  if(res.msg.code!='successed')return;
+                                  param.selfData.detaillnLoading=false;
+                                  param.selfData.detailData=res.biz_body;
+                                  param.selfData.detailData.capture_time = (param.selfData.detailData.capture_time && param.selfData.detailData.capture_time!='0') ? tool.DateByTimestamp(param.selfData.detailData.capture_time,'yyyy-MM-dd hh:mm:ss'):'无';
+                                  
+                                  self.$nextTick(()=>{
+                                      let id=document.getElementById("siteMapOne");
+                                      param.selfData.map = new BMap.Map(id,{enableMapClick:false,minZoom:13,maxZoom:18});          // 创建地图实例  
+                                      let point = new BMap.Point(param.selfData.detailData.longitude, param.selfData.detailData.latitude);  // 创建点坐标                                          
+                                      param.selfData.map.centerAndZoom(point, 13);                 // 初始化地图，设置中心点坐标和地图级别 
+                                      param.selfData.map.enableScrollWheelZoom(true);              // 启动鼠标滚轮缩放
+                                      let marker = new BMap.Marker(new BMap.Point(param.selfData.detailData.longitude, param.selfData.detailData.latitude)); // 创建点
+                                      param.selfData.map.addOverlay(marker);                      //将点加入地图中
+                                      let top_left_navigation = new BMap.NavigationControl({author:BMAP_NAVIGATION_CONTROL_ZOOM});  //左上角，添加默认缩放平移控件
+                                      //param.selfData.map.addControl(top_left_navigation);   
+                                      let opts = {
+                                          width : 450,     // 信息窗口宽度
+                                          height: 30,     // 信息窗口高度
+                                          title : '场所地址：'+param.selfData.detailData.netbar_address , // 信息窗口标题
+                                      }
+                                      let infoWindow = new BMap.InfoWindow("经纬度："+param.selfData.detailData.longitude+' , '+param.selfData.detailData.latitude, opts);
+                                      
+                                      marker.addEventListener("click", function(){          
+                                          param.selfData.map.openInfoWindow(infoWindow,point); //开启信息窗口
+                                      });
+                                  });
+
+                              
+                              
+                              });
+                          }
+                      },
+                      success(){
+                          param.selfData.loadDetail();    
+                      },
+                  };
+
+              return param;
+          }());             
     },
     //查看详细
     lookDeail(d){
@@ -331,7 +549,154 @@ export default {
   }
 }
 </script>
+<style lang="less">
+    /* 场所详情样式*/
+   .site-detail-container .layui-layer-title{
+        background-color: #03ab67;
+        font-weight: 700;
+        color:#fff;
+    }
+    .site-detail-container .site-detail-row{
+        margin: 0px;
+        line-height: 30px;
 
+    }
+    .site-detail-container .site-detail-row .item_label_left{
+        text-align: right;
+
+    }
+    .site-detail-container .site-detail-row .item_label_left{
+        text-align: right;
+
+    }
+    .site-detail-container .item_label_title{
+        font-weight: 900;
+        text-indent: 10px;
+        line-height: 25px;
+    }
+    .site-detail-container .site-detail-row .item_label_right{
+        text-align: right;
+
+    }
+
+    /*挂在设备详情*/
+    .device-detail-container .layui-layer-title{
+        background-color: #03ab67;
+        font-weight: 700;
+        color:#fff;
+    }
+    .device-detail-container .mount-table .header div{
+        display: inline-block;
+    }
+    .device-detail-container .mount-table .header{
+        display: table-row;
+    }
+    .device-detail-container .mount-table .header .mount_item{
+        display: table-cell;
+        font-weight: bolder;
+        text-align: center;
+        background-color: #E5E5E5;
+        line-height: 30px;
+        padding: 5px 5px;
+        border: 1px solid #C9C9C9;
+    }
+    .device-detail-container .mount-table .header .mount_item .overflow{
+        display: block;
+    }
+    .device-detail-container .mount-table .content .mount_item{
+        display: table-cell;
+        font-weight: normal;
+        text-align: center;
+        line-height: 30px;
+        padding: 5px;
+        border: 1px solid #C9C9C9;
+
+    }
+    .device-detail-container .red{color:red}
+    .device-detail-container .green{color:green}
+    .device-detail-container .mount-table .content .mount_item .overflow{
+        width:100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        display: block;
+    }
+
+
+    /* 数据采集趋势*/
+    .status-detail-container .layui-layer-title{
+        background-color: #03ab67;
+        font-size: 16px;
+        color: #fff;
+    }
+    .status-detail-container .tit-row{
+        height:30px;
+        padding:0 10px;
+        margin-bottom: 6px;
+    }
+    .status-detail-container .tit-row .tit-bars{
+        display: inline-block;
+        text-align: center;
+        margin: 0px 5px;
+        cursor: pointer;
+        width: 73px;
+        line-height: 25px;
+        background-color: #fff;
+        color: #000;
+        border:1px solid #04AB66;
+        border-radius: 6px;
+    }
+
+    .status-detail-container .tit-row .tit-bars:hover{
+         background-color: #04AB66;
+        color: #fff;
+        border:1px solid #04AB66;        
+    }
+    .status-detail-container .tit-row .tit-bars.active{
+        background-color: #04AB66;
+        color: #fff;
+        border:1px solid #04AB66;        
+    }
+    .status-detail-container .data-row div{
+        display: inline-block;
+    }
+    .status-detail-container .data-row .tda-ert{
+        width: 100%;
+        margin: 10px 0 7px;
+        padding: 0 15px;
+        font-size: 12px;
+    }
+    .status-detail-container .data-row .lefts span{
+        display: inline-block;
+        margin-right: 40px;
+        margin-left: 5px;
+    }
+    .status-detail-container .data-row .rights{
+        float:right;
+    }
+    .status-detail-container .data-row .rights .sele-time{
+        width: 66px;
+        text-align: center;
+        color: #333645;
+        border-bottom: 2px solid #CCC;
+        margin: 0 3px;
+        cursor: pointer;
+    }
+    .status-detail-container .data-row .rights .sele-time:hover{
+        border-bottom: 2px solid #04AB66;       
+    }
+    .status-detail-container .data-row .rights .sele-time.active{
+        border-bottom: 2px solid #04AB66;       
+    }
+    .status-detail-container .data-row .el-tooltip:hover{
+    cursor: pointer;
+    color: #03ab67;
+  }  
+  .status-detail-container .data-row .el-tooltip.active{
+    cursor: pointer;
+    color: #03ab67;
+  } 
+</style>
 <style lang="less">
   @import "../css/variables.less";
   .patraol_addPop_detail .detail_item{width:100%;margin-bottom:10px;.border('');border-radius:5px;}
@@ -392,7 +757,10 @@ export default {
 .PatrolList .option .item{display:inline-block;margin:2px 0;}
 
 
-.PatrolList .table_body .row{cursor:pointer;}
+.PatrolList .table_body .row{}
+
+.PatrolList .table_body .row .bold{font-weight:bold;color:#03ab67;}
+.PatrolList .table_body .row .bold:hover{text-decoration:underline;cursor:pointer;}
 //列表显示样式
 @header_H:40px;
 .PatrolList .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
