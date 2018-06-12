@@ -49,6 +49,7 @@ import NavPage from './components/NavPage'
 // import {tool} from './js/tool.js'
 let Rx = require('rxjs/Rx');
 
+
 import {Reg_Navigation_Func,Reg_Del_Nav_Func,Reg_Navigation_Refresh,Get_Operate,Set_System_Menus,Add_System_Menus,SetSource,FieldType,SetFieldKind,FormatDatas,SetFormatData,FormatSearch,SetFormatSearch,
         RSet_System_Menus,Reg_Rx,Add_History_Menu,RegVirType,GetUser,Date_Source,SET_ALL_TABLE_DATA,GetFirm,GetMenuKind,SetMenuKind,MenuChangeEven,DelMenu,broastBacktrack} from './store/mutation-types'
 
@@ -266,7 +267,6 @@ export default {
     //获取菜单类型集合
     let MenuKind=[];
     this.$store.dispatch(GetMenuKind).then(res=>{
-
       this.$store.commit(SetMenuKind,res.biz_body);
       MenuKind=this.$store.getters.MenuKind;
       //添加一个测试菜单分类(非测试可删除)

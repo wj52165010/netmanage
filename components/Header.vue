@@ -7,7 +7,7 @@
          <img class="user_img" style="height:50px;" src="../assets/logo.png" />
        </div>
        <div class="info">
-         <div class="user">
+         <div class="user" >
            <ul>
              <li class="user_imgae"><img id="user_imgae" class="user_img" src="../assets/noperson.png" style="width:40px;height:40px;" /></li>
              <li class="user_info"><div class="user_info_name" :title="userInfo.name" :class="{simpleName:!userInfo.department}">{{userInfo.name}}</div><div class="user_info_desc" :title="userInfo.department">{{userInfo.department}}</div></li>

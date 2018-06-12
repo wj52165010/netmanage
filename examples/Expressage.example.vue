@@ -244,7 +244,14 @@ export default {
       });
     },
     lookTask(t){
-      if(!parseInt(t.result_count)){tool.info('没有相关结果!'); return;}
+      if(!parseInt(t.result_count)){
+        tool.info('没有相关结果!');
+        if(this.pm)this.pm.destroy(); 
+        this.posPointers=[];
+        this.detailData=[];
+        this.curTask=null;
+        return;
+      }
       this.getTaskDetail(t);
       _.each(this.posPointers,(l)=>this.map.removeOverlay(l));
       this.posPointers=[];

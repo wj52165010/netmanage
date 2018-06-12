@@ -65,6 +65,10 @@ export default {
       iconWarnYellow:null,//黄色警告
       iconLoading:null,//加载中图标
       iconPaste:null,//粘贴图标
+      iconIden:null,//身份证图标
+      iconOtherVid:null,//其他虚拟身份图标
+      iconMac:null,//MAC图标
+      iconPhone:null,//手机图标
       searchKey:'',//搜索关键字
       serachInfo:{color:'gray',val:'',code:''},//搜索类型提示信息
       showTypes:['cert','mac','mobile','vid','start'],//当前显示的类型
@@ -72,20 +76,32 @@ export default {
           'cert':{color:'#0168b7',name:'身份证',icon:'fa fa-square'},
           'mac':{color:'#5f52a1',name:'MAC',icon:'fa fa-square'},
           'mobile':{color:'#009a44',name:'手机号',icon:'fa fa-square'},
-          'vid':{color:'#b37d47',name:'虚拟身份',icon:'fa fa-square'},
+          'vid':{color:'#ff9600',name:'虚拟身份',icon:'fa fa-square'},
           'start':{color:'#e74c3c',name:'起点',icon:'fa fa-star'}
       },
       rectSize:{h:70,w:165},
       opionH:30,//操作栏高度
       opionSpace:20,//操作栏之间的间隔
-      roundRadius:10,//矩形圆角弧度
-      rectLineWidth:5,//矩形边框宽度
+      roundRadius:5,//矩形圆角弧度
+      rectLineWidth:1,//矩形边框宽度
       tipTop:-1000,
       tipLeft:-1000,
       tipInfo:'',
       curShowTipId:'',//当前显示提示信息所属节点ID
       clipObj:null,
       clipText:'',
+      vidType:{
+        //QQ
+        '1030001':new Image(),
+        //QQ游戏
+        '1043029':new Image(),
+        //京东
+        '1220005':new Image(),
+        //淘宝
+        '1220007':new Image(),
+        //微信
+        '1030036':new Image(),
+      }
     }
   },
   watch:{
@@ -158,6 +174,32 @@ export default {
     this.iconLoading.src='static/Loading6.gif';
     this.iconPaste=new Image();
     this.iconPaste.src='static/icons-paste.png';
+    this.iconIden=new Image();
+    this.iconIden.src='static/idenIcon.png';
+
+    //MAC图标
+    this.iconMac=new Image();
+    this.iconMac.src='static/MACOuter.png';
+
+    //手机图标
+    this.iconPhone=new Image();
+    this.iconPhone.src='static/PhoneOuter.png';
+
+    //其他虚拟身份图标
+    this.iconOtherVid=new Image();
+    this.iconOtherVid.src='static/OtherVid.png';
+
+    //QQ
+    this.vidType['1030001'].src='static/QQOuter.png';
+    //QQ游戏
+    this.vidType['1043029'].src='static/QQGame.png';
+    //微信
+    this.vidType['1030036'].src='static/WeixinOuter.png';
+    //京东
+    this.vidType['1220005'].src='static/JingDong.png';
+    //淘宝
+    this.vidType['1220007'].src='static/TaoBao.png';
+
 
     this.tipDom=$(this.$el).find(`div[id="${this.tipId}"]`);
 
@@ -368,21 +410,47 @@ export default {
         let size=this.rectSize;
         let ctx=this.ctx;
         ctx.save();
+
+        //画标签
+        switch(p.account_type){
+            case 'cert'://身份证
+                this.drawOption(p.x-size.w/2+15,p.y-size.h/2+16,this.iconIden);
+                break
+            case 'mobile'://手机
+                this.drawOption(p.x-size.w/2+15,p.y-size.h/2+16,this.iconPhone);
+                break;
+            case 'mac'://MAC
+                this.drawOption(p.x-size.w/2+15,p.y-size.h/2+16,this.iconMac);
+                break;
+            default: //虚拟身份
+                let icon=  this.vidType[p.account_type];
+                if(!icon) {icon = this.iconOtherVid;}
+                this.drawOption(p.x-size.w/2+15,p.y-size.h/2+16,icon);
+                break; 
+        }
+       
+
         ctx.font="bold 12px 微软雅黑";
         let rect={w:ctx.measureText(p.text).width,h:ctx.measureText('W').width};
 
         ctx.fillStyle='white';
         ctx.textBaseline='middle';
-        ctx.fillText(p.text,p.x-size.w/2+10,p.y-size.h/2+15);
+        ctx.fillText(p.text,p.x-size.w/2+25,p.y-size.h/2+15);
 
+        // let rectText={w:ctx.measureText(p.text).width,h:ctx.measureText('W').width};
+        // if(p.text){
+        //     this.drawOption(p.x-size.w/2+10 + rectText.w +20,p.y-size.h/2+15,this.iconPaste);//画警告路径
+        // }
+
+        ctx.fillStyle='black';
         ctx.font="12px 微软雅黑";
         let rectOne={w:ctx.measureText(p.subTextOne).width,h:ctx.measureText('W').width};
         ctx.fillText(p.subTextOne,p.x-size.w/2+10,p.y-size.h/2+15+rect.h+10);
 
-        //画复制粘贴按钮
-        if(p.subTextOne){
-            this.drawOption(p.x-size.w/2+10 + rectOne.w +20,p.y-size.h/2+15+rect.h+12,this.iconPaste);//画警告路径
-        }
+        // //画复制粘贴按钮
+        // if(p.subTextOne){
+        //     this.drawOption(p.x-size.w/2+10 + rectOne.w +20,p.y-size.h/2+15+rect.h+12,this.iconPaste);
+        // }
 
         if(p.subTextTwo){
             ctx.font="12px 微软雅黑";
@@ -399,13 +467,13 @@ export default {
         let ctx=this.ctx,size=this.rectSize;
         ctx.save();
         
-        this.drawRadiusRect(p.x-size.w/2,p.y-size.h/2,size.w,size.h,10);
+        this.drawRadiusRect(p.x-size.w/2,p.y-size.h/2,size.w,size.h,this.roundRadius);
 
         ctx.lineWidth=this.rectLineWidth;
         let storeColor=d3.color(p.color).darker(0.5);
         storeColor.opacity=0.7
         ctx.strokeStyle=storeColor;
-        let colorBg=d3.color(p.color);
+        let colorBg='white' //d3.color(p.color);
 
         // var lineGradient = ctx.createLinearGradient (p.x-size.h/2, p.y-size.h/2, p.x, p.y+size.h/2);  
         //     lineGradient.addColorStop(0, colorBg);
@@ -417,6 +485,15 @@ export default {
         
         ctx.fill();
         ctx.stroke();
+
+        ctx.clip();
+
+        //画标题栏
+        
+        
+        ctx.fillStyle=d3.color(p.color);
+        ctx.fillRect(p.x-size.w/2,p.y-size.h/2,size.w,25);
+
 
         ctx.restore();
 
@@ -461,6 +538,11 @@ export default {
 
         this.drawOption(p.x+size.w/2-15,p.y+size.h/2-10,this.iconPin);//画展定位按钮
 
+        //画复制粘贴按钮
+        if(p.text){
+            this.drawOption(p.x+size.w/2 - 15 -20 -20,p.y+size.h/2-10,this.iconPaste);//画警告路径
+        }
+
         //画警告图标
         if(p.isOver){
             this.drawOption(p.x+size.w/2-15,p.y-size.h/2 +15,this.iconWarn);//画警告路径
@@ -475,12 +557,13 @@ export default {
         this.drawText(p);
         //起始点画五角星
         if(p.root){
-            ctx.drawImage(this.iconStar,0,0,50,50,p.x + size.w/2 - 30,p.y-size.h/2+5,20,20);
+            ctx.drawImage(this.iconStar,0,0,50,50,p.x + size.w/2 - 30,p.y-size.h/2+3,18,18);
         }
         //画父节点数据过多现实的提示标签
         if(p.blnMore){
             this.drawTip(p.x + size.w/2 - 45,p.y-size.h/2+15,p.moreData.length);
         }
+
     },
     //画操作栏路径
     drawOptionPath(x,y,w,h){
@@ -855,21 +938,22 @@ export default {
                 }
 
                 //判断是否进入复制图标
-                if(point.subTextOne){
+                if(point.text){
                     let copyDom=$('#clipcontainer');
 
                     s.ctx.font="12px 微软雅黑";
-                    let rectOne={w:s.ctx.measureText(point.subTextOne).width,h:s.ctx.measureText('W').width};
-                    s.drawOption(point.x-size.w/2+10 + rectOne.w +20,point.y-size.h/2+15+rectOne.h+12);//画警告路径
+                    let rectOne={w:s.ctx.measureText(point.text).width,h:s.ctx.measureText('W').width};
+                    
+                    s.drawOption(point.x+size.w/2 - 15 -20 -20,point.y+size.h/2-10);//画警告路径
                     if(s.ctx.isPointInPath(pos.x,pos.y)){
                         let tipW = s.tipDom.width();
-                        s.tipTop=pos.py-size.h/2-10;
-                        s.tipLeft=pos.px-size.w/2 + rectOne.w + 5;
+                        s.tipTop=pos.py-15;
+                        s.tipLeft=pos.px+2;
                         s.curShowTipId=point.id;
                         s.tipInfo='复制';
 
                         if(copyDom.length>0){
-                            s.clipText=point.subTextOne;
+                            s.clipText=point.text;
                             $('#clipcontainer').css({top:(s.tipTop+40 + 60)+'px',left:(s.tipLeft + 10)+'px'});
                         }
         
@@ -973,10 +1057,10 @@ export default {
                     break;
                 case 3://复制
                     if(!document.execCommand("copy")){
-                        this.searchKey=point.subTextOne;
+                        this.searchKey=point.account_type=='mobile'?point.text:point.subTextOne;
                         tool.info('已经复制到搜索框!');
                     }else{
-                        clipboard.writeText(point.subTextOne)
+                        clipboard.writeText(point.account_type=='mobile'?point.text:point.subTextOne)
                         tool.info('复制成功!');
                     }
                     break;
@@ -1109,7 +1193,8 @@ export default {
         //判断是否进入复制图标
         s.ctx.font="12px 微软雅黑";
         let rectOne={w:s.ctx.measureText(point.subTextOne).width,h:s.ctx.measureText('W').width};
-        s.drawOption(point.x-size.w/2+10 + rectOne.w +20,point.y-size.h/2+15+rectOne.h+12);//画警告路径
+       
+        s.drawOption(point.x+size.w/2 - 15 -20 -20,point.y+size.h/2-10);//画警告路径
         if(s.ctx.isPointInPath(x,y)){
             res=true;index=3;
         }
@@ -1293,6 +1378,7 @@ export default {
         let res=[];
         switch(type){
             case 'vid':
+                console.log(tool.Clone(data));
                 res=_.map(data,(v,i)=>{
                     return {
                         id:v.id,
@@ -1326,7 +1412,7 @@ export default {
                         typeCode:'mac',
                         typeHide:!(this.showTypes.indexOf('mac')>=0),
                         color:this.typesParam['mac'].color,
-                        account_type:'',
+                        account_type:'mac',
                     }
                 });
                 break;
@@ -1337,7 +1423,7 @@ export default {
                         x:0,y:0,
                         active:false,
                         parent:false,
-                        text:`${v.certificate_type_note || ''}         ${v.customer_name || ''}`,
+                        text:`${v.certificate_type_note || ''}(${v.customer_name || ''})`,
                         subTextOne:`${v.certificate_code}`,
                         subTextTwo:tool.DateByTimestamp(v.last_time,'yyyy-MM-dd'),
                         type:'身份',
@@ -1345,7 +1431,7 @@ export default {
                         typeCode:'cert',
                         typeHide:!(this.showTypes.indexOf('cert')>=0),
                         color:this.typesParam['cert'].color,
-                        account_type:'',
+                        account_type:'cert',
                     }
                 });
                 break;
@@ -1363,7 +1449,7 @@ export default {
                         typeCode:'mobile',
                         typeHide:!(this.showTypes.indexOf('mobile')>=0),
                         color:this.typesParam['mobile'].color,
-                        account_type:'',
+                        account_type:'mobile',
                     }
                 });
                 break;

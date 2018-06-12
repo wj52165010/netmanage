@@ -84,9 +84,9 @@ export default {
       id:'',
       pages:[{name:'数据接收详情',icon:'fa fa-tag'},{name:'数据有效率',icon:'fa fa-tag'},{name:'错误记录',icon:'fa fa-tag'}],
       blnShowLoading:false,
-      header:['厂商','上报条数','实际条数','有效条数','无效条数','有效率'],
-      column:[{width:0,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'}],
-      showField:'厂商名称,上报条数,实际条数,有效条数,无效条数,有效率',
+      header:['厂商','厂商编码','上报条数','实际条数','有效条数','无效条数','有效率'],
+      column:[{width:0,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'}],
+      showField:'厂商名称,厂商编码,上报条数,实际条数,有效条数,无效条数,有效率',
       searchAction:[
             {name:'接收时间',type:searchType['日期范围'],val:[],options:{
                 //限制只能选择今天之前的日期
@@ -185,6 +185,8 @@ export default {
       },
       //数据有效率搜索
       chart_search(){
+        if(this.blnSearch) return;
+        this.blnSearch=true;
         if(!this.time[0]){tool.info('请选择时间范围'); return;}
         //获取数据质量有效率数据
         this.$store.dispatch(DataRate,{
@@ -192,6 +194,7 @@ export default {
             receive_time_end:tool.DateFormat(this.time[1],'yyyyMMdd'),
             firm_id:_.map(this.site,s=>s.厂商编码).join(',')
         }).then(res=>{
+            this.blnSearch=false;
             this.initLineChart(res.biz_body);
         });
       },
@@ -250,7 +253,7 @@ export default {
                     }
                 },
                 legend: {
-                    data:firmNames
+                    data:firmNames,
                 },
                 toolbox: {
                     show: true,
