@@ -106,6 +106,7 @@ export default {
                 return time.getTime() > Date.now();
             }
         },
+        bodyResizeSub:null,
         blnLoading:false,
         taskType:TaskType,
         limit:10,
@@ -144,9 +145,18 @@ export default {
     this.refreshPage();
 
     this.case_address_w=$(this.$el).width()-1280;
-    this.$store.commit(BODY_RESIZE,()=>{
-          this.case_address_w=$(this.$el).width()-1280;
-    });
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     this.case_address_w=$(this.$el).width()-1280;
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+      this.case_address_w=$(this.$el).width()-1280;
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   computed:{
       showData(){

@@ -32,6 +32,7 @@ export default {
   props:['data','beforeClick'],
   data () {
     return {
+      bodyResizeSub:null,
       node_space:100, //节点间隔
       activeIndex:0,   //活动节点索引
       blnPage:false
@@ -67,11 +68,21 @@ export default {
         sly.init();
 
     this.blnPage=sly.pages.length>1;
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //   sly.reload();
+    //   this.blnPage=sly.pages.length>1;
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
       sly.reload();
       this.blnPage=sly.pages.length>1;
-    });
-  }
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
+  },
 }
 </script>
 

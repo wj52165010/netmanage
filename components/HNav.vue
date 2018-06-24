@@ -38,6 +38,7 @@ export default {
       hoverMenu:null,
       hoverIndex:-1,
       blnHidenTipId:'',
+      bodyResizeSub:null,
     }
   },
   methods:{
@@ -145,15 +146,20 @@ export default {
     });
     sly.init();
     this.blnPage=sly.pages.length>1;
-    
-    this.$store.commit(BODY_RESIZE,()=>{
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
       sly.reload();
       this.blnPage=sly.pages.length>1;
-    });
+    }});
 
     //注册添加历史菜单方法
     this.$store.commit(Reg_Add_History_Menu_Func,this.menu_click);
-  }
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
+  },
 }
 </script>
 

@@ -322,28 +322,40 @@ export default {
       person_auto_column_w:0,//人员信息列表自适应列宽度
       mapLevel:ser.map,
       blnExporting:false,
+      bodyResizeSub:null,
     }
   },
   computed:{
     
   },
   mounted(){
-      this.loadData();
-      
-      let containerEl=$(this.$el).find('div[class="c_container"]');
-      let optBarEl=$(this.$el).find('div[class="option_bar"]');
-      let listEl=$(this.$el).find('div[class="content_container"]'); 
-      
-      listEl.css('height',containerEl.height()-optBarEl.height());
+    this.loadData();
+    
+    let containerEl=$(this.$el).find('div[class="c_container"]');
+    let optBarEl=$(this.$el).find('div[class="option_bar"]');
+    let listEl=$(this.$el).find('div[class="content_container"]'); 
+    
+    listEl.css('height',containerEl.height()-optBarEl.height());
 
-      this.police_auto_column_w=$(this.$el).width()-820;
-      this.person_auto_column_w=$(this.$el).width()-1140;
+    this.police_auto_column_w=$(this.$el).width()-820;
+    this.person_auto_column_w=$(this.$el).width()-1140;
 
-      this.$store.commit(BODY_RESIZE,()=>{
-          listEl.css('height',containerEl.height()-optBarEl.height());
-          this.police_auto_column_w=$(this.$el).width()-820;
-          this.person_auto_column_w=$(this.$el).width()-1140;
-      });
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     listEl.css('height',containerEl.height()-optBarEl.height());
+    //     this.police_auto_column_w=$(this.$el).width()-820;
+    //     this.person_auto_column_w=$(this.$el).width()-1140;
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+    },sub:()=>{
+        listEl.css('height',containerEl.height()-optBarEl.height());
+        this.police_auto_column_w=$(this.$el).width()-820;
+        this.person_auto_column_w=$(this.$el).width()-1140;
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       //刷新页面

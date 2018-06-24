@@ -224,6 +224,7 @@ let converFields=function(data,tables,templateNum,tmpParam){
 
     for(let filed of data)
     {
+
         if(filed.blnExtra && !filed.mapField)continue;
 
         let fieldType=filed.fieldType || '0';

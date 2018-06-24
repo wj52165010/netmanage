@@ -19,6 +19,7 @@ export default {
   props:['data'],
   data () {
     return {
+      bodyResizeSub:null,
       id:'',//地图布局dom唯一标识符
       map:null,//地图控件对象
       searchVal:'',//场所查询条件
@@ -83,12 +84,23 @@ export default {
     });
 
     //监听页面大小改变事件
-    this.$store.commit(BODY_RESIZE,()=>{
-        let child = $('#'+this.id);
-        let parent = child.parents('div');
-        child.css({height:parent.height()+'px',width:parent.width()+'px'});
-    });
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     let child = $('#'+this.id);
+    //     let parent = child.parents('div');
+    //     child.css({height:parent.height()+'px',width:parent.width()+'px'});
+    // });
 
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+      let child = $('#'+this.id);
+      let parent = child.parents('div');
+      child.css({height:parent.height()+'px',width:parent.width()+'px'});
+    }});
+
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     //初始化地图插件

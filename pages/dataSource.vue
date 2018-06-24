@@ -73,6 +73,7 @@ export default {
   },
   data () {
     return {
+      bodyResizeSub:null,
       blnSingle:true,//知否只能选择一个数据源
       blnPage:false,
       blnSourcePage:false,
@@ -231,13 +232,25 @@ export default {
             reload:()=>{source_sly.reload();this.blnSourcePage=source_sly.rel.slideeSize>source_sly.rel.frameSize;}
         });
 
-        this.$store.commit(BODY_RESIZE,()=>{
-             sly.reload();
-             source_sly.reload();
-             this.blnPage=sly.pages.length>1;
-             this.blnSourcePage=source_sly.rel.slideeSize>source_sly.rel.frameSize;
-        });
+        // this.$store.commit(BODY_RESIZE,()=>{
+        //     sly.reload();
+        //     source_sly.reload();
+        //     this.blnPage=sly.pages.length>1;
+        //     this.blnSourcePage=source_sly.rel.slideeSize>source_sly.rel.frameSize;
+        // });
+
+        this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+            this.bodyResizeSub=sub
+        },sub:()=>{
+            sly.reload();
+            source_sly.reload();
+            this.blnPage=sly.pages.length>1;
+            this.blnSourcePage=source_sly.rel.slideeSize>source_sly.rel.frameSize;
+        }});
     });
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       blnSel(item){

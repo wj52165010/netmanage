@@ -55,6 +55,7 @@ export default {
       showData:[],
       timeRange:[0,0],//时间范围
       blnInitTime:false,
+      bodyResizeSub:null,
     }
   },
   watch:{
@@ -122,11 +123,17 @@ export default {
             this.scrollIns.init();
             this.reloadyScroll();
       },0); 
-
-      this.$store.commit(BODY_RESIZE,()=>{
-            this.reloadyScroll();
-      });
+      
+      this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+      },sub:()=>{
+        this.reloadyScroll();
+      }});
+      
    });
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     //时间范围控件改变事件

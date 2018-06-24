@@ -364,17 +364,20 @@ let tool={
     //completeFunc:递归完成后执行的方法
     recur:function(arr,childKey,func,completeFunc){
         if(!arr){return}
+
         var counter=this.counter(completeFunc || function(){});
-        var exec=function(arr,childKey,func,counter,parentArr){
+        var exec=function(arr,childKey,func,counter,parentArr,deep,parent){
             var delIndexs=[];
             for(var i=0;i<arr.length;i++){
                 var blnDelNode=false;
-                if(func){blnDelNode=func(arr[i],i);}
+                arr[i].nodeDeep=deep;
+                if(func){blnDelNode=func(arr[i],i,parent);}
                 if(blnDelNode){delIndexs.push(i);}
     
                 if(arr[i][childKey] && arr[i][childKey].length>0 && !blnDelNode){
                     counter.add();
-                    arguments.callee.apply(this,[arr[i][childKey],childKey,func,counter,parentArr]);
+                
+                    arguments.callee.apply(this,[arr[i][childKey],childKey,func,counter,parentArr,deep+1,arr[i]]);
                 }
             }
             for(var j=0;j<delIndexs.length;j++){
@@ -384,7 +387,38 @@ let tool={
             counter.exec(parentArr);
         };
 
-        exec(arr,childKey,func,counter,arr);
+        exec(arr,childKey,func,counter,arr,0);
+    },
+    recurByFunc:function(arr,baseD,filterFunc,func,completeFunc){
+        if(!arr){return}
+
+        var counter=this.counter(completeFunc || function(){});
+        var exec=function(arr,baseD,filterFunc,func,counter){
+            let d=filterFunc(arr,baseD);
+
+            if(d){
+                counter.add();
+                arguments.callee.apply(this,[arr,d,filterFunc,func,counter]);
+            }
+
+            counter.exec(d);
+        };
+
+        exec(arr,baseD,filterFunc,func,counter);
+    },
+    recurByArr:function(arr,filterFunc,completeFunc){
+        if(!arr){return}
+
+        var counter=this.counter(completeFunc || function(){});
+        var exec=function(arr,filterFunc,counter){
+            for(let i=0;i<arr.length;i++){
+                filterFunc(arr[i],arr);
+            }
+
+            counter.exec(arr);
+        };
+
+        exec(arr,filterFunc,counter);
     },
     isArrayLike:function(obj) {
         if (obj == null || this.isWindow(obj)) {

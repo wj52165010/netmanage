@@ -23,11 +23,11 @@
                     <div class="note">{{item.note}}</div>
                     <div class="create_time">{{showTime(item.create_time)}}</div>
                     <div class="option">
-                        <div class="item" v-show="item.permission.indexOf('*')>=0" style="color:gray;"><i class="fa fa-pencil"></i> 修改</div>
-                        <div class="item" @click="add(item)" v-show="item.permission.indexOf('*')<0"><i class="fa fa-pencil"></i> 修改</div>
+                        <div class="item" v-show="item.permission.indexOf('*')>=0 || permissions.indexOf('*')<0" style="color:gray;"><i class="fa fa-pencil"></i> 修改</div>
+                        <div class="item" @click="add(item)" v-show="item.permission.indexOf('*')<0 && permissions.indexOf('*')>=0"><i class="fa fa-pencil"></i> 修改</div>
 
-                        <div class="item" v-show="item.permission.indexOf('*')>=0" style="color:gray;"><i class="fa fa-trash-o fa-lg"></i> 删除</div>
-                        <div class="item" @click="del(item.user_group_id)" v-show="item.permission.indexOf('*')<0"><i class="fa fa-trash-o fa-lg"></i> 删除</div>
+                        <div class="item" v-show="item.permission.indexOf('*')>=0 || permissions.indexOf('*')<0" style="color:gray;"><i class="fa fa-trash-o fa-lg"></i> 删除</div>
+                        <div class="item" @click="del(item.user_group_id)" v-show="item.permission.indexOf('*')<0 && permissions.indexOf('*')>=0"><i class="fa fa-trash-o fa-lg"></i> 删除</div>
 
                     </div>
                     <div class="permission">{{showMenu(item.permission)}}</div>
@@ -48,6 +48,7 @@ export default {
     return {
       data:[],
       blnLoading:false,
+      permissions:ser.permissions,
     }
   },
   mounted(){
@@ -57,7 +58,7 @@ export default {
       //可以设置的权限菜单
       menus:state=>{
         let res=_.chain(state.menus).map(menu=>{return menu.menus;}).flatten().filter(menu=>{
-            return menu.blnShow;
+            return menu.blnShow && menu.kind!=1;
         }).value();
 
         return res;
@@ -178,8 +179,8 @@ export default {
                                     selMenus:menus || [],
                                     clickItem(menu){
                                         if(_.findLastIndex(pam.selfData.selMenus,item=>{return item.keyid == menu.keyid})>=0){
-                                            pam.selfData.selMenus.splice(_.findLastIndex(pam.selfData.selKeyids,item=>{return item.keyid == menu.keyid}),1);
-                                            pam.selfData.selKeyids.splice(_.indexOf(pam.selfData.selKeyids),1);  
+                                            pam.selfData.selMenus.splice(_.findLastIndex(pam.selfData.selMenus,item=>{return item.keyid == menu.keyid}),1);
+                                            pam.selfData.selKeyids.splice(_.indexOf(pam.selfData.selKeyids,menu.keyid),1);  
                                             return;
                                         }
                                         pam.selfData.selKeyids.push(menu.keyid);

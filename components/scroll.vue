@@ -31,11 +31,18 @@ export default {
         this.initScroll();
     });
     this._store =this.$store || this.store;
-    this._store.commit(BODY_RESIZE,()=>{
-      setTimeout(()=>{
-        this.reloadyScroll();
-      },0);
-    });
+
+    this._store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+        setTimeout(()=>{
+          this.reloadyScroll();
+        },0);
+    }});
+ 
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   data () {
     return {
@@ -43,7 +50,8 @@ export default {
       scrollIns:null,
       blnShowScroll:false,
       scrollDom:null,
-      _store:null
+      _store:null,
+      bodyResizeSub:null,
     }
   },
   methods:{

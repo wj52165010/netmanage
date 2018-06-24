@@ -26,7 +26,7 @@
               </div>
             </div>
          </div>
-         <div class="setting" @click="settingMenu_click()">
+         <div class="setting" @click="settingMenu_click()" >
           <el-tooltip class="item" effect="light" content="定制" placement="left">
             <i class="fa fa-cog fa-fw"></i>
             <div style="font-size:12px;">定制</div>

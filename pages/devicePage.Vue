@@ -31,17 +31,18 @@
             <div v-show="viewTable=='list'" style="height: calc(100% - 50px - -63px - 40px);position:relative">
                 <div class="option">
                     <div class="item">
-                        <span>设备编码：</span>
-                        <div class="input">
-                            <el-input placeholder="设备编码" v-model="query.equipment_id"></el-input>
-                        </div>
-                    </div>
-                    <div class="item">
                         <span>设备名称：</span>
                         <div class="input">
                             <el-input placeholder="设备名称" v-model="query.equipment_name"></el-input>
                         </div>
                     </div>
+                    <div class="item">
+                        <span>设备编码：</span>
+                        <div class="input">
+                            <el-input placeholder="设备编码" v-model="query.equipment_id"></el-input>
+                        </div>
+                    </div>
+
                     <!--<div class="item">
                         <span>场所编码：</span>
                         <div class="input">
@@ -49,33 +50,21 @@
                         </div>
                     </div>-->
                     <div class="item">
-                        <span>场所编码:</span>
+                        <span>场所范围:</span>
                         <div class="input">
                             <PlaceSearch :blnLike="true" :blnClear="true" c_searchKind="1" @place_res="selectSite"></PlaceSearch>
                         </div>
                     </div>                    
-                    <div class="item">
+                    <!--<div class="item">
                         <span>场所名称：</span>
                         <div class="input">
                             <el-input placeholder="场所名称" v-model="query.netbar_name"></el-input>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="item">
                         <span>区域范围：</span>
                         <div class="input">
                             <PlaceSearch  :blnClear="true" c_searchKind="0" @place_res="selectArea"></PlaceSearch>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span>数据来源：</span>
-                        <div class="input">
-                            <el-select v-model="query.microprobe_type" :clearable="true" placeholder="数据来源" :multiple="true" :collapse-tags="true">
-                            <el-option 
-                            v-for="kind in dict_tables.microprobe_type"                            
-                            :label="kind.name"
-                            :value="kind.value">
-                            </el-option>
-                            </el-select>
                         </div>
                     </div>
                     <div class="item">
@@ -102,7 +91,26 @@
                             </el-select>
                         </div>
                     </div>
-
+                    <div class="item" style="font-size:12px;font-weight:normal;text-align:left">
+                        <span>厂商范围：</span>
+                        <div class="input" style="width:250px;display:inline-block;">
+                            <MulDropDwon :data="siteIndfirms" keyProp="name" id="code" placeholder="请选择厂商">
+                                <div v-for="t in firms" @mousedown="firmClick('listInd',t)">{{t.name}}</div>
+                            </MulDropDwon>
+                        </div>
+                    </div>                     
+                    <div class="item">
+                        <span>数据来源：</span>
+                        <div class="input">
+                            <el-select v-model="query.microprobe_type" :clearable="true" placeholder="数据来源" :multiple="true" :collapse-tags="true">
+                            <el-option 
+                            v-for="kind in dict_tables.microprobe_type"                            
+                            :label="kind.name"
+                            :value="kind.value">
+                            </el-option>
+                            </el-select>
+                        </div>
+                    </div>
 
 
                     <div class="item" >
@@ -136,8 +144,8 @@
                                 <div  :title="d.equipment_id" @click="searchDeviceDetail(d.equipment_id)"><span class="overflow sit-click" style="width:180px;">{{d.equipment_id}}</span></div>
                                 <div class="align" :title="d.equipment_name" ><span class="overflow" style="width:150px;">{{d.equipment_name}}</span></div>
                                 <div class="align" :title="d.mac"><span class="overflow" style="width:130px;">{{d.mac}}</span></div>
-                                <div  :title="d.online_state" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]"><span class="overflow" style="width:63px;">{{d.online_state}}</span></div>                                
-                                <div  :title="d.capture_time"><span class="overflow" style="width:140px;">{{d.capture_time}}</span></div>
+                                <div  :title="d.online_state=='在线'?d.online_state_nelOn:d.online_state_nelOff" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]"><span class="overflow" style="width:63px;">{{d.online_state}}</span></div>                                
+                                <div  :title="d.capture_time_desc"><span class="overflow" style="width:140px;">{{d.capture_time_desc}}</span></div>
                                 <div  :title="d.last_upload_num" @click="dataStatus(d.equipment_id,d.equipment_name,d.microprobe_type_code)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
                                 <div :title="d.equipment_type"><span class="overflow" style="width:85px;">{{d.equipment_type}}</span></div>
                                 <!-- <div  :title="d.business_state"><span class="overflow" style="width:65px;">{{d.business_state}}</span></div> -->
@@ -205,7 +213,7 @@
                         </div>                        
                         <div class="his-term item">
                             <span>时间范围：</span>
-                            <div class="input">
+                            <div class="input"  style="width:100px">
                                 <el-select v-model="collType" placeholder="请选择">
                                 <el-option
                                 v-for="kind in staticTime"
@@ -218,7 +226,7 @@
                         </div>
                        <div class="his-term item" style="font-size:12px;font-weight:normal;text-align:left">
                             <span>厂商范围：</span>
-                            <div class="input" style="width:250px;display:inline-block;">
+                            <div class="input" style="width:180px;display:inline-block;">
                                 <MulDropDwon :data="sitefirms" keyProp="name" id="code" placeholder="请选择厂商">
                                     <div v-for="t in firms" @mousedown="firmClick('chart',t)">{{t.name}}</div>
                                 </MulDropDwon>
@@ -258,7 +266,7 @@
                  
                 </div>
                 <!--问题总览列表信息列表显示-->
-                <div class="analysis_list" :class="{ 'noAnimateHide': problemTable=='0', 'noAnimateShow': problemTable=='1','animateShow': problemTable=='2','animateHide': problemTable=='3'}">
+                <div class="analysis_list" style="z-index:1000" :class="{ 'noAnimateHide': problemTable=='0', 'noAnimateShow': problemTable=='1','animateShow': problemTable=='2','animateHide': problemTable=='3'}">
                     <div style="" class="drag-info" @click="changeProblemFun(false)">
                         <div>问题总览&nbsp;&nbsp;<span style="font-size:40px;line-height:10px">︿</span></div>                        
                     </div>
@@ -309,11 +317,11 @@
                         <div><span class="overflow" style="width:180px;">所属厂商</span></div>
                         <div><span class="overflow" style="width:60px;">所属区域</span></div>
                         <!--<div><span class="overflow" style="width:130px;">问题分类</span></div>-->
-                        <div><span class="overflow" style="width:63px;">设备状态</span></div>
+                        <div><span class="overflow" style="width:93px;">当前设备状态</span></div>
                         <div><span class="overflow" style="width:180px;">所属场所</span></div>
                         <div><span class="overflow" style="width:140px;">最近联系时间</span></div>
                         <div><span class="overflow" style="width:72px;">昨日采集</span></div>
-                        <div><span class="overflow" style="width:240px;">问题摘要</span></div>
+                        <div><span class="overflow" style="width:240px;">昨日问题摘要</span></div>
                     
                         </li>
                     </ul>
@@ -327,9 +335,9 @@
                                     <div class="align" :title="d.security_software_orgname"><span class="overflow" style="width:180px;">{{d.security_software_orgname}}</span></div>
                                     <div  :title="d.region_name"><span class="overflow" style="width:60px;">{{d.region_name}}</span></div>
                                     <!--<div class="align" :title="d.abnormal_type"><span class="overflow" style="width:130px;">{{d.abnormal_type}}</span></div>-->
-                                    <div  :title="d.online_state"><span class="overflow" style="width:63px;" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]">{{d.online_state}}</span></div>                                    
+                                    <div  :title="d.online_state=='在线'?d.online_state_nelOn:d.online_state_nelOff"><span class="overflow" style="width:93px;" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]">{{d.online_state}}</span></div>                                    
                                     <div class="align" :title="d.netbar_name" ><span class="overflow" style="width:180px;" v-html="d.netbar_name"></span></div>                                    
-                                    <div  :title="d.last_time"><span class="overflow" style="width:140px;">{{d.last_time}}</span></div>                                    
+                                    <div  :title="d.capture_time_desc"><span class="overflow" style="width:140px;">{{d.capture_time_desc}}</span></div>                                    
                                     <div  :title="d.last_upload_num" @click="dataStatus(d.equipment_id,d.equipment_name,d.microprobe_type_code)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>                                                                    
                                     <div class="align" :title="d.errors"><span class="overflow" style="width:240px;">{{d.errors}}</span></div>
                                                                                                    
@@ -432,6 +440,9 @@ export default {
         Selfirms(){
             this.queryProblem.security_software_orgcodes=_.map(this.Selfirms,s=>s.code).join(',');
         },     
+        siteIndfirms(){
+            this.query.security_software_orgcodes=_.map(this.siteIndfirms,s=>s.code).join(',');
+        },
     },
   data () {
     return {
@@ -474,13 +485,15 @@ export default {
             device_state:'',//设备状态
             equipment_type:'',//设备类型
             limit:20,//每页显示几条数据，默认100
-            skip:0//跳过多少条数据，默认0
+            skip:0,//跳过多少条数据，默认0
+            security_software_orgcodes:"",        //厂商编码，多个用逗号分割
 
         },
         problemTable:'0',              //问题总览列表与页面切换标识（0:不显示，无动画    1： 显示 无动画  2：显示，临时动画   3：隐藏，临时动画）
         firms:[],            //所有厂商数据
         Selfirms:[],         //厂商控件选中的厂商(问题设备列表中的厂商控件)
         sitefirms:[],        //厂商控件选中的厂商(设备在离线柱状图和折线图中的厂商控件)
+        siteIndfirms:[],     //厂商控件选中的厂商(主列表的厂商控件)
         collType:'week',              //时间范围，默认为近一周  (设备在离线柱状图和折线图中)  
         microprobeType:"",            //数据来源， (设备在离线柱状图和折线图中)  
         regionRange:"",               //区域范围， (设备在离线柱状图和折线图中)  
@@ -539,6 +552,8 @@ export default {
                     equipment_name:r.equipment_name,
                     mac:r.mac,
                     online_state:r.online_state,
+                    online_state_nelOn:r.online_state=="在线"?"心跳在线，数据在线":"心跳离线，数据离线",
+                    online_state_nelOff:r.online_state=="异常"?"心跳在线，数据离线或心跳离线，数据在线":"心跳离线，数据离线",
                     capture_time:(r.capture_time&&r.capture_time!='0') ? tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'无',
                     capture_time_desc:r.capture_time_desc,
                     last_upload_num:r.last_upload_num,
@@ -683,7 +698,11 @@ export default {
               case "chart":           
                 if(_.findIndex(this.sitefirms,t=>t.code==d.code)>=0)return;
                 this.sitefirms.push(d);
-                break;          
+                break;    
+              case "listInd":
+                if(_.findIndex(this.siteIndfirms,t=>t.code==d.code)>=0)return;
+                this.siteIndfirms.push(d);
+                break;         
           }
         },      
       //列表，地图和统计相互切换  
@@ -743,10 +762,9 @@ export default {
             title: {
                 text: '昨日概况',
                 x : 50, 
-                y :30, 
                 textStyle: {   
-                    fontSize: 15,
-                    fontWeight:200,
+                    fontSize: 19,
+                    fontWeight:900,
                 }, 
             },
             tooltip: {
@@ -768,7 +786,7 @@ export default {
             legend: {
                 orient : 'vertical',  
                 x : 50,  
-                y : 80,
+                y : 30,
                 itemHeight:20,
                 padding:[20,5,20,5],
                 textStyle: {  
@@ -790,7 +808,6 @@ export default {
                                 color:'#85C226',
                                 label : {
                                     show : true,
-                                    position:'inner', //标签的位置
                                 textStyle : {
                                     fontWeight : 300 ,
                                     fontSize : 12    //文字的字体大小
@@ -807,7 +824,6 @@ export default {
                                 color:'#F8C301',
                                 label : {
                                     show : true,
-                                    position:'inner', //标签的位置
                                     textStyle : {
                                         fontWeight : 300 ,
                                         fontSize : 12    //文字的字体大小
@@ -824,7 +840,6 @@ export default {
                                 color:'#728498',
                                 label : {
                                     show : true,
-                                    position:'inner', //标签的位置
                                 textStyle : {
                                     fontWeight : 300 ,
                                     fontSize : 12    //文字的字体大小
@@ -849,7 +864,8 @@ export default {
         this.myBarChart = echarts.init(myaBarChart);
         option = {
             title: {
-                text: '昨日问题总览'
+                text: '昨日问题总览',
+                x : 0, 
             },
 
             legend: {
@@ -1274,7 +1290,7 @@ export default {
                                     <div class="col-md-2 item_label_left">设备状态：</div>
                                     <div class="col-md-4">{{detailData.online_state}}</div>
                                     <div class="col-md-2 item_label_right">最近联系时间：</div>
-                                    <div class="col-md-4">{{detailData.capture_time}}</div>                                
+                                    <div class="col-md-4">{{detailData.capture_time_desc}}</div>                                
                                 </div>
                                 <div class="row site-detail-row">
                                     <div class="col-md-2 item_label_left">设备类型：</div>
@@ -2164,7 +2180,7 @@ export default {
   }
   .devicepage .chart_container .his-row .optionBar{
     float: right;
-    margin-right: 50px;
+    margin-right: 30px;
   }
   .devicepage .chart_container .his-row .optionBar .el-tooltip{
     margin-right:10px;

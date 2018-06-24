@@ -36,10 +36,22 @@
                             <el-input placeholder="应用名称" v-model="query.app_name"></el-input>
                         </div>
                     </div>
-                    <div class="item">
+                    <!--<div class="item">
                         <span>来源市场:</span>
                         <div class="input">
                             <el-input placeholder="来源市场" v-model="query.source_market"></el-input>
+                        </div>
+                    </div>-->
+                    <div class="his-term item">
+                        <span>来源市场:</span>
+                        <div class="input">
+                                <el-select v-model="query.source_market" placeholder="请选择" :clearable="true">
+                                <el-option
+                                v-for="kind in dict_tables.app_markets"                           
+                                :label="kind.name"
+                                :value="kind.value">
+                                </el-option>
+                                </el-select>
                         </div>
                     </div>
                     <div class="item">
@@ -545,10 +557,9 @@ export default {
             title: {
                 text: 'App概况',
                 x : 50, 
-                y :30, 
                 textStyle: {  
-                    fontSize: 15,
-                    fontWeight:200,
+                    fontSize: 19,
+                    fontWeight:900,
                 }, 
             },
             tooltip: {
@@ -558,7 +569,7 @@ export default {
             legend: {
                 orient : 'vertical',  
                 x : 50,  
-                y : 80,
+                y : 30,
                 itemHeight:20,
                 padding:[20,5,20,5],
                 textStyle: {  
@@ -1298,7 +1309,7 @@ export default {
                     this.problemTable='2';
                     setTimeout(()=>{
                         this.problemTable='1';    
-                    },1000)  
+                    },500)  
                     this.$nextTick(()=>{
                         this.$refs.ABC.reloadyScroll();
                     });
@@ -1308,7 +1319,7 @@ export default {
                 this.problemTable='3';
                 setTimeout(()=>{
                     this.problemTable='0';    
-                },1000) 
+                },500) 
           }
       },
       
@@ -1653,18 +1664,18 @@ export default {
   }
   /*加载动画，逐渐出现 */
   .stiepage .chart_container .analysis_list.animateShow{
-    animation: startAit 1s;
-    -moz-animation: startAit 1s;	/* Firefox */
-    -webkit-animation: startAit 1s;	/* Safari 和 Chrome */
-    -o-animation: startAit 1s;	/* Opera */
+    animation: startAit 0.5s;
+    -moz-animation: startAit 0.5s;	/* Firefox */
+    -webkit-animation: startAit 0.5s;	/* Safari 和 Chrome */
+    -o-animation: startAit 0.5s;	/* Opera */
     top:0;
   }
     /*加载动画，逐渐消失 */
   .stiepage .chart_container .analysis_list.animateHide{
-    animation: finishAit 1s;
-    -moz-animation: finishAit 1s;	/* Firefox */
-    -webkit-animation: finishAit 1s;	/* Safari 和 Chrome */
-    -o-animation: finishAit 1s;	/* Opera */
+    animation: finishAit  0.5s;
+    -moz-animation: finishAit  0.5s;	/* Firefox */
+    -webkit-animation: finishAit  0.5s;	/* Safari 和 Chrome */
+    -o-animation: finishAit  0.5s;	/* Opera */
     top:2000px;        //将这个值改为一个较大的数值，必须远超屏幕高度，用于做动画效果
   }
   //css动画

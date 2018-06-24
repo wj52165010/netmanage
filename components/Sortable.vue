@@ -38,14 +38,24 @@ export default {
   props:['data'],
   data () {
     return {
+      bodyResizeSub:null,
       sortInstance:null,
       sortData:[]//排序后的数组
     }
   },
   mounted(){
-       this.$store.commit(BODY_RESIZE,()=>{
-         this.loadGridly(true);
-       });
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //   this.loadGridly(true);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+    },sub:()=>{
+        this.loadGridly(true);
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   watch:{
     data(val, oldVal){

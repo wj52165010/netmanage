@@ -80,6 +80,8 @@ Vue.component('ShipCar',(resolve)=>{require(['./examples/ShipCar.example'],resol
 Vue.component('Expressage',(resolve)=>{require(['./examples/Expressage.example'],resolve)});
 Vue.component('PublicOpinion',(resolve)=>{require(['./examples/PublicOpinion.example'],resolve)});
 Vue.component('Patrol',(resolve)=>{require(['./examples/Patrol.example'],resolve)});
+Vue.component('StatePerception',(resolve)=>{require(['./examples/StatePerception/index'],resolve)});
+Vue.component('SiteRecords',(resolve)=>{require(['./examples/SiteRecords/index'],resolve)});
 
 
 export default[

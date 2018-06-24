@@ -6,7 +6,7 @@
             <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;">
                 <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;"><i class="fa fa-spinner fa-pulse"></i></div></div>
             </div>
-            <div class="option_bar">
+            <div class="option_bar" v-if="permissions.indexOf('*')>=0">
                 <div class="item" @click="add()"><i class="fa fa-plus"></i> 新增</div>
             </div>
             <div class="group_header">
@@ -23,7 +23,7 @@
                 <div class="option">操作</div>
                 <div class="groups">分组</div>
             </div>
-            <div class="group">
+            <div class="group" :style="{height:permissions.indexOf('*')>=0?'calc(100% - 40px - 40px)':'calc(100% - 40px)'}">
                 <div class="group_item" v-for="item in data">
                     <div class="account">{{item.account}}</div>
                     <div class="name">{{item.name}}</div>
@@ -36,8 +36,10 @@
                     <div class="status">{{statusMap[item.status]}}</div>
                     <div class="note">{{item.note}}</div>
                     <div class="option">
-                        <div class="item" @click="add(item)"><i class="fa fa-pencil"></i> 修改</div>
-                        <div class="item" @click="del(item.user_id)"><i class="fa fa-trash-o fa-lg"></i> 删除</div>
+                        <div class="item" @click="add(item)" v-show="permissions.indexOf('*')>=0"><i class="fa fa-pencil"></i> 修改</div>
+                        <div class="item"  v-show="permissions.indexOf('*')<0" style="color:gray"><i class="fa fa-pencil"></i> 修改</div>
+                        <div class="item" @click="del(item.user_id)" v-show="permissions.indexOf('*')>=0"><i class="fa fa-trash-o fa-lg"></i> 删除</div>
+                        <div class="item"  v-show="permissions.indexOf('*')<0" style="color:gray"><i class="fa fa-trash-o fa-lg"></i> 删除</div>
                     </div>
                     <div class="groups">{{showGroup(item.groups)}}</div>
                 </div>
@@ -61,6 +63,7 @@ export default {
       statusMap:{lock:'锁定',disabled:'禁用',normal:'普通'},
       groups:[],
       blnLoading:false,
+      permissions:ser.permissions,
     }
   },
   mounted(){
@@ -118,13 +121,14 @@ export default {
     //新增修改
     add(updateData){
         let self=this;
+        let permissions=tool.cookie.get('permissions');
 
         tool.open(function(store){
             let html=`
                <InputDir v-if="blnAdd" label="账号" @change="account_change" :val="account" :require="true" tip="必填"/>
                <InputDir label="名称" @change="name_change" :val="name" :require="true" tip="必填" />
-               <InputDir v-if="blnAdd" label="密码" type="pwd" @change="pwd_change" :val="pwd" :require="true" tip="必填" />
-               <InputDir v-if="blnAdd" label="确认密码" ref="confirmPwd" type="pwd" @change="confirmPwd_change" :require="true" tip="必填" :val="confirmPwd" />
+               <InputDir v-if="blnAdd || blnUpdatePwd" label="密码" type="pwd" @change="pwd_change" :val="pwd" :require="blnUpdatePwd?false:true" tip="必填" />
+               <InputDir v-if="blnAdd || blnUpdatePwd" label="确认密码" ref="confirmPwd" type="pwd" @change="confirmPwd_change" :require="blnUpdatePwd?false:true" tip="必填" :val="confirmPwd" />
                <InputDir label="电话" @change="tel_change" :val="tel" :require="true" tip="必填"/>
                <InputDir label="邮箱" @change="email_change" :val="email"/>
                <InputDir label="部门" @change="department_change" :val="department" :require="true" tip="必填"/>
@@ -152,7 +156,7 @@ export default {
                </el-button-group>
                <el-select style="margin-top: 10px;" v-model="accountType" placeholder="请选择用户类型">
                     <el-option
-                        v-for="item in [{name:'网安账号',val:'0'},{name:'厂商账号',val:'1'}]"
+                        v-for="item in [{name:'网安账号',val:'netsafe'},{name:'厂商账号',val:'firm'}]"
                         :key="item.val"
                         :label="item.name"
                         :value="item.val">
@@ -173,14 +177,15 @@ export default {
                 computed:{
                     blnSubmit(){
                         return this.blnAdd?!(this.account && this.name && this.pwd && this.tel && this.department  && this.regionVal.length>0 && this.pwd==this.confirmPwd):
-                                           !(this.account && this.name && this.tel && this.department && this.regionVal.length>0);
+                                           !(this.account && this.name && this.tel && this.department && this.regionVal.length>0 && this.pwd==this.confirmPwd);
                     },
                 },
                 context:{
                     store:store,
+                    blnUpdatePwd:updateData && (updateData.user_id==ser.baseBag.userid || permissions.indexOf('*')>=0),
                     blnAdd:!updateData,
                     account:updateData?updateData.account:'',//账号
-                    accountType:updateData?updateData.accountType:'0', //账号类型
+                    accountType:updateData && updateData.user_type!=undefined?updateData.user_type:'netsafe', //账号类型
                     blnLoginApp:updateData?updateData.blnLoginApp:false,//是否允许登录App
                     name:updateData?updateData.name:'',//姓名
                     pwd:updateData?updateData.pwd:'',//密码
@@ -244,7 +249,8 @@ export default {
                                 region_name:d.regionVal[0]?d.regionVal[0].name || '':'',
                                 status:d.status,
                                 note:d.note,
-                                groups:d.groupVal
+                                groups:d.groupVal,
+                                user_type:d.accountType,
                             };
   
                             self.$store.dispatch(AddUser,data).then(res=>{
@@ -268,6 +274,8 @@ export default {
                             data.status=d.status;
                             data.note=d.note;
                             data.groups=d.groupVal;
+                            data.user_type=d.accountType;
+
                             self.$store.dispatch(UpdateUser,data).then(res=>{
                                 if(!tool.msg(res,'修改用户成功!','修改用户失败!')){return}
                                 updateData.account=d.account;

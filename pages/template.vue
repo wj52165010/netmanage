@@ -159,6 +159,7 @@ export default {
   },
   data () {
     return {
+       bodyResizeSub:null,
        id:'',//页面唯一标识
        simpleTime:{//限制选择今天之前的日期
           disabledDate(time) {
@@ -300,10 +301,19 @@ export default {
           
           this.backtrackList=data.backtrack_list || [];
       }});
+      
+      this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+      },sub:()=>{
+            this.calListH()
+      }});
 
-      this.$store.commit(BODY_RESIZE,()=>{
-          this.calListH()
-      });
+    //   this.$store.commit(BODY_RESIZE,()=>{
+    //       this.calListH()
+    //   });
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   destroyed(){
       this.$store.commit(MenuBacktrackCancel,this.params.model.keyid);

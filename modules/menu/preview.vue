@@ -184,6 +184,7 @@ export default {
                return time.getTime() > Date.now();
            }
        },
+      bodyResizeSub:null,
       tableH:0,//列表显示高度
       pageH:0,
       searchArrType:searchArrType,
@@ -213,9 +214,15 @@ export default {
     this.$store=this.$store || this.store;
     this.tableH=this.getTableH();
     this.pageH=this.getPageH();
-    this.$store.commit(BODY_RESIZE,()=>{
-        this.layout();
-    });
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     this.layout();
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+       this.layout();
+    }});
 
     ser.getVidType().then(res=>{
         this.VirType=res.biz_body;
@@ -247,6 +254,9 @@ export default {
 
    
     
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },    
   methods:{
       layout(){

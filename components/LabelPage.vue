@@ -35,6 +35,7 @@ export default {
         id:null,
         idscrollbar:null,
         sly:null,
+        bodyResizeSub:null,
     }
   },
   watch:{
@@ -59,10 +60,15 @@ export default {
         this.sly.init();
         this.blnPage=this.sly.rel.slideeSize>this.sly.rel.frameSize;
     });
-    
-    this.$store.commit(BODY_RESIZE,()=>{
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         this.reloadSly();
-    });
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       reloadSly(){

@@ -1,11 +1,12 @@
 //服务
 
-//基地址192.168.100.80:3031(http://192.168.23.73:3030)
+//基地址192.168.100.80:3030(http://192.168.23.73:3030)
 //发布地址:172.23.90.8:3030
 
-//let url='http://192.168.23.23:3031';
-let url='http://192.168.100.80:3031';
-
+//let url='http://192.168.23.23:3030';
+//let url='http://192.168.100.80:3030';
+let url='http://192.168.23.73:3030';
+//let url='';
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
 
@@ -2903,6 +2904,87 @@ GetVehicleChart(data){
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }   
 
+  // 考核任务列表
+  examineTaskList(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='task_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+  // 考核任务-考核结果列表
+  examineResultList(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='task_result_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 考核任务-删除考核任务
+  examineDelTask(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='del_task';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 考核任务-导出考核结果
+  examineExportTask(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='export_task_result_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 考核任务-考核规则列表
+  examineRuleList(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='rule_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 考核任务-考核规则新增
+  examineRuleAdd(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='add_rule';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 考核任务-新增考核任务
+  examineAddTask(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='add_task';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }  
+  // 考核任务-获取定时考核设置
+  examineGetTimeSetting(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='get_fixed_time_setting';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }    
+  // 考核任务-修改定时考核设置
+  examineUpdTimeSetting(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='upd_fixed_time_setting';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 考核任务-删除考核任务
+  examineDeleteTask(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='del_task';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
+  // 考核任务-删除考核规则
+  examineDeleteRule(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='del_rule';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+
+
+
+
   // 按厂商统计采集量
   GetFirmCollFirm(data){
     this.baseBag.target='firm';
@@ -3006,11 +3088,28 @@ GetVehicleChart(data){
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }
 
+  //获取场所巡查策略列表
+  GetSitePolicyList(){
+    this.baseBag.target='site_patrol';
+    this.baseBag.method='get_policy_web';
+    this.baseBag.data={};
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
+  //获取场所策略下的具体巡查项
+  GetPatrolItems(policyId){
+    this.baseBag.target='site_patrol';
+    this.baseBag.method='get_policy_items';
+    this.baseBag.data={policy_id:policyId || ''};
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+  
+
   //查看场所策略历史信息
- HistoryPolicy=function({netbar_wacode:code,region,userName,is_pass,skip,limit}){
+ HistoryPolicy=function({netbar_wacode:code,region,userName,is_pass,policy_id,skip,limit}){
   this.baseBag.target='site_patrol';
   this.baseBag.method='get_patrol_log_web';
-  this.baseBag.data={netbar_wacode:code,region,userName,is_pass,skip,limit};
+  this.baseBag.data={netbar_wacode:code,region,userName,is_pass,policy_id,skip,limit};
   return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
  }
 
@@ -3045,6 +3144,77 @@ HistoryPlicyItem=function({policy_id,policy_item_id}){
   this.baseBag.target='site_patrol';
   this.baseBag.method='get_policy_items_log';
   this.baseBag.data={policy_id,policy_item_id};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+RegionDeviceExport=function(data){
+  this.baseBag.target='region';
+  this.baseBag.method='region_coll_column_device_export';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+RegionSiteExport=function(data){
+  this.baseBag.target='region';
+  this.baseBag.method='region_coll_column_site_export';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//添加场所巡查策略
+/**
+ * title://巡查策略名
+ * policy_type://(signle:巡查任务,cycle:定期巡查任务)
+ * note://说明
+ * locus_ids://所属地区及场所 用逗号分隔
+ * policy_item_ids://选择策略项
+ * start_time:0,//开始时间
+ * end_time:0,//结束时间
+ * type://类型 day,week,month
+ */
+AddPlacePolicy=function({title,policy_type,note,locus_ids,policy_item_ids,start_time,end_time,type}){
+  this.baseBag.target='site_patrol';
+  this.baseBag.method='add_policy';
+  this.baseBag.data={title:title || '',policy_type:policy_type || '',note:note || '',locus_ids:locus_ids || '',policy_item_ids:policy_item_ids || '',start_time:start_time || '0',end_time:end_time || '0',type:type || ''};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+/************************** 新网站备案接口 ***************************/
+
+//网站备案-未备案列表
+/**
+ * domain:'',//域名
+ * webname:'',//网站名称
+ * ip:'',//ip地址
+ * isrecord:'',//是否整改,0否,1是
+ */
+WebSiteList=function({domain,webname,ip,isrecord,limit,skip}){
+  this.baseBag.target='web_site';
+  this.baseBag.method='website_list';
+  this.baseBag.data={domain:domain || '',webname:webname || '',ip:ip || '',isrecord:isrecord || '',limit:limit || '',skip:skip || 0};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//网站备案-已备案列表
+/**
+ * domain:'',//域名
+ * webname:'',//网站名称
+ */
+WebSiteRecordList=function({domain,webname,limit,skip}){
+  this.baseBag.target='web_site';
+  this.baseBag.method='website_record_list';
+  this.baseBag.data={domain:domain || '',webname:webname || '',limit:limit || '',skip:skip || 0};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//网站备案-已备案详情
+/**
+ * id:'',//列表中的主键
+ */
+WebSiteRecordDetail=function(id){
+  this.baseBag.target='web_site';
+  this.baseBag.method='website_record_detail';
+  this.baseBag.data={id:id || ''};
   return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
 }
 

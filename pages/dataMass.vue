@@ -76,6 +76,7 @@ export default {
   components:{HList,HTag,MulDropDwon},
   data () {
     return {
+      bodyResizeSub:null,
       beforeToday:{//限制只能选择今天之前的日期
            disabledDate(time) {
                return time.getTime() > Date.now();
@@ -126,12 +127,17 @@ export default {
         });
     });
 
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     this.myLineChart.resize();
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+    },sub:()=>{
         this.myLineChart.resize();
-    });
+    }});
 
-    // //获取数据质量详细页面配置菜单对象
-
+    //获取数据质量详细页面配置菜单对象
     let menus=_.compact(_.flatten(_.pluck(this.$store.getters.Menus,'menus')));
 
     let menu=tool.Clone(_.find(menus,m=>m.keyid=='235'));
@@ -139,6 +145,9 @@ export default {
     menu.id=menu.keyid;
     menu.type=menu.type || 'templatePage';
     this.params.model=menu;
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       //页面刷新
@@ -171,7 +180,7 @@ export default {
                         },
                         value:val.厂商编码
                     });
-        
+      
         let menus=_.flatten(_.pluck(this.$store.getters.Menus,'menus'));
         let menu=tool.Clone(_.find(menus,m=>m.keyid=='235'));
         menu.id=menu.keyid;

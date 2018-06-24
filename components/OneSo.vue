@@ -392,8 +392,6 @@ export default {
           s.fcous.push(b);
         }else{
           Object.assign(f,b);
-
-          console.log(tool.Clone(f));
         }
       },f);
     },
@@ -407,8 +405,8 @@ export default {
       let certificateReg=/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;//身份证验证
       let phoneReg=/^[1][3,4,5,7,8][0-9]{9}$/;//验证手机号
       let imsiReg=/^4600[0,1,2,3,5,6,7]\d{10}$/g;//验证IMSI
-      
-      if(hanziReg.test(v)){return res;}
+
+      if(hanziReg.test(v)){res.push({name:'虚拟身份',val:'vid'});return res;}
       if(macReg.test(v)){res.push({name:'MAC',val:'mac'})}
       if(certificateReg.test(v)){res.push({name:'身份证',val:'cert'})}
       if(phoneReg.test(v)){res.push({name:'手机号',val:'mobile'})}
@@ -478,8 +476,11 @@ export default {
   .OneSo .content_bar .info_bar{height:~'calc(100% - @{titleH})';width:100%;position:relative;font-size:12px;padding:10px;}
   .OneSo .content_bar .info_bar .btn_container{position:absolute;bottom:5px;right:0px;}
   .OneSo .content_bar .info_bar .btn_container .btn_item{
-    float:left;font-size:12px;.border('',@Font_Hover_Col);border-radius:5px;margin-right:5px;padding:3px 10px;color:white !important;
+    float:left;font-size:12px;.border('',@Font_Hover_Col);border-radius:5px;margin-right:5px;padding:3px 10px;color:white;
   }
+
+  
+
   html{.TCol(~".OneSo .content_bar .info_bar .btn_container .btn_item",'bc');}
   html{.TCol(~".OneSo .content_bar .info_bar .btn_container .btn_item");}
 

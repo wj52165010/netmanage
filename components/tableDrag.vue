@@ -101,6 +101,7 @@ export default {
   components:{},
   data () {
     return {
+      bodyResizeSub:null,
       hoverHeaderIndex:-1,//鼠标悬浮列头索引
       blnSwitchHeader:false,
       id:0,
@@ -288,12 +289,21 @@ export default {
             });
         },0);
 
-        this.$store.commit(BODY_RESIZE,()=>{
+        // this.$store.commit(BODY_RESIZE,()=>{
+        //     this.layout();
+        // });
+
+        this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+            this.bodyResizeSub=sub
+        },sub:()=>{
             this.layout();
-        });
+        }});
 
         this.columns=this.fields;
     });
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       headeBtnClick(d,f){

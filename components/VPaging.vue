@@ -17,6 +17,7 @@ export default {
   props:['data'],
   data () {
     return {
+        bodyResizeSub:null,
         pageH:0,//页面高度
         sly:null,
         curIndex:-1,
@@ -58,16 +59,31 @@ export default {
         this.sly.init();
     });
     
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     if($(this.$el).parents('div[id="setting"]').css('display')=='block'){
+    //         this.pageH =$('.vpaging').height();
+    //          this.$nextTick(()=>{
+    //             this.reloadSly();
+    //             this.activePage(this.curIndex);
+    //          });
+    //     }
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         if($(this.$el).parents('div[id="setting"]').css('display')=='block'){
             this.pageH =$('.vpaging').height();
-             this.$nextTick(()=>{
+            this.$nextTick(()=>{
                 this.reloadSly();
                 this.activePage(this.curIndex);
-             });
+            });
         }
-    });
-  }
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
+  },
 }
 </script>
 

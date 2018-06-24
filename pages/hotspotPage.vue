@@ -308,21 +308,21 @@ export default {
                                 <div class="col-md-2 item_label_left">采集设备编码：</div>
                                 <div class="col-md-4">{{detailData.equipment_id}}</div>
                                 <div class="col-md-2 item_label_right">采集设备名称：</div>
-                                <div class="col-md-4">{{detailData.equipment_name}}</div>                                
+                                <div class="col-md-4 tel" :title="detailData.equipment_name">{{detailData.equipment_name}}</div>                                
                             </div>
                             <div class="row site-detail-row">
                                 <div class="col-md-2 item_label_left">采集设备地址：</div>
-                                <div class="col-md-10">{{detailData.equipment_address}}</div>                                
+                                <div class="col-md-10 tel" :title="detailData.equipment_address">{{detailData.equipment_address}}</div>                                
                             </div>
                             <div class="row site-detail-row">
                                 <div class="col-md-2 item_label_left">所属场所编码：</div>
                                 <div class="col-md-4">{{detailData.netbar_wacode}}</div>
                                 <div class="col-md-2 item_label_right">所属场所名称：</div>
-                                <div class="col-md-4">{{detailData.netbar_name}}</div>                                
+                                <div class="col-md-4 tel" :title="detailData.netbar_name">{{detailData.netbar_name}}</div>                                
                             </div>
                             <div class="row site-detail-row">
                                 <div class="col-md-2 item_label_left">所属场所地址</div>
-                                <div class="col-md-10">{{detailData.netbar_address}}</div>                                
+                                <div class="col-md-10 tel" :title="detailData.netbar_address">{{detailData.netbar_address}}</div>                                
                             </div>
                             
                         </div>`;
@@ -330,7 +330,7 @@ export default {
                         title:'热点备案详情',
                         content:html,
                         skin:'site-detail-container',
-                        area:['900px','300px'],
+                        area:['1100px','300px'],
                         context:{
                             detailData:{},
                             loadDetail(){
@@ -374,7 +374,11 @@ export default {
         border-right: 1px solid #e7eaec;
         border-left: 1px solid #e7eaec;
     }
-
+    .site-detail-container .site-detail-row  .tel{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
     /*挂在设备详情*/
     .device-detail-container .layui-layer-title{
         background-color: #03ab67;

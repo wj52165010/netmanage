@@ -56,6 +56,7 @@ export default{
                 f.alias=(f.tableKey || f.table)+'_'+f.key;
             }
         }
+
         return f;
     },
 }

@@ -104,6 +104,7 @@ export default {
       descW:0,
       rules:[],
       blnSave:false,
+      bodyResizeSub:null,
     }
   },
   computed:mapState({
@@ -129,12 +130,24 @@ export default {
         let w= $(this.$el).width();
         this.descW=w-320;
     },0);
-    this.$store.commit(BODY_RESIZE,()=>{
-        setTimeout(()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     setTimeout(()=>{
+    //         let w= $(this.$el).width();
+    //         this.descW=w-320;
+    //     },100);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+      setTimeout(()=>{
             let w= $(this.$el).width();
             this.descW=w-320;
-        },100);
-    });
+      },100);
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     //清空页面数据

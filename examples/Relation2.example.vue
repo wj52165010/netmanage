@@ -1052,15 +1052,24 @@ export default {
                     if(clickP.parent){return;}//父节点不用解锁
                     // clickP.x=clickP.fx;
                     // clickP.x=clickP.fy;
-                    clickP.fx=null;
-                    clickP.fy=null;
+
+                    if(clickP.fx==null){
+                        clickP.fx=clickP.x;
+                        clickP.fy=clickP.y;
+                    }else{
+                        clickP.fx=null;
+                        clickP.fy=null;
+                    }
+                    // console.log(clickP.x);
+                    // clickP.fx=null;
+                    // clickP.fy=null;
                     break;
                 case 3://复制
                     if(!document.execCommand("copy")){
-                        this.searchKey=point.account_type=='mobile'?point.text:point.subTextOne;
+                        this.searchKey=point.subTextOne;//point.account_type=='mobile'?point.text:point.subTextOne;
                         tool.info('已经复制到搜索框!');
                     }else{
-                        clipboard.writeText(point.account_type=='mobile'?point.text:point.subTextOne)
+                        clipboard.writeText(point.subTextOne);
                         tool.info('复制成功!');
                     }
                     break;
@@ -1103,6 +1112,7 @@ export default {
     //显示子节点
     showChildPoint(point){
         point.isloading=true;
+        
         this.$store.dispatch(RelationSecond,{
             task_target_type:point.root?point.type:point.typeCode,
             account_type:point.account_type,
@@ -1113,13 +1123,11 @@ export default {
                 mobiles=data.mobiles,
                 customers=data.customers,
                 virtuals=data.virtuals;
-
             point.isloading=false;
-            if(_.flatten(data)){tool.info('暂无数据!');return;}
+            if(_.flatten([macs,mobiles,customers,virtuals]).length<=0){tool.info('暂无数据!');return;}
             
             point.isOver=point.root?false:res.biz_body.is_over;
         
-
  
             let childs=[
                 ...this.converData('vid',virtuals),
@@ -1246,7 +1254,6 @@ export default {
     Search(){
       if(this.blnSearch){return;}
       if(!this.serachInfo.code || !this.searchKey){tool.info('请输入正确的关键字搜索条件!');return;}
-     
       this.blnSearch=true;
       this.$store.dispatch(RelationSecond,{
           task_target_type:this.serachInfo.code,
@@ -1375,10 +1382,10 @@ export default {
     },
     //转化服务器数据到图表数据
     converData(type,data){
+        
         let res=[];
         switch(type){
             case 'vid':
-                console.log(tool.Clone(data));
                 res=_.map(data,(v,i)=>{
                     return {
                         id:v.id,
@@ -1405,8 +1412,8 @@ export default {
                         x:0,y:0,
                         active:false,
                         parent:false,
-                        text:`${v.mac}`,
-                        subTextOne:v.last_time || '',
+                        text:'MAC',//`${v.mac}`,
+                        subTextOne:v.mac || '',
                         type:'MAC',
                         keyword:v.mac,
                         typeCode:'mac',
@@ -1423,9 +1430,9 @@ export default {
                         x:0,y:0,
                         active:false,
                         parent:false,
-                        text:`${v.certificate_type_note || ''}(${v.customer_name || ''})`,
+                        text:'身份证',//`${v.certificate_type_note || ''}(${v.customer_name || ''})`,
                         subTextOne:`${v.certificate_code}`,
-                        subTextTwo:tool.DateByTimestamp(v.last_time,'yyyy-MM-dd'),
+                        subTextTwo:v.customer_name || '',//tool.DateByTimestamp(v.last_time,'yyyy-MM-dd'),
                         type:'身份',
                         keyword:v.certificate_code,
                         typeCode:'cert',
@@ -1442,8 +1449,8 @@ export default {
                         x:0,y:0,
                         active:false,
                         parent:false,
-                        text:`${v.mobile}`,
-                        subTextOne:v.last_time,
+                        text:'手机号',//`${v.mobile}`,
+                        subTextOne:v.mobile,//v.last_time,
                         type:'Mobile',
                         keyword:v.mobile,
                         typeCode:'mobile',

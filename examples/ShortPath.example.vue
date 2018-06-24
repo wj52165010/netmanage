@@ -81,6 +81,7 @@ export default {
       keyTwo:'',
       kind:{vid:'虚拟身份',cert:'身份证',mac:'MAC',mobile:'手机'},
       rectSize:{h:70,w:145},
+      bodyResizeSub:null,
       subtion:null,
       blnRect:true,
       qqIcon:null,
@@ -169,7 +170,29 @@ export default {
         });
     },100);
 
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     let el=$(this.$el);
+    //     if(this.blnShowHistoryPop){
+    //         this.canvas.width=el.width() - 310;
+    //         this.canvas.attr('width',el.width() - 310);
+    //     }else{
+    //         this.canvas.width=el.width();
+    //         this.canvas.attr('width',el.width());
+    //     }
+
+    //     this.translate={x:this.canvas.width/2,y:this.canvas.height/2};
+
+    //     this.canvas.height=el.height();
+    //     this.canvas.attr('height',el.height());
+
+    //     this.ticked();
+    //     if(!this.simulation) return;
+    //     this.simulation.alphaTarget(0.3).restart();
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         let el=$(this.$el);
         if(this.blnShowHistoryPop){
             this.canvas.width=el.width() - 310;
@@ -187,7 +210,10 @@ export default {
         this.ticked();
         if(!this.simulation) return;
         this.simulation.alphaTarget(0.3).restart();
-    });
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   destroyed(){
     this.simulation.stop();

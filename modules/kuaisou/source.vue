@@ -120,6 +120,7 @@ export default {
   components:{Scroll},
   data () {
     return {
+      bodyResizeSub:null,
       descW:0,//描述列的宽度
       curSelTable:[],
       curLookTableIndex:-1,//当前查看表索引
@@ -249,12 +250,21 @@ export default {
         let w= $(this.$el).width();
         this.descW=w-1100;
     },0);
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     setTimeout(()=>{
+    //         let w= $(this.$el).width();
+    //         this.descW=w-1100;
+    //     },100);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         setTimeout(()=>{
             let w= $(this.$el).width();
             this.descW=w-1100;
         },100);
-    });
+    }});
 
     this.$nextTick(()=>{
         this.recoverData();
@@ -270,6 +280,9 @@ export default {
 
     });
 
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     //清空页面数据

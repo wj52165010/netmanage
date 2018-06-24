@@ -143,6 +143,7 @@ export default {
       options:[],
       uploadFields:[],//当前上传操作的字段集合
       preViewdata:{},//预览数据
+      bodyResizeSub:null,
     }
   },
   computed:mapState({
@@ -199,17 +200,29 @@ export default {
         let w= $(this.$el).width();
         this.descW=w-1100;
     },0);
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     setTimeout(()=>{
+    //         let w= $(this.$el).width();
+    //         this.descW=w-1100;
+    //     },100);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         setTimeout(()=>{
             let w= $(this.$el).width();
             this.descW=w-1100;
         },100);
-    });
+    }});
 
     this.$nextTick(()=>{
         this.recoverData();
     });
 
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       //保存页面数据
@@ -223,7 +236,7 @@ export default {
       },
       //清空页面数据
       clearData(){
-         this.$store.commit(ClearSepSource);
+        this.$store.commit(ClearSepSource);
       },
       //恢复页面之前操作的值
       recoverData(){

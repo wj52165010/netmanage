@@ -72,6 +72,7 @@ export default {
   props:['fields'],
   data () {
     return {
+      bodyResizeSub:null,
       mouseupid:'',
       mousemoveid:'',
       cw:0,
@@ -154,15 +155,26 @@ export default {
   mounted(){
     this.data=this.fields || this.data;
     this.cw=$(this.$el).width();
-    this.$store.commit(BODY_RESIZE,()=>{
-      this.cw=$(this.$el).width();
-    });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+        this.cw=$(this.$el).width();
+    }});
+
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //   this.cw=$(this.$el).width();
+    // });
+
     this.mousemoveid=Fx.SingleBind('mousemove',$('body'), (e)=> {
       this.mousemove(e);
     });
     this.mouseupid=Fx.SingleBind('mouseup',$('body'), (e)=> {
       this.mouseup(e);
     });
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   destroyed(){
      Fx.ClearBind('mouseup',$('body'),this.mouseupid);

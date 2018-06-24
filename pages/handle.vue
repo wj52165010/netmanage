@@ -102,6 +102,7 @@ export default {
       scrollfieldIns:null,//字段按钮滚动插件实例
       blnShowfieldScroll:false,//是否显示字段按钮滚动插件
       scrollfieldDom:null,//字段按钮滚动条dom元素
+      bodyResizeSub:null,
     }
   },
   watch:{
@@ -174,11 +175,18 @@ export default {
       }
     });
 
-     //订阅页面大小改变事件
-    this.$store.commit(BODY_RESIZE,()=>{
-        this.reloadyotpionScroll();
-        this.reloadyfieldScroll();
-    });
+    //订阅页面大小改变事件
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     this.reloadyotpionScroll();
+    //     this.reloadyfieldScroll();
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+      this.reloadyotpionScroll();
+      this.reloadyfieldScroll();
+    }});
 
     //初始化滚动插件
     this.scrolloptionDom=$('div[class="handle"] > div[name="scrolloptionBar"]');
@@ -187,6 +195,9 @@ export default {
     this.scrollfieldDom=$('div[class="handle"] > div[name="scrollfieldBar"]');
     this.init_field_Scroll();
 
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       //查看映射信息

@@ -108,7 +108,12 @@ export default new Vuex.Store({
         },
         //订阅页面大小改变事件
         [types.BODY_RESIZE](state,subscribe){
-            state.resizeOber.subscribe(subscribe);
+           if(typeof subscribe === 'function'){
+            state.resizeOber.subscribe(subscribe);    
+           }else{
+            subscribe.cb(state.resizeOber.subscribe(subscribe.sub));    
+           }
+           
         },
         //触发页面大小改变事件
         [types.Trigger_RESIZE](state){
@@ -265,7 +270,8 @@ export default new Vuex.Store({
             return new Promise((resolve,reject)=>{
                 //resolve(place_data);
                 ser.placeByArea(data.code || '',data.type || '',data.defaultVal || {}).then(res=>{
-                    resolve(res.biz_body.data);
+                    let data= res.biz_body?res.biz_body.data:[];
+                    resolve(data);
                 });
             });
         },
@@ -2037,6 +2043,100 @@ export default new Vuex.Store({
                 });
             });
         }, 
+
+        //考核任务列表
+        [types.examineTaskList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineTaskList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //考核任务-考核结果列表
+        [types.examineResultList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineResultList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },         
+        //考核任务-删除考核任务
+        [types.examineDelTask]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineDelTask(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //考核任务-导出考核结果
+        [types.examineExportTask]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineExportTask(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //考核任务-考核规则列表
+        [types.examineRuleList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineRuleList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //考核任务-新增考核规则
+        [types.examineRuleAdd]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineRuleAdd(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //考核任务-新增考核任务
+        [types.examineAddTask]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineAddTask(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },  
+        //考核任务-获取定时考核设置
+        [types.examineGetTimeSetting]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineGetTimeSetting(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //考核任务-修改定时考核设置
+        [types.examineUpdTimeSetting]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineUpdTimeSetting(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },   
+        //考核任务-删除考核任务
+        [types.examineDeleteTask]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineDeleteTask(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        }, 
+        //考核任务-删除考核规则
+        [types.examineDeleteRule]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineDeleteRule(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },         
+        
+
+
+
+
         //按厂商统计采集量
         [types.GetFirmCollFirm]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -2157,6 +2257,30 @@ export default new Vuex.Store({
                 });
             });
         },
+        //获取场所策略具体查询项
+        [types.GetPatrolItems]({commit},id){
+            return new Promise((resolve,reject)=>{
+                ser.GetPatrolItems(id).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //获取场所策略列表信息
+        [types.GetSitePolicyList]({commit}){
+            return new Promise((resolve,reject)=>{
+                ser.GetSitePolicyList().then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //添加场所策略
+        [types.AddPlacePolicy]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.AddPlacePolicy(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
         //获取场所详细信息
         [types.DetailPolicy]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -2177,6 +2301,30 @@ export default new Vuex.Store({
         [types.DetailPlacePolicy]({commit},data){
             return new Promise((resolve,reject)=>{
                 ser.DetailPlacePolicy(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //未备案列表
+        [types.WebSiteList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.WebSiteList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //备案列表信息
+        [types.WebSiteRecordList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.WebSiteRecordList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //备案列表信息详细信息
+        [types.WebSiteRecordDetail]({commit},id){
+            return new Promise((resolve,reject)=>{
+                ser.WebSiteRecordDetail(id).then(res=>{
                     resolve(res);  
                 });
             });

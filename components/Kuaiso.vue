@@ -58,6 +58,7 @@ export default {
   name: 'Kuaiso',
   data () {
     return {
+      bodyResizeSub:false,
       blnJoinSearch:false,
       blnLoadings:false,//是否正在请求远程数据
       blnBound:false,
@@ -196,9 +197,15 @@ export default {
     this.$nextTick(()=>{
         this.initDrag();
     });
-    this.$store.commit(BODY_RESIZE,()=>{
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
        this.initDrag();
-    });
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   computed:{
     iconPos(){

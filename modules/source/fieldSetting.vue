@@ -127,6 +127,7 @@ export default {
       fieldKind:'',//字段类型
       dataKind:'',//数据类型
       dataKinds:FieldKind,
+      bodyResizeSub:null,
     }
   },
   watch:{
@@ -155,16 +156,28 @@ export default {
     },0);
 
     this.Valid();
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     setTimeout(()=>{
+    //         let w= $(this.$el).width();
+    //         this.descW=w-1040;
+    //     },100);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         setTimeout(()=>{
             let w= $(this.$el).width();
             this.descW=w-1040;
         },100);
-    });
+    }});
 
     if(this.cols.length<=0){
       this.$store.commit(SetAddSourcePageGo,{name:'FieldSetting',flag:false,info:'请添加列数据!'});
     }
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     //清空页面数据

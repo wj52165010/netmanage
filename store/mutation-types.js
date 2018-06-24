@@ -378,6 +378,7 @@ export const RegionCollLine='RegionCollLine' //区域状态数量统计[折线�
 export const RegionSiteExport='RegionSiteExport' //区域状态率按场所汇总导出
 export const RegionDeviceExport='RegionDeviceExport' //区域状态率按设备汇总导出
 
+
 // 获取app定制页面信息
 export const GetAppList='GetAppList' //获取app定制页面列表信息
 export const GetViolationsAppList='GetViolationsAppList' //获取app定制页面违规app列表
@@ -395,6 +396,20 @@ export const GetWebChangeDetail='GetWebChangeDetail' //获取备案变更详情
 // 获取热点列表定制页面信息
 export const GetHotspotList='GetHotspotList' //获取热点列表定制页面信息
 export const GetHotspotDetail='GetHotspotDetail' //获取热点列表定制页面详情
+
+// 获取统计考核中的考核相关信息
+export const examineTaskList='examineTaskList' //考核任务-考核任务列表
+export const examineResultList='examineResultList' //考核任务-考核结果列表
+export const examineDelTask='examineDelTask' //考核任务-删除考核任务
+export const examineExportTask='examineExportTask' //考核任务-导出考核结果
+export const examineRuleList='examineRuleList' //考核任务-考核规则列表
+export const examineRuleAdd='examineRuleAdd' //考核任务-新增考核规则
+export const examineAddTask='examineAddTask' //考核任务-新增考核任务
+export const examineGetTimeSetting='examineGetTimeSetting' //考核任务-获取定时考核设置
+export const examineUpdTimeSetting='examineUpdTimeSetting' //考核任务-修改定时考核设置
+export const examineDeleteTask='examineDeleteTask' //考核任务-删除考核任务
+export const examineDeleteRule='examineDeleteRule' //考核任务-删除考核规则
+
 
 export const GetFirmCollFirm='GetFirmCollFirm' //按厂商统计采集量
 export const GetCollMicroprobe='GetCollMicroprobe' //按数据来源统计采集量
@@ -425,3 +440,11 @@ export const HistoryPlicyItem='HistoryPlicyItem' //获取场所策略项历史�
 export const DetailPolicy='DetailPolicy' //获取场所详细信息
 export const DetailPlaceInfo='DetailPlaceInfo' //获取场所巡查详细信息
 export const DetailPlacePolicy='DetailPlacePolicy' //获取场所巡查详细策略历史记录
+export const AddPlacePolicy='AddPlacePolicy' //添加场所策略
+export const GetPatrolItems='GetPatrolItems' //获取场所策略具体查询项
+export const GetSitePolicyList='GetSitePolicyList' //获取场所策略列表信息
+
+/************** 新网站备案接口*******************/
+export const WebSiteList='WebSiteList'//未备案列表
+export const WebSiteRecordList='WebSiteRecordList' //备案列表
+export const WebSiteRecordDetail='WebSiteRecordDetail' //备案列表详细

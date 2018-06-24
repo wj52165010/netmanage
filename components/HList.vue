@@ -185,7 +185,8 @@ export default {
       scrollIns:null,
       scrollDom:null,
       blnShowList_pop:true,//是否显示列表框数据
-      searchType:searchType
+      searchType:searchType,
+      bodyResizeSub:null,
     }
   },
   watch:{
@@ -204,10 +205,15 @@ export default {
       this.initScroll();
       ripple.Init(`div[id="${this.id}"] > div[name="HList_ripple"]`);
     });
-   
-    this.$store.commit(BODY_RESIZE,()=>{
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+    },sub:()=>{
         this.reloadyScroll();
-    });
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     pageChange(num){

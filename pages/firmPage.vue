@@ -116,7 +116,7 @@
                     <!--柱状图(问题总览)-->
                     <div style="width:97%;height:50%;display:inline-block">
                         <div class="his-row" style="height:13%;margin-left:80px">
-                            <div class="his-title">采集详情</div>
+                            <div class="his-title" style="margin-left: -40px">采集详情</div>
                             <div class="block" style="float: left;margin-left: 30px;">
                                 <span class="demonstration">时间范围:</span>
                                 <!--<el-date-picker
@@ -201,7 +201,7 @@
                             <div class="his-title">在离线状况</div>
                             <div class="his-term item">
                                 <span>统计类型</span>
-                                <div class="input">
+                                <div class="input" style="width:120px">
                                     <el-select v-model="deviceSelect.type" placeholder="请选择">
                                     <el-option
                                     v-for="kind in selectType"
@@ -223,7 +223,7 @@
                             </div>    
                             <div class="his-term item">
                                 <span>时间范围</span>
-                                <div class="input">
+                                <div class="input" style="width:100px">
                                     <el-select v-model="deviceSelect.coll_type" placeholder="请选择">
                                     <el-option
                                     v-for="kind in selectTime"
@@ -242,7 +242,7 @@
                             </div>
                             <div class="his-title item" style="font-size:12px;font-weight:normal;text-align:left">
                                 <span>厂商名称：</span>
-                                <div class="input" style="width:250px;display:inline-block;">
+                                <div class="input" style="width:180px;display:inline-block;">
                                     <MulDropDwon :data="devicefirms" keyProp="name" id="code" placeholder="请选择厂商">
                                         <div v-for="t in firms" @mousedown="firmClick('device',t)">{{t.name}}</div>
                                     </MulDropDwon>
@@ -302,7 +302,7 @@ import MulDropDwon from 'components/MulDropDown'     //首页厂商选择控件
 import TaskType from '../enum/TaskType'
 import RelativeAnlay from '../modules/case/anlay'
 import AddPop from '../modules/case/addPop'
-import {waitingHandleSite,BODY_RESIZE,getDictTables,SiteDetail,GetFirm,GetFirmList,SiteHisPercentage,GetFirmCollColumn,GetFirmCollLine,GetFirmDeviceExport,GetFirmSiteExport,FirmDetectHistory,FirmDetectYesterday,FirmDetectColl,firmDetectRange} from '../store/mutation-types'
+import {waitingHandleSite,BODY_RESIZE,Trigger_RESIZE,getDictTables,SiteDetail,GetFirm,GetFirmList,SiteHisPercentage,GetFirmCollColumn,GetFirmCollLine,GetFirmDeviceExport,GetFirmSiteExport,FirmDetectHistory,FirmDetectYesterday,FirmDetectColl,firmDetectRange} from '../store/mutation-types'
 export default {
   name: 'firmPage',
   components:{
@@ -439,9 +439,9 @@ export default {
   },
   watch:{
       timeBar(){
-          if(!this.timeBar){
+          /*if(!this.timeBar){
             this.timeBar=Date.now()
-          }
+          }*/
         this.getDetectRange();
       },
     Selfirms(){
@@ -539,8 +539,6 @@ export default {
            if(res.msg.code!='successed')return;
            this.data=res.biz_body;
             this.blnLoading=false; 
-
-            console.log(tool.Clone(res.biz_body));
         });        
         //获取厂商下拉框数据
         this.$store.dispatch(GetFirm).then(res=>{
@@ -558,6 +556,8 @@ export default {
       switchView(type){
           if(type==this.viewTable) return;
           this.viewTable=type;
+
+          this.$store.commit(Trigger_RESIZE);
       },
       //简单的时间戳转化（仅用于当前页面）
       changeTimeFun(val){
@@ -570,7 +570,8 @@ export default {
       //获取采集详情   
       getDetectRange(){
         let beginTime,endTime;
-        if(this.timeBar){
+
+        if(this.timeBar[0]){
             beginTime=this.changeTimeFun(this.timeBar[0]);
             endTime=this.changeTimeFun(this.timeBar[1]);            
         }else{
@@ -985,7 +986,6 @@ export default {
            if(res.msg.code!='successed')return;
            this.addSiteBarChart(res.biz_body);
 
-           console.log(tool.Clone(res.biz_body));
 
          })
       },
@@ -2508,7 +2508,7 @@ export default {
   }
   .firmpage .chart_container .his-row .optionBar{
     float: right;
-    margin-right: 50px;
+    margin-right: 30px;
   }
   .firmpage .chart_container .his-row .optionBar .el-tooltip{
     margin-right:10px;

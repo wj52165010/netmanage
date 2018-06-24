@@ -51,6 +51,7 @@ export default {
   components:{scroll},
   data () {
     return {
+      bodyResizeSub:null,
       id:'',
       blnSearch:false,
       listH:0,
@@ -63,15 +64,24 @@ export default {
     }
   },
   mounted(){
-      this.id='page_'+tool.guid();
-      this.$nextTick(()=>{
-        cLoading(this.id+'inloading',7);
-      });
-      
-      this.item=tool.Clone(this.data,'','comOptions');
-      this.$store.commit(BODY_RESIZE,()=>{
-          this.calListH()
-      });
+    this.id='page_'+tool.guid();
+    this.$nextTick(()=>{
+    cLoading(this.id+'inloading',7);
+    });
+    
+    this.item=tool.Clone(this.data,'','comOptions');
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     this.calListH()
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+    },sub:()=>{
+        this.calListH()
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   computed:mapState({
     statusText(){

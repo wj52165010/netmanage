@@ -172,6 +172,7 @@ export default {
       law_case_id:'',//案件ID用于过滤显示条件
       PolicyNameNoCase:'',
       PolicyName:'',
+      bodyResizeSub:null,
     }
   },
   mounted(){
@@ -187,10 +188,20 @@ export default {
     //加载数据
     this.loadData();
 
-    this.$store.commit(BODY_RESIZE,()=>{
-        this.adjustColumnW();
-    });
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //   this.adjustColumnW();
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+      this.adjustColumnW();
+    }});
+
     this.adjustColumnW();
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     //刷新页面

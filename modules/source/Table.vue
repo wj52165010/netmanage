@@ -142,6 +142,7 @@ export default {
       split_type:'',//拆分类型
       split_column:'',//拆分列名
       sourceOri:'',//数据源来源
+      bodyResizeSub:null,
     }
   },
   watch:{
@@ -174,16 +175,28 @@ export default {
         let w= $(this.$el).find('.preView').width();
         this.descW=w-580;
     },0);
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     setTimeout(()=>{
+    //         let w= $(this.$el).find('.preView').width();
+    //         this.descW=w-580;
+    //     },100);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         setTimeout(()=>{
             let w= $(this.$el).find('.preView').width();
             this.descW=w-580;
         },100);
-    });
+    }});
 
     this.$nextTick(()=>{
         this.recoverData();
     });
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     //清空页面数据

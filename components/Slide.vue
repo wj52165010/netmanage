@@ -36,6 +36,7 @@ export default {
   },
   data () {
     return {
+      bodyResizeSub:null,
       sly:null,
       pages:[],
       curPageIndex:1,
@@ -58,10 +59,20 @@ export default {
         this.curPageIndex=i;
     });
 
-    this.$store.commit(BODY_RESIZE,()=>{
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
       this.sly.reload();
       this.pages=this.sly.pages;
-    });
+    }});
+
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //   this.sly.reload();
+    //   this.pages=this.sly.pages;
+    // });
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       reload(){

@@ -62,6 +62,7 @@ export default {
       lastNumber:0,//上一次统计数据
       data:{},
       lastTimeData:[],//上一次的日期数据(为了恢复上一次记录的日期数据)
+      bodyResizeSub:null,
     }
   },
   computed:{
@@ -106,6 +107,9 @@ export default {
   mounted(){
      this.init();
   },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
+  },
   methods:{
       init(){
         if(this.time){
@@ -128,10 +132,13 @@ export default {
         this.$nextTick(()=>{
             this.initTimer();
         });
-        this.$store.commit(BODY_RESIZE,()=>{
+
+        this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+            this.bodyResizeSub=sub
+        },sub:()=>{
             if(!this.lineChart)return;
             this.lineChart.resize();
-        });
+        }});
       },
       //获取数据
       getData(blnInit){

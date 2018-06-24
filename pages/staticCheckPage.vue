@@ -309,12 +309,12 @@
                          <span class="content" @click="checkRuleList()"><i class="fa fa-gear"></i>&nbsp;考核规则</span>
                          <span class="content" @click="checkManageFun()"><i class="fa fa-plus-circle"></i>&nbsp;考核管理</span>
                     </div>
-                    <div v-for="(h,i) in historyData" class="item" @click="getTaskResList(h.task_title,h.check_target_desc,h.use_standard,h.last_schedule,h.task_status,h.disabled,h.begin_day,h.end_day)" v-show="h.last_run_time&&h.last_run_time!='0'">
+                    <div v-for="(h,i) in historyData" class="item" @click="getTaskResList(h.task_title,h.check_target_desc,h.use_standard,h.last_schedule,h.task_status,h.disabled,h.begin_day,h.end_day)">
                         <div style="line-height:20px;text-align:center">
                             <span>{{h.task_title}}</span>
                         </div>
                         <div class="item_span" style="line-height:25px">
-                            <span>{{h.check_target_desc=="厂商"?"执行日期":"考核日期"}}：{{converTime(h.last_run_time)}}</span>
+                            <span >{{h.check_target_desc=="厂商"?"执行日期":"考核日期"}}：<span v-show="h.last_run_time&&h.last_run_time!='0'">{{converTime(h.last_run_time)}}</span></span>
                             <span style="float:right;margin-right:20px">{{h.disabled=="0"?h.task_status_desc:"任务失效"}}</span>
                         </div>
                         <div style="line-height:25px">
@@ -342,16 +342,16 @@
                 <ul class="header">
                     <li class="item" style="height:120px">
                         <div ref="tel_name"><span class="overflow" style="width:120px;">{{listResultSu.type=="厂商"?"厂商名称":"区域名称"}}</span></div>
-                        <div ref="tel_onOff">
+                        <div ref="tel_onOff" v-show="dataColumn.is_check_netbar_off=='1'||dataColumn.is_check_netbar_except=='1'||dataColumn.is_check_netbar_detects=='1'">
                             <div style="height:39px;border-bottom:1px solid #fff" >在离线考核</div>
                             <div style="height:80px;display: flex; flex-flow: row;">
                                 <div class="inline-fatg" style="line-height:80px" v-show="dataColumn.is_check_netbar_off=='1'"><span class="inline_overflow">离线率</span></div>
                                 <div class="inline-fatg" style="line-height:80px" v-show="dataColumn.is_check_netbar_except=='1'"><span class="inline_overflow">异常率</span></div>
                                 <div class="inline-fatg" style="line-height:80px" v-show="dataColumn.is_check_netbar_detects=='1'"><span class="inline_overflow">贡献率</span></div>
-                                <div class="inline-fatg last" style="line-height:80px"><span class="inline_overflow">参考结果</span></div>
+                                <div class="inline-fatg last" style="line-height:80px" v-show="dataColumn.is_check_netbar_off=='1'||dataColumn.is_check_netbar_except=='1'||dataColumn.is_check_netbar_detects=='1'"><span class="inline_overflow">参考结果</span></div>
                             </div>                                
                         </div>
-                        <div style="width:100px" ref="tel_data">
+                        <div style="width:100px" ref="tel_data" v-show="dataColumn.is_check_realname=='1'||dataColumn.is_check_virtual=='1'||dataColumn.is_check_hardware=='1'">
                             <div style="height:39px;border-bottom:1px solid #fff" >数据采集考核</div>
                             <div style="height:80px;display: flex; flex-flow: row;">
                                 <!--<div style="border-right:1px solid #fff">
@@ -385,7 +385,7 @@
                                     </div>
                                 </div> 
                                 <div>
-                                    <div style="height:82px;border-bottom:1px solid #fff;width:65px;line-height:80px">参考结果</div>
+                                    <div style="height:82px;border-bottom:1px solid #fff;width:65px;line-height:80px" v-show="dataColumn.is_check_realname=='1'||dataColumn.is_check_virtual=='1'||dataColumn.is_check_hardware=='1'">参考结果</div>
                                 </div>                         
                             </div>                                
                         </div>
@@ -406,15 +406,15 @@
                             <li class="item" v-for="(d,i) in showData">
                                 <!--<li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>-->
                                 <div  :style="listWidth.name"><span class="overflow" style="width:120px;">{{d.target_note}}</span></div>
-                                <div :style="listWidth.onOff">
+                                <div :style="listWidth.onOff" v-show="dataColumn.is_check_netbar_off=='1'||dataColumn.is_check_netbar_except=='1'||dataColumn.is_check_netbar_detects=='1'">
                                     <div style="display: flex; flex-flow: row;">
                                         <div style="flex:1;border-right: 1px solid #e7eaec;" v-show="dataColumn.is_check_netbar_off=='1'"><span class="overflow">{{d.offs}}</span></div>
                                         <div style="flex:1;border-right: 1px solid #e7eaec;" v-show="dataColumn.is_check_netbar_except=='1'"><span class="overflow">{{d.excepts}}</span></div>
                                         <div style="flex:1;border-right: 1px solid #e7eaec;" v-show="dataColumn.is_check_netbar_detects=='1'"><span class="overflow">{{d.detects}}</span></div>
-                                        <div style="flex:1"><span class="overflow">{{d.stat_result}}</span></div>
+                                        <div style="flex:1" v-show="dataColumn.is_check_netbar_off=='1'||dataColumn.is_check_netbar_except=='1'||dataColumn.is_check_netbar_detects=='1'"><span class="overflow">{{d.stat_result}}</span></div>
                                     </div>                                
                                 </div>
-                                <div :style="listWidth.data">
+                                <div :style="listWidth.data" v-show="dataColumn.is_check_realname=='1'||dataColumn.is_check_virtual=='1'||dataColumn.is_check_hardware=='1'">
                                     <div style="display: flex; flex-flow: row;">
                                         <!--<div style="border-right:1px solid #e7eaec;width:95px">{{d.virtual_types}}
                                         </div>-->
@@ -443,7 +443,7 @@
                                             </div>
                                         </div> 
                                         <div>
-                                            <div style="border-bottom:1px solid #fff;width:65px;">{{d.detect_result}}</div>
+                                            <div style="border-bottom:1px solid #fff;width:65px;" v-show="dataColumn.is_check_realname=='1'||dataColumn.is_check_virtual=='1'||dataColumn.is_check_hardware=='1'">{{d.detect_result}}</div>
                                         </div>                         
                                     </div>                                
                                 </div>
@@ -1359,8 +1359,8 @@ export default {
               tool.info('该任务已失效，请选择其他任务!');
               return;listResultSu.begin_day
           }*/
-          if(!last_schedule){
-              tool.info('暂时无法查看该任务的结果，请选择其他任务!');
+          if(!last_schedule||last_schedule=="0"){
+              tool.info('该任务正在执行中，请稍后...');
               return;
           }
             this.blnShowHistoryPop=false;
@@ -1511,7 +1511,7 @@ export default {
                             },
                             pickerOptions0: {                      //时间范围
                                 disabledDate(time) {
-                                    return time.getTime() >Date.now()+1000*60*60*24 - 8.64e7; //默认只能选择今天及今天以前的日期
+                                    return time.getTime() >Date.now() - 8.64e7; //默认只能选择今天及今天以前的日期
                                 }
                             },
                             firm:"",
@@ -2406,7 +2406,7 @@ export default {
   .count_item:nth-child(6), 
   .count_item:nth-child(3){margin-right:0px;}
 
-  .BasePage .filter_container{position:absolute;right:0px;width:100%;height:40px;padding-left:330px;padding-right:10px;}
+  .BasePage .filter_container{position:absolute;right:0px;left:330px;height:40px;padding-right:10px;z-index:1000;}
   .BasePage .filter_container .detail_filter{width:100%;height:100%;text-align:left;}
 
 
@@ -2514,7 +2514,7 @@ export default {
       float:left;
       line-height:36px;
       margin-left:40px;
-      font-size:16px;
+      font-size:14px;
   }
   .BasePage .sta_check .no-data{
       line-height: 600px;

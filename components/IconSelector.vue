@@ -24,6 +24,7 @@ export default {
     return {
       sly:null,
       blnPage:false,
+      bodyResizeSub:null,
       icons:[
          'address-book','address-book-o','address-card','address-card-o','bandcamp','bath','bathtub','drivers-license','drivers-license-o','eercast',
          'envelope-open','envelope-open-o','etsy','free-code-camp','grav','handshake-o','id-badge','id-card','id-card-o','imdb','linode','meetup',
@@ -79,11 +80,16 @@ export default {
     });
 
     if(this.store){
-        this.store.commit(BODY_RESIZE,()=>{
+        this.store.commit(BODY_RESIZE,{cb:(sub)=>{
+            this.bodyResizeSub=sub
+        },sub:()=>{
             this.sly.reload();
             this.blnPage=this.sly.rel.slideeSize>this.sly.rel.frameSize;
-        });
+        }});
     }
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       getIcon(icon){

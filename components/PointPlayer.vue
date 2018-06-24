@@ -42,6 +42,7 @@ export default {
   props:['data','range','kind','blnNoRefresh','blnSimple'],
   data () {
     return {
+      bodyResizeSub:null,
       blnDrag:false,//是否正在拖动中
       positionEl:null,//组件容器对象
       mousedownid:null,
@@ -93,9 +94,18 @@ export default {
       this.progressBtnMouseMove(e);
     });
 
-    this.$store.commit(BODY_RESIZE,()=>{
-       this.model?this.initTime():this.init();
-    });
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //    this.model?this.initTime():this.init();
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+        this.model?this.initTime():this.init();
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   destroyed(){
     Fx.ClearBind('mouseup',$('body'),this.mousedownid);

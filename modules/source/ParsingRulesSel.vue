@@ -52,7 +52,8 @@ export default {
       descW:0,
       data:[],
       curSelItem:{},
-      fileSep:[]
+      fileSep:[],
+      bodyResizeSub:null,
     }
   },
   computed:mapState({
@@ -73,12 +74,24 @@ export default {
         let w= $(this.$el).width();
         this.descW=w-470;
     },0);
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     setTimeout(()=>{
+    //         let w= $(this.$el).width();
+    //         this.descW=w-470;
+    //     },100);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+    },sub:()=>{
         setTimeout(()=>{
             let w= $(this.$el).width();
             this.descW=w-470;
         },100);
-    });
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       //选中解析项

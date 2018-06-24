@@ -117,6 +117,7 @@ export default {
   components:{Scroll},
   data () {
     return {
+      bodyResizeSub:null,
       chartone:null,
       charttwo:null,
       blnShowHistoryPop:false,
@@ -260,11 +261,19 @@ export default {
         //this.setChart();
     },200); 
 
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     if(!this.chartone || !this.charttwo) return;
+    //     this.chartone.resize();
+    //     this.charttwo.resize();
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         if(!this.chartone || !this.charttwo) return;
         this.chartone.resize();
         this.charttwo.resize();
-    });
+    }});
 
     this.getNation();
     this.getAnalyTask();
@@ -282,6 +291,9 @@ export default {
       this.lookTask(task);
     });
     
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     //刷新页面

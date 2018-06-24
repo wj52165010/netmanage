@@ -201,6 +201,7 @@ export default {
       selFields:[],//当前选中的列集合数据
       preViewdata:{},//预览数据
       opTables:{},//缓存用户操作过得列表操作
+      bodyResizeSub:null,
     }
   },
   computed:mapState({
@@ -249,14 +250,26 @@ export default {
         let w= $(this.$el).width();
         this.descW=w-1100;
     },0);
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     setTimeout(()=>{
+    //         let w= $(this.$el).width();
+    //         this.descW=w-1100;
+    //     },100);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         setTimeout(()=>{
             let w= $(this.$el).width();
             this.descW=w-1100;
         },100);
-    });
+    }});
 
     this.recoverData();
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
        //清空数据
@@ -300,6 +313,7 @@ export default {
       },
       //单选
       Check(f){
+   
           if(!this.blnAllowCheck) return;
           let fIndex=this.selFields.map(f=>f.key).indexOf(f.key);
           if(fIndex>=0){

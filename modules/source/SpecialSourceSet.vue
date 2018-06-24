@@ -127,6 +127,7 @@ export default {
   components:{Scroll},
   data () {
     return {
+      bodyResizeSub:null,
       kind:[],
       distinct:2,//数据去重
       sourceName:'',//数据源名称
@@ -181,7 +182,22 @@ export default {
         this.descW=w-870;
     },0);
 
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //   this.optionH=0;
+    //   this.$nextTick(()=>{
+    //     this.optionH=$(this.$el).find('.setting_container').height();
+    //     this.listH=$(this.$el).height()-this.optionH;
+    //   });
+
+    //   setTimeout(()=>{
+    //       let w= $(this.$el).width();
+    //       this.descW=w-870;
+    //   },0);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
       this.optionH=0;
       this.$nextTick(()=>{
         this.optionH=$(this.$el).find('.setting_container').height();
@@ -192,11 +208,14 @@ export default {
           let w= $(this.$el).width();
           this.descW=w-870;
       },0);
-    });
+    }});
 
     this.$nextTick(()=>{
       this.recoverData();
     });
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     clearData(){

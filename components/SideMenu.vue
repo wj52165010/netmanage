@@ -5,7 +5,7 @@
             <div class="kind_container">
                 <div class="sideMenu_conatiner">
                     <div class="slidee">
-                        <div class="kind_item" v-for="(menu,index) in menus" :class="{active:curIndex==index}"  @mouseenter="menu_mouseenter(menu,index)" @mouseleave="menu_mouseleave()">
+                        <div class="kind_item" v-for="(menu,index) in menus"   :class="{active:curIndex==index}"  @mouseenter="menu_mouseenter(menu,index)" @mouseleave="menu_mouseleave()">
                             <!--<el-tooltip class="item" effect="light" :content="menu.name" placement="top">-->
                                 <div style="display:table-cell;vertical-align:middle;">
                                     <i :class="menu.icon"></i>
@@ -22,7 +22,7 @@
             <div class="title">{{(menus[curIndex] || {name:''}).name }}</div>
             <div class="content">
                 <div class="gridly1" name="sideMenu_container" style="height:200px;overflow: hidden;">
-                    <div class="menu_item" :id="menu.keyid+'_'+((menu.menu_type || {id:0}).id || 0)+'_'+menu.name"  :class="Menu_State.getRes(menu.status).val>0 && {complete:true}" @click="item_click(menu)" v-for="menu in showMenus" v-if="menu.blnShow && !menu.disabled">
+                    <div class="menu_item" :id="menu.keyid+'_'+((menu.menu_type || {id:0}).id || 0)+'_'+menu.name"  :class="Menu_State.getRes(menu.status).val>0 && {complete:true}" @click="item_click(menu)" v-for="menu in showMenus" v-if="menu.blnShow && !menu.disabled && filterMenuName.indexOf(menu.name)<0">
                         <div class="_container">
                             <i :class="menu.icon"></i>
                             <div style="font-size:12px;">{{menu.name}}</div>
@@ -50,11 +50,13 @@ export default {
   props:['menus'],
   data () {
     return {
+      bodyResizeSub:null,
       sly:null,
       curIndex:-1,
       gridly:null,
       blnDrag:false,
-      leaveStart:0,//离开时起始位置
+      leaveStart:0,//离开时起始位置,
+      filterMenuName:[],//['App管理','网站备案','巡查管理','厂商配置','权限配置','远程接口管理'],
     }
   },
   watch:{
@@ -88,10 +90,11 @@ export default {
   computed:mapState({
     showMenus(){
         let permissions = tool.cookie.get('permissions');
+
         if((','+permissions+',').indexOf(',*,')>=0){
             return _.filter((this.menus[this.curIndex] || {menus:[]}).menus,m=>{return !m.kind;})
         }else{
-            return _.filter((this.menus[this.curIndex] || {menus:[]}).menus,m=>{return !m.kind && (','+permissions+',').indexOf(','+m.keyid+',');})
+            return _.filter((this.menus[this.curIndex] || {menus:[]}).menus,m=>{return !m.kind && (','+permissions+',').indexOf(','+m.keyid+',')>=0;})
         }
     }
   }),
@@ -107,9 +110,15 @@ export default {
         });
         this.sly.init();
     });
-    this.$store.commit(BODY_RESIZE,()=>{
-        this.sly.reload();
-    });
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     this.sly.reload();
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+      this.sly.reload();
+    }});
 
     this.$store.commit(BODY_MOUSEMOVE,(e)=>{
         let {clientX:x}=e;
@@ -119,6 +128,9 @@ export default {
             this.$emit('Blnshow',false);
         }
     });
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       //保存排序

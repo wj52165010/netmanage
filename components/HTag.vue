@@ -26,6 +26,7 @@ export default {
         curIndex:0,
         sly:null,
         blnPage:false,
+        bodyResizeSub:null,
     }
   },
   watch:{
@@ -46,6 +47,9 @@ export default {
       },1000);
       
   },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
+  },
   methods:{
     //初始化滚动插件
     initSly(){
@@ -60,11 +64,14 @@ export default {
             this.sly.init();
             this.blnPage=this.sly.pages.length>1;
             
-        this.$store.commit(BODY_RESIZE,()=>{
+
+        this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+            this.bodyResizeSub=sub
+        },sub:()=>{
             this.sly.reload();
             this.sly.reload();
             this.blnPage=this.sly.pages.length>1;
-        });
+        }});
         
     },
     left_arrow(){

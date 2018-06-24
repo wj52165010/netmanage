@@ -18,7 +18,7 @@
     <!--<MenuBtn :menus="menus"></MenuBtn>-->
     <div class="index_footer" v-if="true">
       <div style="float:left;"><div class="helperBtn orange" @click="helperClick()"><i class="fa fa-question-circle-o"></i><span style="margin-left:10px;-moz-user-select:none;-khtml-user-select:none;user-select:none;">帮助</span></div></div>
-      <div style="float:right;padding-right:10px;">Copyright © 2018 重庆智多信息发展有限公司.版权所有 当前版本:<span style="color:rgb(3, 171, 103);"><span style="cursor:pointer;" @click="banbenClick()">1.0.4-alpha</span></span></div>
+      <div style="float:right;padding-right:10px;">Copyright © 2018 重庆智多信息发展有限公司.版权所有 当前版本:<span style="color:rgb(3, 171, 103);"><span style="cursor:pointer;" @click="banbenClick()">1.0.4-X-beta</span></span></div>
     </div>
     <!-- 快搜 -->
     <Kuaiso />
@@ -62,6 +62,7 @@ ser.baseBag.userid=tool.cookie.get('userid');
 ser.baseBag.token=tool.cookie.get('token');
 let tokenExp=tool.cookie.get('exp');
 let permissions=tool.cookie.get('permissions');
+ser.permissions=permissions;
 
 let auth=(tokenExp)=>{
   setTimeout(()=>{
@@ -334,13 +335,15 @@ export default {
         {name:'厂商概况',icon:'fa fa-handshake-o',keyid:"11043",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"firmPage"},
         {name:'区域管理',icon:'fa fa-eercast',keyid:"11044",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"areaPage"},
         {name:'App管理',icon:'fa fa-mobile',keyid:"11045",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"mobileAppPage"},
-        {name:'网站备案',icon:'fa fa-ravelry',keyid:"11046",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"WebSiteRecordPage"},
+        //{name:'网站备案',icon:'fa fa-ravelry',keyid:"11046",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"WebSiteRecordPage"},
         {name:'数据质量',icon:'fa fa-dashboard',keyid:"11022",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"dataMassPage"},
         {name:'热点备案',icon:'fa fa-podcast',keyid:"11047",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"hotspotPage"},
         {name:'统计考核',icon:'fa fa-map',keyid:"11048",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"staticCheckPage"},   
         //{name:'数据总览',icon:'fa fa-dashboard',id:'11015',keyid:"11015",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"BasePage"},
 
         {name:'巡查管理',icon:'fa fa-dashboard',id:'18015',keyid:"18015",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"Patrol"},
+        {name:'态势感知',icon:'fa fa-dashboard',id:'18037',keyid:"18037",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"StatePerception"},
+        {name:'网站备案',icon:'fa fa-ravelry',id:'18038',keyid:"18038",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"SiteRecords"}
       ];
 
       app.menus=fixMenus;
@@ -366,7 +369,7 @@ export default {
         menuFinish.next(res.biz_body);
         if((','+permissions+',').indexOf(',*,')<0){
           _.each(this.menus,(menu)=>{
-            menu.menus=_.filter(menu.menus,(item)=>{return (','+permissions+',').indexOf(','+item.keyid+',')>=0;})
+            menu.menus=_.filter(menu.menus,(item)=>{return (','+permissions+',').indexOf(','+item.keyid+',')>=0 || item.keyid=='235' || item.keyid=='219';})
           });
         }
         //this.menus[0].menus=res.data;

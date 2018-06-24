@@ -53,6 +53,7 @@ export default {
         cacheData:[],//缓存数据
         curSelKind:[],//当前选中的分类对象集合
         blnLoadData:false,
+        bodyResizeSub:null,
     }
   },
   computed:{
@@ -78,13 +79,20 @@ export default {
   mounted(){
       this.cH=$(this.$el).height();
       this.cacheData=tool.Clone(this.data);
-      this.$store.commit(BODY_RESIZE,()=>{
-            this.cH=$(this.$el).height();
-            setTimeout(()=>{
-                this.$refs['scroll0'] && this.$refs['scroll0'][0] && this.$refs['scroll0'][0].reloadyScroll();
-                this.$refs['scroll1'] && this.$refs['scroll1'][0] && this.$refs['scroll1'][0].reloadyScroll();
-            },100);
-      });
+      
+      this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+      },sub:()=>{
+        this.cH=$(this.$el).height();
+        setTimeout(()=>{
+            this.$refs['scroll0'] && this.$refs['scroll0'][0] && this.$refs['scroll0'][0].reloadyScroll();
+            this.$refs['scroll1'] && this.$refs['scroll1'][0] && this.$refs['scroll1'][0].reloadyScroll();
+        },100);
+      }});
+
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       //刷新滚动条

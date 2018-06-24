@@ -253,6 +253,7 @@ export default {
             return time.getTime() > Date.now();
         }
       },
+      bodyResizeSub:null,
       pages:[{name:'报警信息',icon:'fa fa-tag'},{name:'人员信息',icon:'fa fa-tag'}],
       curPageIndex:0,
       pageNum:20,
@@ -296,11 +297,22 @@ export default {
 
     this.police_auto_column_w=$(this.$el).width()-800;
     this.person_auto_column_w=$(this.$el).width()-950;
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     listEl.css('height',containerEl.height()-optBarEl.height());
+    //     this.police_auto_column_w=$(this.$el).width()-800;
+    //     this.person_auto_column_w=$(this.$el).width()-950;
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+    },sub:()=>{
         listEl.css('height',containerEl.height()-optBarEl.height());
         this.police_auto_column_w=$(this.$el).width()-800;
         this.person_auto_column_w=$(this.$el).width()-950;
-    });
+    }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
       //刷新页面

@@ -262,6 +262,7 @@ export default {
     return {
       id:'Track_map_do'+tool.guid(),
       rangeMapId:'Range_map_do'+tool.guid(),
+      bodyResizeSub:null,
       map:null,
       blnShowLoading:0,//0:不显示,1:正在分析中,2:分析完成显示结果
       blnShowHistory:false,//是否显示历史记录信息
@@ -366,13 +367,23 @@ export default {
         this.descW=w-1100 -5;
         this.detailW=w - 800 - 5;
     },0);
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     setTimeout(()=>{
+    //         let w= $(this.$el).find('.left_container').width();
+    //         this.descW=w-1100 -5;
+    //         this.detailW=w - 800 - 5;
+    //     },100);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         setTimeout(()=>{
             let w= $(this.$el).find('.left_container').width();
             this.descW=w-1100 -5;
             this.detailW=w - 800 - 5;
         },100);
-    });
+    }});
 
     setTimeout(()=>{
       this.initMap();
@@ -400,6 +411,9 @@ export default {
 
     if(this.timeRange){this.timeRange=this.defTimeRange;}
  
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   destroyed(){
     if(!this.socket) return;

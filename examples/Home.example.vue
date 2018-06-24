@@ -77,7 +77,7 @@
               </div>
             </div>
 
-            <div class="item">
+            <div class="item" v-if="true">
               <div class="bar">
                 <span class="label">特定人员 {{countData.iden.total}}</span>
                 <span class="icon">
@@ -126,7 +126,7 @@
                   </div>
                 </div>
 
-                <div class="item">
+                <div class="item" v-if="true">
                   <div class="bar">
                     <span class="label">实名身份采集 {{countData.certificate.total}}</span>
                   </div>
@@ -136,7 +136,7 @@
                   </div>
                 </div>
 
-                <div class="item">
+                <div class="item" v-if="true">
                   <div class="bar">
                     <span class="label">虚拟身份采集 {{countData.virtual.total}}</span>
                   </div>
@@ -581,51 +581,51 @@ export default {
           return {
             total:this.joinComma(d.total,3),
             onlineRate:d.right_title,
-            online:this.joinComma(d.data[0].count,3),
-            unline:this.joinComma(d.data[1].count,3),
-            onlinePercent:d.data[0].count/d.total*100+'%'
+            online:d.data[0]?this.joinComma(d.data[0].count,3):0,
+            unline:d.data[1]?this.joinComma(d.data[1].count,3):0,
+            onlinePercent:d.data[0]?d.data[0].count/d.total*100+'%':'0%'
           }    
           break;
         case 'logo':
           return {
             total:this.joinComma(d.total,3),
-            vaild:this.joinComma(d.data[0].count,3),
-            invaild:this.joinComma(d.data[1].count,3),
+            vaild:d.data[0]?this.joinComma(d.data[0].count,3):0,
+            invaild:d.data[1]?this.joinComma(d.data[1].count,3):0,
           }
           break;
         case 'iden':  
           return {
             total:this.joinComma(d.total,3),
-            persons:this.joinComma(d.data[0].count,3),
-            polices:this.joinComma(d.data[1].count,3),
+            persons:d.data[0]?this.joinComma(d.data[0].count,3):0,
+            polices:d.data[1]?this.joinComma(d.data[1].count,3):0,
           }
           break;
         case 'firm':
           return {
             total:this.joinComma(d.total,3),
-            hasData:this.joinComma(d.data[0].count,3),
-            noData:this.joinComma(d.data[1].count,3),
+            hasData:d.data[0]?this.joinComma(d.data[0].count,3):0,
+            noData:d.data[1]?this.joinComma(d.data[1].count,3):0,
           }
           break;
         case 'logoCollect':
           return {
             total:this.joinComma(d.total,3),
-            sites:this.joinComma(d.data[0].count,3),
-            idens:this.joinComma(d.data[1].count,3),
+            sites:d.data[0]?this.joinComma(d.data[0].count,3):0,
+            idens:d.data[2]?this.joinComma(d.data[2].count,3):0,
           }
           break;
         case 'certificate':
           return {
             total:this.joinComma(d.total,3),
-            card:this.joinComma(d.data[0].count,3),
-            phones:this.joinComma(d.data[1].count,3),
+            card:d.data[0]?this.joinComma(d.data[0].count,3):0,
+            phones:d.data[1]?this.joinComma(d.data[1].count,3):0,
           }
           break;
         case 'virtual':
           return {
             total:this.joinComma(d.total,3),
-            qq:this.joinComma(d.data[0].count,3),
-            weixin:this.joinComma(d.data[1].count,3),
+            qq:d.data[0]?this.joinComma(d.data[0].count,3):0,
+            weixin:d.data[1]?this.joinComma(d.data[1].count,3):0,
           }
           break;
       }

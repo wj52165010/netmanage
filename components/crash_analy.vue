@@ -150,7 +150,7 @@
         <!--左边筛选条件-->
         <div class="left_container">
             <!--过滤条件-->
-            <div style="height:40px;position:absolute;padding-left:180px;z-index:1000;">
+            <div style="height:40px;position:absolute;margin-left:180px;z-index:1000;">
                 <!--场所定位-->
                 <div class="cond_item" style="float:left;width:300px;margin-top: 3px;">
                     <dropdwonBtn v-show="tagIndex==0" placeholder="请输入场所编码/名称/拼音" ref="placeDwon" :store="store" :data="siteSearch" :btn="placeBtn" @change="placeChange" @placePos="placePos">

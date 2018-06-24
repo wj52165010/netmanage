@@ -210,6 +210,7 @@ export default {
   components:{MulDropDwon},
   data () {
     return {
+      bodyResizeSub:null,
       blnNoHandle:false,
       queryKind:[{name:'回溯',value:'backtrack'},{name:'监察',value:'monitor'}],
       queryScrollPluins:null,//查询容器滚动插件实例
@@ -535,11 +536,21 @@ export default {
 
     //设置查询条件容器高度
     this.SetQueryCH();
-    this.$store.commit(BODY_RESIZE,()=>{
+    // this.$store.commit(BODY_RESIZE,()=>{
+    //     this.SetQueryCH();
+    //     this.loadGridly(true);
+    // });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         this.SetQueryCH();
         this.loadGridly(true);
-    });
+    }});
 
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   methods:{
     //远程接口项单击事件
