@@ -7,7 +7,7 @@
          <img class="user_img" style="height:50px;" src="../assets/logo.png" />
        </div>
        <div class="info">
-         <div class="user" >
+         <div class="user" style="width:81%;">
            <ul>
              <li class="user_imgae"><img id="user_imgae" class="user_img" src="../assets/noperson.png" style="width:40px;height:40px;" /></li>
              <li class="user_info"><div class="user_info_name" :title="userInfo.name" :class="{simpleName:!userInfo.department}">{{userInfo.name}}</div><div class="user_info_desc" :title="userInfo.department">{{userInfo.department}}</div></li>
@@ -26,7 +26,7 @@
               </div>
             </div>
          </div>
-         <div class="setting" @click="settingMenu_click()" >
+         <div class="setting" @click="settingMenu_click()" v-if="false">
           <el-tooltip class="item" effect="light" content="定制" placement="left">
             <i class="fa fa-cog fa-fw"></i>
             <div style="font-size:12px;">定制</div>
