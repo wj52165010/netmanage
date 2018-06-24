@@ -15,7 +15,7 @@
 
             <!--切换皮肤-->
             <div class="skin">
-              <el-tooltip class="item" effect="light" content="切换主题321321" placement="right">
+              <el-tooltip class="item" effect="light" content="切换主题" placement="right">
                 <i class="fa fa-road"></i>
               </el-tooltip>
 
