@@ -15,7 +15,7 @@
 
             <!--切换皮肤-->
             <div class="skin">
-              <el-tooltip class="item" effect="light" content="切换主题32" placement="right">
+              <el-tooltip class="item" effect="light" content="切换主题" placement="right">
                 <i class="fa fa-road"></i>
               </el-tooltip>
 
@@ -27,7 +27,7 @@
             </div>
          </div>
          <div class="setting" @click="settingMenu_click()" >
-          <el-tooltip class="item" effect="light" content="定制" placement="left">
+          <el-tooltip class="item" effect="light" content="定制333" placement="left">
             <i class="fa fa-cog fa-fw"></i>
             <div style="font-size:12px;">定制</div>
           </el-tooltip>
