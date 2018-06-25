@@ -83,7 +83,7 @@ export default {
            }
       },
       id:'',
-      pages:[{name:'数据接收详情',icon:'fa fa-tag'},{name:'数据有效率',icon:'fa fa-tag'},{name:'错误记录',icon:'fa fa-tag'}],
+      pages:[{name:'数据接收详情',icon:'fa fa-tag'},{name:'数据有效率',icon:'fa fa-tag'},{name:'数据文件传输记录',icon:'fa fa-tag'}],
       blnShowLoading:false,
       header:['厂商','厂商编码','上报条数','实际条数','有效条数','无效条数','有效率'],
       column:[{width:0,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'},{width:150,align:'center'}],
