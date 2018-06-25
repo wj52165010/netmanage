@@ -213,7 +213,7 @@ export default {
                                 <div style="float:left;width:${colW};text-align:right;padding-right:5px;">主体负责人:</div> 
                                 <div style="margin-left:${colW};word-break: break-all;word-break: break-all;">{{d.main_responsibility || ''}}</div>
                             </div>
-                            <div class="col-md-5">联系电话: IP地址:219232.47.133</div>
+                            <div class="col-md-5">联系电话:{{d.main_tel || ''}}</div>
                         </div>
 
                         <div class="row" style="margin-bottom:10px;">
@@ -221,21 +221,29 @@ export default {
                                 <div style="float:left;width:${colW};text-align:right;padding-right:5px;">网站负责人:</div> 
                                 <div style="margin-left:${colW};word-break: break-all;word-break: break-all;">{{d.website_responsibility || ''}}</div>
                             </div>
-                            <div class="col-md-5">联系电话: {{d.main_tel || ''}}</div>
+                            <div class="col-md-5">联系电话: {{d.website_tel || ''}}</div>
                         </div>
                       </div>
+
+                    <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+                        <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+                    </div>
                      `;
             let param={
                 title:'备案网站详情',
                 area:'600px',
-                content:`<div class="siteRecords_addPop" style="padding:10px;">${html}</div>`,
+                content:`<div class="siteRecords_addPop" style="padding:10px;position:relative;">${html}</div>`,
                 context:{
                     d:{},
+                    blnLoading:false,
                 },
                 success(){
+                    param.selfData.blnLoading=true;
                     s.$store.dispatch(WebSiteRecordDetail,d.id).then(res=>{
+                        param.selfData.blnLoading=false;
                         if(!tool.msg(res,'','获取详细信息失败!')) return;
                         param.selfData.d=res.biz_body;
+
                     });
                 }
             };

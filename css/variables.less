@@ -101,6 +101,17 @@
     }
 }
 
+.looplighten(@class,@pro,@shade,@Theme:@Theme,@counter:length(@Theme)) when (@counter>0) {
+    .looplighten(@class,@pro,@shade,@Theme,@counter - 1);
+    @abc:extract(@Theme, @counter); 
+    @val:extract(@ThemeCol,@counter);
+
+    .@{abc} @{class}{
+        @{pro}:tint(@val,@shade);
+    }
+
+}
+
 .loopImportantAdd(@class,@pro,@Theme:@Theme,@counter:length(@Theme)) when (@counter>0) {
     .loopImportantAdd(@class,@pro,@Theme,@counter - 1);
   
@@ -192,6 +203,10 @@
 
 .TColImAdd(@class,@pro:"") when(@pro="bg"){//设置背景颜色
     .loopImportantAdd(@class,background-color);
+}
+
+.TColLighten(@class,@shade,@pro:"") when(@pro="bg"){
+    .looplighten(@class,background-color,@shade);
 }
 
 .TColFade(@class,@number,@pro:"") when(@pro="bg"){//设置背景颜色

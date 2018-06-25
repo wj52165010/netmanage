@@ -560,7 +560,6 @@ export default {
 
         this.tipInfoSize={x:x-w/2,y:y-h-50}
         this.blnShowTipInfo=true;
-        
         this.showData=_.map(item.data,d=>{
           return {
             name:d.netbar_wacode,

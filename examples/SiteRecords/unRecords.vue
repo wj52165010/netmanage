@@ -26,6 +26,12 @@
             <div class="item">
                 <el-button type="primary" @click="search()"><span>搜索</span></el-button>
             </div>
+
+            <div style="float:right;font-size:20px;margin-top:10px;cursor:pointer;">
+              <el-tooltip effect="light" content="扫描IP配置" placement="top">
+                <i class="fa fa-cog fa-fw" @click="ipSetting()"></i>
+              </el-tooltip>
+            </div>
         </div>
         <!--列表头-->
         <div class="table_header">
@@ -76,6 +82,7 @@
 
 <script>
 import Scroll from  'components/scroll'
+import IPsetting from './ipSetting'
 
 import {BODY_RESIZE,WebSiteList} from '../../store/mutation-types'
 export default {
@@ -118,6 +125,25 @@ export default {
       this.isrecord='3';
       this.data=[];
       this.getList(this.pageIndex);
+    },
+    //扫描IP配置
+    ipSetting(){
+        let s=this;
+        tool.open(function(s){
+            let html=`<IPsetting />`;
+            let param={
+                title:'扫描IP配置',
+                area:['800px','600px'],
+                content:`<div class="IPSetting_pop" style="width:100%;height:100%;">${html}</div>`,
+                components:{IPsetting},
+                store:s.$store,
+                context:{
+
+                }
+            };
+
+            return param;
+        }(s));
     },
     //打开页面
     openPage(url){
