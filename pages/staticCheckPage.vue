@@ -122,7 +122,7 @@
                             </MulDropDwon>
                         </div>
                         <div style="display:inline-block;margin-left:10px;width:130px;">
-                            <el-select v-model="timeRageVal" clearable placeholder="时间范围">
+                            <el-select v-model="timeRageVal" placeholder="时间范围">
                                 <el-option
                                 v-for="item in timeRange"
                                 :key="item.val"
@@ -497,8 +497,8 @@ import CountType from '../enum/CountType'
 
 import {Customer,VidCounter,VidMac,SiteCount,DataCount,EquipmentCount,MobileCount,ExportOnlineCount,ExportDetailCount,DataTotal,DetailListCount,DetailListExport,
         FirmCount,BODY_RESIZE,Trigger_RESIZE,FirmSiteCount,FirmEquipmentCount,GetRegion,GetFirm,GetMicroprobe,SiteOnlineRate,GetFirmCollFirm,GetCollMicroprobe,
-        GetSiteDeviceList,examineTaskList,examineResultList,examineExportTask,examineRuleList,examineRuleAdd,examineAddTask,examineGetTimeSetting,examineUpdTimeSetting,examineDeleteTask,examineDeleteRule
-        } from '../store/mutation-types'
+        GetSiteDeviceList,examineTaskList,examineResultList,examineExportTask,examineRuleList,examineRuleAdd,examineAddTask,examineGetTimeSetting,examineUpdTimeSetting,examineDeleteTask,examineDeleteRule,
+        examineOrgOptionList,getDictTables,examineSaveOrgOption} from '../store/mutation-types'
 
 export default {
   name: 'BasePage',
@@ -710,7 +710,7 @@ export default {
       myLineChart:null,
       myLineChartData:null,
       timeRange:[{name:'近一月',val:'month'},{name:'近一周',val:'week'},{name:'上一月',val:'last_month'}],
-      timeRageVal:'',
+      timeRageVal:'week',
       optionIndex:0,//当前图表显示页面索引
       countIndex:0,//当前详情统计显示索引(0:图表,1:列表)
       detais:[],
@@ -1303,7 +1303,7 @@ export default {
                 });
             }   
         },
-       //列表宽度处理，解决列表表头与数据不对齐的问题，暂未有更好方案，临时解决一下
+       //列表宽度处理，解决列表表头与数据不对齐的问题，因时间较紧，临时解决一下，后续需要处理
        dealListWidth(){
            if(this.viewTable!="check") return;
            if(!this.$refs.tel_name) return;           
@@ -1396,14 +1396,17 @@ export default {
             let self=this;            
             tool.open(function(){
                 let html=`<div name="container" class="container">
-                            <div class="check-detail-row" @click="selectFun('set')">
+                            <div class="row"> 
+                                <div class="item_set" @click="firmSet()">厂商配置 <i class="fa fa-gear"></i></div>
+                            </div>
+                            <div class="check-detail-row" @click="selectFun('1')">
                                 <div class="item_label_left">
                                     <div class="img-t"><i class="fa fa-clock-o"></i></div>
                                     <div class="detail-title">配置定时考核</div>
                                     <div class="iden_container active" v-show="select=='1'"><i class="fa fa-check"></i></div>
                                 </div>                          
                             </div>    
-                            <div class="check-detail-row" @click="selectFun('new')">  
+                            <div class="check-detail-row" @click="selectFun('2')">  
                                 <div class="item_label_left">
                                     <div class="img-t"><i class="fa fa-calendar"></i></div>
                                     <div class="detail-title">新增考核任务</div>
@@ -1423,32 +1426,207 @@ export default {
                         skin:'check-manage',
                         area:['600px','350px'],
                         context:{
-                            select:"0",           //0：未选择  1：选中配置考核   2：选中新增考核
+                            select:"0",           //0：未选择  1：选中配置考核   2：选中新增考核   
                             cancel_click(){
                                 param.close();
                             },
+                            // 下一步
                             next_click(){
-                                if(param.selfData.select=="0") return;
-                                if(param.selfData.select=="2"){
-                                    self.newCheckFun();
-                                }else{
-                                    self.setCheckFun();
-                                }                                   
+                                switch(param.selfData.select){
+                                    case "1":
+                                        self.setCheckFun();
+                                        break;  
+                                    case "2":
+                                        self.newCheckFun();
+                                        break;
+                                    default:
+                                        break;
+                                }                       
                                 param.close();
                             },
                             selectFun(val){
-                               if(val=="set"){
-                                    param.selfData.select="1";
-                               }else{
-                                    param.selfData.select="2";
-                               }
+                                param.selfData.select=val;
                             },
-
+                            firmSet(){
+                                self.firmSetFun();
+                                param.close();
+                            }
                         },
                     };
                 return param;                
             }());     
        },
+      // 考核管理的厂商配置
+      firmSetFun(){
+            this.blnShowHistoryPop=false;
+            let self=this;
+            tool.open(function(){
+                let html=`<div name="container" style="width:100%;height:100%;padding: 10px;" >
+                            <div style="color: #888;margin-bottom: 15px;">*未选中则视为厂商不支持该种数据采集，不会被纳入考核</div>
+                            <!--加载中标识-->
+                            <div v-if="DeviceblnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;">
+                                <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+                            </div>
+                            <div class="mount-table">
+                                <div class="header">
+                                    <div class="mount_item" ><span class="overflow" style="width:220px;">厂商名称</span></div>
+                                    <div class="mount_item" ><span class="overflow" style="width:200px;">数据来源</span></div>
+                                    <div class="mount_ital" style="width:142px">
+                                        <div class="mount_nule" style="border-bottom:1px solid #c9c9c9">实名采集</div>
+                                        <div class="mount_nule">
+                                            <div style="width:67px;border-right:2px solid #c9c9c9;height:100%"><span class="overflow">身份证</span></div>
+                                            <div style="width:67px"><span class="overflow">手机号</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="mount_ital" style="width:213px">
+                                        <div class="mount_nule" style="border-bottom:1px solid #c9c9c9">虚拟身份</div>
+                                        <div class="mount_nule">
+                                            <div style="width:67px;border-right:2px solid #c9c9c9;height:100%"><span class="overflow">QQ</span></div>
+                                            <div style="width:67px;border-right:2px solid #c9c9c9;height:100%"><span class="overflow">微信</span></div>
+                                            <div style="width:67px"><span class="overflow">淘宝</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="mount_ital" style="width:213px">
+                                        <div class="mount_nule" style="border-bottom:1px solid #c9c9c9">硬件特征</div>
+                                        <div class="mount_nule">
+                                            <div style="width:67px;border-right:2px solid #c9c9c9;height:100%"><span class="overflow">MAC</span></div>
+                                            <div style="width:67px;border-right:2px solid #c9c9c9;height:100%"><span class="overflow">IMSI</span></div>
+                                            <div style="width:67px"><span class="overflow">IMEI</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="mount_item" v-if="detailData.length>=7"><span class="overflow" style="width:11px;"></span></div>
+                                </div>
+                                
+                                <div class="content" style="height: 332px;overflow-y: auto;overflow-x: hidden;">
+                                    <div v-if="detailData.length<=0&&!DeviceblnLoading" class="content">
+                                        <div class="mount_item"><span class="overflow" style="width:990px;">暂无数据</span></div>
+                                    </div>
+                                   <!-- <Scroll :listen="detailData">    -->
+                                        <div v-for="(d,i) in detailData" class="content">
+                                            <div class="mount_item" :title="d.security_software_orgname"><span class="overflow" style="width:220px;">{{d.security_software_orgname}}</span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:200px;">
+                                                <div style="width:140px;margin:0 auto">
+                                                    <el-select v-model="d.microprobe_type" :clearable="true" placeholder="请选择" @change="editSelectFun(i)">
+                                                        <el-option v-for="kind in dict_tables.microprobe_type" :label="kind.name" :value="kind.value"></el-option>
+                                                    </el-select>
+                                                </div>                                                                        
+                                            </div>
+                                            <div class="mount_item"><span class="overflow" style="width:65px;"><el-switch on-text="" off-text="" v-model="d.options.identity"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:72px;"><el-switch on-text="" off-text="" v-model="d.options.mobile"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:65px;"><el-switch on-text="" off-text="" v-model="d.options.qq"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:68px;"><el-switch on-text="" off-text="" v-model="d.options.wechat"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:72px;"><el-switch on-text="" off-text="" v-model="d.options.taobao"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:65px;"><el-switch on-text="" off-text="" v-model="d.options.terminal_mac"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:68px;"><el-switch on-text="" off-text="" v-model="d.options.imsi"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:72px;"><el-switch on-text="" off-text="" v-model="d.options.imei"></el-switch></span></div>
+                                    
+                                        </div>
+                                    <!--</Scroll>-->
+                                </div>                                                              
+                            </div>
+                            <div style="margin-top:10px;margin-right:30px;text-align:right;">
+                                    <button type="button" class="btn btn-success" style="font-size:12px;" @click="submit">确定</button> 
+                                    <button type="button" class="btn btn-default" style="font-size:12px;" @click="cancel">取消</button>
+                            </div>     
+                        </div>`;
+                let param={
+                        title:'厂商数据项设置',
+                        content:html,
+                        skin:'firm-check-list',
+                        area:['1030px','530px'],
+                        components:{Scroll},
+                        context:{
+                            detailData:"",
+                            valueTest:"",
+                            dict_tables:"",
+                            DeviceblnLoading:true,   //加载中标识
+                            cancel(){
+                                param.close();
+                            },
+                            // 	数据来源改变时设置默认值
+                            editSelectFun(num){
+                                num=parseInt(num);
+                                param.selfData.detailData[num].options={
+                                    hardware:true,
+                                    real:true,
+                                    virtual:true,
+                                    identity:true,
+                                    mobile:true,
+                                    qq:true,
+                                    wechat:true,
+                                    taobao:true,
+                                    terminal_mac:true,
+                                    imsi:true,
+                                    imei:true,                                                
+                                }                                
+                                switch( param.selfData.detailData[num].microprobe_type){
+                                    case "145":
+                                        param.selfData.detailData[num].options.identity=false;
+                                        break;
+                                    case "120":
+                                        param.selfData.detailData[num].options.mobile=false;
+                                        param.selfData.detailData[num].options.terminal_mac=false;
+                                        param.selfData.detailData[num].options.imsi=false;
+                                        param.selfData.detailData[num].options.imei=false;
+                                        break;                                                                              
+                                }
+                            },
+                            submit(){
+                                for(var key of param.selfData.detailData){
+                                    delete key.security_software_orgname;
+                                    key.options=JSON.stringify(key.options)
+                                }
+                                let obj={
+                                    options:param.selfData.detailData
+                                }
+                                 self.$store.dispatch(examineSaveOrgOption,obj).then(res=>{
+                                    if(res.msg.code!='successed')return;
+                                    param.close();
+                                    tool.info('厂商数据项设置成功!');
+                                 })
+                            },
+                            loadDictTables(){
+                                self.$store.dispatch(getDictTables).then(res=>{
+                                    param.selfData.dict_tables= res.biz_body;
+                                    param.selfData.loadDevice();          
+                                })
+                            },
+                            loadDevice(){
+                                self.$store.dispatch(examineOrgOptionList).then(res=>{
+                                    if(res.msg.code!='successed')return;
+                                    param.selfData.DeviceblnLoading=false;
+                                    param.selfData.detailData= res.biz_body;
+                                    // 后端的数据options序列化一下,如果options为空则添加一个默认值
+                                    for(let i=0;i<param.selfData.detailData.length;i++){
+                                        if(param.selfData.detailData[i].options){
+                                            param.selfData.detailData[i].options=eval('(' + param.selfData.detailData[i].options + ')');
+                                        }else{
+                                            param.selfData.detailData[i].options={
+                                                hardware:true,
+                                                real:true,
+                                                virtual:true,
+                                                identity:false,
+                                                mobile:false,
+                                                qq:false,
+                                                wechat:false,
+                                                taobao:false,
+                                                terminal_mac:false,
+                                                imsi:false,
+                                                imei:false,                                                
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        },
+                        success(){
+                            param.selfData.loadDictTables();                          
+                        }
+                    };
+
+                return param;
+            }());                 
+      },
       // 新增考核任务
       newCheckFun(){
             let self=this;
@@ -2124,6 +2302,16 @@ export default {
         height: 100%;
         padding: 10px
     }
+    .check-manage .container .item_set{
+        display: inline-block;
+        float: right;
+        margin-right: 29px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .check-manage .container .item_set:hover{
+        color:rgb(44, 2, 2);
+    }
     .check-manage .check-detail-row{
         display:inline-block;
         height: 64%;
@@ -2133,7 +2321,7 @@ export default {
         position: relative;
         cursor:pointer;
         color:#444;
-        margin: 30px;
+        margin: 20px 30px;
         height: 100%;
         border: 1px solid #999;
         text-align:center;
@@ -2243,6 +2431,55 @@ export default {
         font-size: 15px;
         cursor: pointer;
     }
+
+    /*厂商数据项设置列表*/
+
+    .firm-check-list .mount-table .header div{
+        display: inline-block;
+    }
+    .firm-check-list .mount-table .header{
+        display: table-row;
+    }
+    .firm-check-list .mount-table .header .mount_item{
+        display: table-cell;
+        font-weight: bolder;
+        text-align: center;
+        //background-color: #E5E5E5;
+        //line-height: 55px;
+       // height: 55px;
+        border: 1px solid #C9C9C9;
+    }
+    .firm-check-list .mount-table .header .mount_item .overflow{
+        display: block;
+    }
+    .firm-check-list .mount-table .header .mount_ital{
+        border: 1px solid #C9C9C9;
+        height: 56px;
+    }
+    .firm-check-list .mount-table .header .mount_ital .mount_nule{
+        height: 27px;
+        width: 100%;
+        text-align: center;
+        font-weight: bolder;
+       // border-bottom: 1px solid #c9c9c9;
+    }
+    .firm-check-list .mount-table .content .mount_item{
+        display: table-cell;
+        font-weight: normal;
+        text-align: center;
+        line-height: 45px;
+        border: 1px solid #C9C9C9;
+
+    }
+    .firm-check-list .mount-table .content .mount_item .overflow{
+        width:100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        display: block;
+    }
+
+
     // 新增考核规则
     .new-check-rule .container{
         width:100%;height:100%;padding-top: 20px;

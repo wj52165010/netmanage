@@ -29,12 +29,14 @@
             <!--列表显示区域-->
             <div v-show="viewTable=='list'" style="height: calc(100% - 50px - -63px - 40px);position:relative">
                 <div class="option">
-                    <!--<div class="item">
-                        <span>场所名称:</span>
+                    <div class="item">
+                        <span>数据来源:</span>
                         <div class="input">
-                            <el-input placeholder="场所名称" v-model="query.netbar_name"></el-input>
+                            <el-select v-model="query.microprobe_type" placeholder="数据来源" :multiple="true" :collapse-tags="true" @change=filterMicroprobe>
+                                <el-option v-for="kind in dict_tables.microprobe_type" :label="kind.name" :value="kind.value"></el-option>
+                            </el-select>
                         </div>
-                    </div>-->
+                    </div>
                     <div class="item">
                         <span>场所范围:</span>
                         <div class="input">
@@ -71,15 +73,6 @@
                             </MulDropDwon>
                         </div>
                     </div> 
-                    <div class="item">
-                        <span>数据来源:</span>
-                        <div class="input">
-                            <el-select v-model="query.microprobe_type" placeholder="数据来源" :multiple="true" :collapse-tags="true" @change=filterMicroprobe>
-                                <el-option v-for="kind in dict_tables.microprobe_type" :label="kind.name" :value="kind.value"></el-option>
-                            </el-select>
-                        </div>
-                    </div>
-
                     <div class="item" >
                         <el-button type="primary" @click="query_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
                     </div>
@@ -124,10 +117,12 @@
                     </Scroll>
                 </div>
                 <div class="page_container">
-                    <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageNum+1}}</span></span>
-                    <div class="firstPage" @click="pageChange(0)">首页</div>
-                    <div class="prePage" @click="pageChange(pageNum-1)">上一页</div>
-                    <div class="nextPage" @click="pageChange(pageNum+1)">下一页</div>
+                    <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;font-weight:bold">{{pageNum+1}}&nbsp;/&nbsp;{{pageSize}}</span></span>
+                    <span style="float:left;margin-top:10px;margin-left:40px;font-size:12px;">每页&nbsp;{{query.limit}}&nbsp;条，&nbsp;&nbsp;共计&nbsp;&nbsp;<span>{{allTotall}}</span>&nbsp;条</span>
+                    <div class="firstPage" @click="pageChange(0)" v-show="pageNum!=0">首页</div>
+                    <div class="prePage" @click="pageChange(pageNum-1)" v-show="pageNum!=0">上一页</div>
+                    <div class="nextPage" @click="pageChange(pageNum+1)" v-show="pageNum!=pageSize-1">下一页</div>
+                    <div class="nextPage" @click="pageChange(pageSize-1)" v-show="pageNum!=pageSize-1">末页</div>
                 </div>
             </div>
             <!--地图（瞄点）显示区域-->
@@ -237,13 +232,13 @@
                         <div class="item">
                             <span>所属区域:</span>
                             <div class="input">
-                                <PlaceSearch  :blnClear="true" c_searchKind="0" @place_res="selectAreaProblem"></PlaceSearch>
+                                <PlaceSearch  :blnClear="true" c_searchKind="0" @place_res="selectAreaProblem" ref="areaSel"></PlaceSearch>
                             </div>
                         </div>
                         <div class="item">
                             <span>场所范围:</span>
                             <div class="input">
-                                <PlaceSearch :blnLike="true" :blnClear="true" c_searchKind="1" @place_res="selectSiteProblem"></PlaceSearch>
+                                <PlaceSearch :blnLike="true" :blnClear="true" c_searchKind="1" @place_res="selectSiteProblem" ref="siteSel"></PlaceSearch>
                             </div>
                         </div>
                         <div class="item" >
@@ -473,6 +468,8 @@ export default {
         viewTable:"statistics",                //列表，地图和统计相互切换的标识
         blnLoading:false,                //加载中标识
         pageNum:0,                      //当前页号（0开始计数）
+        allTotall:null,                  //总条数
+        pageSize:null,                  //总计多少页
         dict_tables:{},                 //字典信息集合
         isInternal:true,                 //当前列表是否是网吧数据
         myPieChart:"",  
@@ -649,6 +646,8 @@ export default {
             this.$store.dispatch(GetSiteList,this.query).then(res=>{
                 if(res.msg.code!='successed')return;
                 this.data=res.biz_body;
+                this.allTotall=res.page?res.page.total:null;
+                this.pageSize=res.page?res.page.page_size:null;
                 this.blnLoading=false;
                 if(this.query.microprobe_type[0]=="120")   this.query.microprobe_type=["120"];
             });            
@@ -1426,6 +1425,8 @@ export default {
 
 
                 this.data=res.biz_body;
+                this.allTotall=res.page?res.page.total:null;
+                this.pageSize=res.page?res.page.page_size:null;
             });
         },400)
       },
@@ -1450,7 +1451,6 @@ export default {
           this.$store.dispatch(GetSiteList,this.query).then(res=>{
             if(!tool.msg(res))return;
             let data=res.biz_body;
-
             if(data.length<=0){
                 tool.msg({msg:{code:'successed'}},'已经到了最后页!','已经到了最后页!');
                 this.pageNum =this.pageNum-1;
@@ -1458,6 +1458,8 @@ export default {
             }
 
             this.data=data;
+            this.allTotall=res.page?res.page.total:null;
+            this.pageSize=res.page?res.page.page_size:null;
           });
       },
       //页码切换(问题总览)
@@ -2121,18 +2123,6 @@ export default {
       changeProblemFun(val){
           if(val){         
             setTimeout(()=>{
-               // this.data=[];
-               // this.blnSearch=true;
-                //this.blnLoading=true;
-                //this.pageNum= 0;
-               // this.query.skip=this.pageNum*this.query.limit;
-            //    初始查询时重置除异常分类外的其他条件
-            /*this.queryProblem.limit=20;
-            this.queryProblem.skip=0;
-            this.queryProblem.region_range=[];                        
-            this.queryProblem.netsite_range=[];
-            this.queryProblem.security_software_orgcodes="";*/
-
                 this.$store.dispatch(siteScoreCollect,this.queryProblem).then(res=>{
 
                     if(!tool.msg(res,'','搜索失败!'))return;
@@ -2145,9 +2135,18 @@ export default {
                         this.$refs.ABC_problem.reloadyScroll();
                     });
                 });
-            },40)            
+            },0)            
           }else{
-                this.problemTable='5';
+            //    关闭问题总览列表是重置除异常分类外的其他条件
+            this.queryProblem.limit=20;
+            this.queryProblem.skip=0;
+            this.queryProblem.region_range=[];                        
+            this.queryProblem.netsite_range=[];
+            this.queryProblem.security_software_orgcodes="";
+            this.pageNumProblem=0;
+            this.$refs.areaSel.clearBtn.click();
+            this.$refs.siteSel.clearBtn.click();
+            this.problemTable='5';
                 setTimeout(()=>{
                     this.problemTable='0';    
                 },1000) 

@@ -2981,8 +2981,20 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }   
-
-
+  // 考核任务-获取厂商配置
+  examineOrgOptionList(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='org_option_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }   
+  // 考核任务-保存厂商配置
+  examineSaveOrgOption(data){
+    this.baseBag.target='examine';
+    this.baseBag.method='save_org_option';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  } 
 
 
   // 按厂商统计采集量
