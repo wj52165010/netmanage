@@ -2132,8 +2132,22 @@ export default new Vuex.Store({
                 });
             });
         },         
-        
-
+        //考核任务-获取厂商配置
+        [types.examineOrgOptionList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineOrgOptionList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },           
+        //考核任务-保存厂商配置
+        [types.examineSaveOrgOption]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.examineSaveOrgOption(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },     
 
 
 

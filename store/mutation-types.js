@@ -409,7 +409,8 @@ export const examineGetTimeSetting='examineGetTimeSetting' //考核任务-获取
 export const examineUpdTimeSetting='examineUpdTimeSetting' //考核任务-修改定时考核设置
 export const examineDeleteTask='examineDeleteTask' //考核任务-删除考核任务
 export const examineDeleteRule='examineDeleteRule' //考核任务-删除考核规则
-
+export const examineOrgOptionList='examineOrgOptionList' //考核任务-获取厂商配置
+export const examineSaveOrgOption='examineSaveOrgOption' //考核任务-保存厂商配置
 
 export const GetFirmCollFirm='GetFirmCollFirm' //按厂商统计采集量
 export const GetCollMicroprobe='GetCollMicroprobe' //按数据来源统计采集量

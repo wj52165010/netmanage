@@ -77,7 +77,7 @@
               </div>
             </div>
 
-            <div class="item" v-if="true">
+            <div class="item" v-if="false">
               <div class="bar">
                 <span class="label">特定人员 {{countData.iden.total}}</span>
                 <span class="icon">
@@ -126,7 +126,7 @@
                   </div>
                 </div>
 
-                <div class="item" v-if="true">
+                <div class="item" v-if="false">
                   <div class="bar">
                     <span class="label">实名身份采集 {{countData.certificate.total}}</span>
                   </div>
@@ -136,7 +136,7 @@
                   </div>
                 </div>
 
-                <div class="item" v-if="true">
+                <div class="item" v-if="false">
                   <div class="bar">
                     <span class="label">虚拟身份采集 {{countData.virtual.total}}</span>
                   </div>

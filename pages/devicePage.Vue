@@ -159,10 +159,12 @@
                     </Scroll>
                 </div>
                 <div class="page_container">
-                    <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageNum+1}}</span></span>
-                    <div class="firstPage" @click="pageChange(0)">首页</div>
-                    <div class="prePage" @click="pageChange(pageNum-1)">上一页</div>
-                    <div class="nextPage" @click="pageChange(pageNum+1)">下一页</div>
+                    <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;font-weight:bold">{{pageNum+1}}&nbsp;/&nbsp;{{pageSize}}</span></span>
+                    <span style="float:left;margin-top:10px;margin-left:40px;font-size:12px;">每页&nbsp;{{query.limit}}&nbsp;条，&nbsp;&nbsp;共计&nbsp;&nbsp;<span>{{allTotall}}</span>&nbsp;条</span>
+                    <div class="firstPage" @click="pageChange(0)" v-show="pageNum!=0">首页</div>
+                    <div class="prePage" @click="pageChange(pageNum-1)" v-show="pageNum!=0">上一页</div>
+                    <div class="nextPage" @click="pageChange(pageNum+1)" v-show="pageNum!=pageSize-1">下一页</div>
+                    <div class="nextPage" @click="pageChange(pageSize-1)" v-show="pageNum!=pageSize-1">末页</div>
                 </div>
             </div>
             <!--地图（瞄点）显示区域-->
@@ -290,7 +292,7 @@
                         <div class="item">
                             <span>所属区域:</span>
                             <div class="input">
-                                <PlaceSearch  :blnClear="true" c_searchKind="0" @place_res="selectAreaProblem"></PlaceSearch>
+                                <PlaceSearch  :blnClear="true" c_searchKind="0" @place_res="selectAreaProblem"  ref="areaSel"></PlaceSearch>
                             </div>
                         </div>
                         <div class="item">
@@ -452,6 +454,8 @@ export default {
         viewTable:"statistics",                //列表，地图和统计相互切换的标识
         blnLoading:false,                //加载中标识
         pageNum:0,                      //当前页号（0开始计数）
+        allTotall:null,                  //总条数
+        pageSize:null,                  //总计多少页
         dict_tables:{},                 //字典信息集合
         myPieChart:"",  
         myBarChart:"",
@@ -636,6 +640,8 @@ export default {
         this.$store.dispatch(GetDeviceList,this.query).then(res=>{
             if(res.msg.code!='successed')return;
             this.data=res.biz_body;
+            this.allTotall=res.page?res.page.total:null;
+            this.pageSize=res.page?res.page.page_size:null;
             this.blnLoading=false;
         });          
         //获取数据来源（下拉框序列化）
@@ -1219,6 +1225,8 @@ export default {
               this.blnLoading=false;
               if(!tool.msg(res,'','搜索失败!'))return;
               this.data=res.biz_body;
+              this.allTotall=res.page?res.page.total:null;
+              this.pageSize=res.page?res.page.page_size:null;
           });
       },
       //查询按钮(搜索)问题总览
@@ -1250,6 +1258,8 @@ export default {
             }
 
             this.data=data;
+            this.allTotall=res.page?res.page.total:null;     
+            this.pageSize=res.page?res.page.page_size:null;       
           });
        },
       //页码切换(问题总览)
@@ -1942,10 +1952,19 @@ export default {
                 });
             },40)            
           }else{
-                this.problemTable='3';
-                setTimeout(()=>{
-                    this.problemTable='0';    
-                },1000) 
+            //    关闭问题总览列表是重置除异常分类外的其他条件
+            this.queryProblem.limit=20;
+            this.queryProblem.skip=0;
+            this.queryProblem.region_range=[];                        
+            this.queryProblem.security_software_orgcodes="";
+            this.queryProblem.equipment_id="";
+            this.queryProblem.equipment_name="";
+            this.pageNumProblem=0;
+            this.$refs.areaSel.clearBtn.click();          
+            this.problemTable='3';
+            setTimeout(()=>{
+                this.problemTable='0';    
+            },1000) 
           }
       },
 
