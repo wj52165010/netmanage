@@ -46,7 +46,11 @@
                     <div class="photo_item" v-for="d in data">
                         <div class="photo_item_header">{{d.name}}</div>
                         <div class="photo_item_body">
+<<<<<<< HEAD
                             <img class="photo_container" :src="'/api/v1/face_search/get_face_image/'+d.certno" />
+=======
+                            <img class="photo_container" :onload="d.width='this.width/this.height*114'" :style="{width:d.width}" :src="'/api/v1/face_search/get_face_image/'+d.certno" />
+>>>>>>> 安阳外网
                             <div class="photo_item_child">证件号:{{d.certno}}</div>
                             <div class="photo_item_child">相似度:{{(d.similarity*100).toFixed(2)}}%</div>
                             <div class="photo_item_child">民族:{{d.ethnic}}</div>
