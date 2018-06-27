@@ -9,7 +9,7 @@
                 <div class="body">
                   <!--头像展示区域-->
                   <div class="photoShow">
-                    <img :src="'http://192.168.23.73:3030/api/v1/face_search/get_upload_image/'+file_name" :onerror="`this.src='${noPersonImg}'`" style="width:100%;height:100%;" />
+                    <img :src="'/api/v1/face_search/get_upload_image/'+file_name" :onerror="`this.src='${noPersonImg}'`" style="width:100%;height:100%;" />
                   </div>
 
                   <!--头像描述区域-->
@@ -46,7 +46,7 @@
                     <div class="photo_item" v-for="d in data">
                         <div class="photo_item_header">{{d.name}}</div>
                         <div class="photo_item_body">
-                            <img class="photo_container" :src="'http://192.168.23.73:3030/api/v1/face_search/get_face_image/'+d.certno" />
+                            <img class="photo_container" :src="'/api/v1/face_search/get_face_image/'+d.certno" />
                             <div class="photo_item_child">证件号:{{d.certno}}</div>
                             <div class="photo_item_child">相似度:{{(d.similarity*100).toFixed(2)}}%</div>
                             <div class="photo_item_child">民族:{{d.ethnic}}</div>
@@ -77,7 +77,7 @@ export default {
   data () {
     return {
       fileId:0,
-      url:'http://192.168.23.73:3030/api/v1/face_search/upload',
+      url:'/api/v1/face_search/upload',
       uploadInfo:'点击此处上传图片',
       blnUploading:false,
       allowType:/(\.|\/)(jpg|jpeg|png)$/i,
