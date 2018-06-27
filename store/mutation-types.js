@@ -452,6 +452,11 @@ export const StartPatrol='StartPatrol' //开启巡查项目
 export const WebSiteList='WebSiteList'//未备案列表
 export const WebSiteRecordList='WebSiteRecordList' //备案列表
 export const WebSiteRecordDetail='WebSiteRecordDetail' //备案列表详细
+export const WebSiteScanSetting='WebSiteScanSetting' //备案获取IP列表
+export const WebSiteAddIP='WebSiteAddIP' //备案新增IP段
+export const WebSiteDelIP='WebSiteDelIP' //备案删除IP段
+export const WebSiteSavePort='WebSiteSavePort' //备案保存端口配置
+export const WebSitePortSetting='WebSitePortSetting' //备案获取端口配置
 
 /*************  搜图 **************************/
 export const SearchFace='SearchFace' //搜人脸
