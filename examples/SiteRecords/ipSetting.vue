@@ -87,7 +87,7 @@
             <!--内容蓝-->
             <div class="container">
                 <div class="weekcycle">
-                    <div><span style="font-weight:600;">扫描周期</span><span style="color:gray;font-size:10px;">(单位/天)</span></div>
+                    <div><span style="font-weight:600;">间隔周期</span><span style="color:gray;font-size:10px;">(单位/天)</span></div>
                     <div style="margin:10px 0px;"><el-input-number  style="width:80%;" :min="1" :max="365" label="描述文字"></el-input-number></div>
                 </div>
                 <div class="ip_container">
