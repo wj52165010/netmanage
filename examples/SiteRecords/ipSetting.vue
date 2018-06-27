@@ -11,37 +11,36 @@
                 <div class="addIP">
                     <div class="subTitle"><div class="sub_container">添加IP</div></div>
                     <div class="itemRow">
-                        <span style="width:50px;display:inline-block;"><span>*</span>起始IP</span>
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>:
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>:
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>:
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>
+                        <span style="width:50px;display:inline-block;"><span style="color:red;">*</span>起始IP</span>
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="startIP_one" /></div>:
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="startIP_two" /></div>:
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="startIP_three" /></div>:
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="startIP_four" /></div>
                     </div>
                     <div class="itemRow">
                         <span style="width:50px;display:inline-block;">结束IP</span>
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>:
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>:
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>:
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>
-                        
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="endIP_one" /></div>:
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="endIP_two" /></div>:
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="endIP_three" /></div>:
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="endIP_four" /></div>
                     </div>
                     <div class="itemRow" style="text-align:right;padding-right:20px;">
-                        <button class="btn btn-default btn-xs" type="submit">清空</button>
-                        <button class="btn btn-default btn-xs btn-primary" type="submit">添加</button>
+                        <button class="btn btn-default btn-xs" type="submit" @click="clearIP()">清空</button>
+                        <button class="btn btn-default btn-xs btn-primary" type="submit" @click="addIP()">添加</button>
                     </div>
                     <div class="line"></div>
                     <div class="itemRow">
                         <span style="width:50px;display:inline-block;">IP/掩码</span>
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>:
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>:
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>:
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>/
-                        <div style="display:inline-block;"><el-input style="width:50px;" /></div>
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="maskIP_one" /></div>:
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="maskIP_two" /></div>:
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="maskIP_three" /></div>:
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="maskIP_four" /></div>/
+                        <div style="display:inline-block;"><el-input style="width:50px;" v-model="maskCount" /></div>
                     </div>
 
                     <div class="itemRow" style="text-align:right;padding-right:20px;">
-                        <button class="btn btn-default btn-xs" type="submit">清空</button>
-                        <button class="btn btn-default btn-xs btn-primary" type="submit">添加</button>
+                        <button class="btn btn-default btn-xs" type="submit" @click="clearMask()">清空</button>
+                        <button class="btn btn-default btn-xs btn-primary" type="submit" @click="addMask()">添加</button>
                     </div>
 
                 </div>
@@ -52,7 +51,7 @@
                     <!--表头-->
                     <ul class="table_ul">
                         <li style="width:100px;">编号
-                            <div class="sortItem"><i class="fa fa-caret-up"></i><i class="fa fa-caret-down"></i></div>
+                            <div class="sortItem"><i class="fa fa-caret-up" :class="{active:order}" @click="order=true"></i><i class="fa fa-caret-down" :class="{active:!order}" @click="order=false"></i></div>
                         </li>
                         <li style="width:150px;">起始IP</li>
                         <li style="width:150px;">结束IP</li>
@@ -61,11 +60,11 @@
                     <!--表体-->
                     <div style="width:100%;height:calc(100% - 31px - 40px);">
                         <Scroll :listen="ips">
-                            <ul class="table_ul">
-                                <li style="width:100px;">50</li>
-                                <li style="width:150px;">192.192.192.192</li>
-                                <li style="width:150px;">255.255.255.255</li>
-                                <li style="width:calc(100% - 400px)"><i class="fa fa-remove"></i></li>
+                            <ul class="table_ul" v-for="(p,i) in ips">
+                                <li style="width:100px;">{{p.id}}</li>
+                                <li style="width:150px;">{{p.start_ip}}</li>
+                                <li style="width:150px;">{{p.end_ip || '- - - -'}}</li>
+                                <li style="width:calc(100% - 400px)"><i class="fa fa-remove" @click="delIP(p.id,i)"></i></li>
                             </ul>
                         </Scroll>
                     </div>
@@ -87,13 +86,16 @@
             <!--内容蓝-->
             <div class="container">
                 <div class="weekcycle">
-                    <div><span style="font-weight:600;">扫描周期</span><span style="color:gray;font-size:10px;">(单位/天)</span></div>
-                    <div style="margin:10px 0px;"><el-input-number  style="width:80%;" :min="1" :max="365" label="描述文字"></el-input-number></div>
+                    <div><span style="font-weight:600;">间隔周期</span><span style="color:gray;font-size:10px;">(单位/天)</span></div>
+                    <div style="margin:10px 0px;"><el-input-number  style="width:80%;" v-model="portSetting.interval" :min="1" :max="365" label="描述文字"></el-input-number></div>
                 </div>
                 <div class="ip_container">
                     <div style="font-weight:600;">端口配置</div>
                     <div class="ip_text">
-                        <textarea style="width:100%;height:100%;border:none;resize:none;" />
+                        <textarea v-model="portSetting.port" style="width:100%;height:100%;border:none;resize:none;" />
+                    </div>
+                    <div style="text-align:right;">
+                        <button type="button" class="btn btn-primary btn-sm" @click="saveProtSetting()">保 存</button>
                     </div>
                 </div>
             </div>
@@ -103,19 +105,156 @@
 
 <script>
 import Scroll from 'components/scroll'
+
+import {WebSiteScanSetting,WebSiteAddIP,WebSiteDelIP,WebSiteSavePort,WebSitePortSetting} from '../../store/mutation-types'
 export default {
   name: 'IPsetting',
   components:{Scroll},
   data () {
     return {
       pageIndex:0,
+      pageNumber:10,
       ips:[],
+      portSetting:{interval:1,port:''},
+      order:false,
+      startIP_one:'',
+      startIP_two:'',
+      startIP_three:'',
+      startIP_four:'',
+      endIP_one:'',
+      endIP_two:'',
+      endIP_three:'',
+      endIP_four:'',
+      maskIP_one:'',
+      maskIP_two:'',
+      maskIP_three:'',
+      maskIP_four:'',
+      maskCount:'',
     }
   },
-  methods:{
-    pageChange(i){
-
+  watch:{
+    order(){
+        this.getIPList(this.pageIndex);
     }
+  },
+  mounted(){
+    //获取IP列表数据
+    this.getIPList(0);
+    this.getPortSetting();
+
+  },
+  methods:{
+    //添加IP
+    addIP(){
+       if(this.startIP_one=='' && this.startIP_two=='' && this.startIP_three=='' && this.startIP_four==''){tool.info('请填写起始IP地址!'); return;}
+       let startIP=`${this.startIP_one}.${this.startIP_two}.${this.startIP_three}.${this.startIP_four}`,
+           endIP=(this.endIP_one=='' || this.endIP_two=='' || this.endIP_three=='' || this.endIP_four=='')?'':
+                 `${this.endIP_one}.${this.endIP_two}.${this.endIP_three}.${this.endIP_four}`;
+
+       if(!this.isValidIP(startIP)){tool.info('起始IP地址格式不正确!'); return;}
+   
+       if((this.endIP_one!='' || this.endIP_two!='' || this.endIP_three!='' || this.endIP_four!='') && !this.isValidIP(endIP)){tool.info('结束IP地址格式不正确!'); return;}
+       
+
+       this.$store.dispatch(WebSiteAddIP,{
+           start_ip:startIP,
+           end_ip:endIP,
+       }).then(res=>{
+           if(!tool.msg(res,'添加IP成功')) return;
+           this.ips.unshift(res.biz_body[0]);
+
+       });
+    },
+    //删除IP
+    delIP(id,i){
+        tool.confirm('您确定要停止该定时巡查任务!',['确定','取消'],()=>{
+            this.$store.dispatch(WebSiteDelIP,id).then(res=>{
+                if(!tool.msg(res,'删除成功!')) return;
+
+                this.ips.splice(i,1);
+            });
+        },function(){});
+        
+    },
+    //清空IP
+    clearIP(){
+        this.startIP_one='';
+        this.startIP_two='';
+        this.startIP_three='';
+        this.startIP_four='';
+        this.endIP_one='';
+        this.endIP_two='';
+        this.endIP_three='';
+        this.endIP_four='';
+    },
+    //添加掩码
+    addMask(){
+       if(this.maskIP_one=='' && this.maskIP_two=='' && this.maskIP_three=='' && this.maskIP_four==''){tool.info('请填写掩码地址!'); return;}
+       let maskIP=`${this.maskIP_one}.${this.maskIP_two}.${this.maskIP_three}.${this.maskIP_four}`;
+
+       if(!this.isValidIP(maskIP)){tool.info('起始掩码格式不正确!'); return;}
+       if(this.maskCount==''){tool.info('请填写掩码个数!'); return;}       
+       if(!this.isInt(this.maskCount)){tool.info('掩码个数必须为正整数!'); return;}
+       
+       this.$store.dispatch(WebSiteAddIP,{
+           mask_ip:maskIP,
+           count:this.maskCount,
+       }).then(res=>{
+           if(!tool.msg(res,'添加IP成功')) return;
+
+           this.ips.unshift(res.biz_body[0]);
+       });
+    },
+    //清空掩码
+    clearMask(){
+        this.maskIP_one='';
+        this.maskIP_two='';
+        this.maskIP_three=''; 
+        this.maskIP_four='';
+        this.maskCount='';
+    },
+    //保存端口配置
+    saveProtSetting(){
+        this.$store.dispatch(WebSiteSavePort,{...this.portSetting}).then(res=>{
+            if(!tool.msg(res,'保存端口配置成功!')) return;
+        });
+    },
+    //获取IP端口配置
+    getPortSetting(){
+        this.$store.dispatch(WebSitePortSetting).then(res=>{
+            if(!tool.msg(res,'','获取IPD端口配置失败!')) return;
+            this.portSetting=res.biz_body;
+        });
+    },
+    //获取IP列表数据
+    getIPList(i){
+        i=i<0?0:i;
+
+        this.$store.dispatch(WebSiteScanSetting,{
+            limit:this.pageNumber,
+            skip:i*this.pageNumber,
+            is_desc:this.order
+        }).then(res=>{
+
+            if(!tool.msg(res,'','获取IP列表失败!')) return;
+            if(res.biz_body.length<=0 && i>0){tool.info('已经到了最后页!');return;}
+
+            this.ips=res.biz_body;
+
+            this.pageIndex=i;
+        });
+    },
+    pageChange(i){
+        this.getIPList(i);
+    },
+    isValidIP(ip) {
+        var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+        return reg.test(ip);
+    },
+    isInt(val){
+       var reg = /^[0-9]*[1-9][0-9]*$/
+       return reg.test(val);
+    } 
   }
 }
 </script>
@@ -160,8 +299,11 @@ export default {
 
 .weekcycle{padding:10px;.border('');border-radius:5px;}
 .ip_container{padding:10px;.border('');border-radius:5px;height:~'calc(100% - 115px)';margin-top:10px;}
-.ip_container .ip_text{margin:10px 0px;height:~'calc(100% - 40px)';.border('');padding-bottom:20px;position:relative;}
+.ip_container .ip_text{margin:10px 0px;height:~'calc(100% - 70px)';.border('');padding-bottom:20px;position:relative;}
 .ip_container .ip_text:before{content:'*多个端口号请用逗号分隔';color:gray;position:absolute;right:0px; bottom:0px;font-size:12px;}
+
+
+html{.TCol(~".IPsetting .active");}
 
  
  //表格样式

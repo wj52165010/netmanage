@@ -95,11 +95,15 @@ export default {
   mounted(){
     //获取配置数据
     this.$store.dispatch(GetSearch).then(res=>{
-      this.data=_.map(res.biz_body,b=>{
+      this.data=_.map(res.biz_body,(b,i)=>{
         let oriObj=eval('('+b.originalObj+')');
         b.souces=oriObj.souces;
         b.pageLimit=oriObj.pageLimit;
         b.pages=oriObj.pages;
+
+        if(b.isDefault){
+          this.selSet(b,i);
+        }
 
         return b;
       });

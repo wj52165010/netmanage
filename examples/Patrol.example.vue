@@ -18,7 +18,7 @@
           </div>
           <div class="content_bar">
             <Scroll ref="historyPopScroll" :listen="tasks">
-                <div v-for="(h,i) in tasks" class="item" @click="lookTask(h);" style="position:relative;">
+                <div v-for="(h,i) in tasks" class="item" :class="{active:curPolicy_id==h.policy_id}"  @click="lookTask(h);" style="position:relative;">
                     <div class="content_title">{{h.title}}</div>
                     <div class="content_row">
                         <div class="column">执行日期:{{converTime(h.log_time,'yyyy-MM-dd')}}</div>
@@ -30,13 +30,16 @@
                     </div>
                     <div class="opiton_bar">
                         <el-tooltip placement="top" content="删除">
-                            <i class="fa fa-remove" @click.stop="removeTask()" />
+                            <i class="fa fa-remove" @click.stop="removeTask(h,i)" />
                         </el-tooltip>
-                        <el-tooltip placement="top" content="停止">
-                            <i class="fa fa-dot-circle-o" @click.stop="stopTask()" />
+                        <el-tooltip placement="top" content="启动" v-if="h.status!='running'">
+                            <i class="fa fa-play-circle-o" @click.stop="startTask(h)" />
+                        </el-tooltip>
+                        <el-tooltip placement="top" content="停止" v-if="h.status=='running'">
+                            <i class="fa fa-dot-circle-o" @click.stop="stopTask(h)" />
                         </el-tooltip>
                         <el-tooltip placement="top" content="导出">
-                            <i class="fa fa fa-download" />
+                            <i class="fa fa fa-download" @click.stop="exportTask(h)" />
                         </el-tooltip>
                     </div>
                 </div>
@@ -125,8 +128,8 @@ import Scroll from 'components/scroll'
 import PlaceSearch from 'components/PlaceSearch'
 import PlaceTree from 'components/PlaceTreeNew'
 
-import {BODY_RESIZE,GetSitePatrol,GetPatrolItems,HistoryPolicy,HistoryPlicyItem,GetSitePolicyList,
-        DetailPolicy,DetailPlaceInfo,DetailPlacePolicy,SiteDetail,AddPlacePolicy} from '../store/mutation-types'
+import {BODY_RESIZE,GetSitePatrol,GetPatrolItems,HistoryPolicy,HistoryPlicyItem,GetSitePolicyList,StartPatrol,
+        DetailPolicy,DetailPlaceInfo,DetailPlacePolicy,SiteDetail,AddPlacePolicy,StopPatrol,DelPatrol,ExportPatrol} from '../store/mutation-types'
 export default {
   name: 'PatrolList',
   components:{
@@ -342,18 +345,43 @@ export default {
         this.getListData();
     },
     //删除任务
-    removeTask(id,i){
+    removeTask(d,i){
         tool.confirm('一旦删除巡检结果,将无法恢复,请确认是否需要删除!',['确定','取消'],()=>{
+            this.$store.dispatch(DelPatrol,d.policy_id).then(res=>{
+                if(!tool.msg(res,'操作成功!','操作失败!')) return;
+                this.tasks.splice(i,1);
             
+                this.lookTask(this.tasks[0] || {policy_id:''});
+                
+            })
     
         },function(){});
     },
+    //启动任务
+    startTask(d){
+        tool.confirm('您确定要开启该定时巡查任务!',['确定','取消'],()=>{
+            this.$store.dispatch(StartPatrol,d.policy_id).then(res=>{
+                if(!tool.msg(res,'操作成功!','操作失败!')) return;
+                d.status='running';
+            })
+        });
+    },
     //停止任务
     stopTask(d){
-        tool.confirm('定时巡查任务停止后,任务间隔时间会被设置为"0",<br>当您需要继续使用该功能时,青岛"定期巡查"页面设置巡查周期!',['确定','取消'],()=>{
-            
+        tool.confirm('您确定要停止该定时巡查任务!',['确定','取消'],()=>{
+            this.$store.dispatch(StopPatrol,d.policy_id).then(res=>{
+                if(!tool.msg(res,'操作成功!','操作失败!')) return;
+                d.status='stop';
+            })
     
         },function(){});
+    },
+    //导出任务
+    exportTask(d){
+        this.$store.dispatch(ExportPatrol,d.policy_id).then(res=>{
+            if(!tool.msg(res,'操作成功!','操作失败!')) return;
+            window.location=res.biz_body.url;
+        })
     },
     //搜索
     search(){
@@ -1068,4 +1096,6 @@ html{.TCol(~".PatrolList .table_header .column .sort_item .triangle-down.active"
   .PatrolList .left_pop .item:hover .bottom_right:after,
   .PatrolList .left_pop .item:hover .top_left:after,
   .PatrolList .left_pop .item:hover .top_left:before{background:@bgColor;}
+
+  html{.TCol(~".PatrolList .active ",'bg');}
 </style>

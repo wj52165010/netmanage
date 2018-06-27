@@ -8,26 +8,34 @@
                 <div class="header"><span class="title">检索图像</span></div>
                 <div class="body">
                   <!--头像展示区域-->
-                  <div class="photoShow"></div>
+                  <div class="photoShow">
+                    <img :src="'/api/v1/face_search/get_upload_image/'+file_name" :onerror="`this.src='${noPersonImg}'`" style="width:100%;height:100%;" />
+                  </div>
 
                   <!--头像描述区域-->
-                  <div class="photoInfo">
+                  <div class="photoInfo" @click="addFiles()" style="cursor:pointer;">
+                    <input :id="fileId" :data-url="url" name="files[]" type="file" style="width: 0px;position: absolute;top: 0px;right: 0px;bottom: 0px;margin: 0px;opacity: 0;direction: ltr;cursor: pointer;" />
                     <div class="mockphoto">
                         <div class="top_left"></div>
                         <div class="top_right"></div>
                         <div class="bottom_left"></div>
                         <div class="bottom_right"></div>
 
-                        <i class="fa fa-user"></i>
+                        <i :class="{'fa fa-user':!blnUploading,'fa fa-spinner fa-pulse':blnUploading}"></i>
                     </div>
-                    <div>只能上传一张图片</div>
+                    <div>{{uploadInfo}}</div>
                   </div>
                 </div>
             </div>
             <!--条件设置处-->
             <div class="cond">
                 <div class="header"><span class="title">检索条件</span></div>
-                <div class="body"></div>
+                <div class="body">
+                  <div class="filter_bar"></div>
+                  <div class="option_bar">
+                    <button type="button" @click="search()" :disabled="!file_name" class="btn btn-primary">搜   索</button>
+                  </div>
+                </div>
             </div>
         </div>
         <!--搜索结果框-->
@@ -36,9 +44,12 @@
             <div class="body" style="padding:10px;">
                 <Scroll :listen="data" ref="resScroll">
                     <div class="photo_item" v-for="d in data">
-                        <div class="photo_item_header">2012-12-12 12:12:12</div>
+                        <div class="photo_item_header">{{d.name}}</div>
                         <div class="photo_item_body">
-                            <img class="photo_container" />
+                            <img class="photo_container" :onload="d.width='this.width/this.height*114'" :style="{width:d.width}" :src="'/api/v1/face_search/get_face_image/'+d.certno" />
+                            <div class="photo_item_child">证件号:{{d.certno}}</div>
+                            <div class="photo_item_child">相似度:{{(d.similarity*100).toFixed(2)}}%</div>
+                            <div class="photo_item_child">民族:{{d.ethnic}}</div>
                         </div>
                     </div>
                     <div class="clearfix"></div>
@@ -50,21 +61,117 @@
 
 
 <script>
+
+import '../../static/jquery-file-upload/jquery.ui.widget.js'
+import '../../static/jquery-file-upload/jquery.iframe-transport.js'
+import '../../static/jquery-file-upload/jquery.fileupload.js'
+import '../../static/jquery.particleground.js'
 import Scroll from 'components/scroll'
 
+import noPerson from '../assets/noperson.png'
+
+import {SearchFace} from '../store/mutation-types'
 export default {
   name: 'FaceSo',
   components:{Scroll},
   data () {
     return {
-      data:[1,2,3,4,5,5,6,7],
+      fileId:0,
+      url:'/api/v1/face_search/upload',
+      uploadInfo:'点击此处上传图片',
+      blnUploading:false,
+      allowType:/(\.|\/)(jpg|jpeg|png)$/i,
+      data:[],
+      file_name:'',
+      noPersonImg:noPerson,
     }
+  },
+  mounted(){
+    this.fileId="file"+tool.guid();
+
+    this.$nextTick(()=>{
+      this.initUpload();
+    });
+    
   },
   methods:{
     layout(){
-      console.log(2);
       this.$nextTick(()=>{
         this.$refs.resScroll.reloadyScroll();
+      });
+    },
+    //搜索
+    search(){
+      if(!this.file_name){tool.info('请先上传图片!'); return;}
+
+      this.$store.dispatch(SearchFace,{file_name:this.file_name}).then(res=>{
+        this.data=_.map(res.biz_body,r=>{
+          r.width=0;
+          return r;
+        });
+      });
+    },
+    //单击上传文件
+    addFiles(){
+      let uploadEl=$('#'+this.fileId);
+      uploadEl.click();
+    },
+    //初始化上传插件
+    initUpload(){
+      let s=this,dropbox=$('#c'+s.fileId);
+      //阻止文件拖入浏览器后打开新页面
+      dropbox.bind("dragenter", function(e){ 
+          e.stopPropagation(); 
+          e.preventDefault(); 
+      }, false);  
+      dropbox.bind("dragover", function(e){ 
+          e.stopPropagation(); 
+          e.preventDefault(); 
+      }, false); 
+      dropbox.bind("drop", function(e){ 
+          e.stopPropagation(); 
+          e.preventDefault(); 
+          
+      }, false); 
+     
+      $('#'+s.fileId).fileupload({
+        dataType:'json',
+        dropZone:$('#c'+s.fileId),
+        autoUpload:false,
+        add:function(e,data){
+          var file=data.files[0];//上传文件
+          if(!file.name.match(s.allowType)){
+            tool.info('只允许上传jpg,jpeg,png格式图片!');
+            return;
+          }
+
+          //判断文件大小
+          if(file.size>5*1024*1024){
+            tool.info('只能上传5M以内的文件数据!');
+            return;
+          }
+
+          
+          data.submit();
+          return;
+        },
+        done:function(e,data){
+          if(data.result.msg.code!='successed'){
+            tool.info('上传失败');
+          }else{//成功
+            tool.info('上传成功');
+            s.file_name=data.result.biz_body.file_name;
+          }
+
+          s.uploadInfo='点击此处上传图片';
+          s.blnUploading=false;
+
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            s.uploadInfo='上传中,请等待...';
+            s.blnUploading=true;
+        }
       });
     }
   }
@@ -103,19 +210,20 @@ export default {
   .photoInfo .mockphoto{width:80px;height:80px;line-height:80px;position:relative;margin: 0px auto;text-align:center;margin-bottom:5px;}
   .photoInfo .mockphoto i{font-size:40px;margin-top:20px;}
    
-  @photoItemH:200px;
+  @photoItemH:220px;
   @photoStep:30px;
   @photoHeaderH:30px;
   .photo_item{
-    float:left;height:@photoItemH;width:~'calc(20% - 24px)';margin-left:@photoStep;.border('');border-radius:5px;overflow:hidden;margin-bottom:10px;
+    float:left;height:@photoItemH;width:~'calc(25% - 24px)';margin-left:@photoStep;.border('');border-radius:5px;overflow:hidden;margin-bottom:10px;
   }
   .photo_item:nth-child(5n+1){margin-left:0px;}
   .photo_item .photo_item_header{height:@photoHeaderH;line-height:@photoHeaderH;font-size:12px;width:100%;color:white;text-align:center;}
   html{.TCol(~'.photo_item .photo_item_header','bg')}
 
   .photo_item  .photo_item_body{height:~'calc(100% - @{photoHeaderH})';width:100%;text-align:center;overflow:hidden;}
-  .photo_item  .photo_item_body .photo_container{display:block;margin:10px 30px;height:(@photoItemH - @photoStep)/5*3;width:~'calc(100% - 60px)';}
+  .photo_item  .photo_item_body .photo_container{display:block;margin:10px auto;height:(@photoItemH - @photoStep)/5*3;}//height:(@photoItemH - @photoStep)/5*3;width:~'calc(100% - 80px)';
 
+  .photo_item .photo_item_child{font-size:12px;text-align:center;}
 
   @Distance:0px;
   @AngleSize:35px;
@@ -163,4 +271,8 @@ export default {
     content:'';position:absolute;right:0px;bottom:0px;
     height:100%;width:@lineW;background:linear-gradient(135deg,transparent 10px,fade(@bgCol,90%) 10px)
   }
+
+  
+  .FaceSo .filter_bar{width:100%;height:~'calc(100% - 44px)';}
+  .FaceSo .option_bar{text-align:center;padding-bottom:5px;}
 </style>
