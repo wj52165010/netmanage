@@ -18,7 +18,7 @@
     <!--<MenuBtn :menus="menus"></MenuBtn>-->
     <div class="index_footer" v-if="true">
       <div style="float:left;"><div class="helperBtn orange" @click="helperClick()"><i class="fa fa-question-circle-o"></i><span style="margin-left:10px;-moz-user-select:none;-khtml-user-select:none;user-select:none;">帮助</span></div></div>
-      <div style="float:right;padding-right:10px;">Copyright © 2018 重庆智多信息发展有限公司.版权所有 当前版本:<span style="color:rgb(3, 171, 103);"><span style="cursor:pointer;" @click="banbenClick()">1.0.4-X-beta</span></span></div>
+      <div style="float:right;padding-right:10px;">Copyright © 2018 重庆智多信息发展有限公司.版权所有 当前版本:<span style="color:rgb(3, 171, 103);"><span style="cursor:pointer;" @click="banbenClick()">1.0.5-X-beta</span></span></div>
     </div>
     <!-- 快搜 -->
     <Kuaiso />
