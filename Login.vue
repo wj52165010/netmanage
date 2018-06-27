@@ -149,7 +149,7 @@ export default {
                  return;
              }
 
-             if(res.msg.code!='successed'){return;}
+             if(res.msg.code!='successed'){this.genRand();return;}
              
              let cookie=tool.cookie,expTime='s'+res.biz_body.exp;
              cookie.set('token',res.biz_body.token,expTime);

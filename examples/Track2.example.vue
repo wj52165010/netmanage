@@ -61,7 +61,7 @@
                 </div>
               </SearchDropdown>
             </div>
-            <el-date-picker type="daterange" v-model="timeRange" placeholder="选择日期范围" style="width: 220px;display:inline-block;"></el-date-picker>
+            <el-date-picker type="daterange" v-model="timeRange" :picker-options="simpleTime" placeholder="选择日期范围" style="width: 220px;display:inline-block;"></el-date-picker>
             
             <div style="display:inline-block;width:250px;"><PlaceSearch :blnClear="true" c_searchKind="0" @place_res="placechange"></PlaceSearch></div>
             
@@ -260,6 +260,11 @@ export default {
   props:['searchVal','defTimeRange'],
   data () {
     return {
+      simpleTime:{//限制选择今天之前的日期
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          }
+      },
       id:'Track_map_do'+tool.guid(),
       rangeMapId:'Range_map_do'+tool.guid(),
       bodyResizeSub:null,

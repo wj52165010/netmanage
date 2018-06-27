@@ -3,9 +3,9 @@
 //基地址192.168.100.80:3030(http://192.168.23.73:3030)
 //发布地址:172.23.90.8:3030
 
-//let url='http://192.168.23.23:3030';
+let url='http://192.168.23.23:3030';
 //let url='http://192.168.100.80:3030';
-let url='http://192.168.23.73:3030';
+//let url='http://192.168.23.73:3030';
 //let url='';
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
@@ -3260,6 +3260,59 @@ WebSiteRecordDetail=function(id){
   return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
 }
 
+//网站备案-获取ip列表
+WebSiteScanSetting=function({limit,skip,is_desc}){
+  this.baseBag.target='web_site';
+  this.baseBag.method='scan_setting';
+  this.baseBag.data={limit:limit,skip:skip,is_desc:is_desc};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//网站备案-新增ip段
+/**
+ * start_ip:’’,//起始ip 传起始ip则认为添加的是起始、结束（结束ip非必填）
+ * etart_ip:’’,//结束ip
+ * mask_ip:’’,//掩码ip 传mask_ip则不要传起始、结束ip
+ * count:’’//掩码个数 传mask_ip时这个必填
+ */
+WebSiteAddIP=function({start_ip,end_ip,mask_ip,count}){
+  this.baseBag.target='web_site';
+  this.baseBag.method='add_ip';
+
+  this.baseBag.data={start_ip:start_ip || '',end_ip:end_ip || '',mask_ip:mask_ip || '',count:count || ''};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//网站备案-删除ip段
+/**
+ * id:''
+ */
+WebSiteDelIP=function(id){
+  this.baseBag.target='web_site';
+  this.baseBag.method='del_ip';
+  this.baseBag.data={id:id || ''};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//网站备案-保存配置端口
+/**
+ * port:'',//端口
+ * interval:'' //间隔
+ */
+WebSiteSavePort=function({port,interval}){
+  this.baseBag.target='web_site';
+  this.baseBag.method='save_port';
+  this.baseBag.data={port:port || '',interval:interval || ''};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//网站备案-获取端口配置
+WebSitePortSetting=function(){
+  this.baseBag.target='web_site';
+  this.baseBag.method='port_setting';
+  this.baseBag.data={};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
 
 /************************** 搜图 ***************************/
 SearchFace=function({file_name}){

@@ -2361,6 +2361,46 @@ export default new Vuex.Store({
                 });
             });
         },
+        //备案获取IP列表
+        [types.WebSiteScanSetting]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.WebSiteScanSetting(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //备案新增ip段
+        [types.WebSiteAddIP]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.WebSiteAddIP(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //备案删除ip段
+        [types.WebSiteDelIP]({commit},id){
+            return new Promise((resolve,reject)=>{
+                ser.WebSiteDelIP(id).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //备案保存端口配置
+        [types.WebSiteSavePort]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.WebSiteSavePort(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //备案获取端口配置
+        [types.WebSitePortSetting]({commit}){
+            return new Promise((resolve,reject)=>{
+                ser.WebSitePortSetting().then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
         //搜人脸
         [types.SearchFace]({commit},data){
             return new Promise((resolve,reject)=>{

@@ -558,6 +558,7 @@ export default {
                                                             ctlNum:item.ctlNum || '0',
                                                             alarmNum:item.total || '0',
                                                             law_case_id:item.law_case_id || '',
+                                                            law_case_status:item.law_case_status,
                                                             children:[]}
                                                   });
     },
@@ -849,6 +850,7 @@ export default {
     //添加布控单击事件
     addControl(){
       let self=this;
+      
       tool.open(function(){
         let html=`
                    <div class="control_pop">
@@ -902,7 +904,7 @@ export default {
             type:PolicyType[0].val,//策略类型
             police_way_data:AlarmType,
             police_way_commn:_.filter(AlarmType,i=> i.val!='sms'),
-            cases:self.caseInfos,
+            cases:_.filter(self.caseInfos,s=>s.law_case_status!='completed'),
             defCases:[],
             mobiles:self.mobiles,//报警电话信息
             police_way:[],//报警方式

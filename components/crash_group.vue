@@ -8,7 +8,7 @@
                     <div v-for="(c,i) in conds" class="cond_item" @mousedown="mousedown($event,c,`A${i+1}`)">
                         <div style="cursor:pointer;" class="icon incon_item">A{{i+1}}</div>
                         <!--<i style="cursor:pointer;float:right;margin-top:6px;" class="fa fa-remove"></i>-->
-                        <div class="content">{{c.title || '无标题'}}</div>
+                        <div class="content" @mousedown.stop="noHandler()">{{c.title || '无标题'}}</div>
                     </div>
                 </Scroll>
             </div>
@@ -116,6 +116,7 @@ export default {
      Fx.ClearBind('mousemove',$('body'),this.mousemoveid);
   },
   methods:{
+    noHandler(){},
     //初始化化页面需要的显示更多属性
     setMorePro(){
        let obj = _.extend(..._.chain(tool.Clone(this.group)).pluck('val').flatten().value());

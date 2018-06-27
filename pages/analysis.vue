@@ -1239,7 +1239,7 @@ export default {
             timeSep:'',//时间间隔
             siteNum:'',//场所数量
             caseRes:'',//关联案件
-            cases:self.cases || [],//关联案件可选数据集
+            cases:_.filter(self.cases,s=>s.law_case_status!='completed') || [],//关联案件可选数据集
             analyTarget:extraParam.task_conditions.keyword ||'',//分析目标值
             blnDistinct:false,//是否去重
             crashConds:[],//碰撞分析条件
