@@ -443,8 +443,15 @@ export const DetailPlacePolicy='DetailPlacePolicy' //获取场所巡查详细策
 export const AddPlacePolicy='AddPlacePolicy' //添加场所策略
 export const GetPatrolItems='GetPatrolItems' //获取场所策略具体查询项
 export const GetSitePolicyList='GetSitePolicyList' //获取场所策略列表信息
+export const StopPatrol='StopPatrol' //暂停巡查项目
+export const DelPatrol='DelPatrol' //删除巡查项目
+export const ExportPatrol='ExportPatrol' //导出巡查项目
+export const StartPatrol='StartPatrol' //开启巡查项目
 
 /************** 新网站备案接口*******************/
 export const WebSiteList='WebSiteList'//未备案列表
 export const WebSiteRecordList='WebSiteRecordList' //备案列表
 export const WebSiteRecordDetail='WebSiteRecordDetail' //备案列表详细
+
+/*************  搜图 **************************/
+export const SearchFace='SearchFace' //搜人脸

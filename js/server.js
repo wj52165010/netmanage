@@ -4,8 +4,8 @@
 //发布地址:172.23.90.8:3030
 
 //let url='http://192.168.23.23:3030';
-let url='http://192.168.100.80:3030';
-//let url='http://192.168.23.73:3030';
+//let url='http://192.168.100.80:3030';
+let url='http://192.168.23.73:3030';
 //let url='';
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
@@ -3179,6 +3179,48 @@ AddPlacePolicy=function({title,policy_type,note,locus_ids,policy_item_ids,start_
   return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
 }
 
+//暂停巡查项目
+/**
+ * id://巡查策略ID
+ */
+StopPatrol=function(id){
+  this.baseBag.target='site_patrol';
+  this.baseBag.method='stop_patrol';
+  this.baseBag.data={policy_id:id || ''};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//开启巡查项目
+/**
+ * id://巡查项目ID
+ */
+StartPatrol=function(id){
+  this.baseBag.target='site_patrol';
+  this.baseBag.method='run_patrol';
+  this.baseBag.data={policy_id:id || ''};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//删除巡查项目
+/**
+ * id://巡查策略ID
+ */
+DelPatrol=function(id){
+  this.baseBag.target='site_patrol';
+  this.baseBag.method='del_patrol';
+  this.baseBag.data={policy_id:id || ''};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//导出巡查项目数据
+ExportPatrol=function(id){
+  this.baseBag.target='data_export';
+  this.baseBag.method='site_patrol';
+  this.baseBag.data={policy_id:id || ''};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+
 /************************** 新网站备案接口 ***************************/
 
 //网站备案-未备案列表
@@ -3217,6 +3259,17 @@ WebSiteRecordDetail=function(id){
   this.baseBag.data={id:id || ''};
   return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
 }
+
+
+/************************** 搜图 ***************************/
+SearchFace=function({file_name}){
+  this.baseBag.target='face_search';
+  this.baseBag.method='search_image';
+  this.baseBag.data={file_name:file_name || ''};
+
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
 
 }
 

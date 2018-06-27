@@ -2305,6 +2305,38 @@ export default new Vuex.Store({
                 });
             });
         },
+        //暂停巡查项目
+        [types.StopPatrol]({commit},id){
+            return new Promise((resolve,reject)=>{
+                ser.StopPatrol(id).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //开启巡查项目
+        [types.StartPatrol]({commit},id){
+            return new Promise((resolve,reject)=>{
+                ser.StartPatrol(id).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //删除巡查项目
+        [types.DelPatrol]({commit},id){
+            return new Promise((resolve,reject)=>{
+                ser.DelPatrol(id).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //导出巡查项目
+        [types.ExportPatrol]({commit},id){
+            return new Promise((resolve,reject)=>{
+                ser.ExportPatrol(id).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
         //未备案列表
         [types.WebSiteList]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -2325,6 +2357,14 @@ export default new Vuex.Store({
         [types.WebSiteRecordDetail]({commit},id){
             return new Promise((resolve,reject)=>{
                 ser.WebSiteRecordDetail(id).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //搜人脸
+        [types.SearchFace]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.SearchFace(data).then(res=>{
                     resolve(res);  
                 });
             });

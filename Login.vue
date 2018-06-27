@@ -7,6 +7,12 @@
             <div class="logo"><img src="/static/logo.png" style="width:100px;height:100px;" /></div>
             <div class="input"><div class="label"><i class="fa fa-user" /></div><div class="option"><input class="form-control" placeholder="请输入账号" type="text" v-model="name"  autocomplete="off"  /></div></div>
             <div class="input"><div class="label"><i class="fa fa-unlock-alt" /></div><div class="option"><input type="password" placeholder="请输入密码" v-model="password" /></div></div>
+            <div class="input" style="margin-right:150px;overflow: visible;position: relative;">
+                <div class="label"><i class="fa fa-bell" style="font-size:20px;" /></div>
+                <div class="option"><input type="password" style="height:36px;" placeholder="请输入验证码" v-model="certCode" /></div>
+                <img class="certCode" :src="'/cert_code?'+certCodeRand" @click="genRand()" style=" position: absolute;right: -150px;top: 5px;height: 100%;width: 100px;background-color:white;" />
+            </div>
+
             <div class="loginBtn" @click="login()">
                 <i v-show="blnLogin" class="fa fa-spinner fa-pulse"></i>
                 <span v-show="!blnLogin">登&nbsp;录</span>
@@ -85,8 +91,10 @@ export default {
     return {
         name:'',
         password:'',
+        certCode:'',//验证码
         blnLogin:false,
         blnStaticShow:false,//是否显示静态登录页面
+        certCodeRand:'',//验证码随机数
     }
   },
   mounted(){
@@ -119,7 +127,7 @@ export default {
          }
 
          this.blnLogin=true;
-         ser.login({account:this.name,pwd:this.password}).then(res=>{
+         ser.login({account:this.name,pwd:this.password,cert_code:this.certCode}).then(res=>{
              this.blnLogin=false;
              if(res.msg.code=='authen_failed_logined'){
                  //用户已经登录
@@ -153,6 +161,10 @@ export default {
              cookie.del('Invalid');
              window.location='index.html'
          });
+      },
+      //生成验证码随机数
+      genRand(){
+        this.certCodeRand=tool.guid();
       }
   }
 }
@@ -294,7 +306,7 @@ export default {
     .dynLogin .input .option{margin-left:35px;}
     .dynLogin .input .option input{width:100%;height:40px;font-size:18px;border:none;background-color:transparent;color:#6a8baa;outline:none;}
     .dynLogin .loginBtn{
-        margin-top:60px;text-align:center;height:76px;line-height:76px;background-color:#0d8eb5;margin-left:-20px;margin-right:-20px;
+        margin-top:20px;text-align:center;height:76px;line-height:76px;background-color:#0d8eb5;margin-left:-20px;margin-right:-20px;
         font-size:20px;
         transition: 1s all;
         -webkit-transition: 1s all;
@@ -312,4 +324,6 @@ export default {
     @media screen and (max-width: 1240px) {
         .dynLogin{position: absolute;width:@dynW;height:@dynH;top:50%;margin-top:-(@dynH+@padding)/2;left:50%;margin-left:-@dynW/2;}
     }
+
+    .Login .certCode:hover{cursor:pointer;}
 </style>
