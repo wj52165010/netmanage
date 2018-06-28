@@ -291,7 +291,7 @@ export default {
                 },
                 yAxis: {
                     type: 'value',
-                    name: '在线率',
+                    name: '有效率',
                     axisLabel: {
                         formatter: '{value} %'
                     }
