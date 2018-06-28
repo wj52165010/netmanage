@@ -115,7 +115,7 @@
                     <Scroll :listen="templates" ref="templatesScroll">
                         <div class="item menuItem" v-for="m in templates" @click="SelMenu(m)">
                             <div class="icon" :style="{'background-color':color[m.menu_type.id || 0]}"><i :class="m.icon"></i></div>
-                            <div class="title">{{m.name}}</div>
+                            <div class="title" :title="m.name">{{m.name}}</div>
                             <div class="bottom">
                                 <div class="option_bar">
                                     <el-tooltip class="btn_item" effect="light" content="修改" placement="top">

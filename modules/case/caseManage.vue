@@ -118,6 +118,7 @@ export default {
         bodyClickId:-1,
         blnSearch:false,
         query:{name:'',time:[]},
+        caseTime:'',
         case_address_w:0,
         blnExporting:false,
         data:[
@@ -135,6 +136,15 @@ export default {
             //     deployNumber:1
             // }
         ]
+    }
+  },
+  watch:{
+    'query.time':function(val,oldval){
+        if(!val[1]) return;
+        let time=val[1];
+        time.setHours(23);
+        time.setMinutes(59);
+        time.setSeconds(59);
     }
   },
   mounted(){
@@ -220,7 +230,12 @@ export default {
       pageChange(index){
           this.pageNum=index>0? index : 0;
           //获取案件信息
-          this.$store.dispatch(GetCase,{law_case_status:this.curStatu,limit:this.limit,skip:this.pageNum*this.limit}).then(res=>{
+          this.$store.dispatch(GetCase,{
+              law_case_status:this.curStatu,
+              limit:this.limit,
+              skip:this.pageNum*this.limit,
+              law_case_time:this.query.time[0]?[tool.Timestamp(this.query.time[0]),tool.Timestamp(this.query.time[1])].join(','):''
+            }).then(res=>{
             if(!tool.msg(res))return;
             let data=res.biz_body;
 

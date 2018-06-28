@@ -58,7 +58,16 @@
                         <li style="width:calc(100% - 400px)">操作</li>
                     </ul>
                     <!--表体-->
-                    <div style="width:100%;height:calc(100% - 31px - 40px);">
+                    <div style="width:100%;height:calc(100% - 31px - 40px);position:relative;">
+                        <!--加载中-->
+                        <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+                            <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+                        </div>
+                        <!--暂无数据-->
+                        <div v-if="ips.length<=0" style="width:100%;height:100%;text-align:center;display:table;">
+                            <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
+                        </div>
+                        
                         <Scroll :listen="ips">
                             <ul class="table_ul" v-for="(p,i) in ips">
                                 <li style="width:100px;">{{p.id}}</li>
@@ -112,6 +121,7 @@ export default {
   components:{Scroll},
   data () {
     return {
+      blnLoading:false,
       pageIndex:0,
       pageNumber:10,
       ips:[],
@@ -230,14 +240,14 @@ export default {
     //获取IP列表数据
     getIPList(i){
         i=i<0?0:i;
-
+        this.blnLoading=true;
         this.$store.dispatch(WebSiteScanSetting,{
             limit:this.pageNumber,
             skip:i*this.pageNumber,
             is_desc:this.order
         }).then(res=>{
-
-            if(!tool.msg(res,'','获取IP列表失败!')) return;
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取IP列表失败!')) return; 
             if(res.biz_body.length<=0 && i>0){tool.info('已经到了最后页!');return;}
 
             this.ips=res.biz_body;
@@ -305,6 +315,7 @@ export default {
 
 
 html{.TCol(~".IPsetting .active");}
+
 
  
  //表格样式

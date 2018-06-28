@@ -613,5 +613,22 @@ border-top: 5px solid black;
 html {.TCol(~".layui-layer-title","bg");}
 .layui-layer{.TCol(~".font_col");}
 
+//分页公共样式
+.page_container .firstPage,
+.page_container .prePage,
+.page_container .nextPage{
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+
+.page_container .firstPage:active,
+.page_container .prePage:active,
+.page_container .nextPage:active{color:white;}
+
+html {.TCol(~".page_container .firstPage:active","bg");}
+html {.TCol(~".page_container .prePage:active","bg");}
+html {.TCol(~".page_container .nextPage:active","bg");}
 
 </style>

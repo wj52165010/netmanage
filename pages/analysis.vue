@@ -1158,7 +1158,7 @@ export default {
           }else if(kindObj.id=='行为分析'){
 
           }
-          
+
           self.$store.dispatch(AddAnalyTask,temp).then(res=>{
             if(res.msg.code!='successed')return;
             self.tasks.unshift(res.biz_body[0]);
