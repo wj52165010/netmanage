@@ -4,7 +4,8 @@
         <Scroll :listen="treeData">
             <template v-for="d in treeData">
                 <div class="node" :style="{'margin-left':d.nodeDeep*15 +'px'}" v-show="!d.blnHide">
-                    <i class="fa fa-plus" :class="{'fa fa-plus':!d.export,'fa fa-minus':d.export}" @click="NodeExpanded(d)"></i> 
+                    <span v-if="!hasPlus?false:!hasPlus(d)" style="display:inline-block;width:11px;">&nbsp;</span>
+                    <i class="fa fa-plus" v-if="!hasPlus?true:hasPlus(d)" :class="{'fa fa-plus':!d.export,'fa fa-minus':d.export}" @click="NodeExpanded(d)"></i> 
                     <i class="fa fa-spinner fa-pulse" v-if="d.isLoadingData"></i>
                     <span :class="{uncheckIcon_tree:!d.checked,checkIcon_tree:d.checked}" @click.stop="check(d)"></span>
                     {{d.name}}
@@ -20,11 +21,12 @@ import {GET_PLACE} from '../store/mutation-types'
 import Scroll from 'components/scroll'
 export default {
   name: 'Tree',
-  props:['data'],
+  props:['data','hasPlus'],
   components:{Scroll},
   data () {
     return {
       treeData:[],
+      
     }
   },
 

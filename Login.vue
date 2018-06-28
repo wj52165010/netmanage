@@ -9,7 +9,7 @@
             <div class="input"><div class="label"><i class="fa fa-unlock-alt" /></div><div class="option"><input type="password" placeholder="请输入密码" v-model="password" /></div></div>
             <div class="input" style="margin-right:150px;overflow: visible;position: relative;">
                 <div class="label"><i class="fa fa-bell" style="font-size:20px;" /></div>
-                <div class="option"><input type="password" style="height:36px;" placeholder="请输入验证码" v-model="certCode" /></div>
+                <div class="option"><input type="text" style="height:36px;" placeholder="请输入验证码" v-model="certCode" /></div>
                 <img class="certCode" :src="'/cert_code?'+certCodeRand" @click="genRand()" style=" position: absolute;right: -150px;top: 5px;height: 100%;width: 100px;background-color:white;" />
             </div>
 

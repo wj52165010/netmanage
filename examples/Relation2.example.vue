@@ -1279,7 +1279,7 @@ export default {
             root.type=root.typeCode;
             root.typeCode='start';
             root.root=true;
-            root.blnExtend=data.length>0;
+            root.blnExtend=true;//data.length>0;
             root.parent=true;
             root.typeHide=false;
             rootPointers.splice(0,1);
@@ -1304,7 +1304,7 @@ export default {
             root.type=root.typeCode;
             root.typeCode='start';
             root.root=true;
-            root.blnExtend=data.length>0;
+            root.blnExtend=true;//data.length>0;
             root.parent=true;
             root.typeHide=false;
             //构造多余的子节点数据

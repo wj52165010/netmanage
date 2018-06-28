@@ -215,6 +215,7 @@ export default {
     },
     //保存端口配置
     saveProtSetting(){
+        if(!this.portSetting.port){tool.info('端口号不能为空!');return;}
         this.$store.dispatch(WebSiteSavePort,{...this.portSetting}).then(res=>{
             if(!tool.msg(res,'保存端口配置成功!')) return;
         });

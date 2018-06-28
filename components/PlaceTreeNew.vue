@@ -1,7 +1,7 @@
 <!-- 新场所树形插件组件 -->
 <template>
     <div class="PlaceTreeNew">
-        <Tree ref="Tree" :data="places" @NodeExpanded="NodeExpanded" @dataChange="dataChange" />
+        <Tree ref="Tree" :data="places" @NodeExpanded="NodeExpanded" @dataChange="dataChange" :hasPlus="hasChilds" />
     </div>
 </template>
 
@@ -58,6 +58,10 @@ export default {
     //节点选中结果改变事件
     dataChange(d){
       this.$emit('res',d);
+    },
+    //判断是否存在子节点数据
+    hasChilds(d){
+        return d.type!='3';
     }
   }
 }
