@@ -32,20 +32,20 @@
                     <div class="item">
                         <span>数据来源:</span>
                         <div class="input">
-                            <el-select v-model="query.microprobe_type" placeholder="数据来源" :multiple="true" :collapse-tags="true">
+                            <el-select v-model="query.microprobe_type" placeholder="数据来源" :multiple="true" :collapse-tags="true" @change=filterMicroprobe>
                                 <el-option v-for="kind in dict_tables.microprobe_type" :label="kind.name" :value="kind.value"></el-option>
                             </el-select>
                         </div>
                     </div>
                     <div class="item">
                         <span>场所范围:</span>
-                        <div class="input" style="width:224px">
+                        <div class="input">
                             <PlaceSearch :blnLike="true" :blnClear="true" c_searchKind="1" @place_res="selectSite"></PlaceSearch>
                         </div>
                     </div>
                     <div class="item">
                         <span>区域范围:</span>
-                        <div class="input" style="width:224px">
+                        <div class="input">
                             <PlaceSearch  :blnClear="true" c_searchKind="0" @place_res="selectArea"></PlaceSearch>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                     </div>
                     <div class="item">
                         <span>场所状态:</span>
-                        <div class="input" style="width:106px">
+                        <div class="input">
                             <el-select v-model="query.netsite_state" :clearable="true" placeholder="场所状态" >
                                 <el-option v-for="kind in dict_tables.device_state" :label="kind.name" :value="kind.value"></el-option>
                             </el-select>
@@ -67,7 +67,7 @@
                     </div>
                     <div class="item" style="font-size:12px;font-weight:normal;text-align:left">
                         <span>厂商范围：</span>
-                        <div class="input" style="width:150px;display:inline-block;">
+                        <div class="input" style="width:250px;display:inline-block;">
                             <MulDropDwon :data="siteIndfirms" keyProp="name" id="code" placeholder="请选择厂商">
                                 <div v-for="t in firms" @mousedown="firmClick('listInd',t)">{{t.name}} <i v-if="isHasSelItem(siteIndfirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                             </MulDropDwon>
@@ -83,11 +83,11 @@
                         <div><span class="overflow" style="width:100px;">场所名称</span></div>
                         <div><span class="overflow" style="width:230px;">场所地址</span></div>
                         <div><span class="overflow" style="width:65px;">场所状态</span></div>
-                        <div><span class="overflow" style="width:80px;">场所概况</span></div>
+                        <div><span class="overflow" style="width:80px;">{{isInternal?'终端概况':'挂载设备'}}</span></div>
                         <div><span class="overflow" style="width:90px;">最近联系时间</span></div>
                         <div><span class="overflow" style="width:72px;">昨日采集</span></div>
                         <div><span class="overflow" style="width:65px;">营业状态</span></div>
-                        <div><span class="overflow" style="width:200px;">场所类型</span></div>
+                        <div v-show="!isInternal"><span class="overflow" style="width:200px;">场所类型</span></div>
                         <div><span class="overflow" style="width:60px;">所属区域</span></div>
                         <div><span class="overflow" style="width:60px;">数据来源</span></div>
                         <div><span class="overflow" style="width:80px;">所属厂商</span></div>
@@ -107,7 +107,7 @@
                                 <div  :title="d.capture_time_desc"><span class="overflow" style="width:90px;">{{d.capture_time_desc}}</span></div>
                                 <div  :title="d.last_upload_num" @click="dataStatus(d.netbar_wacode,d.netbar_name,d.microprobe_type_code)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
                                 <div  :title="d.business_state"><span class="overflow" style="width:65px;">{{d.business_state}}</span></div>
-                                <div class="align" :title="d.netsite_type"><span class="overflow" style="width:200px;">{{d.netsite_type}}</span></div>
+                                <div class="align" :title="d.netsite_type" v-show="!isInternal"><span class="overflow" style="width:200px;">{{d.netsite_type}}</span></div>
                                 <div  :title="d.region_name"><span class="overflow" style="width:60px;">{{d.region_name}}</span></div>
                                 <div  :title="d.microprobe_type"><span class="overflow" style="width:60px;">{{d.microprobe_type}}</span></div>
                                 <div class="align" :title="d.security_software_orgname"><span class="overflow" style="width:80px;">{{d.security_software_orgname}}</span></div>
@@ -471,6 +471,7 @@ export default {
         allTotall:null,                  //总条数
         pageSize:null,                  //总计多少页
         dict_tables:{},                 //字典信息集合
+        isInternal:true,                 //当前列表是否是网吧数据
         myPieChart:"",  
         myDealChart:"",
         myBarChart:"",
@@ -612,9 +613,8 @@ export default {
       isHasSelItem(data,code){
         return  _.find(data,d=>d.code==code);
       },
-
-      //数据来源多选下拉框特殊处理，选了网吧就不能选择其他的,如果为空的话也会被强制选择网吧   现在该需求取消不设置默认
-      /*filterMicroprobe(data){
+      //数据来源多选下拉框特殊处理，选了网吧就不能选择其他的,如果为空的话也会被强制选择网吧
+      filterMicroprobe(data){
             if(data.length==0){
                 this.query.microprobe_type=["120"];
             }
@@ -628,7 +628,7 @@ export default {
                     this.query.microprobe_type.splice(i,1);               
                 }               
             }
-      },*/
+      },
       //刷新页面
       refreshPage(){
           this.loadData();
@@ -644,17 +644,18 @@ export default {
         this.$store.dispatch(getDictTables).then(res=>{
             if(res.msg.code!='successed')return;
             this.dict_tables= res.biz_body;
-            //this.query.microprobe_type=["120"];
-        });
-        //获取场所信息
-        this.$store.dispatch(GetSiteList,this.query).then(res=>{
+            this.query.microprobe_type=["120"];
+            //获取场所信息
+            
+            this.$store.dispatch(GetSiteList,this.query).then(res=>{
                 if(res.msg.code!='successed')return;
                 this.data=res.biz_body;
                 this.allTotall=res.page?res.page.total:null;
                 this.pageSize=res.page?res.page.page_size:null;
                 this.blnLoading=false;
-                //if(this.query.microprobe_type[0]=="120")   this.query.microprobe_type=["120"];
-        });        
+                if(this.query.microprobe_type[0]=="120")   this.query.microprobe_type=["120"];
+            });            
+        });
         //获取厂商下拉框数据
         this.$store.dispatch(GetFirm).then(res=>{
             if(!tool.msg(res,'','获取厂商数据失败!'))return;
@@ -1433,6 +1434,13 @@ export default {
                 this.blnSearch=false;
                 this.blnLoading=false;
                 if(!tool.msg(res,'','搜索失败!'))return;
+                if(this.query.microprobe_type.length==1&&this.query.microprobe_type[0]=="120"){
+                    this.isInternal=true;
+                }else{
+                    this.isInternal=false;
+                }
+
+
                 this.data=res.biz_body;
                 this.allTotall=res.page?res.page.total:null;
                 this.pageSize=res.page?res.page.page_size:null;
@@ -1655,7 +1663,7 @@ export default {
                         title:'场所详情',
                         content:type=="网吧" ? html1 : html2,
                         skin:'site-detail-container',
-                        area:['1000px','640px'],
+                        area:['1000px','630px'],
                         context:{
                             detailData:{},
                             detaillnLoading:true,
@@ -2377,7 +2385,8 @@ export default {
   @optionH:50px;
   .stiepage .option{width:100%;background-color: white;}
   .stiepage .page_container{.border('top');.border('bottom');background-color:white;position: absolute;bottom: 2px; }
- .stiepage .content{width:100%;height:~'calc(100% - @{optionH} - 60px - 40px)';}
+  .stiepage .content{width:100%;height:~'calc(100% - @{optionH} - 60px - 40px)';}
+
   .stiepage .header .item .dropDown{position: absolute;z-index: 100;top: 35px;line-height: initial;margin-left: 5px;
         width: calc(100% - 10px);
         color: black;

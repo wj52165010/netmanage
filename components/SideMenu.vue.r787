@@ -5,7 +5,7 @@
             <div class="kind_container">
                 <div class="sideMenu_conatiner">
                     <div class="slidee">
-                        <div class="kind_item" v-for="(menu,index) in menus"  :class="{active:curIndex==index}"  @mouseenter="menu_mouseenter(menu,index)" @mouseleave="menu_mouseleave()">
+                        <div class="kind_item" v-for="(menu,index) in menus" v-if="menu.id==3 || menu.id==7"  :class="{active:curIndex==index}"  @mouseenter="menu_mouseenter(menu,index)" @mouseleave="menu_mouseleave()">
                             <!--<el-tooltip class="item" effect="light" :content="menu.name" placement="top">-->
                                 <div style="display:table-cell;vertical-align:middle;">
                                     <i :class="menu.icon"></i>

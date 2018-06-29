@@ -69,7 +69,7 @@
                         <span>厂商范围：</span>
                         <div class="input" style="width:150px;display:inline-block;">
                             <MulDropDwon :data="siteIndfirms" keyProp="name" id="code" placeholder="请选择厂商">
-                                <div v-for="t in firms" @mousedown="firmClick('listInd',t)">{{t.name}} <i v-if="isHasSelItem(siteIndfirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
+                                <div v-for="t in firms" @mousedown="firmClick('listInd',t)">{{t.name}}</div>
                             </MulDropDwon>
                         </div>
                     </div> 
@@ -177,7 +177,7 @@
                             <span>厂商范围：</span>
                             <div class="input" style="width:180px;display:inline-block;">
                                 <MulDropDwon :data="sitefirms" keyProp="name" id="code" placeholder="请选择厂商">
-                                    <div v-for="t in firms" @mousedown="firmClick('chart',t)">{{t.name}} <i v-if="isHasSelItem(sitefirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
+                                    <div v-for="t in firms" @mousedown="firmClick('chart',t)">{{t.name}}</div>
                                 </MulDropDwon>
                             </div>
                         </div>                         
@@ -225,7 +225,7 @@
                                 <span>所属厂商：</span>
                                 <div class="input" style="width:250px;display:inline-block;">
                                     <MulDropDwon :data="Selfirms" keyProp="name" id="code" placeholder="请选择厂商">
-                                        <div v-for="t in firms" @mousedown="firmClick('list',t)">{{t.name}} <i v-if="isHasSelItem(Selfirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
+                                        <div v-for="t in firms" @mousedown="firmClick('list',t)">{{t.name}}</div>
                                     </MulDropDwon>
                                 </div>
                         </div>                         
@@ -300,7 +300,7 @@
                                 <span>所属厂商：</span>
                                 <div class="input" style="width:250px;display:inline-block;">
                                     <MulDropDwon :data="Selfirms" keyProp="name" id="code" placeholder="请选择厂商">
-                                        <div v-for="t in firms" @mousedown="firmClick('list',t)">{{t.name}}<i v-if="isHasSelItem(Selfirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
+                                        <div v-for="t in firms" @mousedown="firmClick('list',t)">{{t.name}}</div>
                                     </MulDropDwon>
                                 </div>
                         </div>                         
@@ -608,11 +608,6 @@ export default {
     tool.ClearBind(this.bodyClickId)
   },
   methods:{
-      //是否包含选中项
-      isHasSelItem(data,code){
-        return  _.find(data,d=>d.code==code);
-      },
-
       //数据来源多选下拉框特殊处理，选了网吧就不能选择其他的,如果为空的话也会被强制选择网吧   现在该需求取消不设置默认
       /*filterMicroprobe(data){
             if(data.length==0){
@@ -703,21 +698,17 @@ export default {
       },
       //处理厂商选择控件的方法
       firmClick(type,d){
-          let index=-1;
           switch(type){
               case "list":
-                index=_.findIndex(this.Selfirms,t=>t.code==d.code);
-                if(index>=0){this.Selfirms.splice(index,1); return;}
+                if(_.findIndex(this.Selfirms,t=>t.code==d.code)>=0)return;
                 this.Selfirms.push(d);
                 break;
               case "chart":           
-                index=_.findIndex(this.sitefirms,t=>t.code==d.code);
-                if(index>=0){this.sitefirms.splice(index,1); return;}
+                if(_.findIndex(this.sitefirms,t=>t.code==d.code)>=0)return;
                 this.sitefirms.push(d);
                 break;   
               case "listInd":
-                index=_.findIndex(this.siteIndfirms,t=>t.code==d.code);
-                if(index>=0){this.siteIndfirms.splice(index,1); return;}
+                if(_.findIndex(this.siteIndfirms,t=>t.code==d.code)>=0)return;
                 this.siteIndfirms.push(d);
                 break;   
 
