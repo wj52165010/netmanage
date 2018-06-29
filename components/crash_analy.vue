@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class="condGroup_item">
-                    <div class="info"><el-tooltip placement="top" content="交集">U</el-tooltip></div>
+                    <div class="info"><el-tooltip placement="top" content="交集">∩</el-tooltip></div>
                     <div class="option_bar">
                         <div class="option_item" name="dragIn" dataT="B1" @mousedown="mousedown($event,B1,`B1`)">
                             <div class="child" :class="`child${i.name.substr(0,1)}`" v-if="B1.length<=3" v-for="i in B1">
@@ -87,7 +87,7 @@
                     </div>
                 </div>
                 <div class="condGroup_item">
-                    <div class="info"><el-tooltip placement="top" content="并集">N</el-tooltip></div>
+                    <div class="info"><el-tooltip placement="top" content="并集">U</el-tooltip></div>
                     <div class="option_bar">
                         <div class="option_item" name="dragIn" dataT="B2" @mousedown="mousedown($event,B2,`B2`)">
                             <div class="child" :class="`child${i.name.substr(0,1)}`" v-if="B2.length<=3" v-for="i in B2">{{i.name}}<div class="delgroup" @mousedown.stop="delGroup(i,B2,'B2More')">x</div></div>

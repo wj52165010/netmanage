@@ -244,7 +244,7 @@
                                 <span>厂商名称：</span>
                                 <div class="input" style="width:180px;display:inline-block;">
                                     <MulDropDwon :data="devicefirms" keyProp="name" id="code" placeholder="请选择厂商">
-                                        <div v-for="t in firms" @mousedown="firmClick('device',t)">{{t.name}}</div>
+                                        <div v-for="t in firms" @mousedown="firmClick('device',t)">{{t.name}} <i v-if="isHasSelItem(devicefirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                                     </MulDropDwon>
                                 </div>
                             </div> 
@@ -962,19 +962,27 @@ export default {
             this.deviceSelect.region_range="";
         }
       },
+      //是否包含选中项
+      isHasSelItem(data,code){
+        return  _.find(data,d=>d.code==code);
+      },
       //   处理厂商管理控件的方法
       firmClick(type,d){
+          let index=-1;
           switch(type){
               case "list":
-                if(_.findIndex(this.Selfirms,t=>t.code==d.code)>=0)return;
+                index=_.findIndex(this.Selfirms,t=>t.code==d.code);
+                if(index>=0){this.Selfirms.splice(index,1); return;}
                 this.Selfirms.push(d);
                 break;
               case "site":           
-                if(_.findIndex(this.sitefirms,t=>t.code==d.code)>=0)return;
+                index=_.findIndex(this.sitefirms,t=>t.code==d.code);
+                if(index>=0){this.sitefirms.splice(index,1); return;}
                 this.sitefirms.push(d);
                 break;
               case "device":           
-                if(_.findIndex(this.devicefirms,t=>t.code==d.code)>=0)return;
+                index=_.findIndex(this.devicefirms,t=>t.code==d.code);
+                if(index>=0){this.devicefirms.splice(index,1);return;}
                 this.devicefirms.push(d);
                 break;              
           }

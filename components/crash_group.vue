@@ -77,8 +77,8 @@ export default {
         D:'#ff7733'
       },
       group:[
-        {name:'U',tip:'交集',type:'join',val:{B1:[],C1:[],D1:[]}},
-        {name:'N',tip:'并集',type:'union',val:{B2:[],C2:[],D2:[]}},
+        {name:'∩',tip:'交集',type:'join',val:{B1:[],C1:[],D1:[]}},
+        {name:'U',tip:'并集',type:'union',val:{B2:[],C2:[],D2:[]}},
         {name:'一',tip:'差集',type:'except',val:{B3:[],C3:[],D3:[]}},
       ],
       //conds:[{id:0},{id:1},{id:2}],

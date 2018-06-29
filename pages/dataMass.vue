@@ -16,7 +16,7 @@
                     <div class="optionBar">
                         <div style="float:left;margin-left:10px;width:250px;margin-top:7px;">
                             <MulDropDwon :data="site" keyProp="厂商名称" id="厂商编码" placeholder="按厂商">
-                                <div v-for="t in siteData" @mousedown="siteClick(t)">{{t.厂商名称}}</div>
+                                <div v-for="t in siteData" @mousedown="siteClick(t)">{{t.厂商名称}} <i v-if="isHasSelItem(site,t.厂商编码)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                             </MulDropDwon>
                         </div>
                         <div style="display:inline-block;margin-left:10px;width:230px;margin-top:7px;">
@@ -196,7 +196,7 @@ export default {
       chart_search(){
         if(this.blnSearch) return;
         this.blnSearch=true;
-        if(!this.time[0]){tool.info('请选择时间范围'); return;}
+        if(!this.time[0]){tool.info('请选择时间范围');this.blnSearch=false; return;}
         //获取数据质量有效率数据
         this.$store.dispatch(DataRate,{
             receive_time_start:tool.DateFormat(this.time[0],'yyyyMMdd'),
@@ -241,8 +241,13 @@ export default {
             }
         });
       },
+      //是否包含选中项
+      isHasSelItem(data,code){
+        return  _.find(data,d=>d.厂商编码==code);
+      },
       siteClick(d){
-        if(_.findIndex(this.site,t=>t.厂商编码==d.厂商编码)>=0)return;
+        let index=_.findIndex(this.site,t=>t.厂商编码==d.厂商编码);
+        if(index>=0){this.site.splice(index,1); return;}
         this.site.push(d);
       },
       //初始化折线图

@@ -51,7 +51,7 @@
 
                     <div style="width:250px;display:inline-block;">
                         <MulDropDwon :data="Listfirm" keyProp="name" id="code" placeholder="选择厂商">
-                            <div v-for="t in firms" @mousedown="detail_list_firmClick(t)">{{t.name}}</div>
+                            <div v-for="t in firms" @mousedown="detail_list_firmClick(t)">{{t.name}} <i v-if="isHasSelItem(Listfirm,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                         </MulDropDwon>
                     </div>
 
@@ -105,7 +105,7 @@
                         </div>
                         <div style="width:250px;display:inline-block;">
                             <MulDropDwon :data="Selfirms" keyProp="name" id="code" placeholder="选择厂商">
-                                <div v-for="t in firms" @mousedown="firmClick(t)">{{t.name}}</div>
+                                <div v-for="t in firms" @mousedown="firmClick(t)">{{t.name}} <i v-if="isHasSelItem(Selfirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                             </MulDropDwon>
                         </div>
                         <div style="display:inline-block;margin-left:10px;width:130px;">
@@ -657,13 +657,19 @@ export default {
             },{});
         });
       },
+      //是否包含选中项
+      isHasSelItem(data,code){
+        return  _.find(data,d=>d.code==code);
+      },
       //详情统计列表展示页面场所统计厂商选择项单击事件
       detail_list_firmClick(d){
-        if(_.findIndex(this.Listfirm,t=>t.code==d.code)>=0)return;
+        let index=_.findIndex(this.Listfirm,t=>t.code==d.code);
+        if(index>=0){this.Listfirm.splice(index,1); return;}
         this.Listfirm.push(d);
       },
       firmClick(d){
-        if(_.findIndex(this.Selfirms,t=>t.code==d.code)>=0)return;
+        let index=_.findIndex(this.Selfirms,t=>t.code==d.code);
+        if(index>=0){this.Selfirms.splice(index,1); return;}
         this.Selfirms.push(d);
       },
       //tag项改变事件

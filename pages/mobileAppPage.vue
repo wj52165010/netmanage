@@ -554,28 +554,37 @@ export default {
         let myaPieChart=$(this.$el).find('div[name="pie_chart_container"]')[0]
         this.myPieChart = echarts.init(myaPieChart);
         var option = {
-            title: {
+            title: [{
                 text: 'App概况',
                 x : 50, 
                 textStyle: {  
                     fontSize: 19,
                     fontWeight:900,
                 }, 
-            },
+            },{
+                text: 'App总量：'+(parseInt(data.pie.green)+parseInt(data.pie.violations)),
+                x : 50, 
+                y : 110, 
+                textStyle: {  
+                    fontSize: 13,
+                    fontWeight:"normal",
+                }, 
+            }],
             tooltip: {
                 trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
+                formatter: "{b} ({d}%)"
             },
             legend: {
                 orient : 'vertical',  
                 x : 50,  
                 y : 30,
                 itemHeight:20,
+                selectedMode:false,
                 padding:[20,5,20,5],
                 textStyle: {  
                     fontSize: 13,
                 }, 
-                data:['绿色','违规']  
+                data:['绿色：'+data.pie.green,'违规：'+data.pie.violations]  
             },
             series: [{
                 name: '',
@@ -584,7 +593,7 @@ export default {
                 center: ['65%','55%'],
                 data: [
                     {
-                        name: '绿色', 
+                        name: '绿色：'+data.pie.green, 
                         value: data.pie.green,
                         itemStyle:{
                             normal:{
@@ -601,7 +610,7 @@ export default {
                             }
                         }
                     },{
-                        name: '违规', 
+                        name: '违规：'+data.pie.violations, 
                         value: data.pie.violations,
                         itemStyle:{
                             normal:{

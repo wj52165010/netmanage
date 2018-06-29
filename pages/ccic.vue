@@ -67,7 +67,7 @@
             <!--操作栏-->
             <div class="action_bar">
                 <!--报警信息操作栏-->
-                <div class="policeOption" v-show="curPageIndex==0">
+                <div class="policeOption" v-show="curPageIndex==0" style="width:150px;right:20px;position: absolute;z-index:1000;">
                     <el-tooltip effect="light" content="添加人员" placement="top">
                         <span class="action_item" @click="addPerson()"><i class="fa fa-user"></i>添加</span>
                     </el-tooltip>
@@ -740,6 +740,7 @@ export default {
                 components:{
                     HTag,InputDir,MaskInput
                 },
+                store:s.$store,
                 context:{
                     url:ser.uri+'/upload/file',//上传地址
                     pages:[{name:'手动添加',icon:'fa fa-tag'},{name:'批量导入',icon:'fa fa-tag',disable:false,tip:''}],

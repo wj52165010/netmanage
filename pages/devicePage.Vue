@@ -95,7 +95,7 @@
                         <span>厂商范围：</span>
                         <div class="input" style="width:250px;display:inline-block;">
                             <MulDropDwon :data="siteIndfirms" keyProp="name" id="code" placeholder="请选择厂商">
-                                <div v-for="t in firms" @mousedown="firmClick('listInd',t)">{{t.name}}</div>
+                                <div v-for="t in firms" @mousedown="firmClick('listInd',t)">{{t.name}} <i v-if="isHasSelItem(siteIndfirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                             </MulDropDwon>
                         </div>
                     </div>                     
@@ -230,7 +230,7 @@
                             <span>厂商范围：</span>
                             <div class="input" style="width:180px;display:inline-block;">
                                 <MulDropDwon :data="sitefirms" keyProp="name" id="code" placeholder="请选择厂商">
-                                    <div v-for="t in firms" @mousedown="firmClick('chart',t)">{{t.name}}</div>
+                                    <div v-for="t in firms" @mousedown="firmClick('chart',t)">{{t.name}} <i v-if="isHasSelItem(sitefirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                                 </MulDropDwon>
                             </div>
                         </div>                         
@@ -285,7 +285,7 @@
                                 <span>所属厂商：</span>
                                 <div class="input" style="width:250px;display:inline-block;">
                                     <MulDropDwon :data="Selfirms" keyProp="name" id="code" placeholder="请选择厂商">
-                                        <div v-for="t in firms" @mousedown="firmClick('list',t)">{{t.name}}</div>
+                                        <div v-for="t in firms" @mousedown="firmClick('list',t)">{{t.name}} <i v-if="isHasSelItem(Selfirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                                     </MulDropDwon>
                                 </div>
                         </div>                         
@@ -694,19 +694,27 @@ export default {
             this.query.netbar_wacode="";
         }
       },
+      //是否包含选中项
+      isHasSelItem(data,code){
+        return  _.find(data,d=>d.code==code);
+      },
       //处理厂商选择控件的方法
       firmClick(type,d){
+          let index=-1;
           switch(type){
               case "list":
-                if(_.findIndex(this.Selfirms,t=>t.code==d.code)>=0)return;
+                index=_.findIndex(this.Selfirms,t=>t.code==d.code);
+                if(index>=0){this.Selfirms.splice(index,1); return;}
                 this.Selfirms.push(d);
                 break;
-              case "chart":           
-                if(_.findIndex(this.sitefirms,t=>t.code==d.code)>=0)return;
+              case "chart":          
+                index=_.findIndex(this.sitefirms,t=>t.code==d.code); 
+                if(index>=0){this.sitefirms.splice(index,1); return;}
                 this.sitefirms.push(d);
                 break;    
               case "listInd":
-                if(_.findIndex(this.siteIndfirms,t=>t.code==d.code)>=0)return;
+                index=_.findIndex(this.siteIndfirms,t=>t.code==d.code); 
+                if(index>=0){this.siteIndfirms.splice(index,1); return;}
                 this.siteIndfirms.push(d);
                 break;         
           }
@@ -765,22 +773,31 @@ export default {
         let offlineNum='WIFI：'+data.pie.micprotype_145.offline+' ( '+(data.pie.micprotype_145.offline/allNum*100).toFixed(2)+'% )<br>非经：'+data.pie.micprotype_123.offline+' ( '+(data.pie.micprotype_123.offline/allNum*100).toFixed(2)+'% )<br>特征：'+data.pie.micprotype_146.offline+' ( '+(data.pie.micprotype_146.offline/allNum*100).toFixed(2)+'% )';
         let abnormalsNum='WIFI：'+data.pie.micprotype_145.abnormals+' ( '+(data.pie.micprotype_145.abnormals/allNum*100).toFixed(2)+'% )<br>非经：'+data.pie.micprotype_123.abnormals+' ( '+(data.pie.micprotype_123.abnormals/allNum*100).toFixed(2)+'% )<br>特征：'+data.pie.micprotype_146.abnormals+' ( '+(data.pie.micprotype_146.abnormals/allNum*100).toFixed(2)+'% )';
         var option = {
-            title: {
+            title: [{
                 text: '昨日概况',
                 x : 50, 
-                textStyle: {   
+                textStyle: {  
                     fontSize: 19,
                     fontWeight:900,
                 }, 
-            },
+            },{
+                text: '设备总量：'+(data.pie.online+data.pie.abnormals+data.pie.offline),
+                x : 50, 
+                y : 140, 
+                textStyle: {  
+                    fontSize: 13,
+                    fontWeight:"normal",
+                }, 
+            } ],
             tooltip: {
                 trigger: 'item',
                 formatter:function(param){
-                    let str=param.name+'设备<br>总量：'+param.value+' ( '+param.percent+'% )<br>';
+                    let newName=param.name.substr(0,2);
+                    let str=newName+'设备<br>总量：'+param.value+' ( '+param.percent+'% )<br>';
                     if(allNum!=0){                        
-                        if(param.name=='在线'){
+                        if(newName=='在线'){
                             str+=onlineNum;
-                        }else if(param.name=='离线'){
+                        }else if(newName=='离线'){
                             str+=offlineNum;
                         }else{
                             str+=abnormalsNum;
@@ -795,10 +812,11 @@ export default {
                 y : 30,
                 itemHeight:20,
                 padding:[20,5,20,5],
+                selectedMode:false,
                 textStyle: {  
                     fontSize: 13,
                 }, 
-                data:['在线','异常','离线']  
+                data:["在线："+data.pie.online,"异常："+data.pie.abnormals,"离线："+data.pie.offline]  
             },
             series: [{
                 name: '',
@@ -807,7 +825,7 @@ export default {
                 center: ['65%','55%'],
                 data: [
                     {
-                        name: '在线', 
+                        name: "在线："+data.pie.online, 
                         value: data.pie.online,
                         itemStyle:{
                             normal:{
@@ -823,7 +841,7 @@ export default {
                             }
                         }
                     },{
-                        name: '异常', 
+                        name: "异常："+data.pie.abnormals, 
                         value: data.pie.abnormals,
                         itemStyle:{
                             normal:{
@@ -839,7 +857,7 @@ export default {
                             }
                         }
                     },{
-                        name: '离线', 
+                        name: "离线："+data.pie.offline, 
                         value: data.pie.offline,
                         itemStyle:{
                             normal:{

@@ -65,7 +65,7 @@
 
                     <div style="width:250px;display:inline-block;">
                         <MulDropDwon :data="Listfirm" keyProp="name" id="code" placeholder="选择厂商">
-                            <div v-for="t in firms" @mousedown="detail_list_firmClick(t)">{{t.name}}</div>
+                            <div v-for="t in firms" @mousedown="detail_list_firmClick(t)">{{t.name}} <i v-if="isHasSelItem(Listfirm,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                         </MulDropDwon>
                     </div>
 
@@ -118,7 +118,7 @@
                         </div>
                         <div style="width:250px;display:inline-block;">
                             <MulDropDwon :data="Selfirms" keyProp="name" id="code" placeholder="选择厂商">
-                                <div v-for="t in firms" @mousedown="firmClick(t)">{{t.name}}</div>
+                                <div v-for="t in firms" @mousedown="firmClick(t)">{{t.name}} <i v-if="isHasSelItem(Selfirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                             </MulDropDwon>
                         </div>
                         <div style="display:inline-block;margin-left:10px;width:130px;">
@@ -989,13 +989,19 @@ export default {
             },{});
         });
       },
+      //是否包含选中项
+      isHasSelItem(data,code){
+        return  _.find(data,d=>d.code==code);
+      },
       //详情统计列表展示页面场所统计厂商选择项单击事件
       detail_list_firmClick(d){
-        if(_.findIndex(this.Listfirm,t=>t.code==d.code)>=0)return;
+        let index=_.findIndex(this.Listfirm,t=>t.code==d.code);
+        if(index>=0){this.Listfirm.splice(index,1); return;}
         this.Listfirm.push(d);
       },
       firmClick(d){
-        if(_.findIndex(this.Selfirms,t=>t.code==d.code)>=0)return;
+        let index=_.findIndex(this.Selfirms,t=>t.code==d.code);
+        if(index>=0){this.Selfirms.splice(index,1); return;}
         this.Selfirms.push(d);
       },
       //tag项改变事件
@@ -1390,7 +1396,7 @@ export default {
             window.location=res.biz_body.url;
         });
       },
-        // 考核管理弹出层
+     // 考核管理弹出层
        checkManageFun(){
             this.blnShowHistoryPop=false;
             let self=this;            
@@ -1469,56 +1475,54 @@ export default {
                             </div>
                             <div class="mount-table">
                                 <div class="header">
-                                    <div class="mount_item" ><span class="overflow" style="width:220px;">厂商名称</span></div>
-                                    <div class="mount_item" ><span class="overflow" style="width:200px;">数据来源</span></div>
-                                    <div class="mount_ital" style="width:142px">
-                                        <div class="mount_nule" style="border-bottom:1px solid #c9c9c9">实名采集</div>
-                                        <div class="mount_nule">
-                                            <div style="width:67px;border-right:2px solid #c9c9c9;height:100%"><span class="overflow">身份证</span></div>
-                                            <div style="width:67px"><span class="overflow">手机号</span></div>
+                                    <div class="mount_item" style="width:220px">厂商名称</div>
+                                    <div class="mount_item" style="width:200px">数据来源</div>
+                                    <div class="mount_item" style="width:142px">
+                                        <span>实名采集</span>
+                                        <div class="mount_ti_row">
+                                            <div class="mount_column">身份证</div>
+                                            <div class="mount_column">手机号</div>
                                         </div>
                                     </div>
-                                    <div class="mount_ital" style="width:213px">
-                                        <div class="mount_nule" style="border-bottom:1px solid #c9c9c9">虚拟身份</div>
-                                        <div class="mount_nule">
-                                            <div style="width:67px;border-right:2px solid #c9c9c9;height:100%"><span class="overflow">QQ</span></div>
-                                            <div style="width:67px;border-right:2px solid #c9c9c9;height:100%"><span class="overflow">微信</span></div>
-                                            <div style="width:67px"><span class="overflow">淘宝</span></div>
+                                    <div class="mount_item" style="width:213px">
+                                        <span>虚拟身份</span>
+                                        <div class="mount_ti_row">
+                                            <div class="mount_column">QQ</div>
+                                            <div class="mount_column">微信</div>
+                                            <div class="mount_column">淘宝</div>
                                         </div>
                                     </div>
-                                    <div class="mount_ital" style="width:213px">
-                                        <div class="mount_nule" style="border-bottom:1px solid #c9c9c9">硬件特征</div>
-                                        <div class="mount_nule">
-                                            <div style="width:67px;border-right:2px solid #c9c9c9;height:100%"><span class="overflow">MAC</span></div>
-                                            <div style="width:67px;border-right:2px solid #c9c9c9;height:100%"><span class="overflow">IMSI</span></div>
-                                            <div style="width:67px"><span class="overflow">IMEI</span></div>
+                                    <div class="mount_item" style="width:213px">
+                                        <span>硬件特征</span>
+                                        <div class="mount_ti_row">
+                                            <div class="mount_column">MAC</div>
+                                            <div class="mount_column">IMSI</div>
+                                            <div class="mount_column">IMEI</div>
                                         </div>
                                     </div>
-                                    <div class="mount_item" v-if="detailData.length>=7"><span class="overflow" style="width:11px;"></span></div>
-                                </div>
-                                
-                                <div class="content" style="height: 332px;overflow-y: auto;overflow-x: hidden;">
+                                </div>                                
+                                <div class="content" style="height: 323px;overflow-y: auto;overflow-x: hidden;">
                                     <div v-if="detailData.length<=0&&!DeviceblnLoading" class="content">
                                         <div class="mount_item"><span class="overflow" style="width:990px;">暂无数据</span></div>
                                     </div>
                                    <!-- <Scroll :listen="detailData">    -->
-                                        <div v-for="(d,i) in detailData" class="content">
-                                            <div class="mount_item" :title="d.security_software_orgname"><span class="overflow" style="width:220px;">{{d.security_software_orgname}}</span></div>
-                                            <div class="mount_item"><span class="overflow" style="width:200px;">
+                                        <div v-for="(d,i) in detailData" class="cont_row">
+                                            <div class="mount_item" :title="d.security_software_orgname"><span class="overflow" style="width:200px;">{{d.security_software_orgname}}</span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:198px;">
                                                 <div style="width:140px;margin:0 auto">
                                                     <el-select v-model="d.microprobe_type" :clearable="true" placeholder="请选择" @change="editSelectFun(i)">
                                                         <el-option v-for="kind in dict_tables.microprobe_type" :label="kind.name" :value="kind.value"></el-option>
                                                     </el-select>
                                                 </div>                                                                        
                                             </div>
-                                            <div class="mount_item"><span class="overflow" style="width:65px;"><el-switch on-text="" off-text="" v-model="d.options.identity"></el-switch></span></div>
-                                            <div class="mount_item"><span class="overflow" style="width:72px;"><el-switch on-text="" off-text="" v-model="d.options.mobile"></el-switch></span></div>
-                                            <div class="mount_item"><span class="overflow" style="width:65px;"><el-switch on-text="" off-text="" v-model="d.options.qq"></el-switch></span></div>
-                                            <div class="mount_item"><span class="overflow" style="width:68px;"><el-switch on-text="" off-text="" v-model="d.options.wechat"></el-switch></span></div>
-                                            <div class="mount_item"><span class="overflow" style="width:72px;"><el-switch on-text="" off-text="" v-model="d.options.taobao"></el-switch></span></div>
-                                            <div class="mount_item"><span class="overflow" style="width:65px;"><el-switch on-text="" off-text="" v-model="d.options.terminal_mac"></el-switch></span></div>
-                                            <div class="mount_item"><span class="overflow" style="width:68px;"><el-switch on-text="" off-text="" v-model="d.options.imsi"></el-switch></span></div>
-                                            <div class="mount_item"><span class="overflow" style="width:72px;"><el-switch on-text="" off-text="" v-model="d.options.imei"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:70px;"><el-switch on-text="" off-text="" v-model="d.options.identity"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:70px;"><el-switch on-text="" off-text="" v-model="d.options.mobile"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:70px;"><el-switch on-text="" off-text="" v-model="d.options.qq"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:70px;"><el-switch on-text="" off-text="" v-model="d.options.wechat"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:70px;"><el-switch on-text="" off-text="" v-model="d.options.taobao"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:70px;"><el-switch on-text="" off-text="" v-model="d.options.terminal_mac"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:70px;"><el-switch on-text="" off-text="" v-model="d.options.imsi"></el-switch></span></div>
+                                            <div class="mount_item"><span class="overflow" style="width:70px;"><el-switch on-text="" off-text="" v-model="d.options.imei"></el-switch></span></div>
                                     
                                         </div>
                                     <!--</Scroll>-->
@@ -2438,16 +2442,39 @@ export default {
         display: inline-block;
     }
     .firm-check-list .mount-table .header{
-        display: table-row;
+        display: table;
+        border: 1px solid #c9c9c9;
+        line-height:60px;
     }
-    .firm-check-list .mount-table .header .mount_item{
-        display: table-cell;
+    .firm-check-list .mount-table .header .mount_item:first-child{
+        border-left: none;
+    }
+    .firm-check-list .mount-table .header .mount_item{        
+        position: relative;
         font-weight: bolder;
         text-align: center;
-        //background-color: #E5E5E5;
-        //line-height: 55px;
-       // height: 55px;
-        border: 1px solid #C9C9C9;
+        width: 150px;
+        border-left: 1px solid #C9C9C9;
+    }
+    .firm-check-list .mount-table .header .mount_item span{
+        display: inline-block;
+        position: relative;
+        top: -15px;
+    }
+    .firm-check-list .mount-table .header .mount_item .mount_ti_row{
+        display: table;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        line-height: 2;
+        border-top: 1px solid #c9c9c9;
+    }
+    .firm-check-list .mount-table .header .mount_item .mount_ti_row .mount_column{
+        border-left:1px solid #c9c9c9;
+        width:70px;
+    }
+    .firm-check-list .mount-table .header .mount_item .mount_ti_row .mount_column:first-child{
+        border-left:none;
     }
     .firm-check-list .mount-table .header .mount_item .overflow{
         display: block;
@@ -2463,13 +2490,24 @@ export default {
         font-weight: bolder;
        // border-bottom: 1px solid #c9c9c9;
     }
+    .firm-check-list .mount-table .content{
+        //border-right:1px solid #c9c9c9;
+        //border-bottom:1px solid #c9c9c9;
+    }
+    .firm-check-list .mount-table .cont_row{
+        
+        border-left:1px solid #c9c9c9;
+    }
     .firm-check-list .mount-table .content .mount_item{
         display: table-cell;
         font-weight: normal;
         text-align: center;
         line-height: 45px;
-        border: 1px solid #C9C9C9;
-
+        border-right: 1px solid #C9C9C9; 
+        border-bottom: 1px solid #C9C9C9;       
+    }
+    .firm-check-list .mount-table .cont_row .mount_item:first-child{
+        padding:0 10px;
     }
     .firm-check-list .mount-table .content .mount_item .overflow{
         width:100%;

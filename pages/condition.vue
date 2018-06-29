@@ -90,7 +90,7 @@
                     <label>远程数据</label>
                     <div>
                        <MulDropDwon :data="remoteInterface" keyProp="name" id="id">
-                        <div class="remote_item" v-for="t in remoteInters" @mousedown="remoteitemClick(t)">{{t.name}}</div>
+                            <div class="remote_item" v-for="t in remoteInters" @mousedown="remoteitemClick(t)">{{t.name}} <i v-if="isHasSelItem(remoteInterface,t.id)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                        </MulDropDown>
                     </div>
                 </div>
@@ -553,9 +553,14 @@ export default {
     this.bodyResizeSub.unsubscribe();
   },
   methods:{
+    //是否包含选中项
+    isHasSelItem(data,id){
+        return  _.find(data,d=>d.id==id);
+    },
     //远程接口项单击事件
     remoteitemClick(d){
-       if(_.findIndex(this.remoteInterface,t=>t.id==d.id)>=0)return;
+       let index=_.findIndex(this.remoteInterface,t=>t.id==d.id);
+       if(index>=0){this.remoteInterface.splice(index,1); return;}
        this.remoteInterface.push(d);
     },
     //加载字段拖动插件

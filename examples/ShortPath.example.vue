@@ -29,7 +29,7 @@
                 历史记录
             </div>
             <Scroll ref="historyPopScroll" :listen="historyData">
-                <div v-for="(h,i) in historyData" class="item" @click="getTaskRes(h.task_id);curShowTaskId=h.task_id;">
+                <div v-for="(h,i) in historyData" class="item" @click="getTaskRes(h.task_id,h.task_status);curShowTaskId=h.task_id;">
                     <div class="item_span">
                         <span>分析对象:{{h.first_key}}</span>
                         <span style="float:right;">{{h.status_note || '分析中...'}}</span>
@@ -110,7 +110,14 @@ export default {
         this.simulation.alphaTarget(0.3).restart();
     },
     curTaskData(){
-       if(!this.curTaskData.start_node && !this.blnClear){ tool.info('没有相关数据!'); return ;}
+       if(!this.curTaskData.start_node && !this.blnClear){ 
+           if(this.curTaskData.task_status=='created'){
+                tool.info(`任务正在执行中,请稍后`);    
+           }else if(this.curTaskData.task_status=='complete' || !this.curTaskData.task_status){
+                tool.info(`暂无数据!`);    
+           }
+           return ;
+      }
        if(this.blnClear){this.blnClear=false;return;}
 
        this.bindDataListen(this.curTaskData).subscribe(v=>{
@@ -248,7 +255,7 @@ export default {
             // .force("y", d3.forceY((d,i)=>{return d.y;}))
             .force("link", d3.forceLink().distance(s.instances).id(function(d) { return d.id; }))
             .force('manybody',d3.forceManyBody())
-            .force("collide", d3.forceCollide().radius(function(d) { return s.radius*2 ; }).strength(1))
+            .force("collide", d3.forceCollide().radius(function(d) { return s.radius*2 ; }).strength(0.5))
             .on("tick", s.ticked);
     },
     ticked(){
@@ -524,6 +531,7 @@ export default {
     getHistory(){
         this.$store.dispatch(GetShortPath).then(res=>{
             this.historyData=res.biz_body;
+
             this.blnShowHistoryPop=this.historyData.length>0;
         });
     },
@@ -649,12 +657,14 @@ export default {
 
     },
     //获取指定任务分析结果数据
-    getTaskRes(taskid){
+    getTaskRes(taskid,task_status){
         let s=this;
-        this.$store.dispatch(GetShortPathRes,{task_id:taskid}).then(res=>{
-   
-            if(!tool.msg(res)) return;
+        if(task_status=='created'){tool.info('任务正在分析中,请稍后再试.');return;}
+        if(task_status=='aborted'){tool.info('任务出现异常,请重新建立新任务.');return;}
 
+        this.$store.dispatch(GetShortPathRes,{task_id:taskid}).then(res=>{
+            
+            if(!tool.msg(res)) return;
             // res.biz_body.paths[0].splice(2,1);
             // res.biz_body.paths[0].push({type:'line',value:"->"});
             let iconMap={

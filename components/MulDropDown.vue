@@ -9,7 +9,7 @@
         <div class="drop_content" @mousedown.stop="" v-show="blnShowDrop">
             <slot></slot>
         </div>
-        <div class="drop_sel" @mouseenter="mouseenter()" @mouseleave="mouseout()" v-show="blnShowSel && !blnShowDrop">
+        <div class="drop_sel" @mouseenter="mouseenter()" @mouseleave="mouseout()" v-show="blnShowSel && !blnShowDrop && !blnPure">
             <div class="item" v-for="(d,i) in data" :title="d[keyProp]">
                 {{i+1}}.{{d[keyProp]}}
                 <i class="fa fa-remove" style="float:right;margin-top:12px;cursor:pointer;position: absolute;top: 0px;right: 5px;" @click="del(d)"></i>
@@ -28,6 +28,7 @@ export default {
       blnShowDrop:false,
       blnShowSel:false,
       mousedownid:'',
+      blnPure:true,//是否为简单的下拉框插件
     }
   },
   mounted(){
