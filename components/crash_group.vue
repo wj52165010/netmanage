@@ -269,6 +269,7 @@ export default {
 
     //生成提交数据
     genParam(){
+       
         let obj = _.extend(..._.chain(tool.Clone(this.group)).pluck('val').flatten().value());
         let validConds=_.chain(obj).filter(v=>v.length>=2).map(v=>v).value();//包含在分组中的条件对象
         
@@ -293,6 +294,8 @@ export default {
                     g.val[k]=[];
                 })
             })
+
+            this.genIdens();
         });
     }
   }
@@ -387,11 +390,11 @@ export default {
     color: white;
     position: absolute;
     top: -7.5px;
-    font-size: 1px;
+    font-size: 12px;
     font-weight: 400;
     right: -7.5px;
     height: 15px;
-    line-height: 15px;
+    line-height: 12px;
     width: 15px;
     background-color: black;
     border-radius: 50%;

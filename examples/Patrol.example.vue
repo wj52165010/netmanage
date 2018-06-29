@@ -254,7 +254,7 @@ export default {
                 </div>
 
                 <div class="option_bar" style="text-align:center;">
-                    <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()">确定</button>
+                    <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
                     <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                 </div>
 

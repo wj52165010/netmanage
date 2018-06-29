@@ -41,7 +41,16 @@
         <!--搜索结果框-->
         <div class="search_result">
             <div class="header"><span class="title">检索结果</span></div>
-            <div class="body" style="padding:10px;">
+            <div class="body" style="padding:10px;position:relative;">
+                <!--暂无数据-->
+                <div v-if="data.length<=0" style="width:100%;height:100%;text-align:center;display:table;">
+                    <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
+                </div>
+                <!--加载中-->
+                <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+                  <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+                </div>
+
                 <Scroll :listen="data" ref="resScroll">
                     <div class="photo_item" v-for="d in data">
                         <div class="photo_item_header">{{d.name}}</div>
@@ -85,6 +94,7 @@ export default {
       data:[],
       file_name:'',
       noPersonImg:noPerson,
+      blnLoading:false
     }
   },
   mounted(){
@@ -104,8 +114,11 @@ export default {
     //搜索
     search(){
       if(!this.file_name){tool.info('请先上传图片!'); return;}
-
+      this.blnLoading=true;
       this.$store.dispatch(SearchFace,{file_name:this.file_name}).then(res=>{
+        this.blnLoading=false;
+        if(!tool.msg(res)) return;
+        if(res.biz_body.length<=0){tool.info('暂无数据!');}
         this.data=res.biz_body;
       });
     },
