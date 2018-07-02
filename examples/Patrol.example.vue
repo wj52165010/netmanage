@@ -198,13 +198,15 @@ export default {
     addTaskRule(type){
         let s=this;
         tool.open(function(){
+            let layIndex=0;
+            let layTitle=['添加人员','选择场所范围','配置巡查项'];
             let html=`
-                <div class="row" style="margin-bottom:10px;">
+                <div class="row" style="margin-bottom:10px;" v-show="curPageIndex == 0">
                     <div class="col-md-2" style="padding-top:10px;padding-left:25px;">任务名称</div>
                     <div class="col-md-5" style="padding-left:0px;"><el-input v-model="title" placeholder="请输入"></el-input></div>
                 </div>
 
-                <div class="row" style="margin-bottom:10px;" v-if="type==0">
+                <div class="row" style="margin-bottom:10px;" v-show="type==0 && curPageIndex == 0">
                     <div class="col-md-2" style="padding-top:10px;padding-left:25px;">巡查周期</div>
                     <div class="col-md-5" style="padding-left:0px;">
                         <el-select style="width:100%;" v-model="cycType" :clearable="true" placeholder="请选择">
@@ -217,20 +219,77 @@ export default {
                     </div>
                 </div>
 
-                <div class="row" style="margin-bottom:10px;" v-if="type==1">
+                <div class="row" style="margin-bottom:10px;" v-show="type==1 && curPageIndex == 0">
                     <div class="col-md-2" style="padding-top:10px;padding-left:25px;">巡查时间</div>
                     <div class="col-md-5" style="padding-left:0px;">
                         <el-date-picker  type="datetimerange" v-model="timeRange" placeholder="选择日期范围" :picker-options="simpleTime" :format="'yyyy-MM-dd'"  style="width: 100%;"></el-date-picker>
                     </div>
                 </div>
 
-                <div class="row" style="margin-bottom:10px;">
+                <div class="row" style="margin-bottom:10px;" v-show="curPageIndex == 0">
+                    <div class="col-md-2" style="padding-top:10px;padding-left:25px;">巡查人员</div>
+                    <div class="col-md-9" name="table_container" style="height:300px;border:1px solid #e7eaec;border-radius:5px;padding-right:0px;padding-left:0px;">
+                        
+                        <div class="table_header">
+                            <div class="row">
+                                <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">用户名</span></div>
+                                <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">部门</span></div>
+                                <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
+                                <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">角色</span></div>
+                                <div class="column" style="width:100px;border-right:none;"><span class="overflow" style="width:100px;">是否参与</span></div>
+                            </div>
+                        </div>
+
+                        <div style="position:relative;height:calc(100% - 41px);" >
+                            <!--暂无数据-->
+                            <div v-if="users.length<=0" style="width:100%;height:100%;text-align:center;display:table;">
+                                <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
+                            </div>
+
+                            <!--加载中-->
+                            <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+                                <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+                            </div>
+
+                            <Scroll :listen="users" ref="scroll">
+                                <div class="table_body">
+                                    <div class="table_conatienr">
+                                        <template v-for="d in users">
+                                        <div class="row">
+                                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">用户名</span></div>
+                                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">部门</span></div>
+                                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
+                                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">角色</span></div>
+                                            <div class="column" style="width:100px;border-right:none;">
+                                                <span class="overflow" style="width:100px;">
+                                                    <el-switch
+                                                        active-text=""
+                                                        inactive-text="">
+                                                    </el-switch>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </Scroll>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="option_bar" style="text-align:center;" v-show="curPageIndex == 0">
+                    <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                     <button type="button" class="btn btn-success" @click="goNext()">下一步</button>
+                </div>
+
+
+                <div class="row" style="margin-bottom:10px;" v-show="curPageIndex == 1">
                     <div class="col-md-2" style="padding-top:10px;padding-left:25px;">巡查场所</div>
-                    <div class="col-md-4" style="height:200px;border:1px solid #e7eaec;border-radius:5px;padding-right:0px;">
+                    <div class="col-md-4" style="height:300px;border:1px solid #e7eaec;border-radius:5px;padding-right:0px;">
                         <PlaceTree ref="placeTree" @res="PlaceResult"></PlaceTree>
                     </div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-4"  style="height:200px;border:1px solid #e7eaec;border-radius:5px;padding-top:10px;padding-bottom:10px;padding-right:0px;">
+                    <div class="col-md-4"  style="height:300px;border:1px solid #e7eaec;border-radius:5px;padding-top:10px;padding-bottom:10px;padding-right:0px;">
                         <Scroll :listen="selPlaces">
                             <div v-for="(p,i) in selPlaces" style="margin-bottom:5px;padding-right:40px;position:relative;padding-left:20px;">
                                 <span style="font-size:12px;position:absolute;left:0px;top:3px;">{{i+1}}.</span>{{p.name}} 
@@ -239,7 +298,15 @@ export default {
                         </Scroll>
                     </div>
                 </div>
-                <div class="row" style="margin-bottom:10px;">
+
+                <div class="option_bar" style="text-align:center;" v-show="curPageIndex == 1">
+                    <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                    <button type="button" class="btn btn-success" @click="goPre()">上一步</button>
+                    <button type="button" class="btn btn-success" @click="goNext()">下一步</button>
+                </div>
+
+
+                <div class="row" style="margin-bottom:10px;" v-show="curPageIndex == 2">
                     <div class="col-md-2" style="padding-top:10px;padding-left:25px;">巡查项目</div>
                     <div class="col-md-9" style="height:200px;border:1px solid #e7eaec;border-radius:5px;padding:10px;padding-right:0px;">
                         <Scroll :listen="projects">
@@ -253,14 +320,15 @@ export default {
                     </div>
                 </div>
 
-                <div class="option_bar" style="text-align:center;">
-                    <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                <div class="option_bar" style="text-align:center;" v-show="curPageIndex == 2">
                     <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                    <button type="button" class="btn btn-success" @click="goPre()">上一步</button>
+                    <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
                 </div>
 
             `;
             let param={
-                title:type?'巡检任务':'定期巡检',
+                title:type?'巡检任务 - 添加人员':'定期巡检 - 添加人员',
                 area:'800px',
                 content:`<div class="patrol_pop" style="padding:10px;">${html}</div>`,
                 components:{PlaceTree,Scroll},
@@ -272,13 +340,22 @@ export default {
                                          !(this.title && this.cycType && this.selProjects.length>0 && this.selPlaces.length>0);
                     }
                 },
+                watch:{
+                    curPageIndex(){
+                        layer.title(`${type?'巡检任务':'定期巡检'} - ${layTitle[this.curPageIndex]}`,layIndex)
+                    }
+                },
                 context:{
+                  blnLoading:false,
+                  curPageIndex:0,
+                  column_w:0,
                   blnExecute:false,
                   simpleTime:{//限制选择今天之前的日期
                     disabledDate(time) {
                         return time.getTime() < Date.now() - 8.64e7;
                     }
                   },
+                  users:[2],
                   type:type,
                   projects:s.policyItems,
                   title:'',
@@ -286,6 +363,14 @@ export default {
                   timeRange:[],//时间范围
                   selProjects:[],//已选择的检查项
                   selPlaces:[],//选择的场所区域
+                  //返回上一页
+                  goPre(){
+                    param.selfData.curPageIndex=param.selfData.curPageIndex-1<0?0:param.selfData.curPageIndex-1;
+                  },
+                  //到下一页
+                  goNext(){
+                    param.selfData.curPageIndex++;
+                  },
                   //场所区域选择改变事件
                   PlaceResult(d){
                     let res =  _.chain(d).values().flatten().value();
@@ -332,6 +417,10 @@ export default {
                   cancel_btn(){
                     param.close();
                   }
+                },
+                success(layro,index){
+                    layIndex=index;
+                    param.selfData.column_w=layro.find('div[name="table_container"]').width()-400;
                 }
             };
 

@@ -555,6 +555,7 @@ const actions={
     [types.get_OPerate_Data]({commit},data){
         data=data || {};
         return new Promise((resolve,reject)=>{
+  
             ser.getOperateData({interface:data.interface || '',
                                 keyid:data.keyid || '',
                                 extraData:data.extraData || {},

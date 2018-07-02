@@ -51,7 +51,7 @@
                     <!--表头-->
                     <ul class="table_ul">
                         <li style="width:100px;">编号
-                            <div class="sortItem"><i class="fa fa-caret-up" :class="{active:order}" @click="order=true"></i><i class="fa fa-caret-down" :class="{active:!order}" @click="order=false"></i></div>
+                            <div class="sortItem"><i class="fa fa-caret-up" :class="{active:!order}" @click="order=false"></i><i class="fa fa-caret-down" :class="{active:order}" @click="order=true"></i></div>
                         </li>
                         <li style="width:150px;">起始IP</li>
                         <li style="width:150px;">结束IP</li>
@@ -70,7 +70,7 @@
                         
                         <Scroll :listen="ips">
                             <ul class="table_ul" v-for="(p,i) in ips">
-                                <li style="width:100px;">{{p.id}}</li>
+                                <li style="width:100px;">{{calNumber(i)}}</li>
                                 <li style="width:150px;">{{p.start_ip}}</li>
                                 <li style="width:150px;">{{p.end_ip || '- - - -'}}</li>
                                 <li style="width:calc(100% - 400px)"><i class="fa fa-remove" @click="delIP(p.id,i)"></i></li>
@@ -127,6 +127,7 @@ export default {
       ips:[],
       portSetting:{interval:1,port:''},
       order:false,
+      listCount:0,
       startIP_one:'',
       startIP_two:'',
       startIP_three:'',
@@ -171,8 +172,8 @@ export default {
            end_ip:endIP,
        }).then(res=>{
            if(!tool.msg(res,'添加IP成功')) return;
-           this.ips.unshift(res.biz_body[0]);
-
+           this.ips.push(res.biz_body[0]);
+           this.listCount++;
        });
     },
     //删除IP
@@ -182,6 +183,7 @@ export default {
                 if(!tool.msg(res,'删除成功!')) return;
 
                 this.ips.splice(i,1);
+                this.listCount--;
             });
         },function(){});
         
@@ -251,6 +253,7 @@ export default {
             if(res.biz_body.length<=0 && i>0){tool.info('已经到了最后页!');return;}
 
             this.ips=res.biz_body;
+            this.listCount=res.page.total;
 
             this.pageIndex=i;
         });
@@ -265,7 +268,15 @@ export default {
     isInt(val){
        var reg = /^[0-9]*[1-9][0-9]*$/
        return reg.test(val);
-    } 
+    },
+    //计算编号
+    calNumber(i){
+        if(this.order){//降序
+            return this.listCount - this.pageIndex*this.pageNumber - i;
+        }else{//升序
+            return this.pageIndex*this.pageNumber + i +1;
+        }
+    },
   }
 }
 </script>

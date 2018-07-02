@@ -4,7 +4,7 @@
         <!--操作栏-->
         <div class="option_bar">
             <div class="item">
-                <span>站点域名:</span><div style="display:inline-block;"><el-input placeholder="请输入" v-model="domain"></el-input></div>
+                <span>站点URL:</span><div style="display:inline-block;"><el-input placeholder="请输入" v-model="domain"></el-input></div>
             </div>
             <div class="item">
                 <span>站点名称:</span><div style="display:inline-block;"><el-input placeholder="请输入" v-model="webname"></el-input></div>

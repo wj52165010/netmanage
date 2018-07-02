@@ -146,8 +146,14 @@ export default {
             tmpParam=(data.tmpParam && (data.tmpParam[tempType['地图路径'].id] || [''])[0]) || '',
             fields=data.orderFields
             startTime=s.dateRange[0]?tool.Timestamp(s.dateRange[0]):'',
-            endTime=s.dateRange[1]?tool.Timestamp(s.dateRange[1]):'';
-        
+            endTime='';
+            if(s.dateRange[1]){
+                s.dateRange[1].setHours(23);
+                s.dateRange[1].setMinutes(59);
+                s.dateRange[1].setSeconds(59);
+                endTime=tool.Timestamp(s.dateRange[1]);
+            }
+         
         let labels={};
         if(data.condtion){
             data.condtion.limit=3000;//获取场所经纬的情况下需要把分页数设置较大才能更好的接近真实的数据
@@ -174,7 +180,7 @@ export default {
 
         //查询条件
         extraParam=tmpDAO.searchParam((data.queryCondition || []).concat(extraConditon || []),data.condtion);
-
+     
         store.dispatch(Get_OPerate_Data,{keyid:data.keyid,
                                          condtionsObj:data.condtion,
                                          time:tmpParam.time_field,
@@ -186,7 +192,7 @@ export default {
             s.blnSearch=false;
             var data = code.biz_body;
             //分组数据
-
+            
             data=_.chain(data)
                   .groupBy(d=>{ return d.equipment_longitude+''+d.equipment_latitude})
                   .map(d=>{
@@ -195,9 +201,10 @@ export default {
                     d[0]._dateArr=_.chain(d)
                                    .map(t=>t[tmpParam.time_field] || t[primaryKey[0]+'_'+tmpParam.time_field])
                                    .sortBy(t=>t)
-                                   .map(t=>tool.DateByTimestamp(t,'yyyy-MM-dd hh:mm:ss')).value();
+                                   .map(t=>{if(t.indexOf(':')>=0){ return t;} else{ return tool.DateByTimestamp(t,'yyyy-MM-dd hh:mm:ss')}}).value();
                     return d[0];
                   }).value();
+
 
             s.map.setZoom(18);
             s.map.setCenter(new BMap.Point(data[0].longitude, data[0].latitude));
@@ -270,8 +277,8 @@ export default {
                     var point=e.target.point;
                     if(!s.cacheData[point.lng+'-'+point.lat]){return;}
                     let data=s.cacheData[point.lng+'-'+point.lat];
-                    if(data._dateArr.length<=1)return;
-
+                    //if(data._dateArr.length<=1)return;
+       
                     let html=_.map(data._dateArr,(d,i)=>{
                         return `
                                 <div class="row border" style="margin-left:0px;margin-right:0px;line-height:30px;font-size:12px; border-bottom:1px solid #ebedee;">
