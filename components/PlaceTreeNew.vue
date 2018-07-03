@@ -11,6 +11,7 @@ import {GET_PLACE} from '../store/mutation-types'
 import Tree from 'components/Tree'
 export default {
   name: 'PlaceTreeNew',
+  props:['rootNode'],
   components:{Tree},
   data () {
     return {
@@ -20,7 +21,13 @@ export default {
   },
 
   mounted(){
-    this.queryTreeData();
+    
+    if(this.rootNode){
+        this.places=[{...this.rootNode,type:'1',child:[]}];
+    }else{
+        this.queryTreeData();
+    }
+    
   },
   methods:{
     queryTreeData(d) {
@@ -29,6 +36,7 @@ export default {
         this.$store.dispatch(GET_PLACE,{code:code, type:type, defaultVal:''}).then((code) => {
             if(!d){
                 this.places=[...code];
+                console.log(tool.Clone(code));
             }else{
                 d.isLoadingData=false;
                 if(code.length<=0){return tool.info('没有相关数据!');}

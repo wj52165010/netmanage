@@ -191,6 +191,7 @@ export default {
                                          }).then(function (code) {
             s.blnSearch=false;
             var data = code.biz_body;
+            if(data.length<=0){tool.info('没有相关数据!'); return;}
             //分组数据
             
             data=_.chain(data)

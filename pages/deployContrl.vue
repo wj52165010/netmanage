@@ -241,16 +241,17 @@ export default {
     exportList(){
         let policeParam={
           law_case_id:this.law_case_id,
-          blnCase:true,
+          is_lawpolicy:true,
           keywords:this.alarmSearch,
         },
         personParam={
           user_id:this.curSelPerson.val?ser.baseBag.userid:'',
           policy_title:this.PolicyName,
-          blnCase:true,
+          is_lawpolicy:true,
           law_case:this.law_case_id,
 
         };
+
         this.$store.dispatch(this.curSelCase.val==-1?ExportPolicyLog:ExportPolicy,this.curSelCase.val==0?policeParam:personParam
         ).then(res=>{
             if(!tool.msg(res,'导出成功!','导出失败!')) return;
@@ -262,13 +263,13 @@ export default {
     exportListNo(){
       let policeParam={
           law_case_id:this.law_case_id,
-          blnCase:false,
+          is_lawpolicy:false,
           keywords:this.alarmNoSearch,
         },
         personParam={
           user_id:this.curSelPerson.val?ser.baseBag.userid:'',
           policy_title:this.PolicyNameNoCase,
-          blnCase:false,
+          is_lawpolicy:false,
           law_case:this.law_case_id,
 
         };
@@ -663,7 +664,7 @@ export default {
                   </div>
                   <div class="row row_item">
                     <div class="col-md-2 item_label_left">终端MAC</div><div class="col-md-4">{{d.mac}}</div>
-                    <div class="col-md-2 item_label_right">产生时间</div><div class="col-md-4">{{d.detect_time}}</div>
+                    <div class="col-md-2 item_label_right">产生时间</div><div class="col-md-4">{{converTime(d.logtime)}}</div>
                   </div>
                   <div class="row row_item">
                     <div class="col-md-2 item_label_left">身份证类型</div><div class="col-md-4">{{d.certificate_type}}</div>
@@ -682,8 +683,8 @@ export default {
                     <div class="col-md-2 item_label_right">数据来源</div><div class="col-md-4">{{d.source_type}}</div>
                   </div>
                   <div class="row row_item">
-                    <div class="col-md-2 item_label_left">报警时间</div><div class="col-md-4">{{d.log_time}}</div>
-                    <div class="col-md-2 item_label_right">报警地点</div><div class="col-md-4">{{d.province+d.city+d.county+d.police_station}}</div>
+                    <div class="col-md-2 item_label_left">报警时间</div><div class="col-md-4">{{d.detect_time}}</div>
+                    <div class="col-md-2 item_label_right">报警地点</div><div class="col-md-4 divEllipsis" style="height:30px;" :title="d.netbar_address">{{d.netbar_address}}</div>
                   </div>
                 </div>
               `;
@@ -692,7 +693,10 @@ export default {
           area:'800px',
           content:`<div class="alarm_detail" style="width:100%;height:100%;overflow-y:auto;">${html}</div>`,
           context:{
-             d:{}
+            d:{},
+            converTime(time){
+              return tool.DateByTimestamp(time,'yyyy-MM-dd hh:mm:ss');
+            }
           }
         };
 
@@ -702,11 +706,12 @@ export default {
       self.$store.dispatch(GetPolicyDetail,{log_id:val.log_id}).then(res=>{
         if(res.msg.code!='successed')return;
         let data=res.biz_body;
+
         data=_.map(data,i=>{
           let tmps=_.filter(AlarmType,t=>{return i.alarm_type.indexOf(t.val)>=0;});
           i.alarm_type=_.map(tmps,tmp=>{return `${tmp.name}`}).join(''); //报警类型
-          let policyTmp=_.find(PolicyType,t=>{return i.policy_type==t.val;});
-          i.policy_type=policyTmp;//策略类型
+          // let policyTmp=_.find(PolicyType,t=>{return i.policy_type==t.val;});
+          // i.policy_type=policyTmp;//策略类型
           return i;
         });
 

@@ -32,6 +32,7 @@ export const Menu_Sort='Menu_Sort' //菜单排序(批量修改)
 export const SetMenuPageGo='SetMenuPageGo'
 export const SaveMenu='SaveMenu'//保存菜单相关配置
 
+export const GetRegionUsers='GetRegionUsers' //获取同区域用户
 export const Set_System_Menus='Set_System_Menus' //设置系统菜单集合
 export const Add_System_Menus='Add_System_Menus' //增加系统菜单集合
 export const RSet_System_Menus='RSet_System_Menus' //重置系统菜单集合

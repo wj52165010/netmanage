@@ -237,6 +237,7 @@ export default {
     //     this.remoteData=res.biz_body;
     //   });
       let self=this,config=tool.Clone(self.config),model=this.params.model.condtionsObj;
+ 
       self.id='page_'+tool.guid();
       self.$nextTick(()=>{
         cLoading(self.id+'inloading',7);
@@ -572,6 +573,7 @@ export default {
 
         this.$store.dispatch(Get_OPerate_Data,{interface:config.interface || '',keyid:keyid,condtionsObj:model,extraData:extraParam.param,indexFields:extraParam.sepParam}).then(res=>{
             console.log((new Date()).getTime()-tempDatePre);
+            //console.log(tool.Clone(res.biz_body));
             this.emptyInfo='';
             let blnSucess = tool.msg(res,'','获取模板数据失败!');
             if(!blnSucess){return;}

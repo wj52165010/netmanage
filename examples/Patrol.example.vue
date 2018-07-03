@@ -128,7 +128,7 @@ import Scroll from 'components/scroll'
 import PlaceSearch from 'components/PlaceSearch'
 import PlaceTree from 'components/PlaceTreeNew'
 
-import {BODY_RESIZE,GetSitePatrol,GetPatrolItems,HistoryPolicy,HistoryPlicyItem,GetSitePolicyList,StartPatrol,
+import {BODY_RESIZE,GetSitePatrol,GetPatrolItems,HistoryPolicy,HistoryPlicyItem,GetSitePolicyList,StartPatrol,GetRegionUsers,
         DetailPolicy,DetailPlaceInfo,DetailPlacePolicy,SiteDetail,AddPlacePolicy,StopPatrol,DelPatrol,ExportPatrol} from '../store/mutation-types'
 export default {
   name: 'PatrolList',
@@ -197,6 +197,8 @@ export default {
     //type:任务类型(0:定期巡检,1:巡检任务)
     addTaskRule(type){
         let s=this;
+        let pos={name:tool.cookie.get('region_name'),code:tool.cookie.get('region_code')};//根节点数据
+
         tool.open(function(){
             let layIndex=0;
             let layTitle=['添加人员','选择场所范围','配置巡查项'];
@@ -234,7 +236,7 @@ export default {
                             <div class="row">
                                 <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">用户名</span></div>
                                 <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">部门</span></div>
-                                <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
+                                <div class="column"><span class="overflow" :style="{width:column_w+'px'}">所属区域</span></div>
                                 <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">角色</span></div>
                                 <div class="column" style="width:100px;border-right:none;"><span class="overflow" style="width:100px;">是否参与</span></div>
                             </div>
@@ -242,7 +244,7 @@ export default {
 
                         <div style="position:relative;height:calc(100% - 41px);" >
                             <!--暂无数据-->
-                            <div v-if="users.length<=0" style="width:100%;height:100%;text-align:center;display:table;">
+                            <div v-if="users.length<=0 && !blnLoading" style="width:100%;height:100%;text-align:center;display:table;">
                                 <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
                             </div>
 
@@ -255,14 +257,14 @@ export default {
                                 <div class="table_body">
                                     <div class="table_conatienr">
                                         <template v-for="d in users">
-                                        <div class="row">
-                                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">用户名</span></div>
-                                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">部门</span></div>
-                                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
-                                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">角色</span></div>
+                                        <div class="row" v-if="d">
+                                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.name}}</span></div>
+                                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.department}}</span></div>
+                                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.region_name}}</span></div>
+                                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.groups.join(',')}}</span></div>
                                             <div class="column" style="width:100px;border-right:none;">
                                                 <span class="overflow" style="width:100px;">
-                                                    <el-switch
+                                                    <el-switch v-model="d.check"
                                                         active-text=""
                                                         inactive-text="">
                                                     </el-switch>
@@ -286,7 +288,7 @@ export default {
                 <div class="row" style="margin-bottom:10px;" v-show="curPageIndex == 1">
                     <div class="col-md-2" style="padding-top:10px;padding-left:25px;">巡查场所</div>
                     <div class="col-md-4" style="height:300px;border:1px solid #e7eaec;border-radius:5px;padding-right:0px;">
-                        <PlaceTree ref="placeTree" @res="PlaceResult"></PlaceTree>
+                        <PlaceTree ref="placeTree" :rootNode="rootNode" @res="PlaceResult"></PlaceTree>
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-4"  style="height:300px;border:1px solid #e7eaec;border-radius:5px;padding-top:10px;padding-bottom:10px;padding-right:0px;">
@@ -355,7 +357,8 @@ export default {
                         return time.getTime() < Date.now() - 8.64e7;
                     }
                   },
-                  users:[2],
+                  rootNode:pos,//树形场所控件根节点
+                  users:[],
                   type:type,
                   projects:s.policyItems,
                   title:'',
@@ -369,7 +372,19 @@ export default {
                   },
                   //到下一页
                   goNext(){
+                    let d=param.selfData;
+                    if(param.selfData.curPageIndex==0){
+                        if(d.title==''){tool.info('请先填写任务标题!'); return;}
+                        if(d.type &&  d.timeRange.length<=0){tool.info('请选择巡查时间范围!'); return;}
+                        if(!d.type &&  !d.cycType){tool.info('请选择巡查周期!'); return;}
+                        if(_.filter(d.users,u=>u.check).length<=0){tool.info('请选择巡查人员!'); return;}
+
+                    }else if(param.selfData.curPageIndex == 1){
+                        if(d.selPlaces.length<=0){tool.info('请选择巡查区域或场所!'); return;}
+                    }
+                    
                     param.selfData.curPageIndex++;
+                
                   },
                   //场所区域选择改变事件
                   PlaceResult(d){
@@ -403,8 +418,9 @@ export default {
                         start_time:type?tool.Timestamp(d.timeRange[0]):'',
                         end_time:type?tool.Timestamp(d.timeRange[1]):'',
                         type:type?'':d.cycType,
+                        user_ids:_.chain(d.users).filter(u=>u.check).map(u=>u.user_id).value()
                     }
-
+     
                     d.blnExecute=true;
                     s.$store.dispatch(AddPlacePolicy,res).then(res=>{
                         d.blnExecute=false;
@@ -421,6 +437,14 @@ export default {
                 success(layro,index){
                     layIndex=index;
                     param.selfData.column_w=layro.find('div[name="table_container"]').width()-400;
+
+                    //获取同区域用户信息
+                    param.selfData.blnLoading=true;
+                    s.$store.dispatch(GetRegionUsers).then(res=>{
+                        param.selfData.blnLoading=false;
+                        param.selfData.users=_.map(res.biz_body,r=>{r.check=false; return r});
+
+                    });
                 }
             };
 

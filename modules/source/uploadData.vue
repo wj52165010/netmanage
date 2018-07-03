@@ -63,7 +63,7 @@ import ParsingRulesAdd from './ParsingRulesAdd'
 import UploadFile from './uploadFile'
 
 import { mapState,mapMutations} from 'vuex'
-import {SetSource,IsDelSource} from '../../store/mutation-types'
+import {SetSource,IsDelSource,Trigger_RESIZE} from '../../store/mutation-types'
 
 export default {
   name: 'UploadData',
@@ -89,8 +89,11 @@ export default {
           this.iner_fields=tool.Clone(this.fields || []);
       }
       
+
+     
       this.$nextTick(()=>{
           //this.$refs.ParsingRulesAdd.layout();
+        this.$store.commit(Trigger_RESIZE);
       });
     }
   },

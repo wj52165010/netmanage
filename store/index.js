@@ -910,6 +910,14 @@ export default new Vuex.Store({
                 });
             });
         },
+        //获取同区域用户
+        [types.GetRegionUsers]({commit}){
+            return new Promise((resolve,reject)=>{
+                ser.GetRegionUsers().then(res=>{
+                    resolve(res);
+                });
+            });
+        },
         //CCIC获取报警信息
         [types.CCICPoliceData]({commit},data){
             return new Promise((resolve,reject)=>{

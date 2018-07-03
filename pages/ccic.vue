@@ -80,7 +80,7 @@
                     <!--<span class="action_item" @click="policeWay()"><i class="fa fa-cog fa-fw"></i>报警方式</span>-->
                 </div>
                 <!--人员信息操作栏-->
-                <div class="personOption" v-show="curPageIndex==1">
+                <div class="personOption" v-show="curPageIndex==1" style="width:150px;right:20px;position: absolute;z-index:1000;">
                     <el-tooltip effect="light" content="添加人员" placement="top">
                         <span class="action_item" @click="addPerson()"><i class="fa fa-user"></i>添加</span>
                     </el-tooltip>

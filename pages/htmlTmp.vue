@@ -55,8 +55,13 @@ export default {
       getData(){        
         let extraParam=this.params.extraConditon || [];//额外的条件参数
         let inter=this.params.interface || '';//远程数据条件
-        let model=(this.menu || this.innerMenu).condtionsObj;
+        let model=tool.Clone((this.menu || this.innerMenu).condtionsObj);
         let {param:result,sepParam} = tmpDAO.searchParam(extraParam,model);
+        let elTable=/<el-table\s+[^>]*:data=['"]?([^'"]*)['"]/i
+        let html=(this.menu || this.innerMenu).template;
+        if(html.match(elTable)){
+            model.limit=3000;
+        }
 
         return this.store.dispatch(Get_OPerate_Data,{interface:inter,keyid:(this.menu || this.innerMenu).keyid,extraData:result,indexFields:sepParam,condtionsObj:model});
       },

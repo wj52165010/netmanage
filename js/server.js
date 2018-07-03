@@ -4,8 +4,8 @@
 //发布地址:172.23.90.8:3030
 
 //let url='http://192.168.23.23:3030';
-let url='http://192.168.100.80:3030';
-//let url='http://192.168.23.73:3030';
+//let url='http://192.168.100.80:3030';
+let url='http://192.168.23.73:3030';
 //let url='';
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
@@ -338,6 +338,17 @@ class server{
         this.baseBag.data=data || {};
         return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
       }
+
+      /**
+       * 获取同区域用户(/user/getRegionUsers)
+       */
+      GetRegionUsers(){
+        this.baseBag.target='user';
+        this.baseBag.method='getRegionUsers';
+        this.baseBag.data= {};
+        return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+      }
+
       /**
        * 用户组添加(/ user_group/add)
        * data{
@@ -3184,10 +3195,10 @@ RegionSiteExport=function(data){
  * end_time:0,//结束时间
  * type://类型 day,week,month
  */
-AddPlacePolicy=function({title,policy_type,note,locus_ids,policy_item_ids,start_time,end_time,type}){
+AddPlacePolicy=function({title,policy_type,note,locus_ids,policy_item_ids,start_time,end_time,type,user_ids}){
   this.baseBag.target='site_patrol';
   this.baseBag.method='add_policy';
-  this.baseBag.data={title:title || '',policy_type:policy_type || '',note:note || '',locus_ids:locus_ids || '',policy_item_ids:policy_item_ids || '',start_time:start_time || '0',end_time:end_time || '0',type:type || ''};
+  this.baseBag.data={title:title || '',policy_type:policy_type || '',user_ids:user_ids || [],note:note || '',locus_ids:locus_ids || '',policy_item_ids:policy_item_ids || '',start_time:start_time || '0',end_time:end_time || '0',type:type || ''};
   return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
 }
 

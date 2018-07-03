@@ -490,7 +490,7 @@ export default {
         if (checkObjLength > 0) {
             var regionsHtml = '{0}个地区',
                 policesHtml = '{0}所派出所',
-                sitesHtml = '{0}家网吧',
+                sitesHtml = '{0}家场所',
                 totalHtml = '已选择',
                 selVal = [],//选择的默认值
                 infoHtml = '';

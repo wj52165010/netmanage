@@ -109,7 +109,7 @@ export default {
         bodyResizeSub:null,
         blnLoading:false,
         taskType:TaskType,
-        limit:10,
+        limit:13,
         pageNum:0,
         status:[{name:'所有',val:-1},{name:'完成',val:1},{name:'处理中',val:0}],
         curStatus:{name:'所有',val:-1},

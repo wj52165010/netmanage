@@ -1224,7 +1224,7 @@ html{.TCol(~".HighRisk .kind_bar .btn_bar .item:hover",'bg');}
 .HighRisk .kind_bar .kind_show_bar{width:100%;height:~'calc(100% - @{kindShowH})';}
 .HighRisk .kind_bar .kind_show_bar .item{height:50px;line-height:50px;text-align:center;font-size:12px;.border('bottom');}
 
-.HighRisk .action_bar{position:absolute;width:100%;height:40px;line-height:40px;text-align:right;}
+.HighRisk .action_bar{position:absolute;width:200px;height:40px;line-height:40px;text-align:right;z-index:1000;right:10px;}
 
 //.HighRisk .tag_label:hover{color:@Font_Hover_Col;}
 html{.TCol(~".HighRisk .tag_label:hover");}

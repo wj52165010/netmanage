@@ -140,6 +140,8 @@ export default {
                         cookie.set('exp',res.biz_body.exp,expTime);
                         cookie.set('permissions',res.biz_body.permissions.join(','),expTime);
                         cookie.set('account',this.name,expTime);
+                        cookie.set('region_name',res.biz_body.region_name,expTime);
+                        cookie.set('region_code',res.biz_body.region_code,expTime);
                         cookie.set('centerPoint','114.35,36.10',expTime);//中心点(106.33,29.35:重庆中心点)(114.35,36.10:河南)(101.527660,25.044943:楚雄)
                         cookie.del('Invalid');
                         window.location='index.html'
@@ -157,6 +159,8 @@ export default {
              cookie.set('exp',res.biz_body.exp,expTime);
              cookie.set('permissions',res.biz_body.permissions.join(','),expTime);
              cookie.set('account',this.name,expTime);
+             cookie.set('region_name',res.biz_body.region_name,expTime);
+             cookie.set('region_code',res.biz_body.region_code,expTime);
              cookie.set('centerPoint','114.35,36.10',expTime);//中心点(106.33,29.35:重庆中心点)
              cookie.del('Invalid');
              window.location='index.html'

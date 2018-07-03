@@ -164,6 +164,7 @@ export default {
     },
     //选择配置项
     selSet(d,i){
+      if(!this.data[i]) return;
       this.$store.commit(Set_Setting_Obj,{
         curSet:this.data[i],
         curSelTable:this.data[i].souces || [],

@@ -81,6 +81,8 @@ let auth=(tokenExp)=>{
             tool.cookie.del('account');
             tool.cookie.del('pwd');
             tool.cookie.del('centerPoint');
+            tool.cookie.del('region_name');
+            tool.cookie.del('region_code');
             window.location='login.html';
           });
           return;
@@ -94,6 +96,9 @@ let auth=(tokenExp)=>{
       tool.cookie.set('userid',res.biz_body.user_id,expTime);
       tool.cookie.set('exp',res.biz_body.exp,expTime);
       tool.cookie.set('permissions',res.biz_body.permissions.join(','),expTime);
+      tool.cookie.set('region_name',this.region_name,expTime);
+      tool.cookie.set('region_code',this.region_code,expTime);
+      
       // tool.cookie.set('account',tool.cookie.get('account'),expTime);
       // tool.cookie.set('pwd',tool.cookie.get('pwd'),expTime);
       // tool.cookie.set('centerPoint','114.35,36.10',expTime);//中心点(106.33,29.35:重庆中心点)
