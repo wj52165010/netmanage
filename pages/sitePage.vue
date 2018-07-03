@@ -83,7 +83,12 @@
                         <div><span class="overflow" style="width:100px;">场所名称</span></div>
                         <div><span class="overflow" style="width:230px;">场所地址</span></div>
                         <div><span class="overflow" style="width:65px;">场所状态</span></div>
-                        <div><span class="overflow" style="width:80px;">场所概况</span></div>
+                        <div><span class="overflow" style="width:80px;">场所概况&nbsp;
+                            <el-tooltip>
+                            <div slot="content" style="line-height:20px">网吧终端概况：<br/>&nbsp;&nbsp;&nbsp;&nbsp;申报终端/检测终端/在线终端<br/>挂载设备概况：<br/>&nbsp;&nbsp;&nbsp;&nbsp;在线/离线/异常</div>
+                            <i class="fa fa-question-circle" style="cursor:pointer"></i>
+                            </el-tooltip>                            
+                        </div>
                         <div><span class="overflow" style="width:90px;">最近联系时间</span></div>
                         <div><span class="overflow" style="width:72px;">昨日采集</span></div>
                         <div><span class="overflow" style="width:65px;">营业状态</span></div>
@@ -91,7 +96,6 @@
                         <div><span class="overflow" style="width:60px;">所属区域</span></div>
                         <div><span class="overflow" style="width:60px;">数据来源</span></div>
                         <div><span class="overflow" style="width:80px;">所属厂商</span></div>
-                        <!-- <div><span class="overflow" style="width:65px;">操作</span></div> -->
                     </li>
                 </ul>
                 <div class="content">
