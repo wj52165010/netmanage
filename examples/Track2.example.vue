@@ -55,7 +55,7 @@
           </div>
           <div class="option" v-show="!blnShowHistory">
             <div style="display:inline-block;width:350px;">
-              <SearchDropdown v-model="searchNum" :data="searchResult" :info="serachInfo" :noShowOnlyOne="true" holder="请输入关键字(身份证/手机号/MAC/ISMI)" >
+              <SearchDropdown ref="searchDropDown" v-model="searchNum" :data="searchResult" :info="serachInfo" :noShowOnlyOne="true" holder="请输入关键字(身份证/手机号/MAC/ISMI)" >
                 <div class="dropdownItem" v-for="s in searchResult" @click="dropdownItemClick(s)">
                   {{s.name}}<span style="float:right;">{{s.type}}</span>
                 </div>
@@ -505,7 +505,7 @@ export default {
     search(){
       if(this.blnSearch){return;}
       if(!this.serachInfo.code){tool.info('请输入正确的关键字搜索条件!');return;}
-      if(this.timeRange.length<=0){tool.info('请选择时间范围!');return;}
+      if(!this.timeRange || this.timeRange.length<=0 || !this.timeRange[0]){tool.info('请选择时间范围!');return;}
       //if(!this.region){tool.info('请选择区域!');return;}
 
       this.analyTraceData();
@@ -939,7 +939,8 @@ export default {
     },
     //关键字选项单击事件
     dropdownItemClick(v){
-      this.serachInfo={color:'green',val:v.name,code:v.val};
+      this.serachInfo={color:'green',val:v.type,code:v.code};
+      this.$refs.searchDropDown.closeDropDown();
     },
     //时间戳转日期
     converTime(t,format){

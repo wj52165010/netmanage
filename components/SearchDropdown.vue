@@ -1,16 +1,17 @@
 <!-- 搜索输入下拉框组件 -->
 <template>
-    <div class="SearchDropdown">
+    <div class="SearchDropdown" >
         <input type="text" 
             :value="value" 
             :style="{'border-bottom-left-radius':(data || []).length>0 && !(noShowOnlyOne && data.length==1)?'0px':'5px','border-bottom-right-radius':(data || []).length>0 && !(noShowOnlyOne && data.length==1)?'0px':'5px'}" 
-            @input="changeVal($event.target.value)" 
+            @input="changeVal($event.target.value)"
+            @focus="blnClose=true" 
             style="width: 100%;border: 1px solid #c0ccda;padding-left:10px;outline:none;" 
             :placeholder="holder || ''" />
         <!--提示信息-->
         <div class="tipinfo" :style="{color:(info || {color:'gray'}).color}">{{(info || {val:''}).val}}</div>
         <!--下拉筛选框-->
-        <div class="dropdownInfo" v-show="(data || []).length>0 && !(noShowOnlyOne && data.length==1)">
+        <div class="dropdownInfo" v-if="blnClose" v-show="(data || []).length>0 && !(noShowOnlyOne && data.length==1)">
             <Scroll :listen="data || []">
                 <slot></slot>
             </Scroll>
@@ -26,7 +27,8 @@ export default {
   components:{Scroll},
   data () {
     return {
-        val:''
+        val:'',
+        blnClose:true,
     }
   },
   watch:{
@@ -35,6 +37,9 @@ export default {
   methods:{
     changeVal(v){
         this.$emit('input',v);
+    },
+    closeDropDown(){
+        this.blnClose=false;
     }
   }
 }
