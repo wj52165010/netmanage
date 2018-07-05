@@ -178,7 +178,7 @@ export default {
     },
     //删除IP
     delIP(id,i){
-        tool.confirm('您确定要停止该定时巡查任务!',['确定','取消'],()=>{
+        tool.confirm('您确定要删除该IP配置吗?',['确定','取消'],()=>{
             this.$store.dispatch(WebSiteDelIP,id).then(res=>{
                 if(!tool.msg(res,'删除成功!')) return;
 
