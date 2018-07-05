@@ -38,7 +38,10 @@ export default class PlacePoint {
             let zoom = map.getZoom();
             if(zoom<15){
                 this.store.dispatch(Get_Place_Count).then(res=>{
+                    
                     this.ClearMarkers();
+
+                    if(res.biz_body.length<=0){tool.info('暂无数据!');return;}
 
                     let data=_.filter(res.biz_body,r=>r.latitude);
                     for(let i=0;i<data.length;i++){
@@ -91,6 +94,8 @@ export default class PlacePoint {
             this.store.dispatch(SiteMapData,{lb,rt}).then(res=>{
                 let data = res.biz_body;
                 let tempMarker = [];
+
+                if(res.biz_body.length<=0){tool.info('暂无数据!');return;}
 
                 for (var i = 0; i < data.length; i++) {
                     if (s.cachePlace[data[i]['netbar_wacode']]) {

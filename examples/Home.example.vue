@@ -325,6 +325,11 @@ export default {
         this.macm.hidden();
         this.mainPerson.clear();
         this.pm.draw(this.sitesData);
+
+        if(_.keys(this.sitesData).length<=0){
+          tool.info('暂无相关数据');
+          return;
+        }
       }
 
       if(this.showMapIndex==2){
@@ -333,6 +338,11 @@ export default {
         this.macm.hidden();
         this.mainPerson.clear();
         this.em.draw(this.equipmentData);
+
+        if(_.keys(this.equipmentData).length<=0){
+          tool.info('暂无相关数据');
+          return;
+        }
       }
 
       if(this.showMapIndex==3){
@@ -354,6 +364,11 @@ export default {
         this.macm.hidden();
 
         this.sepPersonMarsk = this.mainPerson.draw(this.policesInfo);
+
+        if(_.keys(this.policesInfo).length<=0){
+          tool.info('暂无相关数据');
+          return;
+        }
       }
 
     },
