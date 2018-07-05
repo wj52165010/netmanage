@@ -95,7 +95,7 @@ export default class PlacePoint {
                 let data = res.biz_body;
                 let tempMarker = [];
 
-                if(res.biz_body.length<=0){tool.info('暂无数据!');return;}
+                if(res.biz_body.length<=0){tool.info('暂无数据!'); resolve(data); return;}
 
                 for (var i = 0; i < data.length; i++) {
                     if (s.cachePlace[data[i]['netbar_wacode']]) {
