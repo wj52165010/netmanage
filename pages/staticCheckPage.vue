@@ -322,7 +322,7 @@
                             <span style="float:right;margin-right:20px">考核对象：{{h.check_target_desc}}</span>
                         </div>
                         <div style="line-height:15px;text-align:right;margin-right:10px">
-                            <span title="禁用" class="his_icon" v-show="h.task_type!='timing'" @click.stop="deleteTaskFun(h.task_id)"><i class="fa fa-remove"></i></span>                            
+                            <span title="删除" class="his_icon" v-show="h.task_type!='timing'" @click.stop="deleteTaskFun(h.task_id)"><i class="fa fa-remove"></i></span>                            
                             <span title="导出" class="his_icon"  @click.stop="exportTastTesListFun(h.use_standard,h.last_schedule)"><i class="fa fa-download"></i></span>
                         </div>
                     </div>
