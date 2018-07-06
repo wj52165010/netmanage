@@ -299,15 +299,7 @@
                         <div>待处理场所&nbsp;&nbsp;<span style="font-size:40px;line-height:10px">︿</span></div>                        
                     </div>
                     <div class="option">
-
-                        <div class="item" style="font-size:12px;font-weight:normal;text-align:left">
-                                <span>所属厂商：</span>
-                                <div class="input" style="width:250px;display:inline-block;">
-                                    <MulDropDwon :data="Selfirms" keyProp="name" id="code" placeholder="请选择厂商">
-                                        <div v-for="t in firms" @mousedown="firmClick('list',t)">{{t.name}}<i v-if="isHasSelItem(Selfirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
-                                    </MulDropDwon>
-                                </div>
-                        </div>                         
+                        
                         <div class="item">
                             <span>所属区域:</span>
                             <div class="input">
@@ -2156,6 +2148,7 @@ export default {
             this.queryProblem.region_range=[];                        
             this.queryProblem.netsite_range=[];
             this.queryProblem.security_software_orgcodes="";
+            this.Selfirms=[];
             this.pageNumProblem=0;
             this.$refs.areaSel.clearBtn.click();
             this.$refs.siteSel.clearBtn.click();

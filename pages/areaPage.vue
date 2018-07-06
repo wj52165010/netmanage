@@ -46,7 +46,7 @@
                         <div><span class="overflow" style="width:120px;">场所采集量</span></div>
                         <div><span class="overflow" style="width:90px;">场所贡献率</span></div>
                         <div><span class="overflow" style="width:130px;">区域下设备</span></div>
-                        <div><span class="overflow" style="width:65px;">设备在线率</span></div>
+                        <div><span class="overflow" style="width:90px;">设备在线率</span></div>
                         <div><span class="overflow" style="width:90px;">设备采集量</span></div>
                         <div><span class="overflow" style="width:90px;">设备贡献率</span></div>
                         <!-- <div><span class="overflow" style="width:90px;">区域操作员</span></div> -->
@@ -66,7 +66,7 @@
                                 <div ><span class="overflow " style="width:120px;">{{d.site_detect_num}}</span></div>
                                 <div  :title="d.site_contribution"><span class="overflow" style="width:90px;">{{d.site_contribution}}</span></div>
                                 <div ><span class="overflow" style="width:130px;" v-html="d.region_equip_status"></span></div>
-                                <div  :title="d.equipment_online_pre"><span class="overflow" style="width:65px;">{{d.equipment_online_pre}}</span></div>
+                                <div  :title="d.equipment_online_pre"><span class="overflow" style="width:90px;">{{d.equipment_online_pre}}</span></div>
                                 <div  :title="d.equip_detect_num"><span class="overflow" style="width:90px;">{{d.equip_detect_num}}</span></div>
                                 <div  :title="d.equip_contribution"><span class="overflow" style="width:90px;">{{d.equip_contribution}}</span></div>
                                 <!-- <div  :title="d.microprobe_type"><span class="overflow" style="width:90px;">{{d.microprobe_type}}</span></div> -->

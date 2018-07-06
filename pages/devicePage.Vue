@@ -1978,6 +1978,7 @@ export default {
             this.queryProblem.equipment_id="";
             this.queryProblem.equipment_name="";
             this.pageNumProblem=0;
+            this.Selfirms=[];
             this.$refs.areaSel.clearBtn.click();          
             this.problemTable='3';
             setTimeout(()=>{
