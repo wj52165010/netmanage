@@ -17,8 +17,8 @@
                 <div class="permission">菜单</div>
             </div>
             <div class="group">
-                <div class="group_item" v-for="item in data">
-                    <div class="id">{{item.user_group_id}}</div>
+                <div class="group_item" v-for="(item,i) in data">
+                    <div class="id">{{i+1}}</div>
                     <div class="name">{{item.name}}</div>
                     <div class="note">{{item.note}}</div>
                     <div class="create_time">{{showTime(item.create_time)}}</div>
