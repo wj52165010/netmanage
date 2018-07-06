@@ -1366,7 +1366,12 @@ export default {
               return;listResultSu.begin_day
           }*/
           if(!last_schedule||last_schedule=="0"){
-              tool.info('该任务正在执行中，请稍后...');
+              
+              if(disabled!='0'){
+                  tool.info('任务失效且没有历史数据!');
+              }else{
+                  tool.info('该任务正在执行中，请稍后...');
+              }
               return;
           }
             this.blnShowHistoryPop=false;
