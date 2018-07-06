@@ -6,7 +6,7 @@
             <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;">
                 <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;"><i class="fa fa-spinner fa-pulse"></i></div></div>
             </div>
-            <div class="option_bar" v-if="permissions.indexOf('*')>=0">
+            <div class="option_bar" >
                 <div class="item" @click="add()"><i class="fa fa-plus"></i> 新增</div>
             </div>
             <div class="group_header">
@@ -36,8 +36,8 @@
                     <div class="status">{{statusMap[item.status]}}</div>
                     <div class="note">{{item.note}}</div>
                     <div class="option">
-                        <div class="item" @click="add(item)" v-show="permissions.indexOf('*')>=0"><i class="fa fa-pencil"></i> 修改</div>
-                        <div class="item"  v-show="permissions.indexOf('*')<0" style="color:gray"><i class="fa fa-pencil"></i> 修改</div>
+                        <div class="item" @click="add(item)" ><i class="fa fa-pencil"></i> 修改</div>
+                        <!--<div class="item"  v-show="permissions.indexOf('*')<0" style="color:gray"><i class="fa fa-pencil"></i> 修改</div>-->
                         <div class="item" @click="del(item.user_id)" v-show="permissions.indexOf('*')>=0"><i class="fa fa-trash-o fa-lg"></i> 删除</div>
                         <div class="item"  v-show="permissions.indexOf('*')<0" style="color:gray"><i class="fa fa-trash-o fa-lg"></i> 删除</div>
                     </div>
