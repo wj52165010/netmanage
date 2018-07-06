@@ -98,7 +98,7 @@
                         <div><span class="overflow" style="width:80px;">所属厂商</span></div>
                     </li>
                 </ul>
-                <div class="content">
+                <div class="content" :class="{'tete': query.microprobe_type.length>2}">
                     <Scroll :listen="data" ref="indList">
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
@@ -2375,6 +2375,7 @@ export default {
   .stiepage .option{width:100%;background-color: white;}
   .stiepage .page_container{.border('top');.border('bottom');background-color:white;position: absolute;bottom: 2px; }
  .stiepage .content{width:100%;height:~'calc(100% - @{optionH} - 60px - 40px)';}
+  .stiepage .content.tete{width:100%;height:~'calc(100% - @{optionH} - 60px - 60px)';}
   .stiepage .header .item .dropDown{position: absolute;z-index: 100;top: 35px;line-height: initial;margin-left: 5px;
         width: calc(100% - 10px);
         color: black;
