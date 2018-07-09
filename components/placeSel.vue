@@ -154,15 +154,41 @@ export default {
 
                         //控件只允许单选时需要删除之前选中的节点
                         var delNode=function(node){
-                            if(!self.blnRadio){return;}
+            
+                            if(!self.blnRadio){
+                                 Fx.recur(node.nodes, 'nodes', function (node) {
+                                   let domCache = selDomCache[node[idKey]];
+                                   if(domCache){
+                                    domCache.remove();
+                                    delete selDomCache[node[idKey]];
+                                   }
+
+                                 });
+
+                                return;
+                            }
+
                             let nodeArr=[node[idKey]];
                             Fx.recur(node.nodes, 'nodes', function (node) {
                                 nodeArr.push(node[idKey]);
                             });
+
+                            
                             let removeNodes=_.flatten(_.map(selNodeCache,(val,key)=>{
+                                //if(node[idKey].indexOf(key)>=0) return [];
                                 if((','+nodeArr.join(',')+',').indexOf(','+key+',')>=0) return [];
                                 return val;
                             }));
+
+                            selNodeCache={[node[idKey]]:node};
+
+                            for(let key in selDomCache){
+                                selDomCache[key].remove();
+                                delete selDomCache[key];
+                            }
+                            selDomCache[node[idKey]] = $(Fx.format(selItemHtml, node.text, node[idKey], node.nodeId, node.dataType, node.text));
+                            treeSelect.append(selDomCache[node[idKey]]);
+
                             _.each(removeNodes,node=>{
                                 treeComp.treeview('uncheckNode', [node.nodeId, {
                                     silent: false,
