@@ -186,7 +186,7 @@ export default {
                     blnAdd:!updateData,
                     account:updateData?updateData.account:'',//账号
                     accountType:updateData && updateData.user_type!=undefined?updateData.user_type:'netsafe', //账号类型
-                    blnLoginApp:updateData?updateData.blnLoginApp:false,//是否允许登录App
+                    blnLoginApp:updateData?updateData.is_use_app?true:false:false,//是否允许登录App
                     name:updateData?updateData.name:'',//姓名
                     pwd:updateData?updateData.pwd:'',//密码
                     confirmPwd:updateData?updateData.pwd:'',//确认密码
@@ -251,11 +251,13 @@ export default {
                                 note:d.note,
                                 groups:d.groupVal,
                                 user_type:d.accountType,
+                                is_use_app:d.blnLoginApp?1:0
                             };
   
                             self.$store.dispatch(AddUser,data).then(res=>{
                                 if(!tool.msg(res,'添加用户成功!','添加用户失败!')){return}
                                 data.user_id=res.biz_body.user_id;
+                                data.pwd='';
                                 self.data.unshift(data);
                             });
                         }else{
@@ -275,6 +277,7 @@ export default {
                             data.note=d.note;
                             data.groups=d.groupVal;
                             data.user_type=d.accountType;
+                            data.is_use_app=d.blnLoginApp?1:0;
 
                             self.$store.dispatch(UpdateUser,data).then(res=>{
                                 if(!tool.msg(res,'修改用户成功!','修改用户失败!')){return}
@@ -291,6 +294,7 @@ export default {
                                 updateData.status=d.status;
                                 updateData.note=d.note;
                                 updateData.groups=d.groupVal;
+                                updateData.is_use_app=d.blnLoginApp?1:0;
                             });
                         }
                     },

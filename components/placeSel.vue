@@ -450,7 +450,8 @@ export default {
                                             treeComp.treeview('setNodeIcon', [node, 'fa fa-spinner fa-spin']);
 
                                             store.dispatch(GET_PLACE,{code:node[idKey], type:node.type}).then(function (code) {
-                                                var childData = code;
+                                                var childData = _.map(code,c=>{c.selectable=false; return c;});
+
                                                 var copyChildData = Fx.Clone(childData);
                                                 isAddCodeArray = true;
                                                 struTreeData(childData, function (childNodes) {
