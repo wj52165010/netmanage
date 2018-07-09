@@ -166,6 +166,8 @@ export default {
    
        if((this.endIP_one!='' || this.endIP_two!='' || this.endIP_three!='' || this.endIP_four!='') && !this.isValidIP(endIP)){tool.info('结束IP地址格式不正确!'); return;}
        
+       //判断IP是否已经添加过
+       if(_.find(this.ips,ip=>ip.start_ip==startIP && ip.end_ip==endIP)){tool.info('该IP配置已经存在,不能重复添加!'); return;}
 
        this.$store.dispatch(WebSiteAddIP,{
            start_ip:startIP,
@@ -328,6 +330,8 @@ export default {
 html{.TCol(~".IPsetting .active");}
 
 
+
+
  
  //表格样式
  .table_ul{
@@ -336,7 +340,8 @@ html{.TCol(~".IPsetting .active");}
  .table_ul li{float:left;text-align:center;.border('bottom',gray);line-height:30px;}
  .table_ul .sortItem{display:inline-block;position:relative;}
  .table_ul .sortItem .fa-caret-up{position:absolute;top:-15px;cursor:pointer;font-size:15px;}
- .table_ul .sortItem .fa-caret-down{position:absolute;top:-8px;cursor:pointer;font-size:15px;}
+ .table_ul .sortItem .fa-caret-down{position:absolute;top:-2px;cursor:pointer;font-size:15px;}
+ .addedIP .fa-caret-down:before{position:absolute;line-height: 5px;}
  .table_ul .fa-remove{cursor:pointer;}
 
  html{.TCol(~".table_ul .sortItem .fa-caret-up:hover");}

@@ -344,6 +344,8 @@ export default {
                                 }
                                 item.text = item.name;
                                 item.state = item.state || {checked: !!blnCheck};
+                                item.discheckable=searchKind.indexOf(typeMap[item.type])<0;
+                                item.blnEndNode=(searchKind==typeMap[item.type] && (searchKind == '1' || searchKind =='2'));//只能单独选场所或则派出所的情况下,需要把展开图标去掉
                                 item.dataType = typeMap[item.type] || 0;//0区域
                                 item.parentCode = parentCode || ( parent && parent.code) || "";
                                 item.dataIndex =(parentIndex && parentIndex+','+index) || ( parent && parent.dataIndex + "," + index) || "" + index;
@@ -447,8 +449,15 @@ export default {
                                         onNodeExpanded: function (event, node, extrData) {
                                             if (!node.nodes)return;
                                             if (node.nodes.length > 0) return;
+                                            //简单判断当前是否只允许选择一种类型数据(场所，派出所的情况不需要获取后面的子数据)
+                                            // if(searchKind=='1' || searchKind=='2' &&  searchKind==typeMap[node.type]){
+                                
+                                            //     return;
+                                            // }
+
                                             treeComp.treeview('setNodeIcon', [node, 'fa fa-spinner fa-spin']);
 
+                                
                                             store.dispatch(GET_PLACE,{code:node[idKey], type:node.type}).then(function (code) {
                                                 var childData = _.map(code,c=>{c.selectable=false; return c;});
 
