@@ -55,7 +55,7 @@
                     <div class="photo_item" v-for="d in data">
                         <div class="photo_item_header">{{d.name}}</div>
                         <div class="photo_item_body">
-                            <img class="photo_container" :src="'/api/v1/face_search/get_face_image/'+d.certno" />
+                            <img class="photo_container" :style="{width:(d.width || '')+'px'}" :src="imgUrl+d.certno" />
 
                             <div class="photo_item_child">证件号:{{d.certno}}</div>
                             <div class="photo_item_child">相似度:{{(d.similarity*100).toFixed(2)}}%</div>
@@ -88,6 +88,7 @@ export default {
     return {
       fileId:0,
       url:'/api/v1/face_search/upload',
+      imgUrl:'/api/v1/face_search/get_face_image/',
       uploadInfo:'点击此处上传图片',
       blnUploading:false,
       allowType:/(\.|\/)(jpg|jpeg|png)$/i,
@@ -95,6 +96,26 @@ export default {
       file_name:'',
       noPersonImg:noPerson,
       blnLoading:false
+    }
+  },
+  watch:{
+    data(){
+      this.$nextTick(()=>{
+        let s=this;
+        for(let i=0;i<s.data.length;i++){
+          let d=s.data[i];
+          if(d.width>0) continue;
+
+          let img= new Image();
+          img.onload=()=>{
+            d.width=img.width/img.height*114;
+          };
+
+          img.src=s.imgUrl+d.certno;
+
+        }
+
+      });
     }
   },
   mounted(){
@@ -119,7 +140,7 @@ export default {
         this.blnLoading=false;
         if(!tool.msg(res)) return;
         if(res.biz_body.length<=0){tool.info('暂无数据!');}
-        this.data=res.biz_body;
+        this.data=_.map(res.biz_body,r=>{r.width=0; return r;});
       });
     },
     //单击上传文件
@@ -232,7 +253,7 @@ export default {
   html{.TCol(~'.photo_item .photo_item_header','bg')}
 
   .photo_item  .photo_item_body{height:~'calc(100% - @{photoHeaderH})';width:100%;text-align:center;overflow:hidden;}
-  .photo_item  .photo_item_body .photo_container{display:block;margin:10px 40px;height:(@photoItemH - @photoStep)/5*3;width:~'calc(100% - 80px)';}
+  .photo_item  .photo_item_body .photo_container{display:block;margin:10px auto;height:(@photoItemH - @photoStep)/5*3;width:~'calc(100% - 80px)';}
 
   .photo_item .photo_item_child{font-size:12px;text-align:center;}
 
