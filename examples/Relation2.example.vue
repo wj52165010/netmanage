@@ -944,10 +944,10 @@ export default {
                     s.ctx.font="12px 微软雅黑";
                     let rectOne={w:s.ctx.measureText(point.text).width,h:s.ctx.measureText('W').width};
                     
-                    s.drawOption(point.x+size.w/2 - 15 -20 -20,point.y+size.h/2-10);//画警告路径
+                    s.drawOption(point.x+size.w/2 - 15 -20 -20 -5,point.y+size.h/2-10);//画警告路径
                     if(s.ctx.isPointInPath(pos.x,pos.y)){
                         let tipW = s.tipDom.width();
-                        s.tipTop=pos.py-15;
+                        s.tipTop=pos.py-25;
                         s.tipLeft=pos.px+2;
                         s.curShowTipId=point.id;
                         s.tipInfo='复制';
@@ -1189,11 +1189,11 @@ export default {
             res=true;index=0;
         }
 
-        s.drawOption(p.x+size.w/2-15-20,p.y+size.h/2-10);//画展开按钮
+        s.drawOption(p.x+size.w/2-15-20 -5,p.y+size.h/2-10);//画展开按钮
         if(s.ctx.isPointInPath(x,y)) {
             res=true;index=1;
         }
-        s.drawOption(p.x+size.w/2-15,p.y+size.h/2-10);//画展定位按钮
+        s.drawOption(p.x+size.w/2-15 -5,p.y+size.h/2-10);//画展定位按钮
         if(s.ctx.isPointInPath(x,y)) {
             res=true;index=2;
         }
@@ -1202,7 +1202,7 @@ export default {
         s.ctx.font="12px 微软雅黑";
         let rectOne={w:s.ctx.measureText(point.subTextOne).width,h:s.ctx.measureText('W').width};
        
-        s.drawOption(point.x+size.w/2 - 15 -20 -20,point.y+size.h/2-10);//画警告路径
+        s.drawOption(p.x+size.w/2 - 15 -20 -20 - 5,p.y+size.h/2-10);//画警告路径
         if(s.ctx.isPointInPath(x,y)){
             res=true;index=3;
         }
