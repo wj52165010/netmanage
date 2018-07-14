@@ -310,12 +310,16 @@ export default {
   },
   watch:{
     showMapIndex(){
+      let centerPoint=tool.cookie.get('centerPoint').split(',') || [];
+      let point = new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0);
+
       this.blnShowTipInfo=false;
       if(this.showMapIndex==0){
         this.pm.hidden();
         this.em.hidden();
         this.macm.hidden();
         this.mainPerson.clear();
+        this.map.panTo(point);
         this.pp.AddMarker();
       }
 
@@ -324,6 +328,7 @@ export default {
         this.em.hidden();
         this.macm.hidden();
         this.mainPerson.clear();
+        this.map.panTo(point);
         this.pm.draw(this.sitesData);
 
         if(_.keys(this.sitesData).length<=0){
@@ -337,6 +342,7 @@ export default {
         this.pm.hidden();
         this.macm.hidden();
         this.mainPerson.clear();
+        this.map.panTo(point);
         this.em.draw(this.equipmentData);
 
         if(_.keys(this.equipmentData).length<=0){
@@ -350,6 +356,7 @@ export default {
         this.em.hidden();
         this.pm.hidden();
         this.mainPerson.clear();
+        this.map.panTo(point);
         this.macm.draw(this.macData);
         if(_.keys(this.macData).length<=0){
           tool.info('暂无相关数据');
@@ -362,7 +369,7 @@ export default {
         this.em.hidden();
         this.pm.hidden();
         this.macm.hidden();
-
+        
         this.sepPersonMarsk = this.mainPerson.draw(this.policesInfo);
 
         if(_.keys(this.policesInfo).length<=0){
