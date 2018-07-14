@@ -855,7 +855,6 @@ export default {
     //添加布控单击事件
     addControl(){
       let self=this;
-      
       tool.open(function(){
         let html=`
                    <div class="control_pop">

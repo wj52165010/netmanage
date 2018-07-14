@@ -1066,6 +1066,7 @@ export default {
       },
       //获取在离线统计相关数据
       SiteCountData(kind){ 
+
         switch(kind.val){
             case 0: //场所
                return this.$store.dispatch(FirmSiteCount,{timeType:this.timeRageVal,firm_id:_.map(this.Selfirms,s=>s.code).join(',')}).then(res=>{

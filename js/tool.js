@@ -130,7 +130,7 @@ let tool={
             skin:(option.skin || ''),  //加上边框'layui-layer-rim '
             title:option.title || '',
             maxmin:option.maxmin || false,
-            //shade: [1, 'transparent'],
+            shade: [1, 'rgba(0,0,0,.6)'],
             id:option.id || '',
             area:option.area || 'auto', //宽高
             offset:option.offset || '',
