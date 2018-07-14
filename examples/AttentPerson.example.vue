@@ -233,7 +233,6 @@ export default {
             this.mousedownid=Fx.SingleBind('mousedown',$('body'), (e)=> {
                 this.blnShowDropDown=false;
             });
-
             this.vidTypes=this.VirType.frequently_type;
 
         },
@@ -824,7 +823,7 @@ export default {
     },
     //添加关注人员
     addAttention(defval,callback,blnUpdate){
-      
+
         if(defval && defval.focus_locus_ids){
             _.each(defval.focus_locus_ids,f=>{f.type=1});
         }

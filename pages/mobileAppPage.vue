@@ -824,7 +824,7 @@ export default {
         option = {
             tooltip: {
                 trigger: 'axis',
-                formatter: '{b}<br/>{a0}: {c0} <br/>{a1}:{c1}',                
+                //formatter: '{b}<br/>{a0}: {c0} <br/>{a1}:{c1}',                
                 axisPointer: {
                     type: 'shadow',
                     label: {

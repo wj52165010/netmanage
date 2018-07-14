@@ -156,10 +156,10 @@
                 <Scroll ref="listScroll">
                   <div v-if="list && list.type=='vid'">
                     <div class="row" v-for="d in list.data">
-                      <div class="td divEllipsis">{{d.account_type_note}}</div>
-                      <div class="td divEllipsis">{{d.account}}</div>
-                      <div class="td divEllipsis">{{d.last_time}}</div>
-                      <div class="td divEllipsis">{{d.last_netbar_wacode}}</div>
+                      <div class="td divEllipsis">{{d.account_type_note || '---'}}</div>
+                      <div class="td divEllipsis">{{d.account || '---'}}</div>
+                      <div class="td divEllipsis">{{d.last_time || '---'}}</div>
+                      <div class="td divEllipsis">{{d.last_netbar_wacode || '---'}}</div>
                       <div class="clearfix"></div>
                     </div>
                   </div>
@@ -167,9 +167,9 @@
                   <div v-if="list && list.type=='mac'">
                     <div class="row" v-for="d in list.data">
                       <div class="td divEllipsis">MAC</div>
-                      <div class="td divEllipsis">{{d.mac}}</div>
-                      <div class="td divEllipsis">{{d.last_time}}</div>
-                      <div class="td divEllipsis">{{d.last_netbar_wacode}}</div>
+                      <div class="td divEllipsis">{{d.mac || '---'}}</div>
+                      <div class="td divEllipsis">{{d.last_time || '---'}}</div>
+                      <div class="td divEllipsis">{{d.last_netbar_wacode || '---'}}</div>
                       <div class="clearfix"></div>
                     </div>
                   </div>
@@ -177,9 +177,9 @@
                   <div v-if="list && list.type=='mobile'">
                     <div class="row" v-for="d in list.data">
                       <div class="td divEllipsis">手机</div>
-                      <div class="td divEllipsis">{{d.mobile}}</div>
-                      <div class="td divEllipsis">{{d.last_time}}</div>
-                      <div class="td divEllipsis">{{d.last_netbar_wacode}}</div>
+                      <div class="td divEllipsis">{{d.mobile || '---'}}</div>
+                      <div class="td divEllipsis">{{d.last_time || '---'}}</div>
+                      <div class="td divEllipsis">{{d.last_netbar_wacode || '---'}}</div>
                       <div class="clearfix"></div>
                     </div>
                   </div>
@@ -187,9 +187,9 @@
                   <div v-if="list && list.type=='cert'">
                     <div class="row" v-for="d in list.data">
                       <div class="td divEllipsis">身份证</div>
-                      <div class="td divEllipsis">{{d.cert}}</div>
-                      <div class="td divEllipsis">{{d.last_time}}</div>
-                      <div class="td divEllipsis">{{d.last_netbar_wacode}}</div>
+                      <div class="td divEllipsis">{{d.cert || '---'}}</div>
+                      <div class="td divEllipsis">{{d.last_time || '---'}}</div>
+                      <div class="td divEllipsis">{{d.last_netbar_wacode || '---'}}</div>
                       <div class="clearfix"></div>
                     </div>
                   </div>
@@ -368,7 +368,7 @@ export default {
     //添加关注
     addFcous(f){
       let s=this;
-      
+    
       let focus =  _.flatten(_.map(this.identitys,i=>{
         let kval='';
         if(i.type=='mac'){kval='mac'}
@@ -388,6 +388,7 @@ export default {
       }));
 
       this.$refs.AttentPerson.addAttention(f?tool.Clone(f):{focus_tags:[],focus_locus_ids:[],focus_property:focus},(b,blnUpdate)=>{
+
         if(!blnUpdate){
           s.fcous.push(b);
         }else{
