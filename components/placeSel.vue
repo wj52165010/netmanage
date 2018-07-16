@@ -496,7 +496,7 @@ export default {
                             //code:'410500', type:'1' || placeSerachKind //测试属性控件卡属性
                          
                             store.dispatch(GET_PLACE,{code:'', type: placeSerachKind, defaultVal:defVal}).then(function (code) {
-   
+                                
                                 var searchTreeEndTime = (new Date()).getTime();
                                 var rangeTreeTime = parseInt(searchTreeEndTime) - parseInt(searchTreeStartTime);
                                 //treeContainer.find('.load6').remove();
