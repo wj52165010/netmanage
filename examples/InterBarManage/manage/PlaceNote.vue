@@ -1,0 +1,426 @@
+<!-- 电子登记主页组件 -->
+<template>
+    <div class="PlaceNote">
+      <div class="PlaceNote_container">
+        <!--操作栏-->
+        <div class="option_bar">
+            <div class="item">
+                <span>发布时间:</span>
+                <div style="display:inline-block;">
+                    <el-date-picker  type="date" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker>
+                </div>
+            </div>
+            <div class="item">
+                <span>标题:</span><div style="display:inline-block;">
+                   <el-input placeholder="请输入" ></el-input>
+                </div>
+            </div>
+            <div class="item">
+                <span>内容:</span><div style="display:inline-block;">
+                   <el-input placeholder="请输入" ></el-input>
+                </div>
+            </div>
+
+            <div class="item">
+                <el-button type="primary" @click="search()"><span>查询</span></el-button>
+            </div>
+
+            <!--右边操作栏-->
+            <div class="right_option_bar">
+                <div class="item" @click="notices()"><i class="fa fa-cog fa-fw" /> 发布通知</div>
+                <div class="item" @click="datchRemove()"><i class="fa fa-pencil-square-o" /> 批量删除</div>
+            </div>
+        </div>
+
+         <!--列表头-->
+        <div class="table_header">
+            <div class="row">
+                <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
+                <div class="column"><span class="overflow" :style="{width:column_w+'px'}">标题</span></div>
+                <div class="column" style="width:200px;">
+                    <span class="overflow" style="width:200px;position:relative;">
+                        <span style="margin-right:5px;">发布时间</span>
+                        <i class="fa fa-caret-up" :class="{active:!order}" @click="order=false"></i><i class="fa fa-caret-down" :class="{active:order}" @click="order=true"></i>
+                    </span>
+                </div>
+                <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">发布人</span></div>
+                <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">通知场所</span></div>
+                <div class="column" style="width:80px;"><span class="overflow" style="width:200px;">签收状态</span></div>
+                <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">附件</span></div>
+                <div class="column" style="width:120px;"><span class="overflow" style="width:100px;">操作</span></div>
+            </div>
+        </div>
+
+        <!--列表体-->
+        <div :style="{height:bodyH}" style="position:relative;">
+            <!--加载中-->
+            <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+                <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+            </div>
+            <!--暂无数据-->
+            <div v-if="data.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
+                <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
+            </div>
+
+            <Scroll :listen="data" ref="scroll">
+                <div class="table_body">
+                    <div class="row" v-for="d in data">
+                        <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
+                        <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="noteDetail(d)">标题</span></div>
+                        <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">发布时间</span></div>
+                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">发布人</span></div>
+                        <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">通知场所</span></div>
+                        <div class="column" style="width:80px;"><span class="overflow" style="width:200px;">签收状态</span></div>
+                        <div class="column" style="width:200px;"><span class="overflow clickItem" style="width:200px;" @click="loadBag(d)">附件</span></div>
+                        <div class="column" style="width:120px;">
+                            <span class="overflow" style="width:100px;">
+                                <div @click="remove(d)" style="cursor:pointer;"><i class="fa fa-remove" style="margin-right:5px;" />删除</div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </Scroll>
+        </div>
+
+        <!--分页栏-->
+        <div name="page_container" class="page_container" style="background-color:white;">
+          <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span></span>
+          <div class="firstPage" @click="pageChange(0)">首页</div>
+          <div class="prePage" @click="pageChange(pageIndex-1)">上一页</div>
+          <div class="nextPage" @click="pageChange(pageIndex+1)">下一页</div>          
+        </div>
+
+      </div>
+    </div>
+</template>
+
+<script>
+import Scroll from  'components/scroll'
+import PlaceTree from 'components/PlaceTreeNew'
+import NoteDetail from './NoteDetail'
+import {BODY_RESIZE} from '../../../store/mutation-types'
+export default {
+  name: 'PlaceNote',
+  components:{Scroll},
+  data () {
+    return {
+        simpleTime:{
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          }
+        },
+        column_w:0,
+        bodyResizeSub:null,
+        bodyH:0,
+        data:[1,2,3],
+        blnLoading:false,
+        pageIndex:0,
+        order:false,
+    }
+  },
+  mounted(){
+   this.layout();
+   this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+   },sub:()=>{
+      this.layout();
+   }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
+  },
+  methods:{
+    layout(){
+        setTimeout(()=>{
+            this.bodyH=`calc(100% - 50px - 40px - ${$(this.$el).find('.option_bar').height()}px)`;
+
+            this.$nextTick(()=>{
+                this.$refs.scroll.reloadyScroll()
+            })
+        },100);
+        this.column_w=$(this.$el).width()-950;
+    },
+    //发布通知
+    notices(){
+        let s=this;
+        tool.open(function(){
+            let layIndex=0;
+            let layTitle=['发布内容编辑','选择场所范围'];
+            let param={
+                title:'发布场所通知',
+                area:'650px',
+                content:`<div class="Plan_Setting_pop" style="width:100%;height:100%;padding:10px;">
+                            <div v-show="curPageIndex == 0">
+                                <div class="row" style="margin:0px;margin-bottom:10px;">
+                                    <div class="col-md-3" style="padding-top:10px;padding-left:25px;">通知标题:</div>
+                                    <div class="col-md-8" style="padding-left:0px;">
+                                        <el-input placeholder="请输入标题" />
+                                    </div>
+                                </div>
+                                <div class="row" style="margin:0px;margin-bottom:10px;">
+                                    <div class="col-md-3" style="padding-top:10px;padding-left:25px;">通知内容:</div>
+                                    <div class="col-md-8" style="padding-left:0px;">
+                                        <textarea style="height:200px;width:100%;resize:none;border-radius:5px;border: 1px solid #e5e5e5;" />
+                                    </div>
+                                </div>
+                                <div class="row" style="margin:0px;margin-bottom:10px;">
+                                    <div class="col-md-3" style="padding-top:10px;padding-left:25px;">场所回复:</div>
+                                    <div class="col-md-3" style="padding-left:0px;padding-top:10px;">
+                                        <el-radio  label="1">是</el-radio>
+                                        <el-radio  label="2">否</el-radio>
+                                    </div>
+                                    <div class="col-md-6" style="padding-left:0px;">
+                                        <span>有效期:</span>
+                                        <div style="display:inline-block;"><el-date-picker  type="date" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker></div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin:0px;margin-bottom:10px;">
+                                    <div class="col-md-3" style="padding-top:10px;padding-left:25px;">附件路径:</div>
+                                    <div class="col-md-2" style="padding-left:0px;">
+                                       <button type="button" class="btn btn-primary" >点击上传</button>
+                                    </div>
+                                    <div class="col-md-7" style="padding-left:0px;">
+                                        <div style="background-color:#e5e5e5;border-radius:5px;display: inline-block;padding:6px 10px;margin-left: 10px;">
+                                            <i class="fa fa-file-text-o" />xxx.jepg <i class="fa fa-remove" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin:0px;margin-bottom:10px;">
+                                    <div class="col-md-3" style="padding-top:10px;padding-left:25px;"></div>
+                                    <div class="col-md-8" style="padding-left:0px;font-size:12px;">
+                                       支持上传不超过5MV的rar、zip、jepg、gif、png、doc、xis、txt文件
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="option_bar" style="text-align:right;" v-show="curPageIndex == 0">
+                                <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                <button type="button" class="btn btn-success" @click="goNext()">下一步</button>
+                            </div>
+
+
+                            <div v-show="curPageIndex == 1" style="overflow:hidden;">
+                              <div class="col-md-5" style="height:300px;border:1px solid #e7eaec;border-radius:5px;padding-right:0px;width:45%;">
+                                    <PlaceTree ref="placeTree" :rootNode="rootNode" @res="PlaceResult"></PlaceTree>
+                                </div>
+                                <div class="col-md-1"></div>
+                                <div class="col-md-5"  style="height:300px;border:1px solid #e7eaec;border-radius:5px;padding-top:10px;padding-bottom:10px;padding-right:0px;width:45%;">
+                                    <Scroll :listen="selPlaces">
+                                        <div v-for="(p,i) in selPlaces" style="margin-bottom:5px;padding-right:40px;position:relative;padding-left:20px;">
+                                            <span style="font-size:12px;position:absolute;left:0px;top:3px;">{{i+1}}.</span>{{p.name}} 
+                                            <i @click="delPlace(p)" class="fa fa-remove delPlaceItem" style="position:absolute;right:20px;top:3px;"></i>
+                                        </div>
+                                    </Scroll>
+                                </div>
+                            </div>
+
+                            <div class="option_bar" style="text-align:right;margin-top:10px;" v-show="curPageIndex == 1">
+                                <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                <button type="button" class="btn btn-success" @click="goPre()">上一步</button>
+                                <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                            </div>
+                        </div>`,
+                components:{PlaceTree,Scroll},
+                store:s.$store,
+                watch:{
+                    curPageIndex(){
+                        layer.title(`发布场所通知 - ${layTitle[this.curPageIndex]}`,layIndex)
+                    }
+                },
+                context:{
+                    rootNode:{name:tool.cookie.get('region_name'),code:tool.cookie.get('region_code')},
+                    simpleTime:{//限制选择今天之前的日期
+                        disabledDate(time) {
+                            return time.getTime() < Date.now() - 8.64e7;
+                        }
+                    },
+                    curPageIndex:0,
+                    blnSubmit:false,
+                    blnExecute:false,
+                    selPlaces:[],
+                    //场所区域选择改变事件
+                    PlaceResult(d){
+                        let res =  _.chain(d).values().flatten().value();
+                        param.selfData.selPlaces=res;
+                    },
+                    goPre(){
+                        param.selfData.curPageIndex=param.selfData.curPageIndex-1<0?0:param.selfData.curPageIndex-1;
+                    },
+                    goNext(){
+                        let d=param.selfData;
+                        
+                        param.selfData.curPageIndex++;
+                    },
+                    ok_btn(){param.close();},
+                    cancel_btn(){param.close();}
+                }
+            };
+
+            return param;
+        }());
+    },
+    //批量删除
+    datchRemove(){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'提示',
+                area:'400px',
+                content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
+                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />您确定要删除选择的14项通知吗?</div>
+                            <div class="option_bar" style="text-align:right;padding:5px;">
+                                <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                            </div>
+                        </div>
+                        `,
+                components:{},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
+    },
+    //通知详情
+    noteDetail(d){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'场所通知详情',
+                area:['600px','500px'],
+                content:`<div class="Place_Note_pop" style="width:100%;height:100%;">
+                            <NoteDetail />
+                         </div>
+                        `,
+                components:{NoteDetail},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
+    },
+    //下载附件
+    loadBag(d){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'提示',
+                area:'400px',
+                content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
+                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />您确定要下载"XXX"附件进行查看吗?</div>
+                            <div class="option_bar" style="text-align:right;padding:5px;">
+                                <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                            </div>
+                        </div>
+                        `,
+                components:{},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
+    },
+    //删除数据项
+    remove(d){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'提示',
+                area:'400px',
+                content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
+                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />您确定要删除"会议通知"通知吗?</div>
+                            <div class="option_bar" style="text-align:right;padding:5px;">
+                                <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                            </div>
+                        </div>
+                        `,
+                components:{},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
+    },
+    search(){
+
+    },
+    pageChange(index){
+
+    },
+  }
+}
+</script>
+
+<style scoped lang="less">
+@import "../../../css/variables.less";
+.PlaceNote{width:100%;height:100%;padding:5px;}
+.PlaceNote_container{width:100%;height:100%;background-color:white;}
+
+.PlaceNote .option_bar{text-align:left;padding:5px 15px;line-height:40px;}
+.PlaceNote .option_bar .item{display:inline-block;margin:2px 5px;}
+
+.PlaceNote .right_option_bar {float:right;}
+.PlaceNote .right_option_bar .item{display:inline-block;margin:2px 5px;}
+.PlaceNote .right_option_bar .item:hover{cursor:pointer;}
+html{.TCol(~".PlaceNote .right_option_bar .item:hover");}
+
+.PlaceNote .cursor{cursor:pointer;}
+
+.PlaceNote .page_container{.border('top');}
+
+.PlaceNote .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
+.PlaceNote .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+.PlaceNote .fa-caret-up:hover,
+.PlaceNote .fa-caret-down:hover{
+    color:white;
+}
+
+.PlaceNote .clickItem:hover{cursor:pointer;}
+html{.TCol(~".PlaceNote .clickItem");}
+
+//列表显示样式
+@header_H:40px;
+.PlaceNote .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
+html{.TCol(~".PlaceNote .table_header .row",'bg');}
+
+.PlaceNote .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+.PlaceNote .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');background-color:white;}
+.PlaceNote .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
+html{.TCol(~".PlaceNote .table_header .column .sort_item .triangle-up:hover",'bbc');}
+
+.PlaceNote .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
+html{.TCol(~".PlaceNote .table_header .column .sort_item .triangle-down:hover",'btc');}
+
+html{.TCol(~".PlaceNote .table_header .column .sort_item .triangle-up.active",'bbc');}
+
+html{.TCol(~".PlaceNote .table_header .column .sort_item .triangle-down.active",'btc');}
+
+.PlaceNote .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
+.PlaceNote .table_body{width:100%;display:table;width:100%;border:none;}
+.PlaceNote .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+
+.overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
+</style>

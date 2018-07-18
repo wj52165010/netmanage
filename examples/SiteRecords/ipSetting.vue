@@ -339,8 +339,8 @@ html{.TCol(~".IPsetting .active");}
  }
  .table_ul li{float:left;text-align:center;.border('bottom',gray);line-height:30px;}
  .table_ul .sortItem{display:inline-block;position:relative;}
- .table_ul .sortItem .fa-caret-up{position:absolute;top:-15px;cursor:pointer;font-size:15px;}
- .table_ul .sortItem .fa-caret-down{position:absolute;top:-2px;cursor:pointer;font-size:15px;}
+ .table_ul .sortItem .fa-caret-up{position:absolute;top:-18px;cursor:pointer;font-size:15px;}
+ .table_ul .sortItem .fa-caret-down{position:absolute;top:-5px;cursor:pointer;font-size:15px;}
  .addedIP .fa-caret-down:before{position:absolute;line-height: 5px;}
  .table_ul .fa-remove{cursor:pointer;}
 

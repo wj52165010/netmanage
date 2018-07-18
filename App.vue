@@ -351,7 +351,10 @@ export default {
 
         {name:'巡查管理',icon:'fa fa-dashboard',id:'18015',keyid:"18015",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"Patrol"},
         {name:'态势感知',icon:'fa fa-dashboard',id:'18037',keyid:"18037",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"StatePerception"},
-        {name:'网站备案',icon:'fa fa-ravelry',id:'18038',keyid:"18038",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"SiteRecords"}
+        {name:'网站备案',icon:'fa fa-ravelry',id:'18038',keyid:"18038",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"SiteRecords"},
+
+        /**网吧管理**/
+        {name:'网吧管理',icon:'fa fa-ravelry',id:'18039',keyid:"18039",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"InterBarManage"},
       ];
 
       app.menus=fixMenus;

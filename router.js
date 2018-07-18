@@ -83,6 +83,8 @@ Vue.component('Patrol',(resolve)=>{require(['./examples/Patrol.example'],resolve
 Vue.component('StatePerception',(resolve)=>{require(['./examples/StatePerception/index'],resolve)});
 Vue.component('SiteRecords',(resolve)=>{require(['./examples/SiteRecords/index'],resolve)});
 
+/***********************************************网吧管理页面********************************************/
+Vue.component('InterBarManage',(resolve)=>{require(['./examples/InterBarManage/index'],resolve)});
 
 export default[
   { path: '/', component: (resolve)=>{require(['./pages/index'], resolve)} },

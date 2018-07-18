@@ -1182,6 +1182,18 @@ export default new Vuex.Store({
         //获取菜单类型
         [types.GetMenuKind]({commit},data){
             return new Promise((resolve,reject)=>{
+                // resolve({biz_body:
+                //         [
+                //             {
+                //                 icon:"fa fa-navicon",
+                //                 title:'案例',
+                //                 orderby:10000,
+                //                 id:100000,
+                //             }
+                //         ]
+                //     }
+                // );
+
                 ser.GetMenuKind(data).then(res=>{
                     resolve(res);
                 });

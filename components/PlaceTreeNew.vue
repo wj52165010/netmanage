@@ -36,7 +36,6 @@ export default {
         this.$store.dispatch(GET_PLACE,{code:code, type:type, defaultVal:''}).then((code) => {
             if(!d){
                 this.places=[...code];
-                console.log(tool.Clone(code));
             }else{
                 d.isLoadingData=false;
                 if(code.length<=0){return tool.info('没有相关数据!');}

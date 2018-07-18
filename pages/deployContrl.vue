@@ -117,7 +117,7 @@ export default {
       //报警头部
       alarmHeader:['报警时间','关键字','所属案件','姓名','证件类型','证件号','报警地点','报警来源','采集类型'],
       //报警对应数据显示字段
-      alarmShowField:'detect_time,keywords,law_case_title,customer_name,certificate_type,certificate_code,netbar_title,source_type,microprobe_type',
+      alarmShowField:'logtime,keywords,law_case_title,customer_name,certificate_type,certificate_code,netbar_title,source_type,microprobe_type',
       //报警列配置
       alarmColumn:[
         {width:200,align:'center'},{width:200,align:'center'},{width:200,align:'center'},{width:100,align:'center'},

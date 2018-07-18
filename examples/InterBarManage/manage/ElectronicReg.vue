@@ -1,0 +1,300 @@
+<!-- 电子登记主页组件 -->
+<template>
+    <div class="ElectronicReg">
+      <div class="ElectronicReg_container">
+        <!--操作栏-->
+        <div class="option_bar">
+            <div class="item">
+                <span>场所范围:</span>
+                <div style="display:inline-block;">
+                    <PlaceSearch :blnClear="true" :blnLike="true" c_searchKind="1" ccontext="place"  @place_res="placechange"></PlaceSearch>
+                </div>
+            </div>
+            <div class="item">
+                <span>区域范围:</span><div style="display:inline-block;">
+                    <PlaceSearch  :blnClear="true" c_searchKind="0" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                </div>
+            </div>
+
+            <div class="item">
+                <el-button type="primary" @click="search()"><span>查询</span></el-button>
+            </div>
+
+            <!--右边操作栏-->
+            <div class="right_option_bar">
+                <div class="item" @click="regSetting()"><i class="fa fa-cog fa-fw" /> 登记配置</div>
+                <div class="item" @click="editNum()"><i class="fa fa-pencil-square-o" /> 编辑可用</div>
+                <div class="item" @click="resetNum()"><i class="fa fa-copyright" /> 重置已用</div>
+                <div class="item" @click="exportData()"><i class="fa fa-share" /> 导出</div>
+            </div>
+        </div>
+
+        <!--列表头-->
+        <div class="table_header">
+            <div class="row">
+                <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
+                <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">场所编码</span></div>
+                <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所名称</span></div>
+                <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">所属区域</span></div>
+                <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">可用次数</span></div>
+                <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">已用次数</span></div>
+                <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">最后一次重置时间</span></div>
+                <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">重置人</span></div>
+                <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">操作</span></div>
+            </div>
+        </div>
+
+        <!--列表体-->
+        <div :style="{height:bodyH}" style="position:relative;">
+            <!--加载中-->
+            <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+                <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+            </div>
+            <!--暂无数据-->
+            <div v-if="data.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
+                <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
+            </div>
+
+            <Scroll :listen="data" ref="scroll">
+                <div class="table_body">
+                    <div class="row" v-for="d in data">
+                        <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
+                        <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">场所编码</span></div>
+                        <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所名称</span></div>
+                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">所属区域</span></div>
+                        <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">可用次数</span></div>
+                        <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">已用次数</span></div>
+                        <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">最后一次重置时间</span></div>
+                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">重置人</span></div>
+                        <div class="column" style="width:200px;">
+                            <span class="overflow" style="width:200px;">
+                                <div class="item" @click="editNum(2)"  style="display:inline-block;"><i class="fa fa-pencil-square-o" /> 编辑可用</div>
+                                <div class="item" @click="resetNum(2)" style="display:inline-block;margin-left:10px;"><i class="fa fa-copyright" /> 重置已用</div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </Scroll>
+        </div>
+
+        <!--分页栏-->
+        <div name="page_container" class="page_container" style="background-color:white;">
+          <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span></span>
+          <div class="firstPage" @click="pageChange(0)">首页</div>
+          <div class="prePage" @click="pageChange(pageIndex-1)">上一页</div>
+          <div class="nextPage" @click="pageChange(pageIndex+1)">下一页</div>          
+        </div>
+
+      </div>
+    </div>
+</template>
+
+<script>
+import PlaceSearch from 'components/PlaceSearch'
+import Scroll from  'components/scroll'
+import RegSetting from './RegSetting'
+import {BODY_RESIZE} from '../../../store/mutation-types'
+
+export default {
+  name: 'ElectronicReg',
+  components:{PlaceSearch,Scroll},
+  data () {
+    return {
+        column_w:0,
+        bodyResizeSub:null,
+        bodyH:0,
+        data:[1,2,3],
+        blnLoading:false,
+        pageIndex:0,
+    }
+  },
+  mounted(){
+   this.layout();
+   this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+   },sub:()=>{
+      this.layout();
+   }});
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
+  },
+  methods:{
+    layout(){
+        setTimeout(()=>{
+            this.bodyH=`calc(100% - 50px - 40px - ${$(this.$el).find('.option_bar').height()}px)`;
+
+            this.$nextTick(()=>{
+                this.$refs.scroll.reloadyScroll()
+            })
+        },100);
+        this.column_w=$(this.$el).width()-1050;
+    },
+    //登记配置
+    regSetting(){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'电子登记配置',
+                area:'800px',
+                content:`<div class="Plan_Setting_pop" style="width:100%;height:100%;">
+                            <RegSetting />
+                            <div class="option_bar" style="text-align:right;padding:15px;">
+                                <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                            </div>
+                        </div>`,
+                components:{RegSetting},
+                store:s.$store,
+                context:{
+                    blnSubmit:false,
+                    blnExecute:false,
+                    ok_btn(){param.close();},
+                    cancel_btn(){param.close();}
+                }
+            };
+
+            return param;
+        }());
+    },
+    //重置已用
+    resetNum(id){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'提示',
+                area:'400px',
+                content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
+                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />确定要将${id?'':'所选的14家'}场所可用次数重置为0吗?</div>
+                            <div class="option_bar" style="text-align:right;padding:15px;">
+                                <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                            </div>
+                        </div>
+                        `,
+                components:{},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
+    },
+    //编辑已用
+    editNum(id){
+        let s=this;
+        id=id || -1;
+
+        tool.open(function(){
+            let param={
+                title:'电子登记配置',
+                area:id>=0?'400px':'800px',
+                content:`<div class="Plan_Setting_pop" style="width:100%;height:100%;">
+                            <RegSetting :blnHideCoverPlace="true" :blnHideTargetPlace="blnHideTargetPlace" />
+                            <div class="option_bar" style="text-align:right;padding:15px;">
+                                <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                            </div>
+                        </div>`,
+                components:{RegSetting},
+                store:s.$store,
+                context:{
+                    blnHideTargetPlace:id>=0,
+                    blnSubmit:false,
+                    blnExecute:false,
+                    ok_btn(){param.close();},
+                    cancel_btn(){param.close();}
+                }
+            };
+
+            return param;
+        }());
+    },
+    //导出数据
+    exportData(){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'提示',
+                area:'400px',
+                content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
+                            <div style="padding: 30px 10px;text-align:center;">请确定是否需要导出所选的50条数据!</div>
+                            <div class="option_bar" style="text-align:right;padding:15px;">
+                                <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                            </div>
+                        </div>
+                        `,
+                components:{},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
+    },
+    search(){
+
+    },
+    pageChange(index){
+
+    },
+    placechange(query,val){
+        let res =_.flatten(_.map(val,v=>{return _.map(v,i=>i.code)}));
+        console.log(res);
+    }
+  }
+}
+</script>
+
+<style scoped lang="less">
+@import "../../../css/variables.less";
+.ElectronicReg{width:100%;height:100%;padding:0px 0px;}
+.ElectronicReg_container{width:100%;height:100%;background-color:white;}
+
+.ElectronicReg .option_bar{text-align:left;padding:5px 15px;line-height:40px;}
+.ElectronicReg .option_bar .item{display:inline-block;margin:2px 5px;}
+
+.ElectronicReg .right_option_bar {float:right;}
+.ElectronicReg .right_option_bar .item{display:inline-block;margin:2px 5px;}
+.ElectronicReg .right_option_bar .item:hover{cursor:pointer;}
+html{.TCol(~".ElectronicReg .right_option_bar .item:hover");}
+
+.ElectronicReg .cursor{cursor:pointer;}
+
+.ElectronicReg .page_container{.border('top');}
+
+.ElectronicReg .table_body .item{cursor:pointer;}
+html{.TCol(~".ElectronicReg .table_body .item:hover");}
+
+//列表显示样式
+@header_H:40px;
+.ElectronicReg .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
+html{.TCol(~".ElectronicReg .table_header .row",'bg');}
+
+.ElectronicReg .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+.ElectronicReg .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');background-color:white;}
+.ElectronicReg .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
+html{.TCol(~".ElectronicReg .table_header .column .sort_item .triangle-up:hover",'bbc');}
+
+.ElectronicReg .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
+html{.TCol(~".ElectronicReg .table_header .column .sort_item .triangle-down:hover",'btc');}
+
+html{.TCol(~".ElectronicReg .table_header .column .sort_item .triangle-up.active",'bbc');}
+
+html{.TCol(~".ElectronicReg .table_header .column .sort_item .triangle-down.active",'btc');}
+
+.ElectronicReg .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
+.ElectronicReg .table_body{width:100%;display:table;width:100%;border:none;}
+.ElectronicReg .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+
+.overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
+</style>
