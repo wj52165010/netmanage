@@ -262,6 +262,7 @@ export default {
             let count=(data.regions || []).length+(data.polices || []).length+(data.sites || []).length;
 
             if(childs.length==1){
+                self.selData={regions: [],polices: [],sites: []};
                 $(childs[0]).trigger('click');
             }else if(count>1 && count<500){
                 self.blnSelAll=true;

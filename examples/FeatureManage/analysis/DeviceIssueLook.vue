@@ -1,8 +1,7 @@
-<!-- 待处理场所页面组件 -->
+<!-- 问题总览页面组件 -->
 <template>
-    <div class="DealtPlace">
-        <div class="DealtPlace_container">
-            <!--操作栏-->
+    <div class="IssueLook">
+        <div class="IssueLook_container">
             <div class="option_bar">
 
                 <div class="item">
@@ -12,20 +11,13 @@
                 </div>
 
                 <div class="item">
-                    <span>紧急分类:</span><div style="display:inline-block;">
-                    <el-select placeholder="请选择" :clearable="true">
-                            <el-option
-                                v-for="kind in []"
-                                :key="kind.code"
-                                :label="kind.name"
-                                :value="kind.value">
-                            </el-option>
-                        </el-select>
+                    <span>设备名称:</span><div style="display:inline-block;">
+                        <el-input />
                     </div>
                 </div>
 
                 <div class="item">
-                    <span>处置分类:</span><div style="display:inline-block;">
+                    <span>问题分类:</span><div style="display:inline-block;">
                     <el-select placeholder="请选择" :clearable="true">
                             <el-option
                                 v-for="kind in []"
@@ -58,29 +50,31 @@
 
                 <!--右边操作栏-->
                 <div class="right_option_bar">
-                    <div class="item"  @click="changeChart='bar'"><i class="fa fa-copyright" /> 撤销通知</div>
-                    <div class="item"  @click="changeChart='line'"><i class="fa fa-legal" /> 处置通知</div>
                     <div class="item" @click="ExportOnlineCount()"><i class="fa fa-share" /> 导出</div>
                 </div>
-
             </div>
 
             <!--列表头-->
             <div class="table_header">
                 <div class="row">
-                    <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
-
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
-                            <span style="margin-right:5px;">场所编码</span>
+                            <span style="margin-right:5px;">设备编码</span>
                             <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="placeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="placeOrder=true"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
-                            <span style="margin-right:5px;">场所名称</span>
+                            <span style="margin-right:5px;">设备名称</span>
                             <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="placeNameOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="placeNameOrder=true"></i>
+                        </span>
+                    </div>
+
+                    <div class="column" style="width:120px;">
+                        <span class="overflow" style="width:120px;position:relative;">
+                            <span style="margin-right:5px;">所属场所</span>
+                            <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="placeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="placeOrder=true"></i>
                         </span>
                     </div>
 
@@ -98,14 +92,8 @@
                         </span>
                     </div>
 
-                    <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">紧急分类</span></div>
-                    <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                    <div class="column" style="width:120px;">
-                        <span class="overflow" style="width:120px;">
-                            设备概况
-                            <el-tooltip placement="top" content="在线设备/异常设备/离线设备"><i class="fa fa-question-circle" /></el-tooltip>
-                        </span>
-                    </div>  
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">问题分类</span></div>
+                    <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">当前状态</span></div>
 
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;position:relative;">
@@ -115,12 +103,10 @@
                     </div>
 
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">昨日采集</span></div>
-                    <div class="column"><span class="overflow" :style="{width:column_w+'px'}">报警原因</span></div>
-                    <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">通知方式</span></div>  
-                    <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">处置状态</span></div>  
+                    <div class="column"><span class="overflow" :style="{width:column_w+'px'}">昨日问题摘要</span></div>
                 </div>
             </div>
-            
+
             <!--列表体-->
             <div :style="{height:bodyH}" style="position:relative;">
                 <!--加载中-->
@@ -135,19 +121,16 @@
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="d in data">
-                            <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
-                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">场所编码</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="deviceDetail(d)"  style="width:200px;">场所编码</span></div>
                             <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">场所名称</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:120px;">所属厂所</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">所属厂商</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">所属区域</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">紧急分类</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" @click="terminalDetail(d)">终端概况</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">问题分类</span></div>
+                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">当前状态</span></div> 
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">最近联系时间</span></div>
                             <div class="column" style="width:80px;"><span class="overflow clickItem" style="width:80px;" @click="collectChart(d)">昨日采集</span></div>
-                            <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="callPolicy(d)">报警原因</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">通知方式</span></div>  
-                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" @click="handerWay(d)">处置状态</span></div> 
+                            <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="issueDetail(d)">昨日问题摘要</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -166,21 +149,19 @@
 </template>
 
 <script>
-
 import PlaceSearch from 'components/PlaceSearch'
 import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 import Scroll from  'components/scroll'
 
 import TerminalDetail from '../TerminalDetail'
-import CallPolicy from '../CallPolicy'
-import HandlerWay from '../HandlerWay'
 import CollectChart from '../CollectChart'
+import IssueList from '../IssueList'
 import PlaceDetail from '../PlaceDetail'
+import DeviceDetail from '../DeviceDetail'
 
 import {BODY_RESIZE,GetFirm} from '../../../store/mutation-types'
-
 export default {
-  name: 'DealtPlace',
+  name: 'IssueLook',
   components:{PlaceSearch,MulDropDwon,Scroll},
   data () {
     return {
@@ -226,7 +207,30 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },500);
-        this.column_w=$(this.$el).width()-1410 -10;
+        this.column_w=$(this.$el).width()-1140 -10;
+    },
+    //设备详情
+    deviceDetail(d){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'设备详情',
+                area:'1000px',
+                content:`<div class="place_detail_pop" style="width:100%;height:100%;">
+                            <DeviceDetail />
+                        </div>
+                        `,
+                components:{DeviceDetail},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
     },
     //场所详情
     placeDetail(d){
@@ -251,75 +255,7 @@ export default {
             return param;
         }());
     },
-    //终端概况详情
-    terminalDetail(d){
-        let s=this;
-        tool.open(function(){
-            let param={
-                title:'终端列表(场所名称)',
-                area:['1300px','500px'],
-                content:`<div class="terminaDetail_Num_pop" style="width:100%;height:100%;">
-                            <TerminalDetail />
-                        </div>
-                        `,
-                components:{TerminalDetail},
-                store:s.$store,
-                context:{
-                    blnExecute:false,
-                    ok_btn(){param.close()},
-                    cancel_btn(){param.close()}
-                }
-            };
 
-            return param;
-        }());
-    },
-    //报警原因详情
-    callPolicy(d){
-        let s=this;
-        tool.open(function(){
-            let param={
-                title:'报警详情(场所名称)',
-                area:['1000px','500px'],
-                content:`<div class="terminaDetail_Num_pop" style="width:100%;height:100%;">
-                            <CallPolicy />
-                        </div>
-                        `,
-                components:{CallPolicy},
-                store:s.$store,
-                context:{
-                    blnExecute:false,
-                    ok_btn(){param.close()},
-                    cancel_btn(){param.close()}
-                }
-            };
-
-            return param;
-        }());
-    },
-    //处置方式
-    handerWay(d){
-        let s=this;
-        tool.open(function(){
-            let param={
-                title:'处置详情',
-                area:['600px','500px'],
-                content:`<div class="Handler_Way_pop" style="width:100%;height:100%;">
-                            <HandlerWay />
-                        </div>
-                        `,
-                components:{HandlerWay},
-                store:s.$store,
-                context:{
-                    blnExecute:false,
-                    ok_btn(){param.close()},
-                    cancel_btn(){param.close()}
-                }
-            };
-
-            return param;
-        }());
-    },
     //昨日采集弹窗
     collectChart(d){
         let s=this;
@@ -343,6 +279,36 @@ export default {
             return param;
         }());
     },
+    //问题总览详情
+    issueDetail(){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'问题总览详情(场所名称)',
+                area:['800px','400px'],
+                content:`<div class="issue_detail_pop" style="width:100%;height:100%;">
+                            <IssueList />
+                        </div>
+                        `,
+                components:{IssueList},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
+    },
+    //导出
+    ExportOnlineCount(){
+
+    },
+    pageChange(i){
+
+    },
     firmClick(type,d){
         let index=-1;
         index=_.findIndex(this.Selfirms,t=>t.code==d.code);
@@ -364,55 +330,55 @@ export default {
 <style scoped lang="less">
 @import "../../../css/variables.less";
 
-.DealtPlace{width:100%;height:100%;padding:5px;position:relative;}
-.DealtPlace_container{width:100%;height:100%;background-color:white;}
+.IssueLook{width:100%;height:100%;padding:5px;position:relative;}
+.IssueLook_container{width:100%;height:100%;background-color:white;}
 
-.DealtPlace .option_bar{text-align:left;padding:5px 15px;line-height:40px;}
-.DealtPlace .option_bar .item{display:inline-block;margin:2px 5px;}
+.IssueLook .option_bar{text-align:left;padding:5px 15px;line-height:40px;}
+.IssueLook .option_bar .item{display:inline-block;margin:2px 5px;}
 
-.DealtPlace .right_option_bar {float:right;}
-.DealtPlace .right_option_bar .item{display:inline-block;margin:2px 5px;}
-.DealtPlace .right_option_bar .item:hover{cursor:pointer;}
-html{.TCol(~".DealtPlace .right_option_bar .item:hover");}
+.IssueLook .right_option_bar {float:right;}
+.IssueLook .right_option_bar .item{display:inline-block;margin:2px 5px;}
+.IssueLook .right_option_bar .item:hover{cursor:pointer;}
+html{.TCol(~".IssueLook .right_option_bar .item:hover");}
 
-.DealtPlace .cursor{cursor:pointer;}
+.IssueLook .cursor{cursor:pointer;}
 
-.DealtPlace .page_container{.border('top');}
+.IssueLook .page_container{.border('top');}
 
-.DealtPlace .table_body .item{cursor:pointer;}
-html{.TCol(~".DealtPlace .table_body .item:hover");}
+.IssueLook .table_body .item{cursor:pointer;}
+html{.TCol(~".IssueLook .table_body .item:hover");}
 
-.DealtPlace .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
-.DealtPlace .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
-.DealtPlace .fa-caret-up:hover,
-.DealtPlace .fa-caret-down:hover{
+.IssueLook .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
+.IssueLook .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+.IssueLook .fa-caret-up:hover,
+.IssueLook .fa-caret-down:hover{
     color:white;
 }
 
-.DealtPlace .clickItem:hover{cursor:pointer;}
-html{.TCol(~".DealtPlace .clickItem");}
+.IssueLook .clickItem:hover{cursor:pointer;}
+html{.TCol(~".IssueLook .clickItem");}
 
 //列表显示样式
 @header_H:40px;
-.DealtPlace .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
-html{.TCol(~".DealtPlace .table_header .row",'bg');}
+.IssueLook .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
+html{.TCol(~".IssueLook .table_header .row",'bg');}
 
-.DealtPlace .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
-.DealtPlace .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');background-color:white;}
-.DealtPlace .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
-html{.TCol(~".DealtPlace .table_header .column .sort_item .triangle-up:hover",'bbc');}
+.IssueLook .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+.IssueLook .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');background-color:white;}
+.IssueLook .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
+html{.TCol(~".IssueLook .table_header .column .sort_item .triangle-up:hover",'bbc');}
 
-.DealtPlace .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
-html{.TCol(~".DealtPlace .table_header .column .sort_item .triangle-down:hover",'btc');}
+.IssueLook .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
+html{.TCol(~".IssueLook .table_header .column .sort_item .triangle-down:hover",'btc');}
 
-html{.TCol(~".DealtPlace .table_header .column .sort_item .triangle-up.active",'bbc');}
+html{.TCol(~".IssueLook .table_header .column .sort_item .triangle-up.active",'bbc');}
 
-html{.TCol(~".DealtPlace .table_header .column .sort_item .triangle-down.active",'btc');}
+html{.TCol(~".IssueLook .table_header .column .sort_item .triangle-down.active",'btc');}
 
-.DealtPlace .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
-.DealtPlace .table_body{width:100%;display:table;width:100%;border:none;}
-.DealtPlace .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+.IssueLook .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
+.IssueLook .table_body{width:100%;display:table;width:100%;border:none;}
+.IssueLook .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
 
-.DealtPlace .table_body .column:first-child{.border('left');}
+.IssueLook .table_body .column:first-child{.border('left');}
 .overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
 </style>

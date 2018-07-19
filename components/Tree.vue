@@ -21,7 +21,7 @@ import {GET_PLACE} from '../store/mutation-types'
 import Scroll from 'components/scroll'
 export default {
   name: 'Tree',
-  props:['data','hasPlus'],
+  props:['data','hasPlus','checkNode'],
   components:{Scroll},
   data () {
     return {
@@ -34,13 +34,14 @@ export default {
     data:{
         deep:true,
         handler:function(){
-            let temp=[];
+            let temp=[],s=this;
+            let checkNodeId=s.checkNode && s.checkNode.length>0?','+_.map(s.checkNode || [],m=>m.code).join(',')+',':'';
 
             Fx.recur(this.data,'child',function(d,i,parent){
                 d.parentCode=parent?parent.code || '':'';
 
                 if(d.checked==undefined){
-                    Vue.set(d,'checked',false);
+                    Vue.set(d,'checked',checkNodeId.indexOf(','+d.code+',')>=0 || checkNodeId.indexOf(','+d.parentCode+',')>=0);
                 }
 
                 if(d.isLoadingData==undefined){
@@ -49,7 +50,7 @@ export default {
 
 
                 if(d.export==undefined){
-                    Vue.set(d,'export',false);
+                    Vue.set(d,'export',checkNodeId.indexOf(d.code.replace(/[0]+$/g,''))>=0 && checkNodeId.indexOf(','+d.code+',')<0);
                 }
 
                 if(d.blnHide==undefined){

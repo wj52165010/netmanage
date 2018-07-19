@@ -5,15 +5,8 @@
             <div class="option_bar">
 
                 <div class="item">
-                    <span>处置状态:</span><div style="display:inline-block;">
-                    <el-select placeholder="请选择" :clearable="true">
-                            <el-option
-                                v-for="kind in []"
-                                :key="kind.code"
-                                :label="kind.name"
-                                :value="kind.value">
-                            </el-option>
-                        </el-select>
+                    <span>场所范围:</span><div style="display:inline-block;">
+                        <PlaceSearch  :blnClear="true" c_searchKind="1" ccontext="region"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
 
@@ -88,7 +81,12 @@
 
                     <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">问题分类</span></div>
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">当前状态</span></div>
-                    <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">终端概况</span></div>  
+                    <div class="column" style="width:120px;">
+                        <span class="overflow" style="width:120px;">
+                            设备概况
+                            <el-tooltip placement="top" content="在线设备/异常设备/离线设备"><i class="fa fa-question-circle" /></el-tooltip>
+                        </span>
+                    </div>  
 
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;position:relative;">

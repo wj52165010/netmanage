@@ -6,8 +6,8 @@
             <div class="option_bar">
 
                 <div class="item">
-                    <span>场所范围:</span><div style="display:inline-block;">
-                        <PlaceSearch  :blnClear="true" c_searchKind="1" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                    <span>设备名称:</span><div style="display:inline-block;">
+                        <el-input />
                     </div>
                 </div>
 
@@ -72,14 +72,14 @@
 
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
-                            <span style="margin-right:5px;">场所编码</span>
+                            <span style="margin-right:5px;">设备编码</span>
                             <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="placeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="placeOrder=true"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
-                            <span style="margin-right:5px;">场所名称</span>
+                            <span style="margin-right:5px;">设备名称</span>
                             <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="placeNameOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="placeNameOrder=true"></i>
                         </span>
                     </div>
@@ -100,21 +100,19 @@
 
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">紧急分类</span></div>
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                    <div class="column" style="width:120px;">
-                        <span class="overflow" style="width:120px;">
-                            设备概况
-                            <el-tooltip placement="top" content="在线设备/异常设备/离线设备"><i class="fa fa-question-circle" /></el-tooltip>
-                        </span>
-                    </div>  
 
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;position:relative;">
                             <span style="margin-right:5px;">最近联系时间</span>
-                            <i class="fa fa-caret-up" :class="{active:!timeOrder}" @click="timeOrder=false"></i><i class="fa fa-caret-down" :class="{active:timeOrder}" @click="timeOrder=true"></i>
                         </span>
                     </div>
 
-                    <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">昨日采集</span></div>
+                    <div class="column" style="width:120px;">
+                        <span class="overflow" style="width:120px;position:relative;">
+                            <span style="margin-right:5px;">昨日采集</span>
+                            <i class="fa fa-caret-up" :class="{active:!timeOrder}" @click="timeOrder=false"></i><i class="fa fa-caret-down" :class="{active:timeOrder}" @click="timeOrder=true"></i>
+                        </span>
+                    </div>
                     <div class="column"><span class="overflow" :style="{width:column_w+'px'}">报警原因</span></div>
                     <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">通知方式</span></div>  
                     <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">处置状态</span></div>  
@@ -142,9 +140,8 @@
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">所属区域</span></div>
                             <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">紧急分类</span></div>
                             <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" @click="terminalDetail(d)">终端概况</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">最近联系时间</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow clickItem" style="width:80px;" @click="collectChart(d)">昨日采集</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" @click="collectChart(d)">昨日采集</span></div>
                             <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="callPolicy(d)">报警原因</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">通知方式</span></div>  
                             <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" @click="handerWay(d)">处置状态</span></div> 
@@ -175,7 +172,7 @@ import TerminalDetail from '../TerminalDetail'
 import CallPolicy from '../CallPolicy'
 import HandlerWay from '../HandlerWay'
 import CollectChart from '../CollectChart'
-import PlaceDetail from '../PlaceDetail'
+import DeviceDetail from '../DeviceDetail'
 
 import {BODY_RESIZE,GetFirm} from '../../../store/mutation-types'
 
@@ -226,20 +223,20 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },500);
-        this.column_w=$(this.$el).width()-1410 -10;
+        this.column_w=$(this.$el).width()-1330 -10;
     },
     //场所详情
     placeDetail(d){
         let s=this;
         tool.open(function(){
             let param={
-                title:'场所详情',
+                title:'设备详情',
                 area:'1000px',
                 content:`<div class="place_detail_pop" style="width:100%;height:100%;">
-                            <PlaceDetail />
+                            <DeviceDetail />
                         </div>
                         `,
-                components:{PlaceDetail},
+                components:{DeviceDetail},
                 store:s.$store,
                 context:{
                     blnExecute:false,

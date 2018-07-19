@@ -18,7 +18,7 @@
         <div class="row" style="margin:0px;margin-bottom:10px;" v-if="!blnHideTargetPlace">
             <div class="col-md-2" style="padding-top:10px;padding-left:25px;">目标场所:</div>
             <div class="col-md-4" style="height:300px;border:1px solid #e7eaec;border-radius:5px;padding-right:0px;">
-                <PlaceTree ref="placeTree" :rootNode="rootNode" @res="PlaceResult"></PlaceTree>
+                <PlaceTree ref="placeTree" :rootNode="rootNode" :defval="selRegion" @res="PlaceResult"></PlaceTree>
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-4"  style="height:300px;border:1px solid #e7eaec;border-radius:5px;padding-top:10px;padding-bottom:10px;padding-right:0px;">
@@ -44,6 +44,7 @@ export default {
     return {
         rootNode:{name:tool.cookie.get('region_name'),code:tool.cookie.get('region_code')},//根节点数据
         selPlaces:[],
+        selRegion:[]//[{code:'410501',type:1},{code:'410502',type:1}],
     }
   },
   methods:{

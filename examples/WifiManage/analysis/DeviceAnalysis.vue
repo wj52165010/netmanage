@@ -104,8 +104,8 @@ import 'echarts/lib/component/dataZoom'
 import PlaceSearch from 'components/PlaceSearch'
 import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 
-import DealtPlace from './DealtPlace'
-import IssueLook from './IssueLook'
+import DealtPlace from './DeviceDealtPlace'
+import IssueLook from './DeviceIssueLook'
 
 import {BODY_RESIZE,GetFirm,SiteHisPercentage,HisPercentageExport} from '../../../store/mutation-types'
 
