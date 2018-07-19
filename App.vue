@@ -355,6 +355,12 @@ export default {
 
         /**网吧管理**/
         {name:'网吧管理',icon:'fa fa-ravelry',id:'18039',keyid:"18039",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"InterBarManage"},
+        /**WIFI管理**/
+        {name:'无线管理',icon:'fa fa-ravelry',id:'18040',keyid:"18040",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"WIFIMangae"},
+        /**特征设备管理**/
+        {name:'特征管理',icon:'fa fa-ravelry',id:'18041',keyid:"18041",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"FeatureManage"},
+        /**非经管理**/
+        {name:'非经管理',icon:'fa fa-ravelry',id:'18042',keyid:"18042",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"NonClassicMangae"},
       ];
 
       app.menus=fixMenus;

@@ -104,7 +104,7 @@
                 <div class="table_body">
                     <div class="row" v-for="d in data">
                         <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
-                        <div class="column" style="width:200px;"><span class="overflow clickItem" style="width:200px;">场所编码</span></div>
+                        <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">场所编码</span></div>
                         <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所名称</span></div>
                         <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">执行状态</span></div>
                         <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">负责人姓名</span></div>
@@ -134,6 +134,8 @@
 <script>
 import Scroll from  'components/scroll'
 import PublishClosePlan from './PulishClosePlan'
+import PlaceDetail from '../PlaceDetail'
+
 import {BODY_RESIZE} from '../../../store/mutation-types'
 export default {
   name: 'ClosePlan',
@@ -180,6 +182,29 @@ export default {
             })
         },100);
         this.column_w=$(this.$el).width()-1360;
+    },
+    //场所详情
+    placeDetail(d){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'场所详情',
+                area:'1000px',
+                content:`<div class="place_detail_pop" style="width:100%;height:100%;">
+                            <PlaceDetail />
+                        </div>
+                        `,
+                components:{PlaceDetail},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
     },
     //发布停业计划
     pulishClosePlan(){

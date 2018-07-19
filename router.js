@@ -86,6 +86,16 @@ Vue.component('SiteRecords',(resolve)=>{require(['./examples/SiteRecords/index']
 /***********************************************网吧管理页面********************************************/
 Vue.component('InterBarManage',(resolve)=>{require(['./examples/InterBarManage/index'],resolve)});
 
+/***********************************************WIFI管理页面********************************************/
+Vue.component('WIFIMangae',(resolve)=>{require(['./examples/WifiManage/index'],resolve)});
+
+/***********************************************特征管理页面********************************************/
+Vue.component('FeatureManage',(resolve)=>{require(['./examples/FeatureManage/index'],resolve)});
+
+/***********************************************非经管理页面********************************************/
+Vue.component('NonClassicMangae',(resolve)=>{require(['./examples/NonClassicMangae/index'],resolve)});
+
+
 export default[
   { path: '/', component: (resolve)=>{require(['./pages/index'], resolve)} },
   { path: '/setting', component:(resolve)=>{require(['./pages/setting'],resolve)} },

@@ -1,14 +1,20 @@
-<!-- 列表主页页面组件 -->
+<!-- 场所列表页页面组件 -->
 <template>
-    <div class="ListIndex">
-        <div class="ListIndex_container">
+    <div class="DeviceList">
+        <div class="DeviceList_container">
 
             <!--操作栏-->
             <div class="option_bar">
                 <div class="item">
-                    <span>场所范围:</span>
+                    <span>设备名称:</span>
                     <div style="display:inline-block;">
-                        <PlaceSearch :blnClear="true" :blnLike="true" c_searchKind="1" ccontext="place"  @place_res="placechange"></PlaceSearch>
+                        <el-input placeholder="请输入设备编码" />
+                    </div>
+                </div>
+                <div class="item">
+                    <span>设备编码:</span>
+                    <div style="display:inline-block;">
+                        <el-input placeholder="请输入设备编码" />
                     </div>
                 </div>
                 <div class="item">
@@ -17,15 +23,10 @@
                     </div>
                 </div>
                 <div class="item">
-                    <span>派出所:</span><div style="display:inline-block;">
-                        <PlaceSearch :blnClear="true" :blnLike="true" c_searchKind="2" ccontext="policy"  @place_res="placechange"></PlaceSearch>
-                    </div>
-                </div>
-                <div class="item">
-                    <span>场所状态:</span><div style="display:inline-block;">
-                    <el-select v-model="placeState" placeholder="请选择" :clearable="true">
+                    <span>设备类型:</span><div style="display:inline-block;">
+                       <el-select  placeholder="请选择" :clearable="true">
                             <el-option
-                                v-for="kind in placeStates"
+                                v-for="kind in []"
                                 :key="kind.code"
                                 :label="kind.name"
                                 :value="kind.value">
@@ -33,12 +34,11 @@
                         </el-select>
                     </div>
                 </div>
-
                 <div class="item">
-                    <span>营业状态:</span><div style="display:inline-block;">
-                    <el-select v-model="businessState" placeholder="请选择" :clearable="true">
+                    <span>设备状态:</span><div style="display:inline-block;">
+                        <el-select v-model="placeState" placeholder="请选择" :clearable="true">
                             <el-option
-                                v-for="kind in businessStates"
+                                v-for="kind in placeStates"
                                 :key="kind.code"
                                 :label="kind.name"
                                 :value="kind.value">
@@ -68,33 +68,35 @@
                 <div class="row">
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
-                            <span style="margin-right:5px;">场所编码</span>
-                            <i class="fa fa-caret-up" :class="{active:!placeCodeOrder}" @click="placeCodeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeCodeOrder}" @click="placeCodeOrder=true"></i>
+                            <span style="margin-right:5px;">设备编码</span>
+                            <i class="fa fa-caret-up" :class="{active:!CodeOrder}" @click="CodeOrder=false"></i><i class="fa fa-caret-down" :class="{active:CodeOrder}" @click="CodeOrder=true"></i>
                         </span>
                     </div>
 
-                    <div class="column" style="width:200px">
-                        <span class="overflow" style="position:relative;width:200px">
-                            <span style="margin-right:5px;">场所名称</span>
-                            <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="placeNameOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="placeNameOrder=true"></i>
+                    <div class="column" >
+                        <span class="overflow" style="position:relative;" :style="{width:column_w+'px'}">
+                            <span style="margin-right:5px;">设备名称</span>
+                            <i class="fa fa-caret-up" :class="{active:!NameOrder}" @click="NameOrder=false"></i><i class="fa fa-caret-down" :class="{active:NameOrder}" @click="NameOrder=true"></i>
                         </span>
                     </div>
-                    <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
-                    <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                    <div class="column" style="width:150px;">
-                        <span class="overflow" style="width:150px;">
-                            终端概况
-                            <el-tooltip placement="top" content="申报终端/检测终端/在线终端"><i class="fa fa-question-circle" /></el-tooltip>
-                        </span>
-                    </div>
+                    <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">设备MAC</span></div>
+                    <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">设备状态</span></div>
+   
                     <div class="column" style="width:150px;">
                         <span class="overflow" style="width:150px;position:relative;">
                             <span style="margin-right:5px;">最近联系时间</span>
-                            <i class="fa fa-caret-up" :class="{active:!pulishTimeOrder}" @click="pulishTimeOrder=false"></i><i class="fa fa-caret-down" :class="{active:pulishTimeOrder}" @click="pulishTimeOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!TimeOrder}" @click="TimeOrder=false"></i><i class="fa fa-caret-down" :class="{active:TimeOrder}" @click="TimeOrder=true"></i>
                         </span>
                     </div>
-                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">昨日采集</span></div>
-                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">营业状态</span></div>
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">昨日上传量</span></div>
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">设备类型</span></div>
+                   
+                   <div class="column" style="width:150px;">
+                        <span class="overflow" style="width:150px;position:relative;">
+                            <span style="margin-right:5px;">所属场所</span>
+                            <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="PlaceOrder=false"></i><i class="fa fa-caret-down" :class="{active:PlaceOrder}" @click="PlaceOrder=true"></i>
+                        </span>
+                    </div>
 
                     <div class="column" style="width:150px;">
                         <span class="overflow" style="width:150px;position:relative;">
@@ -106,7 +108,7 @@
                     <div class="column" style="width:150px;">
                         <span class="overflow" style="width:150px;position:relative;">
                             <span style="margin-right:5px;">所属厂商</span>
-                            <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="areaOrder=false"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="areaOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!FirmOrder}" @click="FirmOrder=false"></i><i class="fa fa-caret-down" :class="{active:FirmOrder}" @click="FirmOrder=true"></i>
                         </span>
                     </div>
 
@@ -127,14 +129,14 @@
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="d in data">
-                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">场所编码</span></div>
-                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">场所名称</span></div>
-                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow clickItem" style="width:150px;" @click="terminalDetail(d)">终端概况</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="devieceDetail(d)" style="width:200px;">设备编码</span></div>
+                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">设备名称</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">设备MAC</span></div>
+                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">设备状态</span></div>
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">最近联系时间</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow clickItem" style="width:100px;" @click="collectChart(d)">昨日采集</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">营业状态</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow clickItem" @click="collectChart(d)" style="width:100px;">昨日上传量</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">设备类型</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow clickItem" @click="devicePlaceDetail(d)" style="width:150px;">所属场所</span></div>                          
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属区域</span></div>
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属厂商</span></div>
                         </div>
@@ -158,14 +160,15 @@
 import PlaceSearch from 'components/PlaceSearch'
 import Scroll from  'components/scroll'
 import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
-import TerminalDetail from '../TerminalDetail'
+import DeviceInfoList from '../DeviceInfoList'
 import CollectChart from '../CollectChart'
-import PlaceDetail from '../PlaceDetail'
+import DeviceDetail from '../DeviceDetail'
+import DevicePlaceDetail from '../DevicePlaceDetail'
 
 import {BODY_RESIZE,GetFirm} from '../../../store/mutation-types'
 
 export default {
-  name: 'ListIndex',
+  name: 'DeviceList',
   components:{PlaceSearch,Scroll,MulDropDwon},
   data () {
     return {
@@ -181,10 +184,12 @@ export default {
       data:[1,2,3],
       blnLoading:false,
       pageIndex:0,
-      placeNameOrder:false,
-      placeCodeOrder:false,
-      pulishTimeOrder:false,
+      CodeOrder:false,
+      NameOrder:false,
+      TimeOrder:false,
+      PlaceOrder:false,
       areaOrder:false,
+      FirmOrder:false,
     }
   },
   mounted(){
@@ -208,20 +213,20 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },100);
-        this.column_w=$(this.$el).width()-1290;
+        this.column_w=$(this.$el).width()-1280;
     },
     //场所详情
-    placeDetail(d){
+    devieceDetail(d){
         let s=this;
         tool.open(function(){
             let param={
-                title:'场所详情',
+                title:'设备详情(设备名称)',
                 area:'1000px',
                 content:`<div class="place_detail_pop" style="width:100%;height:100%;">
-                            <PlaceDetail />
+                            <DeviceDetail />
                         </div>
                         `,
-                components:{PlaceDetail},
+                components:{DeviceDetail},
                 store:s.$store,
                 context:{
                     blnExecute:false,
@@ -233,18 +238,18 @@ export default {
             return param;
         }());
     },
-    //终端概况详情
-    terminalDetail(d){
+    //设备场所详情
+    devicePlaceDetail(d){
         let s=this;
         tool.open(function(){
             let param={
-                title:'终端列表(场所名称)',
-                area:['1300px','500px'],
+                title:'场所详情',
+                area:['1000px','500px'],
                 content:`<div class="terminaDetail_Num_pop" style="width:100%;height:100%;">
-                            <TerminalDetail />
+                            <DevicePlaceDetail />
                         </div>
                         `,
-                components:{TerminalDetail},
+                components:{DevicePlaceDetail},
                 store:s.$store,
                 context:{
                     blnExecute:false,
@@ -304,52 +309,52 @@ export default {
 
 <style scoped lang="less">
 @import "../../../css/variables.less";
-.ListIndex{width:100%;height:100%;padding:5px;}
-.ListIndex_container{width:100%;height:100%;background-color:white;}
+.DeviceList{width:100%;height:100%;padding:5px;}
+.DeviceList_container{width:100%;height:100%;background-color:white;}
 
-.ListIndex .option_bar{text-align:left;padding:5px 15px;line-height:40px;}
-.ListIndex .option_bar .item{display:inline-block;margin:2px 5px;}
+.DeviceList .option_bar{text-align:left;padding:5px 15px;line-height:40px;}
+.DeviceList .option_bar .item{display:inline-block;margin:2px 5px;}
 
-.ListIndex .right_option_bar {float:right;}
-.ListIndex .right_option_bar .item{display:inline-block;margin:2px 5px;}
-.ListIndex .right_option_bar .item:hover{cursor:pointer;}
-html{.TCol(~".ListIndex .right_option_bar .item:hover");}
+.DeviceList .right_option_bar {float:right;}
+.DeviceList .right_option_bar .item{display:inline-block;margin:2px 5px;}
+.DeviceList .right_option_bar .item:hover{cursor:pointer;}
+html{.TCol(~".DeviceList .right_option_bar .item:hover");}
 
-.ListIndex .cursor{cursor:pointer;}
+.DeviceList .cursor{cursor:pointer;}
 
-.ListIndex .page_container{.border('top');}
+.DeviceList .page_container{.border('top');}
 
-.ListIndex .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
-.ListIndex .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
-.ListIndex .fa-caret-up:hover,
-.ListIndex .fa-caret-down:hover{
+.DeviceList .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
+.DeviceList .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+.DeviceList .fa-caret-up:hover,
+.DeviceList .fa-caret-down:hover{
     color:white;
 }
 
-.ListIndex .clickItem:hover{cursor:pointer;}
-html{.TCol(~".ListIndex .clickItem");}
+.DeviceList .clickItem:hover{cursor:pointer;}
+html{.TCol(~".DeviceList .clickItem");}
 
 //列表显示样式
 @header_H:40px;
-.ListIndex .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
-html{.TCol(~".ListIndex .table_header .row",'bg');}
+.DeviceList .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
+html{.TCol(~".DeviceList .table_header .row",'bg');}
 
-.ListIndex .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
-.ListIndex .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');background-color:white;}
-.ListIndex .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
-html{.TCol(~".ListIndex .table_header .column .sort_item .triangle-up:hover",'bbc');}
+.DeviceList .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+.DeviceList .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');background-color:white;}
+.DeviceList .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
+html{.TCol(~".DeviceList .table_header .column .sort_item .triangle-up:hover",'bbc');}
 
-.ListIndex .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
-html{.TCol(~".ListIndex .table_header .column .sort_item .triangle-down:hover",'btc');}
+.DeviceList .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
+html{.TCol(~".DeviceList .table_header .column .sort_item .triangle-down:hover",'btc');}
 
-html{.TCol(~".ListIndex .table_header .column .sort_item .triangle-up.active",'bbc');}
+html{.TCol(~".DeviceList .table_header .column .sort_item .triangle-up.active",'bbc');}
 
-html{.TCol(~".ListIndex .table_header .column .sort_item .triangle-down.active",'btc');}
+html{.TCol(~".DeviceList .table_header .column .sort_item .triangle-down.active",'btc');}
 
-.ListIndex .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
-.ListIndex .table_body{width:100%;display:table;width:100%;border:none;}
-.ListIndex .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+.DeviceList .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
+.DeviceList .table_body{width:100%;display:table;width:100%;border:none;}
+.DeviceList .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
 
-.ListIndex .table_body .column:first-child{.border('left');}
+.DeviceList .table_body .column:first-child{.border('left');}
 .overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
 </style>

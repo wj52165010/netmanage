@@ -1,12 +1,12 @@
-<!-- 列表主页页面组件 -->
+<!-- 场所列表页页面组件 -->
 <template>
-    <div class="ListIndex">
-        <div class="ListIndex_container">
+    <div class="PlaceList">
+        <div class="PlaceList_container">
 
             <!--操作栏-->
             <div class="option_bar">
                 <div class="item">
-                    <span>场所范围:</span>
+                    <span>场所编码:</span>
                     <div style="display:inline-block;">
                         <PlaceSearch :blnClear="true" :blnLike="true" c_searchKind="1" ccontext="place"  @place_res="placechange"></PlaceSearch>
                     </div>
@@ -17,15 +17,10 @@
                     </div>
                 </div>
                 <div class="item">
-                    <span>派出所:</span><div style="display:inline-block;">
-                        <PlaceSearch :blnClear="true" :blnLike="true" c_searchKind="2" ccontext="policy"  @place_res="placechange"></PlaceSearch>
-                    </div>
-                </div>
-                <div class="item">
-                    <span>场所状态:</span><div style="display:inline-block;">
-                    <el-select v-model="placeState" placeholder="请选择" :clearable="true">
+                    <span>场所类型:</span><div style="display:inline-block;">
+                        <el-select  placeholder="请选择" :clearable="true">
                             <el-option
-                                v-for="kind in placeStates"
+                                v-for="kind in []"
                                 :key="kind.code"
                                 :label="kind.name"
                                 :value="kind.value">
@@ -33,12 +28,11 @@
                         </el-select>
                     </div>
                 </div>
-
                 <div class="item">
-                    <span>营业状态:</span><div style="display:inline-block;">
-                    <el-select v-model="businessState" placeholder="请选择" :clearable="true">
+                    <span>场所状态:</span><div style="display:inline-block;">
+                        <el-select v-model="placeState" placeholder="请选择" :clearable="true">
                             <el-option
-                                v-for="kind in businessStates"
+                                v-for="kind in placeStates"
                                 :key="kind.code"
                                 :label="kind.name"
                                 :value="kind.value">
@@ -83,8 +77,8 @@
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
                     <div class="column" style="width:150px;">
                         <span class="overflow" style="width:150px;">
-                            终端概况
-                            <el-tooltip placement="top" content="申报终端/检测终端/在线终端"><i class="fa fa-question-circle" /></el-tooltip>
+                            设备概况
+                            <el-tooltip placement="top" content="在线设备/异常设备/离线设备"><i class="fa fa-question-circle" /></el-tooltip>
                         </span>
                     </div>
                     <div class="column" style="width:150px;">
@@ -95,6 +89,7 @@
                     </div>
                     <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">昨日采集</span></div>
                     <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">营业状态</span></div>
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">场所类型</span></div>
 
                     <div class="column" style="width:150px;">
                         <span class="overflow" style="width:150px;position:relative;">
@@ -135,6 +130,7 @@
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">最近联系时间</span></div>
                             <div class="column" style="width:100px;"><span class="overflow clickItem" style="width:100px;" @click="collectChart(d)">昨日采集</span></div>
                             <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">营业状态</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">场所类型</span></div>
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属区域</span></div>
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属厂商</span></div>
                         </div>
@@ -158,14 +154,14 @@
 import PlaceSearch from 'components/PlaceSearch'
 import Scroll from  'components/scroll'
 import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
-import TerminalDetail from '../TerminalDetail'
+import DeviceInfoList from '../DeviceInfoList'
 import CollectChart from '../CollectChart'
 import PlaceDetail from '../PlaceDetail'
 
 import {BODY_RESIZE,GetFirm} from '../../../store/mutation-types'
 
 export default {
-  name: 'ListIndex',
+  name: 'PlaceList',
   components:{PlaceSearch,Scroll,MulDropDwon},
   data () {
     return {
@@ -208,7 +204,7 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },100);
-        this.column_w=$(this.$el).width()-1290;
+        this.column_w=$(this.$el).width()-1390;
     },
     //场所详情
     placeDetail(d){
@@ -233,18 +229,18 @@ export default {
             return param;
         }());
     },
-    //终端概况详情
+    //设备概况详情
     terminalDetail(d){
         let s=this;
         tool.open(function(){
             let param={
-                title:'终端列表(场所名称)',
-                area:['1300px','500px'],
+                title:'挂载设备详情(场所名称)',
+                area:['1000px','500px'],
                 content:`<div class="terminaDetail_Num_pop" style="width:100%;height:100%;">
-                            <TerminalDetail />
+                            <DeviceInfoList />
                         </div>
                         `,
-                components:{TerminalDetail},
+                components:{DeviceInfoList},
                 store:s.$store,
                 context:{
                     blnExecute:false,
@@ -304,52 +300,52 @@ export default {
 
 <style scoped lang="less">
 @import "../../../css/variables.less";
-.ListIndex{width:100%;height:100%;padding:5px;}
-.ListIndex_container{width:100%;height:100%;background-color:white;}
+.PlaceList{width:100%;height:100%;padding:5px;}
+.PlaceList_container{width:100%;height:100%;background-color:white;}
 
-.ListIndex .option_bar{text-align:left;padding:5px 15px;line-height:40px;}
-.ListIndex .option_bar .item{display:inline-block;margin:2px 5px;}
+.PlaceList .option_bar{text-align:left;padding:5px 15px;line-height:40px;}
+.PlaceList .option_bar .item{display:inline-block;margin:2px 5px;}
 
-.ListIndex .right_option_bar {float:right;}
-.ListIndex .right_option_bar .item{display:inline-block;margin:2px 5px;}
-.ListIndex .right_option_bar .item:hover{cursor:pointer;}
-html{.TCol(~".ListIndex .right_option_bar .item:hover");}
+.PlaceList .right_option_bar {float:right;}
+.PlaceList .right_option_bar .item{display:inline-block;margin:2px 5px;}
+.PlaceList .right_option_bar .item:hover{cursor:pointer;}
+html{.TCol(~".PlaceList .right_option_bar .item:hover");}
 
-.ListIndex .cursor{cursor:pointer;}
+.PlaceList .cursor{cursor:pointer;}
 
-.ListIndex .page_container{.border('top');}
+.PlaceList .page_container{.border('top');}
 
-.ListIndex .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
-.ListIndex .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
-.ListIndex .fa-caret-up:hover,
-.ListIndex .fa-caret-down:hover{
+.PlaceList .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
+.PlaceList .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+.PlaceList .fa-caret-up:hover,
+.PlaceList .fa-caret-down:hover{
     color:white;
 }
 
-.ListIndex .clickItem:hover{cursor:pointer;}
-html{.TCol(~".ListIndex .clickItem");}
+.PlaceList .clickItem:hover{cursor:pointer;}
+html{.TCol(~".PlaceList .clickItem");}
 
 //列表显示样式
 @header_H:40px;
-.ListIndex .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
-html{.TCol(~".ListIndex .table_header .row",'bg');}
+.PlaceList .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
+html{.TCol(~".PlaceList .table_header .row",'bg');}
 
-.ListIndex .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
-.ListIndex .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');background-color:white;}
-.ListIndex .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
-html{.TCol(~".ListIndex .table_header .column .sort_item .triangle-up:hover",'bbc');}
+.PlaceList .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+.PlaceList .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');background-color:white;}
+.PlaceList .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
+html{.TCol(~".PlaceList .table_header .column .sort_item .triangle-up:hover",'bbc');}
 
-.ListIndex .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
-html{.TCol(~".ListIndex .table_header .column .sort_item .triangle-down:hover",'btc');}
+.PlaceList .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
+html{.TCol(~".PlaceList .table_header .column .sort_item .triangle-down:hover",'btc');}
 
-html{.TCol(~".ListIndex .table_header .column .sort_item .triangle-up.active",'bbc');}
+html{.TCol(~".PlaceList .table_header .column .sort_item .triangle-up.active",'bbc');}
 
-html{.TCol(~".ListIndex .table_header .column .sort_item .triangle-down.active",'btc');}
+html{.TCol(~".PlaceList .table_header .column .sort_item .triangle-down.active",'btc');}
 
-.ListIndex .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
-.ListIndex .table_body{width:100%;display:table;width:100%;border:none;}
-.ListIndex .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+.PlaceList .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
+.PlaceList .table_body{width:100%;display:table;width:100%;border:none;}
+.PlaceList .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
 
-.ListIndex .table_body .column:first-child{.border('left');}
+.PlaceList .table_body .column:first-child{.border('left');}
 .overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
 </style>

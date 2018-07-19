@@ -59,7 +59,7 @@
                 <div class="table_body">
                     <div class="row" v-for="d in data">
                         <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
-                        <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">场所编码</span></div>
+                        <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">场所编码</span></div>
                         <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所名称</span></div>
                         <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">所属区域</span></div>
                         <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">可用次数</span></div>
@@ -93,6 +93,8 @@
 import PlaceSearch from 'components/PlaceSearch'
 import Scroll from  'components/scroll'
 import RegSetting from './RegSetting'
+import PlaceDetail from '../PlaceDetail'
+
 import {BODY_RESIZE} from '../../../store/mutation-types'
 
 export default {
@@ -129,6 +131,29 @@ export default {
             })
         },100);
         this.column_w=$(this.$el).width()-1050;
+    },
+    //场所详情
+    placeDetail(d){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'场所详情',
+                area:'1000px',
+                content:`<div class="place_detail_pop" style="width:100%;height:100%;">
+                            <PlaceDetail />
+                        </div>
+                        `,
+                components:{PlaceDetail},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
     },
     //登记配置
     regSetting(){
@@ -275,6 +300,8 @@ html{.TCol(~".ElectronicReg .right_option_bar .item:hover");}
 .ElectronicReg .table_body .item{cursor:pointer;}
 html{.TCol(~".ElectronicReg .table_body .item:hover");}
 
+.ElectronicReg .clickItem:hover{cursor:pointer;}
+html{.TCol(~".ElectronicReg .clickItem");}
 //列表显示样式
 @header_H:40px;
 .ElectronicReg .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
