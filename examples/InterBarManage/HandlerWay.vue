@@ -7,7 +7,7 @@
                     <div class="item" v-for="d in data">
                         <!--显示项-->
                         <div class="showItem">
-                            sdsadasdasdddddddddddddddddddddddddddddddddddddddddddddsdsadasdasddddddddddddddddddddddddddddddddddddddddddddd
+                            {{d.content}}
                         </div>
                         <div style="diplay:table">
                             <div class="statue_bar">{{d.name}}</div>
@@ -49,11 +49,11 @@ export default {
       bodyResizeSub:null,
       blnShowTip:false,
       data:[
-          {name:'通知'},
-          {name:'处置'},
-          {name:'回执'},
-          {name:'已完成'},
-          {name:'审核中'}
+          {name:'通知',content:'系统已于2018年5月8日20:00:00时下发通知至 张三（138xxxxxxx）'},
+          {name:'处置',content:'张三已于2018年5月9日20:00:00时开始处置'},
+          {name:'回执',content:'张三已于2018年5月9日回执：该场所故障由设备进水导致，设备已损坏无法修复'},
+          {name:'已完成',content:'张三已于2018年5月9日解决完成：设备已修复'},
+          {name:'审核中',content:'系统已检测到场所数据恢复，处置完成'}
         ],
     
     }

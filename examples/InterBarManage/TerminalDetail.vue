@@ -40,15 +40,15 @@
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="d in data">
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">证件类型</span></div>
-                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">证件号</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">姓名</span></div>
-                            <div class="column" style="width:60px;"><span class="overflow" style="width:60px;">名族</span></div>
-                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">地址</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">终端IP</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">终端MAC</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">采集时间</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">终端状态</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.cardKind}}</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.card}}</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.name}}</span></div>
+                            <div class="column" style="width:60px;"><span class="overflow" style="width:60px;">{{d.nation}}</span></div>
+                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.address}}</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.ip}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.mac}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.time}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.state}}</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -69,7 +69,9 @@ export default {
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
-      data:[1,2,3],
+      data:[
+        {cardKind:'身份证',card:'5002351995XXXXXXXX',name:'张三',nation:'汉',address:'重庆市XX县XX镇',ip:'192.168.1.100',mac:'XX-XX-XX-XX',time:'2017-12-14 16:18:09',state:'在线'}
+      ],
       blnLoading:false,
       nameOrder:false
     }
@@ -107,6 +109,9 @@ export default {
 
 .TerminalDetail .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .TerminalDetail .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.TerminalDetail .fa-caret-up.active,
+.TerminalDetail .fa-caret-down.active,
 .TerminalDetail .fa-caret-up:hover,
 .TerminalDetail .fa-caret-down:hover{
     color:white;

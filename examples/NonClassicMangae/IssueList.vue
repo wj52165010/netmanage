@@ -40,8 +40,8 @@
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="d in data">
-                            <div class="column" style="width:200px;"><span class="overflow " style="width:200px;">发布时间</span></div>
-                            <div class="column"><span class="overflow " :style="{width:column_w+'px'}">问题详情</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow " style="width:200px;">{{d.time}}</span></div>
+                            <div class="column"><span class="overflow " :style="{width:column_w+'px'}" :title="d.content">{{d.content}}</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -75,7 +75,9 @@ export default {
         column_w:0,
         bodyResizeSub:null,
         bodyH:0,
-        data:[1,2,3],
+        data:[
+            {time:'2018-06-05 17:13:30',content:''}
+        ],
         blnLoading:false,
         pageIndex:0,
         timeOrder:false,
@@ -129,12 +131,15 @@ html{.TCol(~".IssueList .table_body .item:hover");}
 
 .IssueList .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .IssueList .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.IssueList .fa-caret-up.active,
+.IssueList .fa-caret-down.active,
 .IssueList .fa-caret-up:hover,
 .IssueList .fa-caret-down:hover{
     color:white;
 }
 
-.IssueList .clickItem:hover{cursor:pointer;}
+.IssueList .clickItem:hover{cursor:pointer;text-decoration:underline;}
 html{.TCol(~".IssueList .clickItem");}
 
 //列表显示样式

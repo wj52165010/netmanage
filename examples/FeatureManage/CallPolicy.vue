@@ -47,13 +47,13 @@
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="d in data">
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">报警时间</span></div>
-                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">报警原因</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">通知方式</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow clickItem" @click="lookState(d)" style="width:120px; clickItem">处置状态</span></div> 
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">处置剩余时间</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">处置人</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">联系电话</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.time}}</span></div>
+                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}" :title="d.reasion">{{d.reasion}}</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.noteway}}</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow clickItem" @click="lookState(d)" style="width:120px; clickItem">{{d.handlerState}}</span></div> 
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.handlerTime}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.user}}</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.phone}}</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -97,7 +97,11 @@ export default {
         column_w:0,
         bodyResizeSub:null,
         bodyH:0,
-        data:[1,2,3],
+        data:[
+            {time:'2018-06-06 17:13:30',reasion:'虚拟身份采集异常，未检测到虚拟身份',noteway:'自动通知',handlerState:'未开始',handlerTime:'2天14小时',user:'张三',phone:'138xxxxxxxx'},
+            {time:'2018-06-06 17:13:30',reasion:'以超过7天未联系，最后联系时间为xx-xx-xx xx:xx:xx',noteway:'自动通知',handlerState:'未开始',handlerTime:'2天14小时',user:'张三',phone:'138xxxxxxxx'},
+            {time:'2018-06-06 17:13:30',reasion:'数据采集波动',noteway:'自动通知',handlerState:'不需要处置',handlerTime:'2天14小时',user:'张三',phone:'138xxxxxxxx'},
+        ],
         blnLoading:false,
         pageIndex:0,
         blnShowPop:false,
@@ -157,12 +161,15 @@ html{.TCol(~".CallPolicy .table_body .item:hover");}
 
 .CallPolicy .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .CallPolicy .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.CallPolicy .fa-caret-up.active,
+.CallPolicy .fa-caret-down.active,
 .CallPolicy .fa-caret-up:hover,
 .CallPolicy .fa-caret-down:hover{
     color:white;
 }
 
-.CallPolicy .clickItem:hover{cursor:pointer;}
+.CallPolicy .clickItem:hover{cursor:pointer;text-decoration:underline;}
 html{.TCol(~".CallPolicy .clickItem");}
 
 //列表显示样式
