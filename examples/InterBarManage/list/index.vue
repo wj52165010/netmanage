@@ -25,8 +25,8 @@
                     <span>场所状态:</span><div style="display:inline-block;">
                     <el-select v-model="placeState" placeholder="请选择" :clearable="true">
                             <el-option
-                                v-for="kind in placeStates"
-                                :key="kind.code"
+                                v-for="kind in dict_tables.device_state || []"
+                                :key="kind.value"
                                 :label="kind.name"
                                 :value="kind.value">
                             </el-option>
@@ -127,16 +127,16 @@
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="d in data">
-                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">场所编码</span></div>
-                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">场所名称</span></div>
-                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow clickItem" style="width:150px;" @click="terminalDetail(d)">终端概况</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">最近联系时间</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow clickItem" style="width:100px;" @click="collectChart(d)">昨日采集</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">营业状态</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属区域</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属厂商</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
+                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.address}}</span></div>
+                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow clickItem" style="width:150px;" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.time}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow clickItem" style="width:100px;" @click="collectChart(d)">{{d.collect}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.businessState}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.region}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.firm}}</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -162,13 +162,14 @@ import TerminalDetail from '../TerminalDetail'
 import CollectChart from '../CollectChart'
 import PlaceDetail from '../PlaceDetail'
 
-import {BODY_RESIZE,GetFirm} from '../../../store/mutation-types'
+import {BODY_RESIZE,GetFirm,getDictTables} from '../../../store/mutation-types'
 
 export default {
   name: 'ListIndex',
   components:{PlaceSearch,Scroll,MulDropDwon},
   data () {
     return {
+      dict_tables:{},
       placeState:'',
       placeStates:[],
       businessState:'',
@@ -178,7 +179,11 @@ export default {
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
-      data:[1,2,3],
+      data:[
+          {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'3天前',collect:'1000',businessState:'装机开业',region:'南岸区',firm:'爱思网安'},
+          {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'offline',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'3天前',collect:'1000',businessState:'装机开业',region:'南岸区',firm:'爱思网安'},
+          {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'abnormal',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'3天前',collect:'1000',businessState:'装机开业',region:'南岸区',firm:'爱思网安'},
+        ],
       blnLoading:false,
       pageIndex:0,
       placeNameOrder:false,
@@ -190,6 +195,14 @@ export default {
   mounted(){
    this.loadData();
    this.layout();
+   
+   //获取数据来源（下拉框序列化）
+    this.$store.dispatch(getDictTables).then(res=>{
+        if(res.msg.code!='successed')return;
+        this.dict_tables= res.biz_body;
+    });
+
+
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
        this.bodyResizeSub=sub
    },sub:()=>{
@@ -297,7 +310,24 @@ export default {
     placechange(query,val){
         let res =_.flatten(_.map(val,v=>{return _.map(v,i=>i.code)}));
         console.log(res);
-    }
+    },
+    //转化场所状态
+    converPlaceState(v){
+        let res={};
+        switch(v){
+            case 'online':
+                res={name:'在线',color:'#bee35f'};
+            break;
+            case 'offline':
+                res={name:'离线',color:'#999999'};
+            break;
+            case 'abnormal':
+                res={name:'异常',color:'#ffb937'};
+            break;
+        }
+
+        return res;
+    },
   }
 }
 </script>
@@ -321,12 +351,15 @@ html{.TCol(~".ListIndex .right_option_bar .item:hover");}
 
 .ListIndex .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .ListIndex .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.ListIndex .fa-caret-up.active,
+.ListIndex .fa-caret-down.active,
 .ListIndex .fa-caret-up:hover,
 .ListIndex .fa-caret-down:hover{
     color:white;
 }
 
-.ListIndex .clickItem:hover{cursor:pointer;}
+.ListIndex .clickItem:hover{cursor:pointer;text-decoration:underline;}
 html{.TCol(~".ListIndex .clickItem");}
 
 //列表显示样式

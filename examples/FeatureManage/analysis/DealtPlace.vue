@@ -68,7 +68,7 @@
             <!--列表头-->
             <div class="table_header">
                 <div class="row">
-                    <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
+                    <div class="column cursor" style="width:50px;" @click="selAll()"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
 
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
@@ -128,26 +128,32 @@
                     <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
                 </div>
                 <!--暂无数据-->
-                <div v-if="data.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
+                <div v-if="viewData.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
                     <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
                 </div>
 
-                <Scroll :listen="data" ref="scroll">
+                <Scroll :listen="viewData" ref="scroll">
                     <div class="table_body">
-                        <div class="row" v-for="d in data">
-                            <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
-                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">场所编码</span></div>
-                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">场所名称</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">所属厂商</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">所属区域</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">紧急分类</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" @click="terminalDetail(d)">终端概况</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">最近联系时间</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow clickItem" style="width:80px;" @click="collectChart(d)">昨日采集</span></div>
-                            <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="callPolicy(d)">报警原因</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">通知方式</span></div>  
-                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" @click="handerWay(d)">处置状态</span></div> 
+                        <div class="row" v-for="(d,i) in viewData">
+                            <div class="column cursor" style="width:50px;" @click="selItem(d,i)"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':d.checked,'fa fa-square-o':!d.checked}"></i></span></div>
+                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.firm}}</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.region}}</span></div>
+                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converKind(d.kind).color}">{{converKind(d.kind).name}}</span></div>
+                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
+                            <div class="column" style="width:120px;">
+                                <span class="overflow clickItem" style="width:120px;" @click="terminalDetail(d)">
+                                    <span style="color:#bee35f">{{d.declareTerminal}}</span>/
+                                    <span style="color:red">{{d.detectionTerminal}}</span>/
+                                    <span style="color:#999999">{{d.onlineTerminal}}</span>
+                                </span>
+                            </div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.time}}</span></div>
+                            <div class="column" style="width:80px;"><span class="overflow clickItem" style="width:80px;" @click="collectChart(d)">{{d.collect}}</span></div>
+                            <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="callPolicy(d)">{{d.reasion}}</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.noteway}}</span></div>  
+                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" @click="handerWay(d)">{{d.handlerState}}</span></div> 
                         </div>
                     </div>
                 </Scroll>
@@ -189,7 +195,11 @@ export default {
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
-      data:[1,2,3],
+      data:[
+        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'severity',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:6000,reasion:'场所已离线24小时',noteway:'自动通知',handlerState:'处置中'},
+        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'general',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:6000,reasion:'场所已离线24小时',noteway:'自动通知',handlerState:'处置中'},
+        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'ignore',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:6000,reasion:'场所已离线24小时',noteway:'自动通知',handlerState:'处置中'},
+      ],
       blnLoading:false,
       pageIndex:0,
       placeOrder:false,
@@ -198,6 +208,14 @@ export default {
       areaOrder:false,
       timeOrder:false,
     }
+  },
+  computed:{
+      viewData(){
+        return _.map(this.data,d=>{d.checked=d.checked || false; return d;  })
+      },
+      blnAllSel(){
+        return !_.find(this.data,d=>!d.checked);
+      }
   },
   mounted(){
 
@@ -227,6 +245,15 @@ export default {
             })
         },500);
         this.column_w=$(this.$el).width()-1410 -10;
+    },
+    //全选/取消全选
+    selAll(){
+        this.data = _.map(this.data,d=>{ d.checked=!this.blnAllSel; return d });
+    },
+    //单选
+    selItem(d,i){
+        d.checked=!d.checked;
+        this.data.splice(i,1,d);
     },
     //场所详情
     placeDetail(d){
@@ -356,7 +383,41 @@ export default {
     placechange(query,val){
         let res =_.flatten(_.map(val,v=>{return _.map(v,i=>i.code)}));
         console.log(res);
-    }
+    },
+    //转化紧急分类
+    converKind(v){
+        let res={};
+        switch(v){
+            case 'severity':
+                res={name:'严重',color:'#e94840'};
+            break;
+            case 'general':
+                res={name:'一般',color:'#ff9600'};
+            break;
+            case 'ignore':
+                res={name:'忽略',color:'#3197d8'};
+            break;
+        }
+
+        return res;
+    },
+    //转化场所状态
+    converPlaceState(v){
+        let res={};
+        switch(v){
+            case 'online':
+                res={name:'在线',color:'#bee35f'};
+            break;
+            case 'offline':
+                res={name:'离线',color:'#999999'};
+            break;
+            case 'abnormal':
+                res={name:'异常',color:'#ffb937'};
+            break;
+        }
+
+        return res;
+    },
   }
 }
 </script>
@@ -384,12 +445,15 @@ html{.TCol(~".DealtPlace .table_body .item:hover");}
 
 .DealtPlace .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .DealtPlace .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.DealtPlace .fa-caret-up.active,
+.DealtPlace .fa-caret-down.active,
 .DealtPlace .fa-caret-up:hover,
 .DealtPlace .fa-caret-down:hover{
     color:white;
 }
 
-.DealtPlace .clickItem:hover{cursor:pointer;}
+.DealtPlace .clickItem:hover{cursor:pointer;text-decoration:underline;}
 html{.TCol(~".DealtPlace .clickItem");}
 
 //列表显示样式

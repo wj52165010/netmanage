@@ -49,7 +49,7 @@
          <!--列表头-->
         <div class="table_header">
             <div class="row">
-                <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
+                <div class="column cursor" style="width:50px;" @click="selAll()"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
 
                 <div class="column" style="width:200px;">
                     <span class="overflow" style="width:200px;position:relative;">
@@ -96,24 +96,24 @@
                 <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
             </div>
             <!--暂无数据-->
-            <div v-if="data.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
+            <div v-if="viewData.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
                 <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
             </div>
 
-            <Scroll :listen="data" ref="scroll">
+            <Scroll :listen="viewData" ref="scroll">
                 <div class="table_body">
-                    <div class="row" v-for="d in data">
-                        <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
-                        <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">场所编码</span></div>
-                        <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所名称</span></div>
-                        <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">执行状态</span></div>
-                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">负责人姓名</span></div>
-                        <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">负责人电话</span></div>
-                        <div class="column" style="width:250px;"><span class="overflow" style="width:250px;">停业时效</span></div>
-                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">发布人</span></div>
-                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">发布时间</span></div>
-                        <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">停业原因</span></div>
-                        <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属区域</span></div>
+                    <div class="row" v-for="(d,i) in viewData">
+                        <div class="column cursor" style="width:50px;" @click="selItem(d,i)"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':d.checked,'fa fa-square-o':!d.checked}"></i></span></div>
+                        <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
+                        <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.name}}</span></div>
+                        <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.state}}</span></div>
+                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.user}}</span></div>
+                        <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.phone}}</span></div>
+                        <div class="column" style="width:250px;"><span class="overflow" style="width:250px;">{{d.closeTime}}</span></div>
+                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.publishUser}}</span></div>
+                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.publishTime}}</span></div>
+                        <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.closeReason}}</span></div>
+                        <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.region}}</span></div>
                     </div>
                 </div>
             </Scroll>
@@ -150,7 +150,11 @@ export default {
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
-      data:[1,2,3],
+      data:[
+          {code:'50099910000005',name:'重庆智多测试部',state:'执行中',user:'张三',phone:'138xxxxxxx',closeTime:'2017-12-06 10:53—2017-12-07 10:53',publishUser:'产品部',publishTime:'2017-12-04 17:09',closeReason:'',region:'南岸区'},
+          {code:'50099910000005',name:'重庆智多测试部',state:'执行中',user:'张三',phone:'138xxxxxxx',closeTime:'2017-12-06 10:53—2017-12-07 10:53',publishUser:'产品部',publishTime:'2017-12-04 17:09',closeReason:'',region:'南岸区'},
+          {code:'50099910000005',name:'重庆智多测试部',state:'执行中',user:'张三',phone:'138xxxxxxx',closeTime:'2017-12-06 10:53—2017-12-07 10:53',publishUser:'产品部',publishTime:'2017-12-04 17:09',closeReason:'',region:'南岸区'}
+        ],
       blnLoading:false,
       pageIndex:0,
       placeNameOrder:false,
@@ -160,6 +164,14 @@ export default {
       states:[],
       state:'',
     }
+  },
+  computed:{
+      viewData(){
+        return _.map(this.data,d=>{d.checked=d.checked || false; return d;  })
+      },
+      blnAllSel(){
+        return !_.find(this.data,d=>!d.checked);
+      }
   },
   mounted(){
    this.layout();
@@ -182,6 +194,15 @@ export default {
             })
         },100);
         this.column_w=$(this.$el).width()-1360;
+    },
+    //全选/取消全选
+    selAll(){
+        this.data = _.map(this.data,d=>{ d.checked=!this.blnAllSel; return d });
+    },
+    //单选
+    selItem(d,i){
+        d.checked=!d.checked;
+        this.data.splice(i,1,d);
     },
     //场所详情
     placeDetail(d){
@@ -315,12 +336,15 @@ html{.TCol(~".ClosePlan .right_option_bar .item:hover");}
 
 .ClosePlan .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .ClosePlan .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.ClosePlan .fa-caret-up.active,
+.ClosePlan .fa-caret-down.active,
 .ClosePlan .fa-caret-up:hover,
 .ClosePlan .fa-caret-down:hover{
     color:white;
 }
 
-.ClosePlan .clickItem:hover{cursor:pointer;}
+.ClosePlan .clickItem:hover{cursor:pointer;text-decoration:underline;}
 html{.TCol(~".ClosePlan .clickItem");}
 
 //列表显示样式

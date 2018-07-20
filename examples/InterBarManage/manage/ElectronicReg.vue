@@ -32,10 +32,29 @@
         <!--列表头-->
         <div class="table_header">
             <div class="row">
-                <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
-                <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">场所编码</span></div>
-                <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所名称</span></div>
-                <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">所属区域</span></div>
+                <div class="column cursor" style="width:50px;" @click="selAll()"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
+    
+                <div class="column" style="width:200px;">
+                    <span class="overflow" style="width:200px;position:relative;">
+                        <span style="margin-right:5px;">场所编码</span>
+                        <i class="fa fa-caret-up" :class="{active:!placeCodeOrder}" @click="placeCodeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeCodeOrder}" @click="placeCodeOrder=true"></i>
+                    </span>
+                </div>
+
+                <div class="column" >
+                    <span class="overflow" style="position:relative;" :style="{width:column_w+'px'}">
+                        <span style="margin-right:5px;">场所名称</span>
+                        <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="placeNameOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="placeNameOrder=true"></i>
+                    </span>
+                </div>
+
+                <div class="column" style="width:120px;">
+                    <span class="overflow" style="width:120px;position:relative;">
+                        <span style="margin-right:5px;">所属区域</span>
+                        <i class="fa fa-caret-up" :class="{active:!placeReginOrder}" @click="placeReginOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeReginOrder}" @click="placeReginOrder=true"></i>
+                    </span>
+                </div>
+
                 <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">可用次数</span></div>
                 <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">已用次数</span></div>
                 <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">最后一次重置时间</span></div>
@@ -51,25 +70,25 @@
                 <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
             </div>
             <!--暂无数据-->
-            <div v-if="data.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
+            <div v-if="viewData.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
                 <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
             </div>
 
-            <Scroll :listen="data" ref="scroll">
+            <Scroll :listen="viewData" ref="scroll">
                 <div class="table_body">
-                    <div class="row" v-for="d in data">
-                        <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
-                        <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">场所编码</span></div>
-                        <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所名称</span></div>
-                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">所属区域</span></div>
-                        <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">可用次数</span></div>
-                        <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">已用次数</span></div>
-                        <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">最后一次重置时间</span></div>
-                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">重置人</span></div>
+                    <div class="row" v-for="(d,i) in viewData">
+                        <div class="column cursor" style="width:50px;" @click="selItem(d,i)"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':d.checked,'fa fa-square-o':!d.checked}"></i></span></div>
+                        <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
+                        <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.name}}</span></div>
+                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.region}}</span></div>
+                        <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">{{d.uableCount}}</span></div>
+                        <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">{{d.uableCount}}</span></div>
+                        <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.logtime}}</span></div>
+                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.user}}</span></div>
                         <div class="column" style="width:200px;">
                             <span class="overflow" style="width:200px;">
-                                <div class="item" @click="editNum(2)"  style="display:inline-block;"><i class="fa fa-pencil-square-o" /> 编辑可用</div>
-                                <div class="item" @click="resetNum(2)" style="display:inline-block;margin-left:10px;"><i class="fa fa-copyright" /> 重置已用</div>
+                                <div class="item" @click="editNum(d)"  style="display:inline-block;"><i class="fa fa-pencil-square-o" /> 编辑可用</div>
+                                <div class="item" @click="resetNum(d)" style="display:inline-block;margin-left:10px;"><i class="fa fa-copyright" /> 重置已用</div>
                             </span>
                         </div>
                     </div>
@@ -105,10 +124,25 @@ export default {
         column_w:0,
         bodyResizeSub:null,
         bodyH:0,
-        data:[1,2,3],
+        data:[
+            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,usedCount:5,logtime:'2017-12-04 17:09',user:'产品部'},
+            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,usedCount:5,logtime:'2017-12-04 17:09',user:'产品部'},
+            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,usedCount:5,logtime:'2017-12-04 17:09',user:'产品部'}
+        ],
         blnLoading:false,
         pageIndex:0,
+        placeCodeOrder:false,
+        placeNameOrder:false,
+        placeReginOrder:false,
     }
+  },
+  computed:{
+      viewData(){
+        return _.map(this.data,d=>{d.checked=d.checked || false; return d;  })
+      },
+      blnAllSel(){
+        return !_.find(this.data,d=>!d.checked);
+      }
   },
   mounted(){
    this.layout();
@@ -131,6 +165,15 @@ export default {
             })
         },100);
         this.column_w=$(this.$el).width()-1050;
+    },
+    //全选/取消全选
+    selAll(){
+        this.data = _.map(this.data,d=>{ d.checked=!this.blnAllSel; return d });
+    },
+    //单选
+    selItem(d,i){
+        d.checked=!d.checked;
+        this.data.splice(i,1,d);
     },
     //场所详情
     placeDetail(d){
@@ -300,7 +343,17 @@ html{.TCol(~".ElectronicReg .right_option_bar .item:hover");}
 .ElectronicReg .table_body .item{cursor:pointer;}
 html{.TCol(~".ElectronicReg .table_body .item:hover");}
 
-.ElectronicReg .clickItem:hover{cursor:pointer;}
+.ElectronicReg .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
+.ElectronicReg .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.ElectronicReg .fa-caret-up.active,
+.ElectronicReg .fa-caret-down.active,
+.ElectronicReg .fa-caret-up:hover,
+.ElectronicReg .fa-caret-down:hover{
+    color:white;
+}
+
+.ElectronicReg .clickItem:hover{cursor:pointer;text-decoration:underline}
 html{.TCol(~".ElectronicReg .clickItem");}
 //列表显示样式
 @header_H:40px;

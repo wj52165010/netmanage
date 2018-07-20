@@ -129,16 +129,16 @@
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="d in data">
-                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="devieceDetail(d)" style="width:200px;">设备编码</span></div>
-                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">设备名称</span></div>
-                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">设备MAC</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">设备状态</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">最近联系时间</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow clickItem" @click="collectChart(d)" style="width:100px;">昨日上传量</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">设备类型</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow clickItem" @click="devicePlaceDetail(d)" style="width:150px;">所属场所</span></div>                          
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属区域</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属厂商</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="devieceDetail(d)" style="width:200px;">{{d.code}}</span></div>
+                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.name}}</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.mac}}</span></div>
+                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.time}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow clickItem" @click="collectChart(d)" style="width:100px;">{{d.collect}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.kind}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow clickItem" @click="devicePlaceDetail(d)" style="width:150px;">{{d.address}}</span></div>                          
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.region}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.firm}}</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -181,7 +181,11 @@ export default {
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
-      data:[1,2,3],
+      data:[
+        {code:'53011135000127',name:'53011135000127',mac:'XX-XX-XX-XX-XX-XX',state:'online',time:'联系中',collect:6000,kind:'固定采集设备',address:'重庆爱思测试场所',region:'南岸区',firm:'爱思网安'},
+        {code:'53011135000127',name:'53011135000127',mac:'XX-XX-XX-XX-XX-XX',state:'online',time:'联系中',collect:6000,kind:'固定采集设备',address:'重庆爱思测试场所',region:'南岸区',firm:'爱思网安'},
+        {code:'53011135000127',name:'53011135000127',mac:'XX-XX-XX-XX-XX-XX',state:'online',time:'联系中',collect:6000,kind:'固定采集设备',address:'重庆爱思测试场所',region:'南岸区',firm:'爱思网安'},
+      ],
       blnLoading:false,
       pageIndex:0,
       CodeOrder:false,
@@ -292,7 +296,7 @@ export default {
         });
     },
     //处理厂商选择控件的方法
-      firmClick(d){
+    firmClick(d){
         this.Selfirms.push(d);
     },
     //是否包含选中项
@@ -302,7 +306,24 @@ export default {
     placechange(query,val){
         let res =_.flatten(_.map(val,v=>{return _.map(v,i=>i.code)}));
         console.log(res);
-    }
+    },
+    //转化场所状态
+    converPlaceState(v){
+        let res={};
+        switch(v){
+            case 'online':
+                res={name:'在线',color:'#bee35f'};
+            break;
+            case 'offline':
+                res={name:'离线',color:'#999999'};
+            break;
+            case 'abnormal':
+                res={name:'异常',color:'#ffb937'};
+            break;
+        }
+
+        return res;
+    },
   }
 }
 </script>
@@ -326,12 +347,15 @@ html{.TCol(~".DeviceList .right_option_bar .item:hover");}
 
 .DeviceList .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .DeviceList .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.DeviceList .fa-caret-up.active,
+.DeviceList .fa-caret-down.active,
 .DeviceList .fa-caret-up:hover,
 .DeviceList .fa-caret-down:hover{
     color:white;
 }
 
-.DeviceList .clickItem:hover{cursor:pointer;}
+.DeviceList .clickItem:hover{cursor:pointer;text-decoration:underline;}
 html{.TCol(~".DeviceList .clickItem");}
 
 //列表显示样式

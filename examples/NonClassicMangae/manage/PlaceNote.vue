@@ -35,7 +35,7 @@
          <!--列表头-->
         <div class="table_header">
             <div class="row">
-                <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
+                <div class="column cursor" style="width:50px;" @click="selAll()"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
                 <div class="column"><span class="overflow" :style="{width:column_w+'px'}">标题</span></div>
                 <div class="column" style="width:200px;">
                     <span class="overflow" style="width:200px;position:relative;">
@@ -58,20 +58,20 @@
                 <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
             </div>
             <!--暂无数据-->
-            <div v-if="data.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
+            <div v-if="viewData.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
                 <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
             </div>
 
-            <Scroll :listen="data" ref="scroll">
+            <Scroll :listen="viewData" ref="scroll">
                 <div class="table_body">
-                    <div class="row" v-for="d in data">
-                        <div class="column cursor" style="width:50px;"><span class="overflow" style="width:50px;"><i class="fa fa-square-o"></i></span></div>
-                        <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="noteDetail(d)">标题</span></div>
-                        <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">发布时间</span></div>
-                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">发布人</span></div>
-                        <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">通知场所</span></div>
-                        <div class="column" style="width:80px;"><span class="overflow" style="width:200px;">签收状态</span></div>
-                        <div class="column" style="width:200px;"><span class="overflow clickItem" style="width:200px;" @click="loadBag(d)">附件</span></div>
+                    <div class="row" v-for="(d,i) in viewData">
+                        <div class="column cursor" style="width:50px;" @click="selItem(d,i)"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':d.checked,'fa fa-square-o':!d.checked}"></i></span></div>
+                        <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="noteDetail(d)">{{d.name}}</span></div>
+                        <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.pulishTime}}</span></div>
+                        <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.user}}</span></div>
+                        <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">{{d.placeCount}}</span></div>
+                        <div class="column" style="width:80px;"><span class="overflow" style="width:200px;">{{`签收:${d.sign} 未签收:${d.unsign} 回复:${d.reply}`}}</span></div>
+                        <div class="column" style="width:200px;"><span class="overflow " :class="{clickItem:d.accessory}" style="width:200px;" @click="loadBag(d)">{{d.accessory || '未上传附件'}}</span></div>
                         <div class="column" style="width:120px;">
                             <span class="overflow" style="width:100px;">
                                 <div @click="remove(d)" style="cursor:pointer;"><i class="fa fa-remove" style="margin-right:5px;" />删除</div>
@@ -112,11 +112,24 @@ export default {
         column_w:0,
         bodyResizeSub:null,
         bodyH:0,
-        data:[1,2,3],
+        data:[
+            {name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:'图片XXX'},
+            {name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:'图片XXX'},
+            {name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:'图片XXX'},
+            {name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:''},
+        ],
         blnLoading:false,
         pageIndex:0,
         order:false,
     }
+  },
+  computed:{
+      viewData(){
+        return _.map(this.data,d=>{d.checked=d.checked || false; return d;  })
+      },
+      blnAllSel(){
+        return !_.find(this.data,d=>!d.checked);
+      }
   },
   mounted(){
    this.layout();
@@ -139,6 +152,15 @@ export default {
             })
         },100);
         this.column_w=$(this.$el).width()-950;
+    },
+    //全选/取消全选
+    selAll(){
+        this.data = _.map(this.data,d=>{ d.checked=!this.blnAllSel; return d });
+    },
+    //单选
+    selItem(d,i){
+        d.checked=!d.checked;
+        this.data.splice(i,1,d);
     },
     //发布通知
     notices(){
@@ -393,12 +415,15 @@ html{.TCol(~".PlaceNote .right_option_bar .item:hover");}
 
 .PlaceNote .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .PlaceNote .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.PlaceNote .fa-caret-up.active,
+.PlaceNote .fa-caret-down.active,
 .PlaceNote .fa-caret-up:hover,
 .PlaceNote .fa-caret-down:hover{
     color:white;
 }
 
-.PlaceNote .clickItem:hover{cursor:pointer;}
+.PlaceNote .clickItem:hover{cursor:pointer;text-decoration:underline;}
 html{.TCol(~".PlaceNote .clickItem");}
 
 //列表显示样式

@@ -122,17 +122,23 @@
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="d in data">
-                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">场所编码</span></div>
-                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">场所名称</span></div>
-                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow clickItem" style="width:150px;" @click="terminalDetail(d)">终端概况</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">最近联系时间</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow clickItem" style="width:100px;" @click="collectChart(d)">昨日采集</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">营业状态</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">场所类型</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属区域</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">所属厂商</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
+                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.address}}</span></div>
+                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
+                            <div class="column" style="width:150px;">
+                                <span class="overflow clickItem" style="width:150px;" @click="terminalDetail(d)">
+                                    <span style="color:#bee35f">{{d.declareTerminal}}</span>/
+                                    <span style="color:red">{{d.detectionTerminal}}</span>/
+                                    <span style="color:#999999">{{d.onlineTerminal}}</span>
+                                </span>
+                            </div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.time}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow clickItem" style="width:100px;" @click="collectChart(d)">{{d.collect}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.businessState}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.kind}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.region}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.firm}}</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -174,7 +180,11 @@ export default {
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
-      data:[1,2,3],
+      data:[
+        {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'联系中',collect:6000,businessState:'营业',kind:'交通枢纽',region:'南岸区',firm:'爱思网安'},
+        {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'联系中',collect:6000,businessState:'营业',kind:'交通枢纽',region:'南岸区',firm:'爱思网安'},
+        {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'联系中',collect:6000,businessState:'营业',kind:'交通枢纽',region:'南岸区',firm:'爱思网安'},
+      ],
       blnLoading:false,
       pageIndex:0,
       placeNameOrder:false,
@@ -293,7 +303,24 @@ export default {
     placechange(query,val){
         let res =_.flatten(_.map(val,v=>{return _.map(v,i=>i.code)}));
         console.log(res);
-    }
+    },
+    //转化场所状态
+    converPlaceState(v){
+        let res={};
+        switch(v){
+            case 'online':
+                res={name:'在线',color:'#bee35f'};
+            break;
+            case 'offline':
+                res={name:'离线',color:'#999999'};
+            break;
+            case 'abnormal':
+                res={name:'异常',color:'#ffb937'};
+            break;
+        }
+
+        return res;
+    },
   }
 }
 </script>
@@ -317,12 +344,15 @@ html{.TCol(~".PlaceList .right_option_bar .item:hover");}
 
 .PlaceList .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .PlaceList .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.PlaceList .fa-caret-up.active,
+.PlaceList .fa-caret-down.active,
 .PlaceList .fa-caret-up:hover,
 .PlaceList .fa-caret-down:hover{
     color:white;
 }
 
-.PlaceList .clickItem:hover{cursor:pointer;}
+.PlaceList .clickItem:hover{cursor:pointer;text-decoration:underline;}
 html{.TCol(~".PlaceList .clickItem");}
 
 //列表显示样式
