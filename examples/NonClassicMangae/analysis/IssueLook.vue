@@ -120,7 +120,7 @@
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.region}}</span></div>
                             <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.issueKind}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>  
+                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;"  :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>  
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.time}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow clickItem" style="width:80px;" @click="collectChart(d)">{{d.collect}}</span></div>
                             <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="issueDetail(d)">{{d.digest}}</span></div>
@@ -370,7 +370,7 @@ html{.TCol(~".IssueLook .table_body .item:hover");}
     color:white;
 }
 
-.IssueLook .clickItem:hover{cursor:pointer;}
+.IssueLook .clickItem:hover{cursor:pointer;text-decoration:underline;}
 html{.TCol(~".IssueLook .clickItem");}
 
 //列表显示样式

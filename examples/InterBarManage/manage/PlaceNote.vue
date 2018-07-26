@@ -95,6 +95,11 @@
 </template>
 
 <script>
+import '../../../../static/jquery-file-upload/jquery.ui.widget.js'
+import '../../../../static/jquery-file-upload/jquery.iframe-transport.js'
+import '../../../../static/jquery-file-upload/jquery.fileupload.js'
+import '../../../../static/jquery.particleground.js'
+
 import Scroll from  'components/scroll'
 import PlaceTree from 'components/PlaceTreeNew'
 import NoteDetail from './NoteDetail'
@@ -167,6 +172,7 @@ export default {
         let s=this;
         tool.open(function(){
             let layIndex=0;
+            let layeroDom=null;
             let layTitle=['发布内容编辑','选择场所范围'];
             let param={
                 title:'发布场所通知',
@@ -199,19 +205,20 @@ export default {
 
                                 <div class="row" style="margin:0px;margin-bottom:10px;">
                                     <div class="col-md-3" style="padding-top:10px;padding-left:25px;">附件路径:</div>
-                                    <div class="col-md-2" style="padding-left:0px;">
-                                       <button type="button" class="btn btn-primary" >点击上传</button>
+                                    <div class="col-md-2" style="padding-left:0px;position:relative;">
+                                       <button type="button" class="btn btn-primary" @click="uploadBtnClick()">点击上传</button>
+                                       <input id="uploadFile" :data-url="url" name="files[]" type="file" style="width: 0px;position: absolute;top: 0px;right: 0px;bottom: 0px;margin: 0px;opacity: 0;direction: ltr;cursor: pointer;" />
                                     </div>
                                     <div class="col-md-7" style="padding-left:0px;">
-                                        <div style="background-color:#e5e5e5;border-radius:5px;display: inline-block;padding:6px 10px;margin-left: 10px;">
-                                            <i class="fa fa-file-text-o" />xxx.jepg <i class="fa fa-remove" />
+                                        <div style="background-color:#e5e5e5;border-radius:5px;display: inline-block;padding:6px 10px;margin-left: 10px;" v-if="uploadFileName">
+                                            <i class="fa fa-file-text-o" />{{uploadFileName}}<i class="fa fa-remove" @click="uploadFileName=''" style="cursor:pointer;" />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row" style="margin:0px;margin-bottom:10px;">
                                     <div class="col-md-3" style="padding-top:10px;padding-left:25px;"></div>
                                     <div class="col-md-8" style="padding-left:0px;font-size:12px;">
-                                       支持上传不超过5MV的rar、zip、jepg、gif、png、doc、xis、txt文件
+                                       支持上传不超过5MV的rar、zip、jpeg、gif、png、doc、xis、txt文件
                                     </div>
                                 </div>
                             </div>
@@ -257,6 +264,8 @@ export default {
                             return time.getTime() < Date.now() - 8.64e7;
                         }
                     },
+                    url:ser.uri+'/upload/preview',
+                    uploadFileName:'',
                     curPageIndex:0,
                     blnSubmit:false,
                     blnExecute:false,
@@ -274,8 +283,63 @@ export default {
                         
                         param.selfData.curPageIndex++;
                     },
+                    uploadBtnClick(){
+                        layeroDom.find('#uploadFile').click();
+                    },
                     ok_btn(){param.close();},
                     cancel_btn(){param.close();}
+                },
+                success(layero){
+                    layeroDom=layero;
+                    let uploadDom = layero.find('#uploadFile');
+                    let s=param.selfData;
+
+                    //初始化上传插件
+                    uploadDom.fileupload({
+                        dataType:'json',
+                        autoUpload:false,
+                        add:function(e,data){
+                            let allowType=/(\.|\/)(rar|zip|jpeg|gif|png|doc|xis|txt)$/i;
+
+                            var file=data.files[0];//上传文件
+                            if(!file.name.match(allowType)){
+                                tool.info('文件格式,只允许上传(rar、zip、jpeg、gif、png、doc、xis、txt)格式文件!');
+                                return;
+                            }
+
+                            //判断文件大小
+                            if(file.size>5*1024*1024){
+                                tool.info('只能上传5M以内的文件数据!');
+                                return;
+                            }
+
+                            s.uploadFileName=file.name;
+                            
+                            // s.uploadFileName=data.files[0].name;
+                            // s.uploadCurData=data;
+
+                            // data.formData ={
+                            //     encoding:s.encoding,
+                            //     row_seperator:s.rowSep,
+                            //     col_seperator:s.colSep,
+                            //     is_first_column_name:s.containHeader>=1,
+                            // };
+                            
+                            data.submit();
+                            return;
+                        },
+                        done:function(e,data){
+                            if(data.result.msg.code!='successed'){
+                                
+                            }else{//成功
+                               
+                            }
+                        },
+                        progressall: function (e, data) {
+                            var progress = parseInt(data.loaded / data.total * 100, 10);
+                           
+                        }
+                    });
                 }
             };
 

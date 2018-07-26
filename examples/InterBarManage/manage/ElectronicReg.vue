@@ -56,7 +56,6 @@
                 </div>
 
                 <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">可用次数</span></div>
-                <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">已用次数</span></div>
                 <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">最后一次重置时间</span></div>
                 <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">重置人</span></div>
                 <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">操作</span></div>
@@ -82,7 +81,7 @@
                         <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.name}}</span></div>
                         <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.region}}</span></div>
                         <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">{{d.uableCount}}</span></div>
-                        <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">{{d.uableCount}}</span></div>
+
                         <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.logtime}}</span></div>
                         <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.user}}</span></div>
                         <div class="column" style="width:200px;">
@@ -125,9 +124,9 @@ export default {
         bodyResizeSub:null,
         bodyH:0,
         data:[
-            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,usedCount:5,logtime:'2017-12-04 17:09',user:'产品部'},
-            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,usedCount:5,logtime:'2017-12-04 17:09',user:'产品部'},
-            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,usedCount:5,logtime:'2017-12-04 17:09',user:'产品部'}
+            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'},
+            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'},
+            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'}
         ],
         blnLoading:false,
         pageIndex:0,
@@ -164,7 +163,7 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },100);
-        this.column_w=$(this.$el).width()-1050;
+        this.column_w=$(this.$el).width()-970;
     },
     //全选/取消全选
     selAll(){
@@ -259,11 +258,11 @@ export default {
 
         tool.open(function(){
             let param={
-                title:'电子登记配置',
-                area:id>=0?'400px':'800px',
+                title:'编辑可用',
+                area:'400px',
                 content:`<div class="Plan_Setting_pop" style="width:100%;height:100%;">
                             <RegSetting :blnHideCoverPlace="true" :blnHideTargetPlace="blnHideTargetPlace" />
-                            <div class="option_bar" style="text-align:right;padding:15px;">
+                            <div class="option_bar" style="text-align:right;padding:15px;padding-top:0px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
                             </div>
@@ -271,7 +270,7 @@ export default {
                 components:{RegSetting},
                 store:s.$store,
                 context:{
-                    blnHideTargetPlace:id>=0,
+                    blnHideTargetPlace:true,
                     blnSubmit:false,
                     blnExecute:false,
                     ok_btn(){param.close();},

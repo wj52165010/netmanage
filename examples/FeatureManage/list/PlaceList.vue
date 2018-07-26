@@ -6,7 +6,7 @@
             <!--操作栏-->
             <div class="option_bar">
                 <div class="item">
-                    <span>场所编码:</span>
+                    <span>场所范围:</span>
                     <div style="display:inline-block;">
                         <PlaceSearch :blnClear="true" :blnLike="true" c_searchKind="1" ccontext="place"  @place_res="placechange"></PlaceSearch>
                     </div>
@@ -127,7 +127,7 @@
                             <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.address}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
                             <div class="column" style="width:150px;">
-                                <span class="overflow clickItem" style="width:150px;" @click="terminalDetail(d)">
+                                <span class="overflow clickItem" style="width:150px;" :title="`在线:${d.declareTerminal}/异常:${d.detectionTerminal}/离线:${d.onlineTerminal}`" @click="terminalDetail(d)">
                                     <span style="color:#bee35f">{{d.declareTerminal}}</span>/
                                     <span style="color:red">{{d.detectionTerminal}}</span>/
                                     <span style="color:#999999">{{d.onlineTerminal}}</span>

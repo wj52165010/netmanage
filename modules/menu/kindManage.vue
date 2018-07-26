@@ -67,10 +67,13 @@ export default {
         remove:()=>{
         },
         mouseup:(els)=>{
-            s.data=_.chain(els).map(i=>{return $(i).attr('dataid')}).compact().map((val,i)=>{
+            s.data.splice(0,s.data.length,
+                ..._.chain(els).map(i=>{return $(i).attr('dataid')}).compact().map((val,i)=>{
 
                 return _.find(s.data,d=>d.id==val);
-            }).value();
+            }).value());
+        
+            this.$store.dispatch(OrderMenuKind,_.pluck(s.data,'id'));
         }
     });
   },

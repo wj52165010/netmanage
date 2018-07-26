@@ -311,7 +311,7 @@ export default {
         {name:'报警布控',icon:'fa fa-address-book',keyid:"11010",menu_type:_.find(MenuKind,m=>m.id==9),blnShow:1,status:'{status:"completed"}',type:"deployCtrlPage"},
         // {name:'碰撞关系',icon:'fa fa-address-book',keyid:"11020",menu_type:MenuKind[1],blnShow:1,status:'{status:"completed"}',type:"CollisionPage"},
         //{name:'高危库',icon:'fa fa-address-book',keyid:"11018",menu_type:MenuKind[1],blnShow:1,status:'{status:"completed"}',type:"highriskPage"},
-        {name:'高危库',icon:'fa fa-address-book',keyid:"11026",menu_type:_.find(MenuKind,m=>m.id==9),blnShow:1,status:'{status:"completed"}',type:"HighRiskPage"},
+        //{name:'高危库',icon:'fa fa-address-book',keyid:"11026",menu_type:_.find(MenuKind,m=>m.id==9),blnShow:1,status:'{status:"completed"}',type:"HighRiskPage"},
         {name:'权限配置',icon:'fa fa-chain',keyid:"11011",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"permisPage"},
         {name:'用户管理',icon:'fa fa-users',keyid:"11012",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"UserManagePage"},
         // {name:'关系图',icon:'fa fa-users',keyid:"11013",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"RelationPage"},
@@ -319,7 +319,7 @@ export default {
         // {name:'分析详细页面',icon:'fa fa-dashboard',keyid:"11016",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"AnalysisDetailPage"},
         // {name:'碰撞分析页面',icon:'fa fa-dashboard',keyid:"11017",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"CrashAnalyPage"},
         // {name:'碰撞分析详细',icon:'fa fa-dashboard',keyid:"11021",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"CrashDetailPage"},
-        {name:'远程接口管理',icon:'fa fa-dashboard',keyid:"13023",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"remoteInterfacePage"},
+        //{name:'远程接口管理',icon:'fa fa-dashboard',keyid:"13023",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"remoteInterfacePage"},
         {name:'案件管理',icon:'fa fa-suitcase',keyid:"11024",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"CaseManagePage"},
         {name:'舆情分析',icon:'fa fa-dashboard',keyid:"11054",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"PublicOpinion"},
         {name:'CCIC预警',icon:'fa fa-dashboard',keyid:"11025",menu_type:_.find(MenuKind,m=>m.id==9),blnShow:1,status:'{status:"completed"}',type:"CCICPage"},
@@ -377,7 +377,7 @@ export default {
 
       //获取菜单数据
       this.$store.dispatch(Get_Operate).then(res=>{
-        //console.log(res);
+        //console.log(tool.Clone(res));
         //res.biz_body=_.filter(res.biz_body,r=>r.condtionsObj);
         //console.log(tool.Clone(res.biz_body));
         this.$store.commit(Add_System_Menus,res.biz_body);
@@ -389,8 +389,10 @@ export default {
             menu.menus=_.filter(menu.menus,(item)=>{return (','+permissions+',').indexOf(','+item.keyid+',')>=0 || item.keyid=='235' || item.keyid=='219';})
           });
         }
+
         //this.menus[0].menus=res.data;
         //console.log(tool.Clone(this.menus));
+        //this.menus=[...this.menus];
       });
 
       //获取数据源
@@ -426,6 +428,7 @@ export default {
 
       renew.subscribe(res=>{
         let source=_.chain(res.source).pluck('tables').reduce((pre,next)=>{return _.extend(pre,next);},{}).value();
+        
         _.each(res.menus,m=>{
           let cfg=m.condtionsObj,queryFields=cfg.query_fields || [],orderFields=cfg.show_fields || [],queryItems=cfg.queryItems || [];
 

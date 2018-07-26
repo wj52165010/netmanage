@@ -131,7 +131,7 @@
                             <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
                             <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.address}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow clickItem" style="width:150px;" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow clickItem" style="width:150px;" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.time}}</span></div>
                             <div class="column" style="width:100px;"><span class="overflow clickItem" style="width:100px;" @click="collectChart(d)">{{d.collect}}</span></div>
                             <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.businessState}}</span></div>

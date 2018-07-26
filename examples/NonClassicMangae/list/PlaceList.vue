@@ -6,7 +6,7 @@
             <!--操作栏-->
             <div class="option_bar">
                 <div class="item">
-                    <span>场所编码:</span>
+                    <span>场所范围:</span>
                     <div style="display:inline-block;">
                         <PlaceSearch :blnClear="true" :blnLike="true" c_searchKind="1" ccontext="place"  @place_res="placechange"></PlaceSearch>
                     </div>
@@ -63,12 +63,14 @@
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
                             <span style="margin-right:5px;">场所编码</span>
+                            <i class="fa fa-caret-up" :class="{active:!codeOrder}" @click="codeOrder=false"></i><i class="fa fa-caret-down" :class="{active:codeOrder}" @click="codeOrder=true"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:200px">
                         <span class="overflow" style="position:relative;width:200px">
                             <span style="margin-right:5px;">场所名称</span>
+                            <i class="fa fa-caret-up" :class="{active:!nameOrder}" @click="nameOrder=false"></i><i class="fa fa-caret-down" :class="{active:nameOrder}" @click="nameOrder=true"></i>
                         </span>
                     </div>
                     <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
@@ -82,6 +84,7 @@
                     <div class="column" style="width:150px;">
                         <span class="overflow" style="width:150px;position:relative;">
                             <span style="margin-right:5px;">最近联系时间</span>
+                            <i class="fa fa-caret-up" :class="{active:!timeOrder}" @click="timeOrder=false"></i><i class="fa fa-caret-down" :class="{active:timeOrder}" @click="timeOrder=true"></i>
                         </span>
                     </div>
                     <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">昨日采集</span></div>
@@ -90,6 +93,19 @@
                     <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">负责人电话</span></div>
                     <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">出口IP</span></div>
                     
+                    <div class="column" style="width:150px;">
+                        <span class="overflow" style="width:150px;position:relative;">
+                            <span style="margin-right:5px;">所属区域</span>
+                            <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="areaOrder=false"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="areaOrder=true"></i>
+                        </span>
+                    </div>
+
+                    <div class="column" style="width:150px;">
+                        <span class="overflow" style="width:150px;position:relative;">
+                            <span style="margin-right:5px;">所属厂商</span>
+                            <i class="fa fa-caret-up" :class="{active:!firmOrder}" @click="firmOrder=false"></i><i class="fa fa-caret-down" :class="{active:firmOrder}" @click="firmOrder=true"></i>
+                        </span>
+                    </div>
 
                 </div>
             </div>
@@ -113,7 +129,7 @@
                             <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.address}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
                             <div class="column" style="width:150px;">
-                                <span class="overflow clickItem" style="width:150px;" @click="terminalDetail(d)">
+                                <span class="overflow " style="width:150px;" >
                                     {{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}
                                 </span>
                             </div>
@@ -123,6 +139,8 @@
                             <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.user}}</span></div>
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.phone}}</span></div>
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.ip}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.area}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.firm}}</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -165,12 +183,17 @@ export default {
       bodyResizeSub:null,
       bodyH:0,
       data:[
-        {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'联系中',collect:6000,businessState:'营业状态',user:'战三',phone:'138xxxx',ip:'xx-xx-xx-xx'},
-        {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'联系中',collect:6000,businessState:'营业状态',user:'战三',phone:'138xxxx',ip:'xx-xx-xx-xx'},
-        {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'联系中',collect:6000,businessState:'营业状态',user:'战三',phone:'138xxxx',ip:'xx-xx-xx-xx'},
+        {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'联系中',collect:6000,businessState:'营业状态',user:'战三',phone:'138xxxx',ip:'xx-xx-xx-xx',area:'南岸区',firm:'爱思网安'},
+        {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'联系中',collect:6000,businessState:'营业状态',user:'战三',phone:'138xxxx',ip:'xx-xx-xx-xx',area:'南岸区',firm:'爱思网安'},
+        {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'联系中',collect:6000,businessState:'营业状态',user:'战三',phone:'138xxxx',ip:'xx-xx-xx-xx',area:'南岸区',firm:'爱思网安'},
       ],
       blnLoading:false,
       pageIndex:0,
+      codeOrder:false,
+      nameOrder:false,
+      areaOrder:false,
+      firmOrder:false,
+      timeOrder:false,
     }
   },
   mounted(){
@@ -194,7 +217,7 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },100);
-        this.column_w=$(this.$el).width()-1390;
+        this.column_w=$(this.$el).width()-1690;
     },
     //场所详情
     placeDetail(d){
@@ -209,29 +232,6 @@ export default {
                         </div>
                         `,
                 components:{PlaceDetail},
-                store:s.$store,
-                context:{
-                    blnExecute:false,
-                    ok_btn(){param.close()},
-                    cancel_btn(){param.close()}
-                }
-            };
-
-            return param;
-        }());
-    },
-    //设备概况详情
-    terminalDetail(d){
-        let s=this;
-        tool.open(function(){
-            let param={
-                title:'挂载设备详情(场所名称)',
-                area:['1000px','500px'],
-                content:`<div class="terminaDetail_Num_pop" style="width:100%;height:100%;">
-                            <DeviceInfoList />
-                        </div>
-                        `,
-                components:{DeviceInfoList},
                 store:s.$store,
                 context:{
                     blnExecute:false,

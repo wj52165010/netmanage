@@ -26,7 +26,7 @@
                         <div class="_container">
                             <i :class="menu.icon"></i>
                             <div style="font-size:12px;">{{menu.name}}</div>
-                            <div class="info_mask" v-show="Menu_State.getRes(menu.status).val<=0"><div class="info_mask_container"><div>{{Menu_State.getRes(menu.status).info}}</div></div></div>
+                            <div class="info_mask" v-if="false" v-show="Menu_State.getRes(menu.status).val<=0"><div class="info_mask_container"><div>{{Menu_State.getRes(menu.status).info}}</div></div></div>
                         </div>
                     </div>
                     <div class="clearfix"></div>
@@ -61,9 +61,9 @@ export default {
   },
   watch:{
       menus(){
-          this.$nextTick(()=>{
+        this.$nextTick(()=>{
             this.sly.reload();
-          });
+        });
       },
       curIndex(){
         //权限判断
@@ -90,12 +90,13 @@ export default {
   computed:mapState({
     showMenus(){
         let permissions = tool.cookie.get('permissions');
-
+        
         if((','+permissions+',').indexOf(',*,')>=0){
             return _.filter((this.menus[this.curIndex] || {menus:[]}).menus,m=>{return !m.kind;})
         }else{
             return _.filter((this.menus[this.curIndex] || {menus:[]}).menus,m=>{return !m.kind && (','+permissions+',').indexOf(','+m.keyid+',')>=0;})
         }
+
     }
   }),
   mounted(){

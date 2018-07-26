@@ -308,7 +308,7 @@ export default {
     .dynLogin .input .label{float:left;}
     .dynLogin .input .label i{font-size:25px;margin-top:10px;}
     .dynLogin .input .option{margin-left:35px;}
-    .dynLogin .input .option input{width:100%;height:40px;font-size:18px;border:none;background-color:transparent;color:#6a8baa;outline:none;}
+    .dynLogin .input .option input{width:100%;height:40px;font-size:18px;border:none;background-color:transparent;color:#009cdc;outline:none;}
     .dynLogin .loginBtn{
         margin-top:20px;text-align:center;height:76px;line-height:76px;background-color:#0d8eb5;margin-left:-20px;margin-right:-20px;
         font-size:20px;
@@ -323,7 +323,7 @@ export default {
 
     .dynLogin input{
         -webkit-box-shadow: 0 0 0px 1000px #2b2b35 inset;
-        -webkit-text-fill-color:#6a8baa;
+        -webkit-text-fill-color:#009cdc;
     }
     @media screen and (max-width: 1240px) {
         .dynLogin{position: absolute;width:@dynW;height:@dynH;top:50%;margin-top:-(@dynH+@padding)/2;left:50%;margin-left:-@dynW/2;}
