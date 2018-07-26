@@ -132,8 +132,10 @@ export default {
              if(res.msg.code=='authen_failed_logined'){
                  //用户已经登录
                  tool.confirm('用户已经登录,是否强制登录?',['是','否'],()=>{
+
                     ser.LoginForce(this.name).then(res=>{
                         if(res.msg.code!='successed'){return;}
+                        
                         let cookie=tool.cookie,expTime='s'+res.biz_body.exp;
                         cookie.set('token',res.biz_body.token,expTime);
                         cookie.set('userid',res.biz_body.user_id,expTime);
@@ -142,7 +144,7 @@ export default {
                         cookie.set('account',this.name,expTime);
                         cookie.set('region_name',res.biz_body.region_name,expTime);
                         cookie.set('region_code',res.biz_body.region_code,expTime);
-                        cookie.set('centerPoint','114.35,36.10',expTime);//中心点(106.33,29.35:重庆中心点)(114.35,36.10:河南)(101.527660,25.044943:楚雄)
+                        cookie.set('centerPoint',res.biz_body.longitude?`${res.biz_body.longitude},${res.biz_body.latitude}`:'106.33,29.35',expTime);//中心点(106.33,29.35:重庆中心点)(114.35,36.10:河南)(101.527660,25.044943:楚雄)
                         cookie.del('Invalid');
                         window.location='index.html'
                     });
@@ -161,7 +163,7 @@ export default {
              cookie.set('account',this.name,expTime);
              cookie.set('region_name',res.biz_body.region_name,expTime);
              cookie.set('region_code',res.biz_body.region_code,expTime);
-             cookie.set('centerPoint','114.35,36.10',expTime);//中心点(106.33,29.35:重庆中心点)
+             cookie.set('centerPoint',res.biz_body.longitude?`${res.biz_body.longitude},${res.biz_body.latitude}`:'106.557165,29.570997',expTime);//中心点(106.33,29.35:重庆中心点)(114.35,36.10:河南)(101.527660,25.044943:楚雄)
              cookie.del('Invalid');
              window.location='index.html'
          });
