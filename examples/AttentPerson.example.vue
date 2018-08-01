@@ -223,7 +223,7 @@ export default {
                     {name:'虚拟身份',val:'vid'},
                     {name:'手机',val:'mobile'},
                     {name:'身份证',val:'cert'},
-                    {name:'MAC',va:'mac'},
+                    {name:'MAC',val:'mac'},
                 ],
                 key:''
 
