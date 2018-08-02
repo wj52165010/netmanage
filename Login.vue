@@ -325,7 +325,7 @@ export default {
 
     .dynLogin input{
         -webkit-box-shadow: 0 0 0px 1000px #2b2b35 inset;
-        -webkit-text-fill-color:#009cdc;
+        -webkit-text-fill-color:beige;
     }
     @media screen and (max-width: 1240px) {
         .dynLogin{position: absolute;width:@dynW;height:@dynH;top:50%;margin-top:-(@dynH+@padding)/2;left:50%;margin-left:-@dynW/2;}
