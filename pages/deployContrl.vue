@@ -969,8 +969,7 @@ export default {
                       if(!idReg.test(keys[i])){tool.info('非法关键字');blnVaild=false;break;}
                     }
                     if(param.selfData.type=='imsi'){//imsi
-                      let idReg = /^(01|03)(\d{2})(\w{1})(\w{1})(\d{3})(\d{6})(\w{1})$/; //imsi
-                      if(!idReg.test(keys[i])){tool.info('非法关键字');blnVaild=false;break;}
+                      if(keys[i].length!=15){tool.info('非法关键字');blnVaild=false;break;}
                     }
                   }
 
