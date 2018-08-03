@@ -1780,6 +1780,7 @@ export default {
                                     xZData.push(ary.title)
                                     numData.push(ary.count)
                                 };
+
                                 option = {
                                     title: {
                                         text: '昨日采集详情',
@@ -1800,7 +1801,7 @@ export default {
                                         }                   
                                     },
                                     grid:{	//设置图标距离
-                                        left: 60,
+                                        left: 100,
                                         right: 40,
                                         y:45
                                     },            
@@ -2103,7 +2104,7 @@ export default {
                                         }                   
                                     },
                                     grid:{	//设置图标距离
-                                        left: 60,
+                                        left: 100,
                                         right: 40,
                                         y:45
                                     },            
@@ -2198,7 +2199,7 @@ export default {
                                         data:  time
                                     },
                                     grid:{	//设置图标上面和下面的距离
-                                        left: 60,
+                                        left: 100,
                                         right: 40,
                                         y:75
                                     },
@@ -2244,7 +2245,7 @@ export default {
                                         data:  param.selfData.xData
                                     },
                                     grid:{	//设置图标上面和下面的距离
-                                        left: 60,
+                                        left: 100,
                                         right: 40,
                                         y:45
                                     },

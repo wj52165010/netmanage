@@ -321,7 +321,7 @@ export default {
         // {name:'碰撞分析详细',icon:'fa fa-dashboard',keyid:"11021",menu_type:MenuKind[2],blnShow:1,status:'{status:"completed"}',type:"CrashDetailPage"},
         //{name:'远程接口管理',icon:'fa fa-dashboard',keyid:"13023",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"remoteInterfacePage"},
         {name:'案件管理',icon:'fa fa-suitcase',keyid:"11024",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"CaseManagePage"},
-        {name:'舆情分析',icon:'fa fa-dashboard',keyid:"11054",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"PublicOpinion"},
+        //{name:'舆情分析',icon:'fa fa-dashboard',keyid:"11054",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"PublicOpinion"},
         {name:'CCIC预警',icon:'fa fa-dashboard',keyid:"11025",menu_type:_.find(MenuKind,m=>m.id==9),blnShow:1,status:'{status:"completed"}',type:"CCICPage"},
         {name:'操作日志',icon:'fa fa-opera',keyid:"11027",menu_type:_.find(MenuKind,m=>m.id==3),blnShow:1,status:'{status:"completed"}',type:"OperLogPage"},
 
