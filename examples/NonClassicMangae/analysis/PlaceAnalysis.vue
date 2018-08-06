@@ -714,7 +714,7 @@ export default {
             },
             yAxis: {
                 type: 'category',
-                data: ['场所维护','场所离线','数据离线','心跳离线',"采集波动",'采集失效'],
+                data: ['场所维护','场所离线','数据离线','心跳故障',"采集波动",'程序失效'],
                 splitLine:{
                     show:false
                 },

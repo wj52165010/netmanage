@@ -60,24 +60,32 @@
 
 <script>
 import Scroll from  'components/scroll'
-import {BODY_RESIZE} from '../../store/mutation-types'
+import {BODY_RESIZE,GetSiteTerminalList} from '../../store/mutation-types'
 export default {
   name: 'TerminalDetail',
+  props:['code'],
   components:{Scroll},
   data () {
     return {
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
-      data:[
-        {cardKind:'身份证',card:'5002351995XXXXXXXX',name:'张三',nation:'汉',address:'重庆市XX县XX镇',ip:'192.168.1.100',mac:'XX-XX-XX-XX',time:'2017-12-14 16:18:09',state:'在线'}
-      ],
+      data:[],
       blnLoading:false,
-      nameOrder:false
+      nameOrder:true
+    }
+  },
+  watch:{
+    nameOrder(){
+        this.loadData();
     }
   },
   mounted(){
+
    this.layout();
+   
+   this.loadData();
+
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
        this.bodyResizeSub=sub
    },sub:()=>{
@@ -98,6 +106,31 @@ export default {
         },100);
         this.column_w=$(this.$el).width()-1030;
     },
+    //加载终端数据
+    loadData(){
+        this.blnLoading=true;
+        this.$store.dispatch(GetSiteTerminalList,{
+            netbar_wacode:this.code,
+            sort:'customer_name',
+            order:this.nameOrder?'desc':'asc'
+        }).then(res=>{
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取终端数据失败!'))return;
+            this.data=_.map(res.biz_body,d=>{
+                return {
+                    cardKind:d.certificate_type,
+                    card:d.certificate_code,
+                    name:d.customer_name,
+                    nation:d.nation,
+                    address:d.address,
+                    ip:d.terminal_ip,
+                    mac:d.terminal_mac,
+                    time:d.capture_time,
+                    state:d.terminal_state
+                }
+            });
+        });
+    }
   }
 }
 </script>

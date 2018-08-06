@@ -525,7 +525,7 @@ export default {
           this.policesInfo=_.map(res.biz_body,d=>{
             return {
               id:d.id,
-              info:`${tool.DateByTimestamp(d.logtime,'yyyy年MM月dd日 hh:mm')} ${d.customer_name} 在${d.netbar_address}${d.netbar_name} 出现`,
+              info:`${tool.DateByTimestamp(d.logtime,'yyyy年MM月dd日 hh:mm')} ${d.customer_name || d.certificate_code || d.account} 在${d.netbar_address}${d.netbar_name} 出现`,
               equipment_longitude:d.equipment_longitude,
               equipment_latitude:d.equipment_latitude
             }

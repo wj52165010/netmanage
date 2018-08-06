@@ -82,7 +82,7 @@
                 <!--内容栏-->
                 <div class="content_bar">
                     <DealtPlace ref="DealtPlace" v-show="showPage=='place'" />
-                    <IssueLook ref="IssueLook" v-show="showPage=='issue'" />
+                    <IssueLook ref="IssueLook" :abnormal_type="netbar_abnormal_type" v-show="showPage=='issue'" />
                 </div>
             </div>
         </div>
@@ -101,19 +101,22 @@ import 'echarts/lib/component/tooltip'
 import 'echarts/lib/component/title'
 import 'echarts/lib/component/dataZoom'
 
+import DataSource from '../../../enum/DataSource'
+
 import PlaceSearch from 'components/PlaceSearch'
 import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 
 import DealtPlace from './DealtPlace'
 import IssueLook from './IssueLook'
 
-import {BODY_RESIZE,GetFirm,SiteHisPercentage,HisPercentageExport} from '../../../store/mutation-types'
+import {BODY_RESIZE,GetFirm,SiteHisPercentage,HisPercentageExport,LastPercentage,getDictTables} from '../../../store/mutation-types'
 
 export default {
   name: 'Analysis',
   components:{PlaceSearch,MulDropDwon,DealtPlace,IssueLook},
   data () {
     return {
+      dict_tables:{},
       bodyResizeSub:null,
       data:[ ],
       curStateChart:null,
@@ -129,6 +132,7 @@ export default {
       collType:'week',
       weekOnOffLIne:[],
       showPage:'',//底部显示具体页面
+      netbar_abnormal_type:'',
     }
   },
   watch:{
@@ -142,6 +146,8 @@ export default {
         
       },
       showPage(){
+          if(!this.showPage){this.netbar_abnormal_type='';}
+
           this.$nextTick(()=>{
               this.$refs.DealtPlace.layout && this.$refs.DealtPlace.layout();
               this.$refs.IssueLook.layout && this.$refs.IssueLook.layout();
@@ -150,9 +156,7 @@ export default {
   },
   mounted(){
     setTimeout(()=>{
-        this.loadCurState();
         this.loadPlaceChart();
-        this.loadIssueChart();
     },100);
 
     //获取厂商下拉框数据
@@ -161,12 +165,21 @@ export default {
         this.firms=res.biz_body;
     });
 
+    //获取数据来源（下拉框序列化）
+    this.$store.dispatch(getDictTables).then(res=>{
+        if(res.msg.code!='successed')return;
+        this.dict_tables= res.biz_body;
+
+    });
+
     this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
         this.bodyResizeSub=sub
     },sub:()=>{
         this.layout();
     }});
 
+    //获取分析界面(当前状态和问题总览图表数据)
+    this.getCurStatusAndIssueData();
     //获取在离线数据
     this.getOnOffLineData();
   },
@@ -180,6 +193,16 @@ export default {
         this.issueChart && this.issueChart.resize();
         this.myLineChart && this.myLineChart.resize();
         this.myOnOffBarChart && this.myOnOffBarChart.resize();
+    },
+    //获取分析界面(当前状态和问题总览图表数据)
+    getCurStatusAndIssueData(){
+       this.$store.dispatch(LastPercentage).then(res=>{
+           let {pie,hist}=res.biz_body;
+           
+           this.loadCurState(pie);
+           this.loadIssueChart(hist[`micprotype_${DataSource['网吧']}`]);
+           
+       });
     },
     //获取场所在离线数据
     getOnOffLineData(){
@@ -464,6 +487,8 @@ export default {
             this.curStateChart = echarts.init($(this.$el).find('div[name="curState"]')[0]);
         }
 
+        let total=d.abnormals+d.offline+d.online; 
+
         let option = {
             title: [
                 {
@@ -475,7 +500,7 @@ export default {
                     }, 
                 },
                 {
-                    text: '总量：'+100,
+                    text: '总量：'+total,
                     x : 50, 
                     y : 30, 
                     textStyle: {  
@@ -485,7 +510,7 @@ export default {
             } ],
             tooltip: {
                 trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
+                formatter: "{b}({d}%)"
             },
             legend: {
                 orient : 'vertical',  
@@ -497,7 +522,7 @@ export default {
                 textStyle: {  
                     fontSize: 13,
                 }, 
-                data:["在线："+100,"异常："+20,"离线："+10]  
+                data:["在线："+d.online,"异常："+d.abnormals,"离线："+d.offline]  
             },
             series: [
                 {
@@ -507,8 +532,8 @@ export default {
                     center: ['65%','55%'],
                     data: [
                         {
-                            name: "在线："+100, 
-                            value: 100,
+                            name: "在线："+d.online, 
+                            value: d.online,
                             itemStyle:{
                                 normal:{
                                     color:'#85C226',
@@ -523,8 +548,8 @@ export default {
                                 }
                             }
                         },{
-                            name: "异常："+20, 
-                            value: 20,
+                            name: "异常："+d.abnormals, 
+                            value: d.abnormals,
                             itemStyle:{
                                 normal:{
                                     color:'#F8C301',
@@ -539,8 +564,8 @@ export default {
                                 }
                             }
                         },{
-                            name: "离线："+10, 
-                            value: 10,
+                            name: "离线："+d.offline, 
+                            value: d.offline,
                             itemStyle:{
                                 normal:{
                                     color:'#728498',
@@ -672,12 +697,29 @@ export default {
         this.placeChart.setOption(option);
     },
     //加载问题总览
-    loadIssueChart(d){
+    loadIssueChart(data){
+        let s=this;
         if(!this.issueChart){
             this.issueChart = echarts.init($(this.$el).find('div[name="issue"]')[0]);
             //注册单击事件
             this.issueChart.on('click',  (params)=> {
-                this.showPage='issue';
+                s.netbar_abnormal_type='';
+                let dataIndex=params.dataIndex;
+
+                for(let any of s.dict_tables.netbar_abnormal_type){
+                    if(any.name==params.name){
+                        
+                        s.netbar_abnormal_type=any.value;
+                    }
+                } 
+              
+                if(!s.netbar_abnormal_type){
+                    tool.info('类型不匹配,无法查看!');
+                    return;
+                }
+
+                this.showPage='issue';           
+
             });
         }
 
@@ -709,7 +751,7 @@ export default {
             },
             yAxis: {
                 type: 'category',
-                data: ['场所停业','场所离线','数据离线','心跳离线','采集波动','采集失效',"刷卡异常",'终端异常'],
+                data: ['场所停业','场所离线','数据离线','心跳故障','采集波动','程序失效',"刷卡异常",'终端异常'],
                 splitLine:{
                     show:false
                 },
@@ -750,7 +792,7 @@ export default {
                         },
 
                     },
-                    data: [1,2,3,4]
+                    data: [data.netbar_maintenances || 10,data.netbar_punishments || 2, data.netbar_offlines, data.netbar_equip_faults, data.collection_undulate, data.collection_abnormals,data.card_abnormals,data.terminal_abnormals]
                 }
                 
             ]

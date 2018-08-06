@@ -8,17 +8,12 @@
                 <div class="item">
                     <span>场所范围:</span>
                     <div style="display:inline-block;">
-                        <PlaceSearch :blnClear="true" :blnLike="true" c_searchKind="1" ccontext="place"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch  c_searchKind="1" ccontext="place"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
                 <div class="item">
                     <span>区域范围:</span><div style="display:inline-block;">
-                        <PlaceSearch  :blnClear="true" c_searchKind="0" ccontext="region"  @place_res="placechange"></PlaceSearch>
-                    </div>
-                </div>
-                <div class="item">
-                    <span>派出所:</span><div style="display:inline-block;">
-                        <PlaceSearch :blnClear="true" :blnLike="true" c_searchKind="2" ccontext="policy"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch c_searchKind="0" ccontext="region"  @place_res="regionchange"></PlaceSearch>
                     </div>
                 </div>
                 <div class="item">
@@ -38,8 +33,8 @@
                     <span>营业状态:</span><div style="display:inline-block;">
                     <el-select v-model="businessState" placeholder="请选择" :clearable="true">
                             <el-option
-                                v-for="kind in businessStates"
-                                :key="kind.code"
+                                v-for="kind in dict_tables.business_state || []"
+                                :key="kind.value"
                                 :label="kind.name"
                                 :value="kind.value">
                             </el-option>
@@ -69,14 +64,14 @@
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
                             <span style="margin-right:5px;">场所编码</span>
-                            <i class="fa fa-caret-up" :class="{active:!placeCodeOrder}" @click="placeCodeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeCodeOrder}" @click="placeCodeOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!placeCodeOrder}" @click="orderChange('placeCodeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeCodeOrder}" @click="orderChange('placeCodeOrder',true);"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:200px">
                         <span class="overflow" style="position:relative;width:200px">
                             <span style="margin-right:5px;">场所名称</span>
-                            <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="placeNameOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="placeNameOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="orderChange('placeNameOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="orderChange('placeNameOrder',true);"></i>
                         </span>
                     </div>
                     <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
@@ -90,7 +85,7 @@
                     <div class="column" style="width:150px;">
                         <span class="overflow" style="width:150px;position:relative;">
                             <span style="margin-right:5px;">最近联系时间</span>
-                            <i class="fa fa-caret-up" :class="{active:!pulishTimeOrder}" @click="pulishTimeOrder=false"></i><i class="fa fa-caret-down" :class="{active:pulishTimeOrder}" @click="pulishTimeOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!pulishTimeOrder}" @click="orderChange('pulishTimeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:pulishTimeOrder}" @click="orderChange('pulishTimeOrder',true);"></i>
                         </span>
                     </div>
                     <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">昨日采集</span></div>
@@ -99,14 +94,14 @@
                     <div class="column" style="width:150px;">
                         <span class="overflow" style="width:150px;position:relative;">
                             <span style="margin-right:5px;">所属区域</span>
-                            <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="areaOrder=false"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="areaOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="orderChange('areaOrder',false);"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="orderChange('areaOrder',true);"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:150px;">
                         <span class="overflow" style="width:150px;position:relative;">
                             <span style="margin-right:5px;">所属厂商</span>
-                            <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="areaOrder=false"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="areaOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!firmOrder}" @click="orderChange('firmOrder',false);"></i><i class="fa fa-caret-down" :class="{active:firmOrder}" @click="orderChange('firmOrder',true);"></i>
                         </span>
                     </div>
 
@@ -128,8 +123,8 @@
                     <div class="table_body">
                         <div class="row" v-for="d in data">
                             <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
-                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
-                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.address}}</span></div>
+                            <div class="column" style="width:200px;"    :title="d.name"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
+                            <div class="column"><span class="overflow"  :title="d.address" :style="{width:column_w+'px'}">{{d.address}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
                             <div class="column" style="width:150px;"><span class="overflow clickItem" style="width:150px;" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.time}}</span></div>
@@ -144,10 +139,14 @@
 
             <!--分页栏-->
             <div name="page_container" class="page_container" style="background-color:white;">
-                <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span></span>
-                <div class="firstPage" @click="pageChange(0)">首页</div>
-                <div class="prePage" @click="pageChange(pageIndex-1)">上一页</div>
-                <div class="nextPage" @click="pageChange(pageIndex+1)">下一页</div>          
+                <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">
+                    当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span>/{{pageSize}},
+                    每页{{pageNum}}条,共{{pageCount}}条
+                </span>
+                <div class="firstPage"  v-show="pageIndex!=0" @click="pageChange(0)">首页</div>
+                <div class="prePage"    v-show="pageIndex>0" @click="pageChange(pageIndex-1)">上一页</div>
+                <div class="nextPage"   v-show="pageIndex<pageSize-1" @click="pageChange(pageIndex+1)">下一页</div>
+                <div class="nextPage"   v-show="pageIndex!=pageSize-1" @click="pageChange(pageSize-1)">最后页</div>              
             </div>
 
         </div>
@@ -161,35 +160,37 @@ import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 import TerminalDetail from '../TerminalDetail'
 import CollectChart from '../CollectChart'
 import PlaceDetail from '../PlaceDetail'
+import DataSource from '../../../enum/DataSource'
 
-import {BODY_RESIZE,GetFirm,getDictTables} from '../../../store/mutation-types'
+import {BODY_RESIZE,GetFirm,getDictTables,GetSiteList} from '../../../store/mutation-types'
 
 export default {
   name: 'ListIndex',
   components:{PlaceSearch,Scroll,MulDropDwon},
   data () {
     return {
+      pageNum:15,       //当前页面显示数据条数
+      pageCount:0,      //数据总条数
+      pageSize:0,       //数据总页数
+      region_range:[],  //区域范围
+      netsite_range:[], //场所范围
       dict_tables:{},
-      placeState:'',
-      placeStates:[],
-      businessState:'',
-      businessStates:[],
-      firms:[],            //所有厂商数据
+      placeState:'',    //场所状态
+      businessState:'', //营业状态
+      firms:[],         //所有厂商数据
       Selfirms:[],
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
-      data:[
-          {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'3天前',collect:'1000',businessState:'装机开业',region:'南岸区',firm:'爱思网安'},
-          {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'offline',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'3天前',collect:'1000',businessState:'装机开业',region:'南岸区',firm:'爱思网安'},
-          {code:'53011135000127',name:'重庆智多测试场所',address:'重庆市南岸区',state:'abnormal',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'3天前',collect:'1000',businessState:'装机开业',region:'南岸区',firm:'爱思网安'},
-        ],
+      data:[],
       blnLoading:false,
       pageIndex:0,
-      placeNameOrder:false,
-      placeCodeOrder:false,
-      pulishTimeOrder:false,
-      areaOrder:false,
+      placeNameOrder:true,
+      placeCodeOrder:true,
+      pulishTimeOrder:true,
+      areaOrder:true,
+      firmOrder:true,
+      orderObj:{sort:'netbar_wacode',order:'desc'},//排序字段
     }
   },
   mounted(){
@@ -231,16 +232,17 @@ export default {
                 title:'场所详情',
                 area:'1000px',
                 content:`<div class="place_detail_pop" style="width:100%;height:100%;">
-                            <PlaceDetail />
+                            <PlaceDetail :code="netbar_wacode" />
                         </div>
                         `,
                 components:{PlaceDetail},
                 store:s.$store,
                 context:{
+                    netbar_wacode:d.code,
                     blnExecute:false,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
-                }
+                },
             };
 
             return param;
@@ -251,15 +253,16 @@ export default {
         let s=this;
         tool.open(function(){
             let param={
-                title:'终端列表(场所名称)',
+                title:`终端列表(${d.name})`,
                 area:['1300px','500px'],
                 content:`<div class="terminaDetail_Num_pop" style="width:100%;height:100%;">
-                            <TerminalDetail />
+                            <TerminalDetail :code="code" />
                         </div>
                         `,
                 components:{TerminalDetail},
                 store:s.$store,
                 context:{
+                    code:d.code,
                     blnExecute:false,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
@@ -298,18 +301,103 @@ export default {
             if(!tool.msg(res,'','获取厂商数据失败!'))return;
             this.firms=res.biz_body;
         });
+
+        //获取网吧数据
+        this.getPlaceData();
+    },
+    //获取网吧数据
+    getPlaceData(){
+        this.blnLoading=true;
+        this.$store.dispatch(GetSiteList,{
+            limit:this.pageNum,
+            skip:this.pageIndex*this.pageNum,
+            microprobe_type:DataSource['网吧'],
+            region_range:this.region_range,
+            netsite_range:this.netsite_range,
+            netsite_state:this.placeState,
+            business_state:this.businessState,
+            security_software_orgcodes:_.map(this.Selfirms,s=>s.code).join(','),
+            sort:this.orderObj.sort,
+            order:this.orderObj.order
+        }).then(res=>{
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取网吧数据失败!'))return;
+            this.data=this.converData(res.biz_body);
+            this.pageCount=res.page.total;
+            this.pageSize=res.page.page_size;
+        });
+    },
+    //转化服务器数据对象为客户端对象
+    converData(d){
+        return _.map(d,c=>{
+            return {
+                    code:c.netbar_wacode || '',         //场所编码
+                    name:c.netbar_name || '',           //场所名称
+                    address:c.netbar_address || '',     //场所地址
+                    state:c.online_state,               //场所状态
+                    declareTerminal:c.net_terminal_num,              //申报终端数
+                    detectionTerminal:c.actual_terminal,             //检测终端数
+                    onlineTerminal:c.internet_users,                //在线终端数
+                    time:c.capture_time_desc,           //最近联系时间
+                    collect:c.last_upload_num,          //昨日采集
+                    businessState:c.business_state,     //营业状态
+                    region:c.region_name,               //所属区域
+                    firm:c.security_software_orgname,   //所属厂商
+                }
+        });
+    },
+    //分页处理
+    pageChange(i){
+        this.pageIndex=i;
+        this.getPlaceData();
+    },
+    //搜索
+    search(){
+        this.getPlaceData();
     },
     //处理厂商选择控件的方法
-      firmClick(d){
+    firmClick(d){
+        let index=_.findIndex(this.Selfirms,t=>t.code==d.code);
+        if(index>=0){this.Selfirms.splice(index,1); return;}
         this.Selfirms.push(d);
     },
     //是否包含选中项
     isHasSelItem(data,code){
         return  _.find(data,d=>d.code==code);
     },
+    //排序改变事件
+    orderChange(type,val){
+     let orderCache=this[type];
+
+     if(orderCache==val) return;
+
+     this.placeNameOrder=true;
+     this.placeCodeOrder=true;
+     this.pulishTimeOrder=true;
+     this.areaOrder=true;
+     this.firmOrder=true;
+     this[type]=val;
+
+     let fieldMap={
+        placeCodeOrder:'netbar_wacode',
+        placeNameOrder:'netbar_name',
+        pulishTimeOrder:'capture_time',
+        areaOrder:'region_name',
+        firmOrder:'security_software_orgname'
+     };
+
+     this.orderObj.sort=fieldMap[type];
+     this.orderObj.order=val?'desc':'asc';
+     this.getPlaceData();
+
+    },
+    //场所范围
     placechange(query,val){
-        let res =_.flatten(_.map(val,v=>{return _.map(v,i=>i.code)}));
-        console.log(res);
+        this.netsite_range = _.flatten(_.map(val,v=>{return _.map(v,i=>{ return {code:i.code};})}));
+    },
+    //区域范围
+    regionchange(query,val){
+        this.region_range = _.flatten(_.map(val,v=>{return _.map(v,i=>{ return {code:i.code};})}));
     },
     //转化场所状态
     converPlaceState(v){

@@ -429,7 +429,7 @@ export default {
       renew.subscribe(res=>{
         let source=_.chain(res.source).pluck('tables').reduce((pre,next)=>{return _.extend(pre,next);},{}).value();
         
-        _.each(res.menus,m=>{
+        _.each(_.filter(res.menus,m=>m.condtionsObj),m=>{
           let cfg=m.condtionsObj,queryFields=cfg.query_fields || [],orderFields=cfg.show_fields || [],queryItems=cfg.queryItems || [];
 
           //设置远程数据配置
