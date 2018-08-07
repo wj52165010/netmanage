@@ -198,8 +198,7 @@ export default {
     getCurStatusAndIssueData(){
        this.$store.dispatch(LastPercentage).then(res=>{
            let {pie,hist}=res.biz_body;
-           
-           this.loadCurState(pie);
+           this.loadCurState(pie[`micprotype_${DataSource['网吧']}`]);
            this.loadIssueChart(hist[`micprotype_${DataSource['网吧']}`]);
            
        });

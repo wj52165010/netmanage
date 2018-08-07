@@ -664,7 +664,7 @@ export default {
                   </div>
                   <div class="row row_item">
                     <div class="col-md-2 item_label_left">终端MAC</div><div class="col-md-4">{{d.mac}}</div>
-                    <div class="col-md-2 item_label_right">产生时间</div><div class="col-md-4">{{converTime(d.logtime)}}</div>
+                    <div class="col-md-2 item_label_right">产生时间</div><div class="col-md-4">{{d.logtime}}</div>
                   </div>
                   <div class="row row_item">
                     <div class="col-md-2 item_label_left">身份证类型</div><div class="col-md-4">{{d.certificate_type}}</div>
@@ -714,7 +714,7 @@ export default {
           // i.policy_type=policyTmp;//策略类型
           return i;
         });
-
+        
         param.selfData.d=data[0];
       });
  
