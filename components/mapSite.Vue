@@ -72,12 +72,15 @@ export default {
      photo:{
         '网吧在线':'static/images/site_online.png',
         '网吧离线':'static/images/site_unline.png',
+        '网吧异常':'static/images/site_unline.png',
         '宾馆酒店在线':'static/images/hotal_online.png',
         '宾馆酒店离线':'static/images/hotal_unline.png',
         '无线WIFI在线':'static/images/wifi_online.png',
         '无线WIFI离线':'static/images/wifi_unline.png',
+        '无线WIFI异常':'static/images/wifi_unline.png',
         '特征设备在线':'static/images/wifi_online.png',
         '特征设备离线':'static/images/wifi_unline.png',
+        '特征设备异常':'static/images/wifi_unline.png',
     },
     showIcon:{
         '网吧':'static/images/site_online.png',
@@ -363,12 +366,13 @@ export default {
         map.centerAndZoom(new BMap.Point(centerPoint[0] || 0,centerPoint[1] || 0),13);//安阳中心点
   
         map.enableScrollWheelZoom(true);
-        
+  
         let markers=[],labels={},blnClose={},popIds={};
 
         s.clus = new BMapLib.MarkerClusterer(map, {
             markers:[],
             mouseover(d,p){
+                console.log(1);
                 blnClose[p.lng+'-'+p.lat]=false;
                 if(labels[p.lng+'-'+p.lat]) return;
 
@@ -514,18 +518,22 @@ export default {
                 s.blnLoading=false;
 
                 var data = code.biz_body;
+  
                // if(this.howData) data=this.howData;
                 var tempMarker = [];          
                 for (var i = 0; i < data.length; i++) {
                      if (s.cachePlace[data[i][primaryKey[1]] || (data[i][primaryKey[0]]+'_'+data[i][primaryKey[1]])]) {
-                        // continue;
+                         continue;
                      }
+                    
                     s.cachePlace[data[i][primaryKey[1]] || (data[i][primaryKey[0]]+'_'+data[i][primaryKey[1]])] = data[i];
                     s.cacheData[parseFloat(data[i].longitude)+'-'+parseFloat(data[i].latitude)]=data[i];
 
                     var myIcon = new BMap.Icon(photo[data[i].microprobe_type+data[i].online], new BMap.Size(28,36));
                     //console.log(photo[data[i].microprobe_type+data[i].online],data[i].microprobe_type+data[i].online);
                     var marker=new BMap.Marker(new BMap.Point(data[i].longitude, data[i].latitude),{icon:myIcon});
+
+                 
                     //添加数遍移上/移下事件(添加描述遮罩)
                     var marker_triangle_html='<div class="triangle pulse" style="background-color:rgb(0, 204, 102);color: white;padding: 0px 10px;border-radius: 5px;min-width:140px;padding:5px 10px;">{0}</div>';
                     var posSearchHtml=function(data){
