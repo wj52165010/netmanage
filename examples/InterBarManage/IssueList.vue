@@ -10,6 +10,11 @@
                         <el-date-picker  type="date" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker>
                     </div>
                 </div>
+
+                <!--右边操作栏-->
+                <div class="right_option_bar">
+                    <div class="item" ><i class="fa fa-share" /> 导出</div>
+                </div>
             </div>
 
             <!--列表头-->
@@ -41,7 +46,20 @@
                     <div class="table_body">
                         <div class="row" v-for="d in data">
                             <div class="column" style="width:200px;"><span class="overflow " style="width:200px;">{{d.time}}</span></div>
-                            <div class="column"><span class="overflow " :style="{width:column_w+'px'}" :title="d.content">{{d.content}}</span></div>
+                            <div class="column" style="word-wrap:break-word;white-space: normal;"><span 
+                                                    style="display:block;word-wrap:break-word;text-align:left;line-height:25px;" 
+                                                    :style="{width:column_w+'px'}" >
+                                                        <template v-for="(c,j) in d.content">
+                                                            <div @click="c.blnExport=!c.blnExport" style="cursor:pointer;">
+                                                                <i :class="c.blnExport?'fa fa-chevron-down':'fa fa-chevron-right'" />
+                                                                {{j+1}}.{{c.val}}
+                                                            </div>
+                                                            <div v-if="c.blnExport" style="height:100px;width:100%">
+                                                                <CircCardList />
+                                                            </div>
+                                                        </template>
+                                                </span>
+                            </div>
                         </div>
                     </div>
                 </Scroll>
@@ -61,10 +79,17 @@
 
 <script>
 import Scroll from  'components/scroll'
+
+import CircCardList from './CircCardList'
+import ExptionCard from './ExptionCard'
+import LongHungCard from './LongHungCard'
+import PlusCard from './PlusCard'
+import DoubleSystem from './DoubleSystem'
+
 import {BODY_RESIZE,GetFirm} from '../../store/mutation-types'
 export default {
   name: 'IssueList',
-  components:{Scroll},
+  components:{Scroll,CircCardList,ExptionCard,LongHungCard,PlusCard,DoubleSystem},
   data () {
     return {
         simpleTime:{
@@ -76,7 +101,10 @@ export default {
         bodyResizeSub:null,
         bodyH:0,
         data:[
-            {time:'2018-06-05 17:13:30',content:''}
+            {time:'2018-06-05 17:13:30',content:[
+                    {blnExport:false,val:'dsalkjdlkasjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjalsjdlasjdlasjddsalkjdlkasjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjalsjdlasjdlasjdfdsfdsfsd'}
+                ]
+            }
         ],
         blnLoading:false,
         pageIndex:0,
@@ -147,7 +175,7 @@ html{.TCol(~".IssueList .clickItem");}
 .IssueList .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
 html{.TCol(~".IssueList .table_header .row",'bg');}
 
-.IssueList .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+.IssueList .table_header .column{display:table-cell;text-align:center;border-right:none;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
 .IssueList .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');background-color:white;}
 .IssueList .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
 html{.TCol(~".IssueList .table_header .column .sort_item .triangle-up:hover",'bbc');}
@@ -161,8 +189,7 @@ html{.TCol(~".IssueList .table_header .column .sort_item .triangle-down.active",
 
 .IssueList .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
 .IssueList .table_body{width:100%;display:table;width:100%;border:none;}
-.IssueList .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
+.IssueList .table_body .column{display:table-cell;text-align:center;border-right:none;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
 
-.IssueList .table_body .column:first-child{.border('left');}
 .overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
 </style>
