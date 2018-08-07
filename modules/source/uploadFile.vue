@@ -192,7 +192,7 @@ export default {
             done:function(e,data){
                 if(data.result.msg.code!='successed'){
                     s.uploadStauts=1;
-                    tool.info(data.result.msg.note);
+                    tool.info(data.result.msg.node);
                     return;
                 }else{//成功
                     s.uploadStauts=2;

@@ -82,7 +82,7 @@
                 <!--内容栏-->
                 <div class="content_bar">
                     <DealtPlace ref="DealtPlace" v-show="showPage=='place'" />
-                    <IssueLook ref="IssueLook" :abnormal_type="netbar_abnormal_type" :abnormal_name="netbar_abnormal_name" v-show="showPage=='issue'" />
+                    <IssueLook ref="IssueLook" :microprobe_type="microprobe_type" :abnormal_type="netbar_abnormal_type" :abnormal_name="netbar_abnormal_name" v-show="showPage=='issue'" />
                 </div>
             </div>
         </div>
@@ -134,6 +134,7 @@ export default {
       showPage:'',//底部显示具体页面
       netbar_abnormal_type:'',
       netbar_abnormal_name:'',
+      microprobe_type:DataSource['网吧'],//数据来源
     }
   },
   watch:{
@@ -199,8 +200,8 @@ export default {
     getCurStatusAndIssueData(){
        this.$store.dispatch(LastPercentage).then(res=>{
            let {pie,hist}=res.biz_body;
-           this.loadCurState(pie[`micprotype_${DataSource['网吧']}`]);
-           this.loadIssueChart(hist[`micprotype_${DataSource['网吧']}`]);
+           this.loadCurState(pie[`micprotype_${this.microprobe_type}`]);
+           this.loadIssueChart(hist[`micprotype_${this.microprobe_type}`]);
            
        });
     },

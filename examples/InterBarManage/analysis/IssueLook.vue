@@ -12,10 +12,10 @@
 
                 <div class="item">
                     <span>问题分类:</span><div style="display:inline-block;">
-                    <el-select placeholder="请选择" :clearable="true">
+                    <el-select placeholder="请选择" v-model="iabnormal_type" >
                             <el-option
-                                v-for="kind in []"
-                                :key="kind.code"
+                                v-for="kind in dict_tables.netbar_abnormal_type"
+                                :key="kind.value"
                                 :label="kind.name"
                                 :value="kind.value">
                             </el-option>
@@ -150,7 +150,6 @@ import PlaceSearch from 'components/PlaceSearch'
 import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 import Scroll from  'components/scroll'
 
-import DataSource from '../../../enum/DataSource'
 
 import TerminalDetail from '../TerminalDetail'
 import CollectChart from '../CollectChart'
@@ -160,7 +159,7 @@ import PlaceDetail from '../PlaceDetail'
 import {BODY_RESIZE,GetFirm,siteScoreCollect,getDictTables} from '../../../store/mutation-types'
 export default {
   name: 'IssueLook',
-  props:['abnormal_type','abnormal_name'],
+  props:['microprobe_type','abnormal_type','abnormal_name'],
   components:{PlaceSearch,MulDropDwon,Scroll},
   data () {
     return {
@@ -186,16 +185,17 @@ export default {
       timeOrder:true,
       netsite_range:[],//场所范围
       dict_tables:{},
-      orderObj:{sort:'netbar_wacode',order:'desc'}
+      orderObj:{sort:'netbar_wacode',order:'desc'},
+      iabnormal_type:'',
     }
   },
   watch:{
     abnormal_type(){
+        this.iabnormal_type=this.abnormal_type;
         this.loadData();
     }
   },
   mounted(){
-
     //获取厂商下拉框数据
     this.$store.dispatch(GetFirm).then(res=>{
         if(!tool.msg(res,'','获取厂商数据失败!'))return;
@@ -206,6 +206,10 @@ export default {
     this.$store.dispatch(getDictTables).then(res=>{
         if(res.msg.code!='successed')return;
         this.dict_tables= res.biz_body;
+
+        this.$nextTick(()=>{
+            this.iabnormal_type=this.abnormal_type;
+        })
     });
 
    this.layout();
@@ -217,6 +221,8 @@ export default {
    },sub:()=>{
       this.layout();
    }});
+
+   
   },
   beforeDestroy(){
     this.bodyResizeSub.unsubscribe();
@@ -239,11 +245,11 @@ export default {
         this.$store.dispatch(siteScoreCollect,{
            limit:this.pageNum,
            skip:this.pageNum*this.pageIndex,
-           netbar_abnormal_type:this.abnormal_type,
+           netbar_abnormal_type:this.iabnormal_type,
            netsite_range:this.netsite_range,
            region_range:this.region_range,
            security_software_orgcodes:_.map(this.Selfirms,s=>s.code).join(','),
-           microprobe_type:DataSource['网吧'],
+           microprobe_type:this.microprobe_type,
            sort:this.orderObj.sort,
            order:this.orderObj.order
         }).then(res=>{
@@ -251,8 +257,8 @@ export default {
             if(!tool.msg(res,'','获取总览列表数据失败!'))return;
             this.data = this.converData(res.biz_body);
             //测试数据
-            this.data=[{code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'}];
-        
+            this.data=[{code:'41050210000007',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'}];
+            
             this.pageCount=res.page.total;
             this.pageSize=res.page.page_size;
             
@@ -361,12 +367,14 @@ export default {
                 title:'数据采集情况(场所名称)',
                 area:['800px','400px'],
                 content:`<div class="collect_chart_pop" style="width:100%;height:100%;">
-                            <CollectChart />
+                            <CollectChart :code="code" :microprobe_type="microprobe_type" />
                         </div>
                         `,
                 components:{CollectChart},
                 store:s.$store,
                 context:{
+                    code:d.code,
+                    microprobe_type:s.microprobe_type,
                     blnExecute:false,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
@@ -406,6 +414,10 @@ export default {
     pageChange(i){
         this.pageIndex=i;
         this.loadData();
+    },
+    //搜索
+    search(){
+        this.pageChange(0);
     },
     firmClick(type,d){
         let index=-1;

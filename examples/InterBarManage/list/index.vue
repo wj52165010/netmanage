@@ -353,7 +353,7 @@ export default {
     },
     //搜索
     search(){
-        this.getPlaceData();
+        this.pageChange(0);
     },
     //处理厂商选择控件的方法
     firmClick(d){
