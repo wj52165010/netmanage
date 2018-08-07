@@ -63,7 +63,6 @@ export default {
      labels:[],//场所统计信息标签集合
      clus:null,//点聚合对象
      cachePlace:{},//缓存场所数据
-     cacheData:{},//缓存场所经纬度数据
      colorScale:function(val){
          let scale= scaleSequential(d3.interpolateCool);
          let num=scaleLinear().domain([0,5000]).range([0,1]);
@@ -367,22 +366,29 @@ export default {
   
         map.enableScrollWheelZoom(true);
   
-        let markers=[],labels={},blnClose={},popIds={};
+        let labels={},blnClose={},popIds={};
 
         s.clus = new BMapLib.MarkerClusterer(map, {
             markers:[],
             mouseover(d,p){
-                console.log(1);
                 blnClose[p.lng+'-'+p.lat]=false;
                 if(labels[p.lng+'-'+p.lat]) return;
-
-                let data=_.map(d,v=>{
+                let test =_.uniq(d,v=>{
+                    let point = v.point;
+                    return point.lng+'-'+point.lat;
+                });
+   
+                let data=_.chain(d).uniq(v=>{
+                    let point = v.point;
+                    return point.lng+'-'+point.lat;
+                }).map(v=>{
                     let point = v.point;
                     return s.cacheData[point.lng+'-'+point.lat]
-                });
+                }).flatten().value();
 
                 //设置显示内容框
                 if(data.length<0){return;}
+
                 $('.BMapLabel').parent('div').css('z-index',10000);
                 let popId=tool.guid();
                 popIds[p.lng+'-'+p.lat]=popId;
@@ -453,6 +459,7 @@ export default {
         }
     
         var setMarks = function () {
+            let markers=[];
             var centerPointer = map.getCenter();
             var bounds=map.getBounds();
             var lb=bounds.getSouthWest(),rt=bounds.getNorthEast();
@@ -518,16 +525,29 @@ export default {
                 s.blnLoading=false;
 
                 var data = code.biz_body;
-  
                // if(this.howData) data=this.howData;
                 var tempMarker = [];          
                 for (var i = 0; i < data.length; i++) {
-                     if (s.cachePlace[data[i][primaryKey[1]] || (data[i][primaryKey[0]]+'_'+data[i][primaryKey[1]])]) {
-                         continue;
-                     }
-                    
+                    if (s.cachePlace[data[i][primaryKey[1]] || (data[i][primaryKey[0]]+'_'+data[i][primaryKey[1]])]) {
+                        continue;
+                    }
+                   
                     s.cachePlace[data[i][primaryKey[1]] || (data[i][primaryKey[0]]+'_'+data[i][primaryKey[1]])] = data[i];
-                    s.cacheData[parseFloat(data[i].longitude)+'-'+parseFloat(data[i].latitude)]=data[i];
+                    let objId= parseFloat(data[i].longitude)+'-'+parseFloat(data[i].latitude);
+
+                    if(s.cacheData[objId]){
+                        //数组
+                        if((typeof s.cacheData[objId] === 'object' && !isNaN(s.cacheData[objId].length))){
+                            s.cacheData[objId]=[...s.cacheData[objId],data[i]];
+                        }else{//对象
+                            s.cacheData[objId]=[s.cacheData[objId],data[i]]
+                        }
+                    }else{
+                        s.cacheData[objId]=data[i];
+                    }
+                    
+                    //s.cacheData[objId].psuh(data[i]);
+
 
                     var myIcon = new BMap.Icon(photo[data[i].microprobe_type+data[i].online], new BMap.Size(28,36));
                     //console.log(photo[data[i].microprobe_type+data[i].online],data[i].microprobe_type+data[i].online);
@@ -586,8 +606,9 @@ export default {
                         siteid: data[i][primaryKey[1]] || (data[i][primaryKey[0]]+'_'+data[i][primaryKey[1]])
                     });
                     tempMarker.push(marker);
+                
                 }
-
+              
                 s.clus.addMarkers(tempMarker);
 
             })
