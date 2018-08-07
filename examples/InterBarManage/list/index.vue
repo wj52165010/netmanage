@@ -197,7 +197,7 @@ export default {
    this.loadData();
    this.layout();
    
-   //获取数据来源（下拉框序列化）
+    //获取数据来源（下拉框序列化）
     this.$store.dispatch(getDictTables).then(res=>{
         if(res.msg.code!='successed')return;
         this.dict_tables= res.biz_body;

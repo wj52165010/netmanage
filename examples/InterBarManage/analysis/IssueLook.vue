@@ -6,7 +6,7 @@
 
                 <div class="item">
                     <span>场所范围:</span><div style="display:inline-block;">
-                        <PlaceSearch  :blnClear="true" c_searchKind="0" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch  c_searchKind="1" ccontext="region"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
 
@@ -34,7 +34,7 @@
 
                 <div class="item">
                     <span>所属区域:</span><div style="display:inline-block;">
-                        <PlaceSearch  :blnClear="true" c_searchKind="0" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch   c_searchKind="0" ccontext="region"  @place_res="regionchange"></PlaceSearch>
                     </div>
                 </div>
 
@@ -54,28 +54,28 @@
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
                             <span style="margin-right:5px;">场所编码</span>
-                            <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="placeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="placeOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="orderChange('placeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="orderChange('placeOrder',true);"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
                             <span style="margin-right:5px;">场所名称</span>
-                            <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="placeNameOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="placeNameOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="orderChange('placeNameOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="orderChange('placeNameOrder',true);"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;position:relative;">
                             <span style="margin-right:5px;">所属厂商</span>
-                            <i class="fa fa-caret-up" :class="{active:!firmOrder}" @click="firmOrder=false"></i><i class="fa fa-caret-down" :class="{active:firmOrder}" @click="firmOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!firmOrder}" @click="orderChange('firmOrder',false);"></i><i class="fa fa-caret-down" :class="{active:firmOrder}" @click="orderChange('firmOrder',true);"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;position:relative;">
                             <span style="margin-right:5px;">所属区域</span>
-                            <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="areaOrder=false"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="areaOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="orderChange('areaOrder',false);"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="orderChange('areaOrder',true);"></i>
                         </span>
                     </div>
 
@@ -91,7 +91,7 @@
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;position:relative;">
                             <span style="margin-right:5px;">最近联系时间</span>
-                            <i class="fa fa-caret-up" :class="{active:!timeOrder}" @click="timeOrder=false"></i><i class="fa fa-caret-down" :class="{active:timeOrder}" @click="timeOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!timeOrder}" @click="orderChange('timeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:timeOrder}" @click="orderChange('timeOrder',true);"></i>
                         </span>
                     </div>
 
@@ -150,15 +150,17 @@ import PlaceSearch from 'components/PlaceSearch'
 import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 import Scroll from  'components/scroll'
 
+import DataSource from '../../../enum/DataSource'
+
 import TerminalDetail from '../TerminalDetail'
 import CollectChart from '../CollectChart'
 import IssueList from '../IssueList'
 import PlaceDetail from '../PlaceDetail'
 
-import {BODY_RESIZE,GetFirm,siteScoreCollect} from '../../../store/mutation-types'
+import {BODY_RESIZE,GetFirm,siteScoreCollect,getDictTables} from '../../../store/mutation-types'
 export default {
   name: 'IssueLook',
-  props:['abnormal_type'],
+  props:['abnormal_type','abnormal_name'],
   components:{PlaceSearch,MulDropDwon,Scroll},
   data () {
     return {
@@ -171,17 +173,20 @@ export default {
       bodyResizeSub:null,
       bodyH:0,
       data:[
-        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'},
-        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'offline',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'},
-        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'abnormal',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'},
+        //{code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'},
+        //{code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'offline',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'},
+        //{code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'abnormal',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'},
       ],
       blnLoading:false,
       pageIndex:0,
-      placeOrder:false,
-      placeNameOrder:false,
-      firmOrder:false,
-      areaOrder:false,
-      timeOrder:false,
+      placeOrder:true,
+      placeNameOrder:true,
+      firmOrder:true,
+      areaOrder:true,
+      timeOrder:true,
+      netsite_range:[],//场所范围
+      dict_tables:{},
+      orderObj:{sort:'netbar_wacode',order:'desc'}
     }
   },
   watch:{
@@ -195,6 +200,12 @@ export default {
     this.$store.dispatch(GetFirm).then(res=>{
         if(!tool.msg(res,'','获取厂商数据失败!'))return;
         this.firms=res.biz_body;
+    });
+
+    //获取数据来源（下拉框序列化）
+    this.$store.dispatch(getDictTables).then(res=>{
+        if(res.msg.code!='successed')return;
+        this.dict_tables= res.biz_body;
     });
 
    this.layout();
@@ -224,12 +235,74 @@ export default {
     //加载列表数据
     loadData(){
         if(!this.abnormal_type) return;
+        this.blnLoading=true;
         this.$store.dispatch(siteScoreCollect,{
            limit:this.pageNum,
            skip:this.pageNum*this.pageIndex,
-           netbar_abnormal_type:this.abnormal_type
+           netbar_abnormal_type:this.abnormal_type,
+           netsite_range:this.netsite_range,
+           region_range:this.region_range,
+           security_software_orgcodes:_.map(this.Selfirms,s=>s.code).join(','),
+           microprobe_type:DataSource['网吧'],
+           sort:this.orderObj.sort,
+           order:this.orderObj.order
         }).then(res=>{
-            console.log(res);
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取总览列表数据失败!'))return;
+            this.data = this.converData(res.biz_body);
+            //测试数据
+            this.data=[{code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'}];
+        
+            this.pageCount=res.page.total;
+            this.pageSize=res.page.page_size;
+            
+        });
+    },
+    //排序改变事件
+    orderChange(type,val){
+     let orderCache=this[type];
+
+     if(orderCache==val) return;
+     
+
+     this.placeOrder=true;
+     this.placeNameOrder=true;
+     this.firmOrder=true;
+     this.areaOrder=true;
+     this.timeOrder=true;
+     this[type]=val;
+
+     let fieldMap={
+        placeCodeOrder:'netbar_wacode',
+        placeNameOrder:'netbar_name',
+        timeOrder:'last_time',
+        areaOrder:'region_name',
+        firmOrder:'security_software_orgname'
+     };
+
+     this.orderObj.sort=fieldMap[type];
+     this.orderObj.order=val?'desc':'asc';
+     this.loadData();
+
+    },
+    //转化数据
+    converData(d){
+        let s=this;
+        return _.map(d,c=>{
+            return {
+                code:c.netbar_wacode,
+                name:c.netbar_name,
+                firm:c.security_software_orgname,
+                region:c.region_name,
+                issueKind:s.abnormal_name,
+                state:c.online_state,
+                declareTerminal:c.net_terminal_num || 0,
+                detectionTerminal:c.actual_terminal || 0,
+                onlineTerminal:c.internet_users || 0,
+                time:c.last_time,
+                collect:c.last_upload_num,
+                digest:c.errors
+            }
         });
     },
     //场所详情
@@ -240,12 +313,13 @@ export default {
                 title:'场所详情',
                 area:'1000px',
                 content:`<div class="place_detail_pop" style="width:100%;height:100%;">
-                            <PlaceDetail />
+                            <PlaceDetail :code="netbar_wacode" />
                         </div>
                         `,
                 components:{PlaceDetail},
                 store:s.$store,
                 context:{
+                    netbar_wacode:d.code,
                     blnExecute:false,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
@@ -260,15 +334,16 @@ export default {
         let s=this;
         tool.open(function(){
             let param={
-                title:'终端列表(场所名称)',
+                title:`终端列表(${d.name})`,
                 area:['1300px','500px'],
                 content:`<div class="terminaDetail_Num_pop" style="width:100%;height:100%;">
-                            <TerminalDetail />
+                            <TerminalDetail :code="code" />
                         </div>
                         `,
                 components:{TerminalDetail},
                 store:s.$store,
                 context:{
+                    code:d.code,
                     blnExecute:false,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
@@ -329,7 +404,8 @@ export default {
 
     },
     pageChange(i){
-
+        this.pageIndex=i;
+        this.loadData();
     },
     firmClick(type,d){
         let index=-1;
@@ -342,8 +418,10 @@ export default {
         return  _.find(data,d=>d.code==code);
     },
     placechange(query,val){
-        let res =_.flatten(_.map(val,v=>{return _.map(v,i=>i.code)}));
-        console.log(res);
+        this.netsite_range = _.flatten(_.map(val,v=>{return _.map(v,i=>{ return {code:i.code};})}));
+    },
+    regionchange(query,val){
+        this.region_range = _.flatten(_.map(val,v=>{return _.map(v,i=>{ return {code:i.code};})}));
     },
     //转化场所状态
     converPlaceState(v){

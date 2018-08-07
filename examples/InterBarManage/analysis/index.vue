@@ -82,7 +82,7 @@
                 <!--内容栏-->
                 <div class="content_bar">
                     <DealtPlace ref="DealtPlace" v-show="showPage=='place'" />
-                    <IssueLook ref="IssueLook" :abnormal_type="netbar_abnormal_type" v-show="showPage=='issue'" />
+                    <IssueLook ref="IssueLook" :abnormal_type="netbar_abnormal_type" :abnormal_name="netbar_abnormal_name" v-show="showPage=='issue'" />
                 </div>
             </div>
         </div>
@@ -133,6 +133,7 @@ export default {
       weekOnOffLIne:[],
       showPage:'',//底部显示具体页面
       netbar_abnormal_type:'',
+      netbar_abnormal_name:'',
     }
   },
   watch:{
@@ -703,6 +704,7 @@ export default {
             //注册单击事件
             this.issueChart.on('click',  (params)=> {
                 s.netbar_abnormal_type='';
+                s.netbar_abnormal_name=params.name;
                 let dataIndex=params.dataIndex;
 
                 for(let any of s.dict_tables.netbar_abnormal_type){
