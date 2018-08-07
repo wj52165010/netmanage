@@ -1051,7 +1051,7 @@ export default {
                                 <div class="col-md-2 item_label_right">市场名称：</div>
                                 <div class="col-md-4">{{detailData.source_market}}</div>  
                                 <div class="col-md-2 item_label_right">市场地址：</div>
-                                <div class="col-md-4">{{detailData.app_market_url}}</div>                                                         
+                                <div class="col-md-4" :title="detailData.app_market_url" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{detailData.app_market_url}}</div>                                                         
                             </div>
                             <div class="row site-detail-row" >
                                 <div class="col-md-2 item_label_right">联系电话：</div>

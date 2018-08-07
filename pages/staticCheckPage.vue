@@ -1770,12 +1770,12 @@ export default {
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">考核规则:</label>
                                     <div class="col-md-4">
-                                        <el-select v-model="sum.firm_use_standard" placeholder="厂商规则" >
+                                        <el-select v-model="sum.firm_use_standard" placeholder="厂商规则" :clearable="true">
                                             <el-option v-for="kind in firm" :label="kind.standard_title" :value="kind.standard_id"></el-option>
                                         </el-select>
                                     </div>
                                     <div class="col-md-4">
-                                        <el-select v-model="sum.region_use_standard" placeholder="区域规则" >
+                                        <el-select v-model="sum.region_use_standard" placeholder="区域规则" :clearable="true">
                                             <el-option v-for="kind in region" :label="kind.standard_title" :value="kind.standard_id"></el-option>
                                         </el-select>
                                     </div>

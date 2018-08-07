@@ -210,7 +210,8 @@ export default {
         this.$store.dispatch(SiteHisPercentage,{
                 coll_type:this.collType,
                 region_range:this.regionRange,
-                security_software_orgcodes:_.map(this.Selfirms,s=>s.code).join(',')
+                security_software_orgcodes:_.map(this.Selfirms,s=>s.code).join(','),
+                microprobe_type:this.microprobe_type
         }).then(res=>{
             if(res.msg.code!='successed')return;
             this.weekOnOffLIne=res.biz_body;
@@ -474,7 +475,12 @@ export default {
     //导出统计场所状态率
     ExportOnlineCount(){
         tool.confirm('确定要导出场所在离线记录吗?',['确定','取消'],()=>{
-            this.$store.dispatch(HisPercentageExport,{coll_type:this.collType}).then(res=>{
+            this.$store.dispatch(HisPercentageExport,{
+                coll_type:this.collType,
+                microprobe_type:[this.microprobe_type],
+                region_range:this.regionRange,
+                security_software_orgcodes:_.map(this.Selfirms,s=>s.code).join(',')
+            }).then(res=>{
                 if(!tool.msg(res,'','导出失败!'))return;
                 window.location=res.biz_body.url;
             });    
