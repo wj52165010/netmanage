@@ -9,14 +9,14 @@
                     <div class="column" style="width:250px;">
                         <span class="overflow" style="width:250px;position:relative;">
                             <span style="margin-right:5px;">设备编码</span>
-                            <i class="fa fa-caret-up" :class="{active:!CodeOrder}" @click="CodeOrder=false"></i><i class="fa fa-caret-down" :class="{active:CodeOrder}" @click="CodeOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!CodeOrder}" @click="orderChange('CodeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:CodeOrder}" @click="orderChange('CodeOrder',true);"></i>
                         </span>
                     </div>
 
                     <div class="column">
                         <span class="overflow" style="position:relative;" :style="{width:column_w+'px'}">
                             <span style="margin-right:5px;">设备名称</span>
-                            <i class="fa fa-caret-up" :class="{active:!NameOrder}" @click="NameOrder=false"></i><i class="fa fa-caret-down" :class="{active:NameOrder}" @click="NameOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!NameOrder}" @click="orderChange('NameOrder',false);"></i><i class="fa fa-caret-down" :class="{active:NameOrder}" @click="orderChange('NameOrder',true);"></i>
                         </span>
                     </div>
                     <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">设备类型</span></div>
@@ -42,12 +42,12 @@
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="d in data">
-                            <div class="column" style="width:250px;"><span class="overflow" style="width:250px;">设备编码</span></div>
-                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">设备名称</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">设备类型</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">设备状态</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">最近联系时间</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">安全厂商</span></div>
+                            <div class="column" style="width:250px;"><span class="overflow" style="width:250px;">{{d.equipment_id}}</span></div>
+                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.equipment_name}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.equipment_type}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.online_state}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{converTime(d.capture_time)}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.security_software_orgname}}</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -60,24 +60,27 @@
 <script>
 import Scroll from  'components/scroll'
 
-import {BODY_RESIZE} from '../../store/mutation-types'
+import {BODY_RESIZE,GetSiteDeviceList} from '../../store/mutation-types'
 
 export default {
   name: 'DeviceInfoList',
+  props:['code'],
   components:{Scroll},
   data () {
     return {
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
-      data:[1,2,3],
+      data:[],
       blnLoading:false,
       pageIndex:0,
-      CodeOrder:false,
-      NameOrder:false,
+      CodeOrder:true,
+      NameOrder:true,
+      orderObj:{sort:'netbar_wacode',order:'desc'},
     }
   },
   mounted(){
+   this.loadData();
    this.layout();
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
        this.bodyResizeSub=sub
@@ -98,6 +101,44 @@ export default {
             })
         },100);
         this.column_w=$(this.$el).width()-700 -10;
+    },
+    //加载设备信息数据
+    loadData(){
+        this.blnLoading=true;
+        this.$store.dispatch(GetSiteDeviceList,{
+            netbar_wacode:this.code,
+            sort:'customer_name',
+            order:this.nameOrder?'desc':'asc'
+        }).then(res=>{
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取数据失败!'))return;
+            this.data=res.biz_body;
+        });
+    },
+    converTime(v){
+        return  v && v!='0' ? tool.DateByTimestamp(v,'yyyy-MM-dd hh:mm:ss'):"无";
+    },
+    //排序改变事件
+    orderChange(type,val){
+     let orderCache=this[type];
+
+     if(orderCache==val) return;
+
+
+     this.CodeOrder=true;
+     this.NameOrder=true;
+
+     this[type]=val;
+
+     let fieldMap={
+        CodeOrder:'netbar_wacode',
+        NameOrder:'netbar_name',
+     };
+
+     this.orderObj.sort=fieldMap[type];
+     this.orderObj.order=val?'desc':'asc';
+     this.loadData();
+
     },
   }
 }
@@ -122,6 +163,9 @@ html{.TCol(~".DeviceInfoList .right_option_bar .item:hover");}
 
 .DeviceInfoList .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .DeviceInfoList .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.DeviceInfoList .fa-caret-up.active,
+.DeviceInfoList .fa-caret-down.active,
 .DeviceInfoList .fa-caret-up:hover,
 .DeviceInfoList .fa-caret-down:hover{
     color:white;

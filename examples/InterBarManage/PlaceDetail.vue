@@ -115,7 +115,7 @@ export default {
             height: 30,     // 信息窗口高度
             title : '场所地址：'+ d.netbar_address , // 信息窗口标题
         }
-        let infoWindow = new BMap.InfoWindow("经纬度：", opts);
+        let infoWindow = new BMap.InfoWindow(`经纬度：${d.longitude},${d.latitude}`, opts);
         
         marker.addEventListener("click", ()=>{          
             this.map.openInfoWindow(infoWindow,point); //开启信息窗口

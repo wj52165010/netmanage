@@ -191,6 +191,7 @@ export default {
       areaOrder:true,
       firmOrder:true,
       orderObj:{sort:'netbar_wacode',order:'desc'},//排序字段
+      microprobe_type:DataSource['网吧']
     }
   },
   mounted(){
@@ -277,15 +278,17 @@ export default {
         let s=this;
         tool.open(function(){
             let param={
-                title:'数据采集情况(场所名称)',
+                title:`数据采集情况(${d.name})`,
                 area:['800px','400px'],
                 content:`<div class="collect_chart_pop" style="width:100%;height:100%;">
-                            <CollectChart />
+                            <CollectChart :code="code" :microprobe_type="microprobe_type" />
                         </div>
                         `,
                 components:{CollectChart},
                 store:s.$store,
                 context:{
+                    code:d.code,
+                    microprobe_type:s.microprobe_type,
                     blnExecute:false,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
@@ -311,7 +314,7 @@ export default {
         this.$store.dispatch(GetSiteList,{
             limit:this.pageNum,
             skip:this.pageIndex*this.pageNum,
-            microprobe_type:DataSource['网吧'],
+            microprobe_type:this.microprobe_type,
             region_range:this.region_range,
             netsite_range:this.netsite_range,
             netsite_state:this.placeState,

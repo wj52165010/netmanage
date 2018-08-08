@@ -364,7 +364,7 @@ export default {
         let s=this;
         tool.open(function(){
             let param={
-                title:'数据采集情况(场所名称)',
+                title:`数据采集情况(${d.name})`,
                 area:['800px','400px'],
                 content:`<div class="collect_chart_pop" style="width:100%;height:100%;">
                             <CollectChart :code="code" :microprobe_type="microprobe_type" />

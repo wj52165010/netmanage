@@ -7,7 +7,7 @@
         <DeviecList ref="DeviecList" v-show="showPage!='place'" />
 
         <!--切换按钮-->
-        <div class="switchBtn" @click="switchList()" @mouseover="blnmouseover=true" @mouseout="blnmouseover=false" :style="{
+        <div class="switchBtn" @click="switchList()" @mouseover="blnmouseover=true" @mouseleave="blnmouseover=false" :style="{
             height:blnmouseover?'auto':'30px',
             'line-height':blnmouseover?'15px':'30px',
             'padding':blnmouseover?'10px 5px':'0px',

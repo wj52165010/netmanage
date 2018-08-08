@@ -7,24 +7,24 @@
             </div>
 
             <div class="row">
-                <div class="col-md-2 text-right">场所名称:</div><div class="col-md-4 ">重庆智多测试场所</div>
-                <div class="col-md-2 text-right">场所编码:</div><div class="col-md-4 ">53011135000127</div>
+                <div class="col-md-2 text-right">场所名称:</div><div class="col-md-4 ">{{d.netbar_name}}</div>
+                <div class="col-md-2 text-right">场所编码:</div><div class="col-md-4 ">{{d.netbar_wacode}}</div>
             </div>
 
             <div class="row">
-                <div class="col-md-2 text-right">营业状态:</div><div class="col-md-4 ">在线</div>
-                <div class="col-md-2 text-right">场所状态:</div><div class="col-md-4 ">离线</div>
+                <div class="col-md-2 text-right">营业状态:</div><div class="col-md-4 ">{{d.business_state}}</div>
+                <div class="col-md-2 text-right">场所状态:</div><div class="col-md-4 ">{{d.online_state}}</div>
             </div>
 
             <div class="row">
-                <div class="col-md-2 text-right">设备概况:</div><div class="col-md-4 ">在线1/异常0/离线0 </div>
-                <div class="col-md-2 text-right">最近联系时间:</div><div class="col-md-4 ">2018-05-09 17:25:07</div>
+                <div class="col-md-2 text-right">设备概况:</div><div class="col-md-4 ">在线{{d.online_device || 0}}/异常{{d.abnormal_device || 0}}/离线{{d.offline_device || 0}} </div>
+                <div class="col-md-2 text-right">最近联系时间:</div><div class="col-md-4 ">{{d.capture_time_desc}}</div>
             </div>
 
             <div class="row">
-                <div class="col-md-2 text-right">经营性质:</div><div class="col-md-2 ">经营  </div>
-                <div class="col-md-2 text-right">场所类型:</div><div class="col-md-2 ">交通枢纽</div>
-                <div class="col-md-2 text-right">数据来源:</div><div class="col-md-2 ">无线WIFI</div>
+                <div class="col-md-2 text-right">经营性质:</div><div class="col-md-2 ">{{d.business_nature}}  </div>
+                <div class="col-md-2 text-right">场所类型:</div><div class="col-md-2 ">{{d.netsite_type}}</div>
+                <div class="col-md-2 text-right">数据来源:</div><div class="col-md-2 ">{{d.microprobe_type}}</div>
             </div>
 
             <div class="row">
@@ -32,9 +32,9 @@
             </div>
 
             <div class="row">
-                <div class="col-md-2 text-right">网络服务商:</div><div class="col-md-2 ">中国电信  </div>
-                <div class="col-md-2 text-right">接入方式:</div><div class="col-md-2 ">专网、真实IP地址</div>
-                <div class="col-md-2 text-right">账号或IP:</div><div class="col-md-2 ">58.17.252.3</div>
+                <div class="col-md-2 text-right">网络服务商:</div><div class="col-md-2 ">{{d.access_servicecode}}  </div>
+                <div class="col-md-2 text-right">接入方式:</div><div class="col-md-2 ">{{d.connect_mode}}</div>
+                <div class="col-md-2 text-right">账号或IP:</div><div class="col-md-2 ">{{d.access_ip}}&nbsp;&nbsp;&nbsp;&nbsp;{{d.auth_account}}</div>
             </div>
 
 
@@ -43,9 +43,9 @@
             </div>
 
             <div class="row">
-                <div class="col-md-2 text-right">姓名:</div><div class="col-md-2 ">张三  </div>
-                <div class="col-md-2 text-right">证件号码:</div><div class="col-md-2 ">5002351995XXXXXXXX</div>
-                <div class="col-md-2 text-right">联系电话:</div><div class="col-md-2 ">138xxxxxxxx</div>
+                <div class="col-md-2 text-right">姓名:</div><div class="col-md-2 ">{{d.law_principal_name}}  </div>
+                <div class="col-md-2 text-right">证件号码:</div><div class="col-md-2 ">{{d.law_principal_certificate_id}}</div>
+                <div class="col-md-2 text-right">联系电话:</div><div class="col-md-2 ">{{d.law_principal_tel}}</div>
             </div>
 
             <div class="row">
@@ -53,9 +53,9 @@
             </div>
 
             <div class="row">
-                <div class="col-md-2 text-right">厂商名称:</div><div class="col-md-2 ">重庆智多  </div>
-                <div class="col-md-2 text-right">负责人员:</div><div class="col-md-2 ">皮皮虾</div>
-                <div class="col-md-2 text-right">联系电话:</div><div class="col-md-2 ">138xxxxxxxx</div>
+                <div class="col-md-2 text-right">厂商名称:</div><div class="col-md-2 ">{{d.security_software_orgname}}  </div>
+                <div class="col-md-2 text-right">负责人员:</div><div class="col-md-2 ">{{d.contactor}}</div>
+                <div class="col-md-2 text-right">联系电话:</div><div class="col-md-2 ">{{d.contactor_tel}}</div>
             </div>
 
             <!--地图展示-->
@@ -67,32 +67,46 @@
 </template>
 
 <script>
+
+import {SiteDetail} from '../../store/mutation-types'
 export default {
   name: 'DevicePlaceDetail',
+  props:['code'],
   data () {
     return {
-      map:null
+      map:null,
+      d:{},
     }
   },
   mounted(){
-    this.loadMap();
+    this.loadData();
   },
   methods:{
-    loadMap(){
+    //加载场所详细信息
+    loadData(){
+        this.$store.dispatch(SiteDetail,{netbar_wacode:this.code}).then(res=>{
+            if(!tool.msg(res,'','获取场所详细数据失败!'))return;
+            this.d=res.biz_body;
+            this.loadMap(this.d);
+        });
+    },
+    loadMap(d){
+        if(d.longitude=='' || d.longitude==undefined || d.latitude=='' || d.latitude==undefined){tool.info('无效经纬度!');return;}
+
         this.map = new BMap.Map($(this.$el).find('div[name="map"]')[0],{enableMapClick:false,minZoom:13,maxZoom:18});          // 创建地图实例  
-        let point = new BMap.Point(114.35,36.10);  // 创建点坐标                                          
+        let point = new BMap.Point(d.longitude,d.latitude);  // 创建点坐标                                          
         this.map.centerAndZoom(point, 13);                 // 初始化地图，设置中心点坐标和地图级别 
         this.map.enableScrollWheelZoom(true);              // 启动鼠标滚轮缩放
-        let marker = new BMap.Marker(new BMap.Point(114.35,36.10)); // 创建点
+        let marker = new BMap.Marker(new BMap.Point(d.longitude,d.latitude)); // 创建点
         this.map.addOverlay(marker);                      //将点加入地图中
         let top_left_navigation = new BMap.NavigationControl({author:BMAP_NAVIGATION_CONTROL_ZOOM});  //左上角，添加默认缩放平移控件
-     
+
         let opts = {
             width : 450,     // 信息窗口宽度
             height: 30,     // 信息窗口高度
-            title : '场所地址：'+ '' , // 信息窗口标题
+            title : '场所地址：'+ d.netbar_address , // 信息窗口标题
         }
-        let infoWindow = new BMap.InfoWindow("经纬度：", opts);
+        let infoWindow = new BMap.InfoWindow(`经纬度：${d.longitude},${d.latitude}`, opts);
         
         marker.addEventListener("click", ()=>{          
             this.map.openInfoWindow(infoWindow,point); //开启信息窗口
