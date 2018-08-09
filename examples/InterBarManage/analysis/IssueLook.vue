@@ -11,7 +11,7 @@
                 </div>
 
                 <div class="item">
-                    <span>问题分类:</span><div style="display:inline-block;">
+                    <span>问题类型:</span><div style="display:inline-block;">
                     <el-select placeholder="请选择" v-model="iabnormal_type" >
                             <el-option
                                 v-for="kind in dict_tables.netbar_abnormal_type"
@@ -24,17 +24,43 @@
                 </div>
 
                 <div class="item">
+                    <span>问题等级:</span><div style="display:inline-block;">
+                    <el-select placeholder="请选择" v-model="iabnormal_type" >
+                            <el-option
+                                v-for="kind in dict_tables.netbar_abnormal_type"
+                                :key="kind.value"
+                                :label="kind.name"
+                                :value="kind.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+
+                <!--<div class="item">
                     <span>所属厂商:</span>
                     <div style="display:inline-block;width:180px;">
                         <MulDropDwon :data="Selfirms" keyProp="name" id="code" placeholder="请选择厂商">
                             <div v-for="t in firms" @mousedown="firmClick('listInd',t)">{{t.name}} <i v-if="isHasSelItem(Selfirms,t.code)" class="fa fa-check" style="float:right;margin-top: 10px;"></i></div>
                         </MulDropDwon>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="item">
                     <span>所属区域:</span><div style="display:inline-block;">
                         <PlaceSearch   c_searchKind="0" ccontext="region"  @place_res="regionchange"></PlaceSearch>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span>处理方式:</span><div style="display:inline-block;">
+                    <el-select placeholder="请选择" v-model="iabnormal_type" >
+                            <el-option
+                                v-for="kind in dict_tables.netbar_abnormal_type"
+                                :key="kind.value"
+                                :label="kind.name"
+                                :value="kind.value">
+                            </el-option>
+                        </el-select>
                     </div>
                 </div>
 
@@ -44,6 +70,9 @@
 
                 <!--右边操作栏-->
                 <div class="right_option_bar">
+                    <div class="item" ><i class="fa fa-ban" /> 忽略</div>
+                    <div class="item" ><i class="fa fa-copyright" /> 撤销</div>
+                    <div class="item" ><i class="fa fa-volume-down" /> 通知</div>
                     <div class="item" @click="ExportOnlineCount()"><i class="fa fa-share" /> 导出</div>
                 </div>
             </div>
@@ -51,6 +80,7 @@
             <!--列表头-->
             <div class="table_header">
                 <div class="row">
+                    <div class="column cursor" style="width:50px;" @click="selAll()"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
                             <span style="margin-right:5px;">场所编码</span>
@@ -79,7 +109,6 @@
                         </span>
                     </div>
 
-                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">问题分类</span></div>
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">当前状态</span></div>
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;">
@@ -96,7 +125,11 @@
                     </div>
 
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">昨日采集</span></div>
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">问题类型</span></div>
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">问题等级</span></div>
                     <div class="column"><span class="overflow" :style="{width:column_w+'px'}">昨日问题摘要</span></div>
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">处理方式</span></div>
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">操作者</span></div>
                 </div>
             </div>
 
@@ -111,19 +144,23 @@
                     <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
                 </div>
 
-                <Scroll :listen="data" ref="scroll">
+                <Scroll :listen="viewData" ref="scroll">
                     <div class="table_body">
-                        <div class="row" v-for="d in data">
+                        <div class="row" v-for="(d,i) in viewData">
+                            <div class="column cursor" style="width:50px;" @click="selItem(d,i)"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':d.checked,'fa fa-square-o':!d.checked}"></i></span></div>
                             <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
                             <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.firm}}</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.region}}</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.issueKind}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
                             <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>  
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.time}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow clickItem" style="width:80px;" @click="collectChart(d)">{{d.collect}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.issueKind}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;" :style="{color:converIssueLevel(d.issueLevel).color}">{{converIssueLevel(d.issueLevel).name}}</span></div>
                             <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="issueDetail(d)">{{d.digest}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.handleWay}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.user}}</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -190,6 +227,14 @@ export default {
       iabnormal_name:'',
     }
   },
+  computed:{
+      viewData(){
+        return _.map(this.data,d=>{d.checked=d.checked || false; return d;  })
+      },
+      blnAllSel(){
+        return !_.find(this.data,d=>!d.checked);
+      }
+  },
   watch:{
     abnormal_type(){
         this.iabnormal_type=this.abnormal_type;
@@ -240,7 +285,16 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },500);
-        this.column_w=$(this.$el).width()-1140 -10;
+        this.column_w=$(this.$el).width()-1490 -10;
+    },
+    //全选/取消全选
+    selAll(){
+        this.data = _.map(this.data,d=>{ d.checked=!this.blnAllSel; return d });
+    },
+    //单选
+    selItem(d,i){
+        d.checked=!d.checked;
+        this.data.splice(i,1,d);
     },
     //加载列表数据
     loadData(){
@@ -261,7 +315,7 @@ export default {
             if(!tool.msg(res,'','获取总览列表数据失败!'))return;
             this.data = this.converData(res.biz_body);
             //测试数据
-            this.data=[{code:'41050210000007',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'}];
+            this.data=[{code:'41050210000007',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时',issueLevel:'severity',handleWay:'处理',user:'张三'}];
             
             this.pageCount=res.page.total;
             this.pageSize=res.page.page_size;
@@ -311,7 +365,10 @@ export default {
                 onlineTerminal:c.internet_users || 0,
                 time:c.last_time,
                 collect:c.last_upload_num,
-                digest:c.errors
+                digest:c.errors,
+                issueLevel:'severity', //问题等级
+                handleWay:'处理',//处理方式
+                user:'张三',//操作者
             }
         });
     },
@@ -451,6 +508,23 @@ export default {
             break;
             case 'abnormal':
                 res={name:'异常',color:'#ffb937'};
+            break;
+        }
+
+        return res;
+    },
+    //转化问题等级
+    converIssueLevel(v){
+        let res={};
+        switch(v){
+            case 'severity':
+                res={name:'严重',color:'#e94840'};
+            break;
+            case 'general':
+                res={name:'一般',color:'#ff9600'};
+            break;
+            case 'ignore':
+                res={name:'忽略',color:'#3197d8'};
             break;
         }
 

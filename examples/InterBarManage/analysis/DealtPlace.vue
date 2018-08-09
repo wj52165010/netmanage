@@ -57,8 +57,8 @@
 
                 <!--右边操作栏-->
                 <div class="right_option_bar">
-                    <div class="item"  @click="changeChart='bar'"><i class="fa fa-copyright" /> 撤销通知</div>
-                    <div class="item"  @click="changeChart='line'"><i class="fa fa-legal" /> 处置通知</div>
+                    <div class="item"  @click="changeChart='bar'"><i class="fa fa-copyright" /> 撤销</div>
+                    <div class="item"  @click="changeChart='line'"><i class="fa fa-legal" /> 审核</div>
                     <div class="item" @click="ExportOnlineCount()"><i class="fa fa-share" /> 导出</div>
                 </div>
 
@@ -97,7 +97,6 @@
                         </span>
                     </div>
 
-                    <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">紧急分类</span></div>
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;">
@@ -114,8 +113,8 @@
                     </div>
 
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">昨日采集</span></div>
-                    <div class="column"><span class="overflow" :style="{width:column_w+'px'}">报警原因</span></div>
-                    <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">通知方式</span></div>  
+                    <div class="column"><span class="overflow" :style="{width:column_w+'px'}">待处理问题摘要</span></div>
+                    <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">处理耗时</span></div>  
                     <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">处置状态</span></div>  
                 </div>
             </div>
@@ -139,7 +138,6 @@
                             <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.firm}}</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.region}}</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converKind(d.kind).color}">{{converKind(d.kind).name}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
                             <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.time}}</span></div>
@@ -189,9 +187,9 @@ export default {
       bodyResizeSub:null,
       bodyH:0,
       data:[
-        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'severity',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',noteway:'自动通知',handlerState:'处置中'},
-        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'general',state:'offline',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',noteway:'自动通知',handlerState:'处置中'},
-        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'ignore',state:'abnormal',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',noteway:'自动通知',handlerState:'处置中'}
+        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'severity',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',noteway:'1小时',handlerState:'处置中'},
+        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'general',state:'offline',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',noteway:'1小时',handlerState:'已完成'},
+        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'ignore',state:'abnormal',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',noteway:'2小时',handlerState:'处置中'}
       ],
       blnLoading:false,
       pageIndex:0,
@@ -237,7 +235,7 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },500);
-        this.column_w=$(this.$el).width()-1410 -10;
+        this.column_w=$(this.$el).width()-1330 -10;
     },
     //全选/取消全选
     selAll(){
