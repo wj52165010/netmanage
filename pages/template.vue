@@ -567,10 +567,13 @@ export default {
 
          //判断页面是否需要加载额外的数据
         let extraParam={};
-        if(extraConditon){
-            extraParam= tmpDAO.searchParam(extraConditon,model);
+    
+        if(config.queryCondition || extraConditon){
+            let condition=tool.Clone(config.queryCondition).concat(tool.Clone(extraConditon || []));
+            extraParam= tmpDAO.searchParam(condition,model);
         }
 
+        console.log(extraParam);
         this.$store.dispatch(Get_OPerate_Data,{interface:config.interface || '',keyid:keyid,condtionsObj:model,extraData:extraParam.param,indexFields:extraParam.sepParam}).then(res=>{
             console.log((new Date()).getTime()-tempDatePre);
             //console.log(tool.Clone(res.biz_body));

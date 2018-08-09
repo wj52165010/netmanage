@@ -14,12 +14,19 @@ module.exports={
             let value=cond.value || cond.defVal || '';
             if(searchArrType[cond.type]=='日期范围' && _.compact(value).length<=0){continue;}
             if(searchArrType[cond.type]=='日期' && value){
+                if(typeof(value) == 'string'){
+                    value=new Date(value);
+                }
                 let start=tool.Timestamp(value);
                 value.setHours(23,59,59);
                 let end=tool.Timestamp(value);
                 value = [start,end];
             }
             if(searchArrType[cond.type]=='日期范围' && value){
+                if(typeof(value[1]) == 'string'){
+                    value[0]=new Date(value[0])
+                    value[1]=new Date(value[1]);
+                }
                 value[1].setHours(23,59,59);
                 value=[tool.Timestamp(value[0]),tool.Timestamp(value[1])];
             }
