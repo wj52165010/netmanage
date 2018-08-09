@@ -5,39 +5,50 @@
             
             <HTag :tags="pages" @change="tagChange">
                 <!--采集趋势-->
-                <div slot="t0" style="height:100%;width:100%;">
+                <div slot="t0" style="height:100%;width:100%;position:relative;">
+
+                    <!--加载中-->
+                    <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+                        <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+                    </div>
+
                     <div class="option_bar">
 
                         <div class="item_child">
                             <span>昨日采集:</span>
                             <div style="display:inline-block;">
-                                5000000
+                                {{collctNum}}
                             </div>
                         </div>
 
                         <div class="item_child">
                             <span>累计采集:</span>
                             <div style="display:inline-block;">
-                                5000000
+                                {{totalNum}}
                             </div>
                         </div>
 
                         <!--右边操作栏-->
                         <div class="right_option_bar">
-                            <div class="item_child"  >近一周 <div class="undeline"></div></div>
-                            <div class="item_child " >近一月 <div class="undeline"></div></div>
+                            <div class="item_child" :class="{active:trendTime=='week'}" @click="trendTime='week'">近一周 <div class="undeline"></div></div>
+                            <div class="item_child" :class="{active:trendTime=='month'}"  @click="trendTime='month'">近一月 <div class="undeline"></div></div>
                   
                         </div>
                     </div>
                     
+
                     <!--内容栏-->
-                    <div class="content_bar" name="content_bar">
-                    
-                    </div>
+                    <div class="content_bar" name="content_bar"></div>
                 </div>
 
                 <!--采集详情-->
                 <div slot="t1" style="height:100%;width:100%;">
+
+                    <!--加载中-->
+                    <div v-if="blnLoading_detail" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+                        <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+                    </div>
+
                     <div class="option_bar">
 
                         <div class="item_child cursor" @click="pageShow='bar'" >
@@ -50,8 +61,8 @@
 
                         <!--右边操作栏-->
                         <div class="right_option_bar">
-                            <div class="item_child"  >近一周 <div class="undeline"></div></div>
-                            <div class="item_child " >近一月 <div class="undeline"></div></div>
+                            <div class="item_child"  :class="{active:detailTime=='week'}" @click="detailTime='week'">近一周 <div class="undeline"></div></div>
+                            <div class="item_child"  :class="{active:detailTime=='month'}"  @click="detailTime='month'">近一月 <div class="undeline"></div></div>
                   
                         </div>
                     </div>
@@ -78,11 +89,18 @@ import 'echarts/lib/component/title'
 import 'echarts/lib/component/dataZoom'
 
 import HTag from 'components/HTag'
+
+import {siteDetectYesterday,SiteDetectColl,siteDetectHistory,
+        DeviceDetectYesterday,DeviceDetectColl,DeviceDetectHistory  
+      } from '../../store/mutation-types'
 export default {
   name: 'CollectChart',
+  props:['code','microprobe_type','type'],
   components:{HTag},
   data () {
     return {
+      blnLoading:false,
+      blnLoading_detail:false,
       pages:[
               {name:'采集趋势',icon:'fa fa-area-chart'},
               {name:'采集详情',icon:'fa fa-cog fa-fw'},
@@ -92,6 +110,10 @@ export default {
       barChart:null,//柱状图
       lineChart:null,//线性图
       pageShow:'bar',
+      trendTime:"week",//采集趋势日期类型
+      detailTime:"week",//采集详情日期类型
+      collctNum:0, //昨日采集采集量
+      totalNum:0,//累计采集数
     }
   },
   watch:{
@@ -105,18 +127,117 @@ export default {
             this.barChart && this.barChart.resize();
             this.lineChart && this.lineChart.resize();
         });
-        
+    },
+    trendTime(){
+        this.loadSiteDetectColl();
+    },
+    detailTime(){
+        this.loadCollect();
     }
   },
   mounted(){
-
       setTimeout(()=>{
-        this.loadTendencyChart();
-        this.loadBarChart();
+        //this.loadTendencyChart();
+        //this.loadBarChart();
         this.loadLineChart();
+
+        this.loadData();
       },100);
   },
   methods:{
+    //获取数据
+    loadData(){
+        this.loadSiteDetectColl();
+        this.loadCollect();
+    },
+    //加载绘制采集趋势折线图数据
+    loadSiteDetectColl(){
+        //绘制采集趋势折线图
+        this.blnLoading=true;
+        this.$store.dispatch(this.type?DeviceDetectColl:SiteDetectColl,{
+            netbar_wacode:this.code,
+            microprobe_type:this.microprobe_type,
+            coll_type:this.trendTime,
+        }).then(res=>{
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取采集趋势数据失败!'))return;
+            let data=res.biz_body;
+            this.collctNum=data.last_num || 0;
+            this.totalNum=data.total_num || 0;
+
+            let d={months:[],data:[]}
+
+            for( let ary of data.chart){
+                d.months.push(function(val){
+                    return val.substr (0,4)+"-"+val.substr (4,2)+"-"+val.substr (6,2);
+                }(ary.stat_date));
+                d.data.push(ary.detect_num);
+            };
+
+            this.loadTendencyChart(d);
+
+        });
+    },
+    //加载采集Tag下图表数据
+    loadCollect(){
+        //绘制采集详情柱状图(昨日详情)
+        let exceCount=0;
+        this.blnLoading_detail=true;
+        this.$store.dispatch(this.type?DeviceDetectYesterday:siteDetectYesterday,{
+            netbar_wacode:this.code,
+            microprobe_type:this.microprobe_type,
+            coll_type:this.detailTime,
+        }).then(res=>{
+            exceCount++;
+            if(exceCount==2){this.blnLoading_detail=false;}
+            if(!tool.msg(res,'','获取昨日采集数据失败!'))return;
+            let yesterday=res.biz_body;
+            var xZData=[],numData=[];
+            for( let ary of yesterday){
+                xZData.push(ary.title)
+                numData.push(ary.count)
+            };
+            
+            this.loadBarChart({x:xZData,data:numData});
+        });
+
+        //绘制采集详情折线图(历史详情)
+        this.$store.dispatch(this.type?DeviceDetectHistory:siteDetectHistory,{
+            netbar_wacode:this.code,
+            coll_type:this.detailTime,
+            microprobe_type:this.microprobe_type
+        }).then(res=>{
+            exceCount++;
+            if(exceCount==2){this.blnLoading_detail=false;}
+            if(!tool.msg(res,'','获取历史详情数据失败!'))return;
+            let allHistoryData=res.biz_body;
+            let time=[],allData=[],firmNames=[];
+            //获取所有类型
+            for(let i=0;i<allHistoryData[0].coll.length;i++){
+                firmNames.push(allHistoryData[0].coll[i].title);           
+                allData.push({
+                    name: allHistoryData[0].coll[i].title,
+                    type: 'line',
+                    data: [],
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                formatter: '{c}%'
+                            }
+                        }
+                    }                
+                })
+            }
+            for(let i=0;i<allHistoryData.length;i++){
+                time.push(allHistoryData[i].date.substr (0,4)+"-"+allHistoryData[i].date.substr (4,2)+"-"+allHistoryData[i].date.substr (6,2));
+                for(let j=0;j<allHistoryData[i].coll.length;j++){
+                    allData[j].data.push((allHistoryData[i].coll[j].count))
+                }
+            }
+
+            this.loadLineChart({x:time,legend:firmNames,series:allData})
+        });
+    },
     //加载趋势图表对象
     loadTendencyChart(d){
         if(!this.tendencyChart){
@@ -144,7 +265,7 @@ export default {
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data:  ['1月1','1月1','1月1']
+                data:  d.months
             },
             grid:{	//设置图标上面和下面的距离
                 left: 60,
@@ -162,7 +283,7 @@ export default {
             },
             series: [{
                 name:"采集数",
-                data:  [1,2,4],
+                data:  d.data,
                 type: 'line',
             }]
         };                               
@@ -201,7 +322,7 @@ export default {
             xAxis: {
 
                 type: 'category',
-                data: [1,2,3,4]
+                data: d.x
             },
             yAxis: {
                 type: 'value'
@@ -213,7 +334,7 @@ export default {
                         color:'#42ABDF'
                     }
                 },
-                data: [1,3,2,4,],
+                data: d.data,
                 type: 'bar'
                 },
             ]
@@ -235,14 +356,14 @@ export default {
                 }, 
             },                       
             tooltip: {
-                trigger: 'axis',
-                formatter:function(param){
-                    let str='';
-                    // _.each(param,p=>{
-                    //     str+=`${p.seriesName}:${p.data}<br>`
-                    // });
-                    return str;
-                }
+                trigger: 'item',
+                // formatter:function(param){
+                //     let str='';
+                //     // _.each(param,p=>{
+                //     //     str+=`${p.seriesName}:${p.data}<br>`
+                //     // });
+                //     return str;
+                // }
             },
             legend: {
                 orient : 'horizontal',  
@@ -311,6 +432,9 @@ html{.TCol(~".CollectChart .right_option_bar .item:hover");}
     width:100%;
     border-bottom:2px solid #e5e5e5;
 }
+
+html{.TCol(~".CollectChart .right_option_bar .item_child.active .undeline",'bbc');}
+
 
 html{.TCol(~".CollectChart .right_option_bar .item_child:hover");}
 html{.TCol(~".CollectChart .right_option_bar .item_child:hover .undeline",'bbc');}
