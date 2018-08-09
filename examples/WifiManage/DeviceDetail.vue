@@ -78,7 +78,7 @@ export default {
     //加载场所详细信息
     loadData(){
         this.$store.dispatch(DeviceDetail,{equipment_id:this.code}).then(res=>{
-            if(!tool.msg(res,'','获取场所详细数据失败!'))return;
+            if(!tool.msg(res,'','获取设备详细数据失败!'))return;
             this.d=res.biz_body;
             this.loadMap(this.d);
         });

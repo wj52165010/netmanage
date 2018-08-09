@@ -90,10 +90,12 @@ import 'echarts/lib/component/dataZoom'
 
 import HTag from 'components/HTag'
 
-import {siteDetectYesterday,SiteDetectColl,siteDetectHistory} from '../../store/mutation-types'
+import {siteDetectYesterday,SiteDetectColl,siteDetectHistory,
+        DeviceDetectYesterday,DeviceDetectColl,DeviceDetectHistory  
+      } from '../../store/mutation-types'
 export default {
   name: 'CollectChart',
-  props:['code','microprobe_type'],
+  props:['code','microprobe_type','type'],
   components:{HTag},
   data () {
     return {
@@ -152,7 +154,7 @@ export default {
     loadSiteDetectColl(){
         //绘制采集趋势折线图
         this.blnLoading=true;
-        this.$store.dispatch(SiteDetectColl,{
+        this.$store.dispatch(this.type?DeviceDetectColl:SiteDetectColl,{
             netbar_wacode:this.code,
             microprobe_type:this.microprobe_type,
             coll_type:this.trendTime,
@@ -181,7 +183,7 @@ export default {
         //绘制采集详情柱状图(昨日详情)
         let exceCount=0;
         this.blnLoading_detail=true;
-        this.$store.dispatch(siteDetectYesterday,{
+        this.$store.dispatch(this.type?DeviceDetectYesterday:siteDetectYesterday,{
             netbar_wacode:this.code,
             microprobe_type:this.microprobe_type,
             coll_type:this.detailTime,
@@ -200,7 +202,7 @@ export default {
         });
 
         //绘制采集详情折线图(历史详情)
-        this.$store.dispatch(siteDetectHistory,{
+        this.$store.dispatch(this.type?DeviceDetectHistory:siteDetectHistory,{
             netbar_wacode:this.code,
             coll_type:this.detailTime,
             microprobe_type:this.microprobe_type

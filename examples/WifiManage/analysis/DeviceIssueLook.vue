@@ -6,22 +6,22 @@
 
                 <div class="item">
                     <span>场所范围:</span><div style="display:inline-block;">
-                        <PlaceSearch  :blnClear="true" c_searchKind="1" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch   c_searchKind="1" ccontext="region"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
 
                 <div class="item">
                     <span>设备名称:</span><div style="display:inline-block;">
-                        <el-input />
+                        <el-input v-model="equipment_name" />
                     </div>
                 </div>
 
                 <div class="item">
                     <span>问题分类:</span><div style="display:inline-block;">
-                    <el-select placeholder="请选择" :clearable="true">
+                    <el-select placeholder="请选择" v-model="iabnormal_type" >
                             <el-option
-                                v-for="kind in []"
-                                :key="kind.code"
+                                v-for="kind in dict_tables.netbar_abnormal_type"
+                                :key="kind.value"
                                 :label="kind.name"
                                 :value="kind.value">
                             </el-option>
@@ -40,7 +40,7 @@
 
                 <div class="item">
                     <span>所属区域:</span><div style="display:inline-block;">
-                        <PlaceSearch  :blnClear="true" c_searchKind="0" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch   c_searchKind="0" ccontext="region"  @place_res="regionchange"></PlaceSearch>
                     </div>
                 </div>
 
@@ -60,35 +60,35 @@
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
                             <span style="margin-right:5px;">设备编码</span>
-                            <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="placeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="placeOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!placeCodeOrder}" @click="orderChange('placeCodeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeCodeOrder}" @click="orderChange('placeCodeOrder',true);"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
                             <span style="margin-right:5px;">设备名称</span>
-                            <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="placeNameOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="placeNameOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="orderChange('placeNameOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="orderChange('placeNameOrder',true);"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;position:relative;">
                             <span style="margin-right:5px;">所属场所</span>
-                            <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="placeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="placeOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="orderChange('placeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="orderChange('placeOrder',true);"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;position:relative;">
                             <span style="margin-right:5px;">所属厂商</span>
-                            <i class="fa fa-caret-up" :class="{active:!firmOrder}" @click="firmOrder=false"></i><i class="fa fa-caret-down" :class="{active:firmOrder}" @click="firmOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!firmOrder}" @click="orderChange('firmOrder',false);"></i><i class="fa fa-caret-down" :class="{active:firmOrder}" @click="orderChange('firmOrder',true);"></i>
                         </span>
                     </div>
 
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;position:relative;">
                             <span style="margin-right:5px;">所属区域</span>
-                            <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="areaOrder=false"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="areaOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="orderChange('areaOrder',false);"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="orderChange('areaOrder',true);"></i>
                         </span>
                     </div>
 
@@ -98,7 +98,7 @@
                     <div class="column" style="width:120px;">
                         <span class="overflow" style="width:120px;position:relative;">
                             <span style="margin-right:5px;">最近联系时间</span>
-                            <i class="fa fa-caret-up" :class="{active:!timeOrder}" @click="timeOrder=false"></i><i class="fa fa-caret-down" :class="{active:timeOrder}" @click="timeOrder=true"></i>
+                            <i class="fa fa-caret-up" :class="{active:!timeOrder}" @click="orderChange('timeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:timeOrder}" @click="orderChange('timeOrder',true);"></i>
                         </span>
                     </div>
 
@@ -138,10 +138,14 @@
 
             <!--分页栏-->
             <div name="page_container" class="page_container" style="background-color:white;">
-                <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span></span>
-                <div class="firstPage" @click="pageChange(0)">首页</div>
-                <div class="prePage" @click="pageChange(pageIndex-1)">上一页</div>
-                <div class="nextPage" @click="pageChange(pageIndex+1)">下一页</div>          
+                <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">
+                    当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span>/{{pageSize}},
+                    每页{{pageNum}}条,共{{pageCount}}条
+                </span>
+                <div class="firstPage"  v-show="pageIndex!=0" @click="pageChange(0)">首页</div>
+                <div class="prePage"    v-show="pageIndex>0" @click="pageChange(pageIndex-1)">上一页</div>
+                <div class="nextPage"   v-show="pageIndex<pageSize-1" @click="pageChange(pageIndex+1)">下一页</div>
+                <div class="nextPage"   v-show="pageIndex!=pageSize-1" @click="pageChange(pageSize-1)">最后页</div>           
             </div>
 
         </div>
@@ -159,30 +163,51 @@ import IssueList from '../IssueList'
 import PlaceDetail from '../PlaceDetail'
 import DeviceDetail from '../DeviceDetail'
 
-import {BODY_RESIZE,GetFirm} from '../../../store/mutation-types'
+import {BODY_RESIZE,GetFirm,DeviceScoreCollect,getDictTables} from '../../../store/mutation-types'
 export default {
   name: 'IssueLook',
+  props:['microprobe_type','abnormal_type'],
   components:{PlaceSearch,MulDropDwon,Scroll},
   data () {
     return {
+      pageNum:15,       //当前页面显示数据条数
+      pageCount:0,      //数据总条数
+      pageSize:0,       //数据总页数
       firms:[],//厂商数据集合
       Selfirms:[],
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
       data:[
-        {code:'53011135000127',name:'重庆智多测试设备',place:'重庆智多测试设备',firm:'重庆爱思网安',region:'南岸区',issueKind:'采集失效',state:'online',time:'1天前',collect:'0',digest:'XXXXXX'},
-        {code:'53011135000127',name:'重庆智多测试设备',place:'重庆智多测试设备',firm:'重庆爱思网安',region:'南岸区',issueKind:'采集失效',state:'online',time:'1天前',collect:'0',digest:'XXXXXX'},
-        {code:'53011135000127',name:'重庆智多测试设备',place:'重庆智多测试设备',firm:'重庆爱思网安',region:'南岸区',issueKind:'采集失效',state:'online',time:'1天前',collect:'0',digest:'XXXXXX'},
+        //{code:'53011135000127',name:'重庆智多测试设备',place:'重庆智多测试设备',firm:'重庆爱思网安',region:'南岸区',issueKind:'采集失效',state:'online',time:'1天前',collect:'0',digest:'XXXXXX'},
+        //{code:'53011135000127',name:'重庆智多测试设备',place:'重庆智多测试设备',firm:'重庆爱思网安',region:'南岸区',issueKind:'采集失效',state:'online',time:'1天前',collect:'0',digest:'XXXXXX'},
+        //{code:'53011135000127',name:'重庆智多测试设备',place:'重庆智多测试设备',firm:'重庆爱思网安',region:'南岸区',issueKind:'采集失效',state:'online',time:'1天前',collect:'0',digest:'XXXXXX'},
       ],
       blnLoading:false,
       pageIndex:0,
-      placeOrder:false,
-      placeNameOrder:false,
-      firmOrder:false,
-      areaOrder:false,
-      timeOrder:false,
+      placeCodeOrder:true,
+      placeOrder:true,
+      placeNameOrder:true,
+      firmOrder:true,
+      areaOrder:true,
+      timeOrder:true,
+      netsite_range:[],//场所范围
+      region_range:[],//区域范围
+      equipment_name:'',//设备名称
+      dict_tables:{},
+      orderObj:{sort:'equipment_id',order:'desc'},
+      iabnormal_type:'',
+      iabnormal_name:''
     }
+  },
+  watch:{
+    abnormal_type(){
+        this.iabnormal_type=this.abnormal_type;
+        this.loadData();
+    },
+    iabnormal_type(){
+        this.iabnormal_name=_.find(this.dict_tables.netbar_abnormal_type,c=>c.value==this.iabnormal_type);
+    },
   },
   mounted(){
 
@@ -190,14 +215,32 @@ export default {
     this.$store.dispatch(GetFirm).then(res=>{
         if(!tool.msg(res,'','获取厂商数据失败!'))return;
         this.firms=res.biz_body;
+        this.$nextTick(()=>{
+            this.iabnormal_type=this.abnormal_type;
+        })
+    });
+
+    //获取数据来源（下拉框序列化）
+    this.$store.dispatch(getDictTables).then(res=>{
+        if(res.msg.code!='successed')return;
+        this.dict_tables= res.biz_body;
+
+        this.$nextTick(()=>{
+            this.iabnormal_type=this.abnormal_type;
+        })
     });
 
    this.layout();
+
+   this.loadData();
+
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
        this.bodyResizeSub=sub
    },sub:()=>{
       this.layout();
    }});
+
+
   },
   beforeDestroy(){
     this.bodyResizeSub.unsubscribe();
@@ -213,6 +256,89 @@ export default {
         },500);
         this.column_w=$(this.$el).width()-1140 -10;
     },
+     //加载列表数据
+    loadData(){
+        if(!this.iabnormal_type) return;
+        this.blnLoading=true;
+        this.$store.dispatch(DeviceScoreCollect,{
+           limit:this.pageNum,
+           skip:this.pageNum*this.pageIndex,
+           equip_abnormal_type:this.iabnormal_type,
+           netsite_range:this.netsite_range,
+           region_range:this.region_range,
+           security_software_orgcodes:_.map(this.Selfirms,s=>s.code).join(','),
+           equipment_name:this.equipment_name,
+           microprobe_type:this.microprobe_type,
+           sort:this.orderObj.sort,
+           order:this.orderObj.order
+        }).then(res=>{
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取总览列表数据失败!'))return;
+            this.data = this.converData(res.biz_body);
+            //测试数据
+            this.data=[{code:'53011135000127',name:'重庆智多测试设备',place:'重庆智多测试设备',firm:'重庆爱思网安',region:'南岸区',issueKind:'采集失效',state:'online',time:'1天前',collect:'0',digest:'XXXXXX'}];
+            
+            this.pageCount=res.page.total;
+            this.pageSize=res.page.page_size;
+            
+        });
+    },
+    //排序改变事件
+    orderChange(type,val){
+     let orderCache=this[type];
+
+     if(orderCache==val) return;
+    
+     
+     this.placeCodeOrder=true;
+     this.placeOrder=true;
+     this.placeNameOrder=true;
+     this.firmOrder=true;
+     this.areaOrder=true;
+     this.timeOrder=true;
+     this[type]=val;
+
+     let fieldMap={
+        placeCodeOrder:'equipment_id',
+        placeOrder:'netbar_name',
+        placeNameOrder:'equipment_name',
+        timeOrder:'capture_time',
+        areaOrder:'region_name',
+        firmOrder:'security_software_orgname'
+     };
+
+     this.orderObj.sort=fieldMap[type];
+     this.orderObj.order=val?'desc':'asc';
+     this.loadData();
+
+    },
+    //转化数据
+    converData(d){
+        let s=this;
+        return _.map(d,c=>{
+            return {
+                code:c.equipment_id,
+                name:c.equipment_name,
+                place:c.netbar_name,
+                firm:c.security_software_orgname,
+                region:c.region_name,
+                issueKind:s.iabnormal_name,
+                state:c.online_state,
+                time:c.capture_time_desc,
+                collect:c.last_upload_num,
+                digest:c.errors,
+                siteId:c.netbar_wacode
+            }
+        });
+    },
+    pageChange(i){
+        this.pageIndex=i;
+        this.loadData();
+    },
+    //搜索
+    search(){
+        this.pageChange(0);
+    },
     //设备详情
     deviceDetail(d){
         let s=this;
@@ -221,12 +347,13 @@ export default {
                 title:'设备详情',
                 area:'1000px',
                 content:`<div class="place_detail_pop" style="width:100%;height:100%;">
-                            <DeviceDetail />
+                            <DeviceDetail :code="code" />
                         </div>
                         `,
                 components:{DeviceDetail},
                 store:s.$store,
                 context:{
+                    code:d.code,
                     blnExecute:false,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
@@ -244,12 +371,13 @@ export default {
                 title:'场所详情',
                 area:'1000px',
                 content:`<div class="place_detail_pop" style="width:100%;height:100%;">
-                            <PlaceDetail />
+                            <PlaceDetail :code="netbar_wacode" />
                         </div>
                         `,
                 components:{PlaceDetail},
                 store:s.$store,
                 context:{
+                    netbar_wacode:d.siteId,
                     blnExecute:false,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
@@ -265,15 +393,17 @@ export default {
         let s=this;
         tool.open(function(){
             let param={
-                title:'数据采集情况(场所名称)',
+                title:`数据采集情况(${d.name})`,
                 area:['800px','400px'],
                 content:`<div class="collect_chart_pop" style="width:100%;height:100%;">
-                            <CollectChart />
+                            <CollectChart :code="code" :microprobe_type="microprobe_type" :type="1" />
                         </div>
                         `,
                 components:{CollectChart},
                 store:s.$store,
                 context:{
+                    code:d.code,
+                    microprobe_type:s.microprobe_type,
                     blnExecute:false,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
@@ -310,9 +440,6 @@ export default {
     ExportOnlineCount(){
 
     },
-    pageChange(i){
-
-    },
     firmClick(type,d){
         let index=-1;
         index=_.findIndex(this.Selfirms,t=>t.code==d.code);
@@ -324,8 +451,10 @@ export default {
         return  _.find(data,d=>d.code==code);
     },
     placechange(query,val){
-        let res =_.flatten(_.map(val,v=>{return _.map(v,i=>i.code)}));
-        console.log(res);
+        this.netsite_range = _.flatten(_.map(val,v=>{return _.map(v,i=>{ return {code:i.code};})}));
+    },
+    regionchange(query,val){
+        this.region_range = _.flatten(_.map(val,v=>{return _.map(v,i=>{ return {code:i.code};})}));
     },
     //转化场所状态
     converPlaceState(v){

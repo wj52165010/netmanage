@@ -187,13 +187,17 @@ export default {
       dict_tables:{},
       orderObj:{sort:'netbar_wacode',order:'desc'},
       iabnormal_type:'',
+      iabnormal_name:'',
     }
   },
   watch:{
     abnormal_type(){
         this.iabnormal_type=this.abnormal_type;
         this.loadData();
-    }
+    },
+    iabnormal_type(){
+        this.iabnormal_name=_.find(this.dict_tables.netbar_abnormal_type,c=>c.value==this.iabnormal_type);
+    },
   },
   mounted(){
     //获取厂商下拉框数据
@@ -240,7 +244,7 @@ export default {
     },
     //加载列表数据
     loadData(){
-        if(!this.abnormal_type) return;
+        if(!this.iabnormal_type) return;
         this.blnLoading=true;
         this.$store.dispatch(siteScoreCollect,{
            limit:this.pageNum,
@@ -279,7 +283,7 @@ export default {
      this[type]=val;
 
      let fieldMap={
-        placeCodeOrder:'netbar_wacode',
+        placeOrder:'netbar_wacode',
         placeNameOrder:'netbar_name',
         timeOrder:'last_time',
         areaOrder:'region_name',
@@ -300,7 +304,7 @@ export default {
                 name:c.netbar_name,
                 firm:c.security_software_orgname,
                 region:c.region_name,
-                issueKind:s.abnormal_name,
+                issueKind:s.iabnormal_name,
                 state:c.online_state,
                 declareTerminal:c.net_terminal_num || 0,
                 detectionTerminal:c.actual_terminal || 0,
