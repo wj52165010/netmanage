@@ -109,7 +109,7 @@ import DataSource from '../../../enum/DataSource'
 import DealtPlace from './DeviceDealtPlace'
 import IssueLook from './DeviceIssueLook'
 
-import {BODY_RESIZE,GetFirm,SiteHisPercentage,HisPercentageExport,getDictTables,LastDevicePercentage,DeviceHisPercentageExport} from '../../../store/mutation-types'
+import {BODY_RESIZE,GetFirm,SiteHisPercentage,HisPercentageExport,getDictTables,LastDevicePercentage,DeviceHisPercentageExport,DeviceHisPercentage} from '../../../store/mutation-types'
 
 export default {
   name: 'DeviceAnalysis',
@@ -211,7 +211,7 @@ export default {
     },
     //获取设备在离线数据
     getOnOffLineData(){
-        this.$store.dispatch(SiteHisPercentage,{
+        this.$store.dispatch(DeviceHisPercentage,{
                 coll_type:this.collType,
                 region_range:this.regionRange,
                 security_software_orgcodes:_.map(this.Selfirms,s=>s.code).join(','),
