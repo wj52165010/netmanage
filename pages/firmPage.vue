@@ -134,7 +134,9 @@
                                     v-model="timeBar"
                                     type="daterange"
                                     :picker-options="pickerOptions0"
-                                    placeholder="选择日期范围">
+                                    placeholder="选择日期范围"
+                                    style="width:200px"
+                                    >
                                     </el-date-picker>
                             </div>
                         </div>
@@ -578,6 +580,7 @@ export default {
             beginTime='';
             endTime=this.changeTimeFun(Date.now());              
         }
+
         this.$store.dispatch(firmDetectRange,{begin_time:beginTime,end_time:endTime}).then(res=>{
            if(res.msg.code!='successed')return;
             this.loadBarChart(res.biz_body);
