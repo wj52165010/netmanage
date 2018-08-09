@@ -18,7 +18,7 @@
                 </div>
                 <div class="item">
                     <span>场所状态:</span><div style="display:inline-block;">
-                    <el-select v-model="placeState" placeholder="请选择" :clearable="true">
+                        <el-select v-model="placeState" placeholder="请选择" :clearable="true">
                             <el-option
                                 v-for="kind in dict_tables.device_state || []"
                                 :key="kind.value"
