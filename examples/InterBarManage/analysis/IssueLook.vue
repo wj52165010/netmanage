@@ -159,7 +159,7 @@
                             <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.issueKind}}</span></div>
                             <div class="column" style="width:100px;"><span class="overflow" style="width:100px;" :style="{color:converIssueLevel(d.issueLevel).color}">{{converIssueLevel(d.issueLevel).name}}</span></div>
                             <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="issueDetail(d)">{{d.digest}}</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.handleWay}}</span></div>
+                            <div class="column" style="width:100px;" @click="handleMode(d)"><span class="overflow clickItem" style="width:100px;">{{d.handleWay}}</span></div>
                             <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.user}}</span></div>
                         </div>
                     </div>
@@ -192,12 +192,13 @@ import TerminalDetail from '../TerminalDetail'
 import CollectChart from '../CollectChart'
 import IssueList from '../IssueList'
 import PlaceDetail from '../PlaceDetail'
+import HandleMode from '../HandleMode'
 
 import {BODY_RESIZE,GetFirm,siteScoreCollect,getDictTables} from '../../../store/mutation-types'
 export default {
   name: 'IssueLook',
   props:['microprobe_type','abnormal_type','abnormal_name'],
-  components:{PlaceSearch,MulDropDwon,Scroll},
+  components:{PlaceSearch,MulDropDwon,Scroll,HandleMode},
   data () {
     return {
       pageNum:15,       //当前页面显示数据条数
@@ -457,6 +458,29 @@ export default {
                         </div>
                         `,
                 components:{IssueList},
+                store:s.$store,
+                context:{
+                    blnExecute:false,
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
+    },
+    //处理方式弹窗
+    handleMode(d){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'处理方式变更',
+                area:['400px','500px'],
+                content:`<div class="handlemode" style="width:100%;height:100%;">
+                            <HandleMode />
+                        </div>
+                        `,
+                components:{HandleMode},
                 store:s.$store,
                 context:{
                     blnExecute:false,

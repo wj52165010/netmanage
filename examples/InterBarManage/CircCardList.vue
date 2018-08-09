@@ -39,8 +39,8 @@
                     <div class="table_body">
                         <div class="row" v-for="d in data">
                             <div class="column" style="width:100px;"><span class="overflow " style="width:100px;">{{d.time}}</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow " style="width:100px;">{{d.time}}</span></div>
-                            <div class="column" style="width:200px;"><span class="overflow " style="width:200px;">{{d.time}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow " style="width:100px;">{{d.hour}}</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow " style="width:200px;">{{d.name}}</span></div>
                             <div class="column" ><span  class="overflow " :style="{width:column_w+'px'}" :title="d.content">{{d.content}}</span></div>
                         </div>
                     </div>
@@ -63,7 +63,7 @@ export default {
         bodyResizeSub:null,
         bodyH:0,
         data:[
-            {time:'20',content:'1.dsalkjdlkasjjjjjjjjjj'}
+            {time:'20',hour:'20小时',name:'张三',content:'500235xxxxxxxxxxxx'}
         ],
         blnLoading:false,
         pageIndex:0,
@@ -89,6 +89,7 @@ export default {
     layout(){
         setTimeout(()=>{
             this.$nextTick(()=>{
+                if(!this.$refs.scroll) return;
                 this.$refs.scroll.reloadyScroll()
             })
         },500);

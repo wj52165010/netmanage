@@ -76,6 +76,7 @@ export default {
     layout(){
         setTimeout(()=>{
             this.$nextTick(()=>{
+                if(!this.$refs.scroll) return;
                 this.$refs.scroll.reloadyScroll()
             })
         },500);

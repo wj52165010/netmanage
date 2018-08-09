@@ -50,10 +50,13 @@
                                                     style="display:block;word-wrap:break-word;text-align:left;line-height:25px;" 
                                                     :style="{width:column_w+'px'}" >
                                                         <template v-for="(c,j) in d.content">
-                                                            <div @click="c.blnExport=!c.blnExport" style="cursor:pointer;">
+                                                            <div @click="c.blnExport=!c.blnExport" style="cursor:pointer;" v-if="c.blnExport!=undefined">
                                                                 <i :class="c.blnExport?'fa fa-chevron-down':'fa fa-chevron-right'" />
                                                                 {{j+1}}.{{c.val}}
                                                             </div>
+
+                                                            <div v-if="c.blnExport==undefined">{{j+1}}.{{c.val}}</div>
+
                                                             <div v-if="c.blnExport" style="height:100px;width:100%">
                                                                 <CircCardList />
                                                             </div>
@@ -102,7 +105,12 @@ export default {
         bodyH:0,
         data:[
             {time:'2018-06-05 17:13:30',content:[
-                    {blnExport:false,val:'dsalkjdlkasjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjalsjdlasjdlasjddsalkjdlkasjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjalsjdlasjdlasjdfdsfdsfsd'}
+                    {blnExport:false,val:'场所已经离线，连续两天未上传数据，一天未上传心跳'}
+                ]
+            },
+            {time:'2018-06-06 17:13:30',content:[
+                    {blnExport:false,val:'场所存在非法刷卡上网行为，连续两天使用6张证件反复刷卡上网,最多一张证件刷卡20次'},
+                    {val:'场所一天内共使用了3次外挂共计6小时'}
                 ]
             }
         ],
