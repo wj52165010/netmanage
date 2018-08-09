@@ -341,7 +341,7 @@ export default {
             region_range:[],
             security_software_orgcodes:"",
         },
-        timeBar:'',             //采集详情的时间控件
+        timeBar:[],             //采集详情的时间控件
         myBarChart:"",
         deviceSelect:{           //设备在线率提交数据
             coll_type:"week",
@@ -577,8 +577,12 @@ export default {
             beginTime=this.changeTimeFun(this.timeBar[0]);
             endTime=this.changeTimeFun(this.timeBar[1]);            
         }else{
-            beginTime='';
-            endTime=this.changeTimeFun(Date.now());              
+            let curDate=new Date();
+            curDate.setDate(curDate.getDate()-6);//默认显示7天内的数据
+
+            beginTime=this.changeTimeFun(curDate);
+            endTime=this.changeTimeFun(Date.now()); 
+            this.timeBar=[curDate,new Date()];             
         }
 
         this.$store.dispatch(firmDetectRange,{begin_time:beginTime,end_time:endTime}).then(res=>{
