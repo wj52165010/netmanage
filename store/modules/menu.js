@@ -81,7 +81,7 @@ const getters={
         };
 
         let setField=converFields(state.selFields,[t],state.template,tmpParam);
-
+      
         let config={
             distinct_fields:{table:t.key,key:distinctField.key,alias:`${t.key}_${distinctField.key}`}, //去重字段
             field_btns:state.field_btns, //操作按钮
@@ -246,7 +246,7 @@ let converFields=function(data,tables,templateNum,tmpParam){
                 newF.fun=filed.fun || '';
                 newF.mapField=filed.mapField || '';
 
-                newF.blnShow || orderFields.push(newF);
+                orderFields.push(newF);
                 filed.mapField || tempFileds.push(newF);
                 oriFields.push(filed);
                 break;
@@ -267,7 +267,7 @@ let converFields=function(data,tables,templateNum,tmpParam){
                 newF.fun=filed.fun || '';
                 newF.mapField=filed.mapField || '';
 
-                newF.blnShow || orderFields.push(newF);
+                orderFields.push(newF);
                 filed.mapField || tempFileds.push(newF);
                 oriFields.push(filed);
                 
@@ -288,7 +288,7 @@ let converFields=function(data,tables,templateNum,tmpParam){
                 newF.fun=filed.fun || '';
                 newF.mapField=filed.mapField || '';
                 
-                newF.blnShow || orderFields.push(newF);
+                orderFields.push(newF);
                 //groupFileds.push(newF);
                 for(let extraF of filed.groupFields)
                 {
@@ -321,7 +321,7 @@ let converFields=function(data,tables,templateNum,tmpParam){
                 newF.fun=filed.fun || '';
                 newF.mapField=filed.mapField || '';
 
-                newF.blnShow || orderFields.push(newF);
+                orderFields.push(newF);
                 filed.mapField || tempFileds.push(newF);
                 oriFields.push(filed);
                 break;

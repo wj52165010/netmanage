@@ -504,7 +504,7 @@ export default {
         config.blnRemote=model.isRemote || (model.remoteInterface && model.remoteInterface.length>0);
         config.remoteInterface=model.remoteInterface;
         config.relateMenus=model.realtiveMenu?model.realtiveMenu.split(','):[];
-        config.orderFields=model.show_fields;
+        config.orderFields=_.filter(model.show_fields,s=>!s.blnShow);
         config.queryFields=model.query_fields;
         config.limit=model.limit;
         config.data =model.data || [],//[{vidlog_id:'2012-12-12 12:12:12',vidlog_number:1},{vidlog_id:'2012-12-12 12:12:12',vidlog_number:1},{vidlog_id:'2012-12-12 12:12:12',vidlog_number:1},{vidlog_id:'2012-12-12 12:12:12',vidlog_number:1}];
