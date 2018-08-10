@@ -589,6 +589,9 @@ export default {
 
       this.$refs.mapPlayer.goStart();
       this.$nextTick(()=>{
+        this.serachInfo={color:'green',val:t.key_type_note,code:t.key_type};
+        this.searchResult=[{name:t.trace_key,type:t.key_type_note,code:t.key_type}];
+     
         this.search();
       });
     },
@@ -929,7 +932,7 @@ export default {
       if(certificateReg.test(v)){res.push({name:'身份证',val:'certificate_code'})}
       if(phoneReg.test(v)){res.push({name:'手机号',val:'mobile'})}
       if(imsiReg.test(v)){res.push({name:'IMSI',val:'imsi'})}
-
+      
       return res;
     },
     //场所选择改变事件

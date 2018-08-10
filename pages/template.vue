@@ -814,7 +814,7 @@ export default {
         
         if(!cachCond)config._cachCond=tool.Clone(condtion);
         let {param:result,sepParam} = tmpDAO.searchParam((cachCond || condtion).concat(config.extraConditon || []),model);
-      
+
         //远程数据查询
         if(config.blnRemote && config.remoteIds.length>0 && !blnNoRemote){
             let hasShow=config.showTemplate.indexOf(100);
@@ -876,7 +876,7 @@ export default {
             }
             item.skip=item.limit*number;
             item.pageIndex=number;
-        },true,item._cachCond || []);
+        },true,item._cachCond );
 
       },
       //获取分页数据
