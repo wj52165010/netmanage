@@ -114,6 +114,7 @@ export default {
       detailTime:"week",//采集详情日期类型
       collctNum:0, //昨日采集采集量
       totalNum:0,//累计采集数
+      allHistoryData:[],
     }
   },
   watch:{
@@ -235,6 +236,7 @@ export default {
                 }
             }
 
+            this.allHistoryData=allHistoryData;
             this.loadLineChart({x:time,legend:firmNames,series:allData})
         });
     },
