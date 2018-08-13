@@ -190,6 +190,7 @@ Vue.mixin({
           }
         },
         getRes(statusObj){
+          return {val:4,info:'完成!'}
           if(!statusObj){return {val:-1};}
           statusObj=eval('('+statusObj+')');
           let status=statusObj.status,statusVal=this[status];

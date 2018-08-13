@@ -5,8 +5,8 @@ import netBarSer from '../store/modules/InterBarManage/server' //网吧管理服
 //发布地址:172.23.90.8:3030
 
 //let url='http://192.168.23.23:3030';
-let url='http://192.168.100.80:3030';
-//let url='http://192.168.23.73:3030';
+//let url='http://192.168.100.85:3030';
+let url='http://192.168.23.73:3030';
 //let url='';
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';

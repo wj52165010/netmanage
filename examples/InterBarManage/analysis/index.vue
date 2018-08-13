@@ -215,6 +215,7 @@ export default {
         }).then(res=>{
             if(res.msg.code!='successed')return;
             this.weekOnOffLIne=res.biz_body;
+            
             this.addOfflineLineChart(this.weekOnOffLIne);     //加载折线图
             this.addOfflineBarChart(this.weekOnOffLIne);      //加载柱状图
         });
@@ -626,7 +627,7 @@ export default {
             } ],
             tooltip: {
                 trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
+                formatter: "{b}: {c} ({d}%)"
             },
             legend: {
                 orient : 'vertical',  
