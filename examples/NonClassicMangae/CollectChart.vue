@@ -137,7 +137,7 @@ export default {
       setTimeout(()=>{
         //this.loadTendencyChart();
         //this.loadBarChart();
-        this.loadLineChart();
+        //this.loadLineChart();
 
         this.loadData();
       },100);
@@ -345,6 +345,7 @@ export default {
             this.lineChart=echarts.init($(this.$el).find('div[name="line_chart"]')[0]);
         }  
 
+        let s=this;
         let option = {      
             title: {
                 text: '历史采集详情',
@@ -354,14 +355,32 @@ export default {
                 }, 
             },                       
             tooltip: {
-                trigger: 'item',
-                // formatter:function(param){
-                //     let str='';
-                //     // _.each(param,p=>{
-                //     //     str+=`${p.seriesName}:${p.data}<br>`
-                //     // });
-                //     return str;
-                // }
+                trigger: 'axis',
+                formatter:function(param){
+                    
+                    return `${param[0].name}<br>` + _.map(param,p=>{
+
+                        let details=''
+
+                    
+                        let data = s.allHistoryData[p.dataIndex].coll[p.seriesIndex];
+                        details=_.map(data.details || [],d=>{
+                            return `<br>${d.name} : ${d.count}   (${d.per})`
+                        }).join('');
+                
+                        
+                        let str=`
+                                ${p.seriesName} : ${p.data}
+                                ${details}<br>
+                                `;
+                        return str;
+                    }).join('<div style="height:1px;width:100%;border:1px dashed white;margin-top:5px;"></div>');
+                    
+                },
+                padding:10,
+                textStyle:{
+                    fontSize:12
+                }
             },
             legend: {
                 orient : 'horizontal',  
@@ -369,12 +388,12 @@ export default {
                 textStyle: {  
                     fontSize: 13,
                 }, 
-                data:['321','ds','23'], 
+                data:d.legend, 
             },
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data:  [1,2,3]
+                data:  d.x
             },
             grid:{	//设置图标上面和下面的距离
                 left: 60,
@@ -394,13 +413,14 @@ export default {
                     snap: true
                 }
             },
-            series:[
-                {
-                name:"采集数",
-                data:  [1,2,4],
-                type: 'line',
-                }
-            ]
+            series:d.series
+            // series:[
+            //     {
+            //     name:"采集数",
+            //     data:  [1,2,4],
+            //     type: 'line',
+            //     }
+            // ]
         };                  
         this.lineChart.setOption(option);
     },

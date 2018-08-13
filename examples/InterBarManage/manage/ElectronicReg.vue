@@ -113,7 +113,7 @@ import Scroll from  'components/scroll'
 import RegSetting from './RegSetting'
 import PlaceDetail from '../PlaceDetail'
 
-import {BODY_RESIZE} from '../../../store/mutation-types'
+import {BODY_RESIZE,netbar_electronic_list} from '../../../store/mutation-types'
 
 export default {
   name: 'ElectronicReg',
@@ -164,6 +164,25 @@ export default {
             })
         },100);
         this.column_w=$(this.$el).width()-970;
+    },
+    //加载数据
+    loadData(){
+        this.$store.dispatch(netbar_electronic_list).then(res=>{
+            if(!tool.msg(res,'','获取电子登记列表数据失败!'))return;
+
+        });
+    },
+    converData(d){
+        return _.map(d,c=>{
+            return {
+                code:c.netbar_wacode,       //场所编码
+                name:c.netbar_name,         //场所名称
+                region:c.region_name,       //区域名称
+                uableCount:c.allow_use,     //可用次数
+                logtime:c.last_reset_time,  //最后重置可用时间
+                user:c.user_name            //最后重置操作人
+            }
+        });
     },
     //全选/取消全选
     selAll(){
