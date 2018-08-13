@@ -1,6 +1,10 @@
 <!-- 设备详情组件 -->
 <template>
     <div class="DeviceDetail">
+        <!--加载中-->
+        <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+            <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+        </div>
         <div class="DeviceDetail_container">
             <div class="row">
                 <div class="col-md-12 title">基础信息:</div>
@@ -69,6 +73,7 @@ export default {
     return {
       map:null,
       d:{},
+      blnLoading:false,
     }
   },
   mounted(){
@@ -77,7 +82,9 @@ export default {
   methods:{
     //加载场所详细信息
     loadData(){
+        this.blnLoading=true;
         this.$store.dispatch(DeviceDetail,{equipment_id:this.code}).then(res=>{
+            this.blnLoading=false;
             if(!tool.msg(res,'','获取设备详细数据失败!'))return;
             this.d=res.biz_body;
             this.loadMap(this.d);

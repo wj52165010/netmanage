@@ -213,12 +213,11 @@ export default {
 
         this.$nextTick(()=>{
             this.iabnormal_type=this.abnormal_type;
+            this.loadData();
         })
     });
 
    this.layout();
-   
-   this.loadData();
 
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
        this.bodyResizeSub=sub

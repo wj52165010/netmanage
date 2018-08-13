@@ -20,6 +20,10 @@ export default {
   watch:{
     listen:function(){
        this.$nextTick(()=>{
+           if(!this.scrollIns){
+             this.scrollDom=$('#'+this.id).find('div[name="scrollBar"]');
+             this.initScroll();
+           }
            this.reloadyScroll();
        });
     }

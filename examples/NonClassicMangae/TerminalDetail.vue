@@ -2,7 +2,10 @@
 <template>
     <div class="TerminalDetail">
         <div class="TerminalDetail_container">
-
+            <!--加载中-->
+            <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+                <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+            </div>
             <!--列表头-->
             <div class="table_header">
                 <div class="row">

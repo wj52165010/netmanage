@@ -214,12 +214,12 @@ export default {
 
         this.$nextTick(()=>{
             this.iabnormal_type=this.abnormal_type;
+            this.loadData();
         })
     });
 
    this.layout();
    
-   this.loadData();
 
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
        this.bodyResizeSub=sub
@@ -305,7 +305,7 @@ export default {
                 name:c.netbar_name,
                 firm:c.security_software_orgname,
                 region:c.region_name,
-                issueKind:s.iabnormal_name,
+                issueKind:s.iabnormal_name.name,
                 state:c.online_state,
                 declareTerminal:c.online_device || 0,
                 detectionTerminal:c.abnormal_device || 0,

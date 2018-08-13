@@ -1,6 +1,10 @@
 <!-- 设备场所详情组件 -->
 <template>
     <div class="DevicePlaceDetail">
+        <!--加载中-->
+        <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+            <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+        </div>
         <div class="DevicePlaceDetail_container">
             <div class="row">
                 <div class="col-md-12 title">基础信息:</div>
@@ -71,7 +75,8 @@ export default {
   name: 'DevicePlaceDetail',
   data () {
     return {
-      map:null
+      map:null,
+      blnLoading:false,
     }
   },
   mounted(){

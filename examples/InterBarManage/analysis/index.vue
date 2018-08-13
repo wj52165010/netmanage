@@ -81,8 +81,8 @@
                 </div>
                 <!--内容栏-->
                 <div class="content_bar">
-                    <DealtPlace ref="DealtPlace" v-show="showPage=='place'" />
-                    <IssueLook ref="IssueLook" :microprobe_type="microprobe_type" :abnormal_type="netbar_abnormal_type" :abnormal_name="netbar_abnormal_name" v-show="showPage=='issue'" />
+                    <DealtPlace ref="DealtPlace" v-if="showPage=='place'" />
+                    <IssueLook ref="IssueLook" :microprobe_type="microprobe_type" :abnormal_type="netbar_abnormal_type" :abnormal_name="netbar_abnormal_name" v-if="showPage=='issue'" />
                 </div>
             </div>
         </div>
@@ -727,7 +727,10 @@ export default {
                     return;
                 }
 
-                this.showPage='issue';           
+                //s.$nextTick(()=>{
+                    s.showPage='issue';           
+                //});
+                
 
             });
         }
@@ -801,7 +804,7 @@ export default {
                         },
 
                     },
-                    data: [data.netbar_maintenances || 10,data.netbar_punishments || 2, data.netbar_offlines, data.netbar_equip_faults, data.collection_undulate, data.collection_abnormals,data.card_abnormals,data.terminal_abnormals]
+                    data: [data.netbar_maintenances,data.netbar_punishments, data.netbar_offlines, data.netbar_equip_faults, data.collection_undulate, data.collection_abnormals,data.card_abnormals,data.terminal_abnormals]
                 }
                 
             ]

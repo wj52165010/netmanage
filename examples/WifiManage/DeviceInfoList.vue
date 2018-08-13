@@ -2,7 +2,10 @@
 <template>
     <div class="DeviceInfoList">
         <div class="DeviceInfoList_container">
-
+            <!--加载中-->
+            <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+                <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+            </div>
             <!--列表头-->
             <div class="table_header">
                 <div class="row">
@@ -146,7 +149,7 @@ export default {
 
 <style scoped lang="less">
 @import "../../css/variables.less";
-.DeviceInfoList{width:100%;height:100%;padding:5px;}
+.DeviceInfoList{width:100%;height:100%;padding:5px;position:relative;}
 .DeviceInfoList_container{width:100%;height:100%;background-color:white;}
 
 .DeviceInfoList .option_bar{text-align:left;padding:5px 15px;line-height:40px;}

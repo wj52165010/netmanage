@@ -198,9 +198,9 @@ export default {
                     status:updateData?updateData.status:'normal',//状态(lock,disabled,normal)
                     department:updateData?updateData.department:'',//部门
                     defRegion:updateData?updateData.region_code?JSON.stringify([{code:updateData.region_code,type:1}]):'':'',//区域选中默认值
-                    regionVal:[],//区域选中的值
+                    regionVal:updateData?updateData.region_code?[{code:updateData.region_code,type:1}]:[]:[],//区域选中的值
                     defPlace:updateData?updateData.policestation_code?JSON.stringify([{code:updateData.policestation_code,type:2}]):'':'',//派出所选中默认值
-                    placeVal:[],//派出所选中的值
+                    placeVal:updateData?updateData.policestation_code?[{code:updateData.policestation_code,type:2}]:[]:[],//派出所选中的值
                     //账号改变事件
                     account_change(val){param.selfData.account=val;},
                     //姓名改变事件

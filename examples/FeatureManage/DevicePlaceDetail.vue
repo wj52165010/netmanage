@@ -1,6 +1,10 @@
 <!-- 设备场所详情组件 -->
 <template>
     <div class="DevicePlaceDetail">
+        <!--加载中-->
+        <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
+            <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
+        </div>
         <div class="DevicePlaceDetail_container">
             <div class="row">
                 <div class="col-md-12 title">基础信息:</div>
@@ -76,6 +80,7 @@ export default {
     return {
       map:null,
       d:{},
+      blnLoading:false,
     }
   },
   mounted(){
@@ -84,7 +89,9 @@ export default {
   methods:{
     //加载场所详细信息
     loadData(){
+        this.blnLoading=true;
         this.$store.dispatch(SiteDetail,{netbar_wacode:this.code}).then(res=>{
+            this.blnLoading=false;
             if(!tool.msg(res,'','获取场所详细数据失败!'))return;
             this.d=res.biz_body;
             this.loadMap(this.d);

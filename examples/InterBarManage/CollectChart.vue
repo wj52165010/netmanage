@@ -189,6 +189,7 @@ export default {
             exceCount++;
             if(exceCount==2){this.blnLoading_detail=false;}
             if(!tool.msg(res,'','获取昨日采集数据失败!'))return;
+
             let yesterday=res.biz_body;
             var xZData=[],numData=[];
             for( let ary of yesterday){
@@ -208,6 +209,7 @@ export default {
             exceCount++;
             if(exceCount==2){this.blnLoading_detail=false;}
             if(!tool.msg(res,'','获取历史详情数据失败!'))return;
+
             let allHistoryData=res.biz_body;
             let time=[],allData=[],firmNames=[];
             //获取所有类型

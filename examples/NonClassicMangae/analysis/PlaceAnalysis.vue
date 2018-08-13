@@ -82,7 +82,7 @@
                 <!--内容栏-->
                 <div class="content_bar">
                     <DealtPlace ref="DealtPlace" v-show="showPage=='place'" />
-                    <IssueLook ref="IssueLook" :microprobe_type="microprobe_type" :abnormal_type="netbar_abnormal_type" :abnormal_name="netbar_abnormal_name" v-show="showPage=='issue'" />
+                    <IssueLook ref="IssueLook" :microprobe_type="microprobe_type" :abnormal_type="netbar_abnormal_type" :abnormal_name="netbar_abnormal_name" v-if="showPage=='issue'" />
                 </div>
             </div>
         </div>
