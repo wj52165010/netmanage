@@ -11,6 +11,9 @@ import addSource from './modules/addSource'
 import uploadSource from './modules/uploadSource'
 import specialSource from './modules/specialSource'
 import menuManage from './modules/menu'
+
+import netBar from './modules/InterBarManage' //网吧管理
+
 // import {tool}  from '../js/tool.js'
 let Rx = require('rxjs/Rx');
 
@@ -2453,6 +2456,7 @@ export default new Vuex.Store({
         addSource,
         specialSource,
         menuManage,
-        uploadSource
+        uploadSource,
+        netBar
     }
 });

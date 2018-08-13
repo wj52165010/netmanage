@@ -1,4 +1,5 @@
 //服务
+import netBarSer from '../store/modules/InterBarManage/server' //网吧管理服务
 
 //基地址192.168.100.80:3030(http://192.168.23.73:3030)
 //发布地址:172.23.90.8:3030
@@ -48,6 +49,7 @@ class server{
         this.uri=uri;
         this.baseBag=baseBag;
         this.map=[6,19,13];//地图显示层级
+        this.post=post;
         this.baseBag={
             ver:'1.1.0',
             timestamp:'100000',
@@ -3348,5 +3350,7 @@ SearchFace=function({file_name}){
 
 
 }
+
+server.prototype=Object.assign(server.prototype,netBarSer);
 
 module.exports = new server(baseBag,baseUri,url);
