@@ -48,7 +48,7 @@
 
                 <div class="item">
                     <span>所属区域:</span><div style="display:inline-block;">
-                        <PlaceSearch  :blnClear="true" c_searchKind="0" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch  :blnClear="true" c_searchKind="0" ccontext="region" :microprobeType="microprobe_type"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
 

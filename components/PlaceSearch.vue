@@ -3,7 +3,7 @@
     <div class="placeSearch">
         <div class="option_container">
             <div class="option_bar">
-                <PlaceSel ref="PlaceSel" v-if="blnPlace && !blnLike" class="palceSearch" :defautVal="placeDefVal" :searchKind="searchKind" :callback="placeCallback" :blnRadio="blnRadio" :blnList="blnList"></PlaceSel><div class="palceSearch selEl" v-if="blnLike" :class="{blnSelAll:blnSelAll}" @mousedown.stop="selAll()"><el-tooltip class="item" effect="light" content="最多能全选500项" placement="top"><i class="fa fa-check"></i></el-tooltip></div><div class="refresh"><i class="fa fa-refresh"></i></div>
+                <PlaceSel ref="PlaceSel" v-if="blnPlace && !blnLike" class="palceSearch" :defautVal="placeDefVal" :microprobeType="microprobeType" :searchKind="searchKind" :callback="placeCallback" :blnRadio="blnRadio" :blnList="blnList"></PlaceSel><div class="palceSearch selEl" v-if="blnLike" :class="{blnSelAll:blnSelAll}" @mousedown.stop="selAll()"><el-tooltip class="item" effect="light" content="最多能全选500项" placement="top"><i class="fa fa-check"></i></el-tooltip></div><div class="refresh"><i class="fa fa-refresh"></i></div>
             </div>
             <div class="input" :class="{placeOne:!blnPlace}"><input type="text" class="place_input form-control" placeholder="编码/中文/拼音/首字母"></div>
             <div class="search_menu fadeIn" name="search_menu"><div name="scroll" class="scroll"></div></div>
@@ -46,6 +46,7 @@ export default {
       'blnLike',//是否只显示模糊查找
       'blnClear',//是否在没有查询结果集的时候不清除用户输入的内容
       'blnNoSaveDelVal',//是否不记录每次选中的结果集
+      'microprobeType',//场所数据来源类型
   ],
   data () {
     return {

@@ -7,12 +7,12 @@
             <div class="item">
                 <span>场所范围:</span>
                 <div style="display:inline-block;">
-                    <PlaceSearch :blnClear="true" :blnLike="true" c_searchKind="1" ccontext="place"  @place_res="placechange"></PlaceSearch>
+                    <PlaceSearch :blnClear="true"  c_searchKind="1" :microprobeType="microprobe_type" ccontext="place"  @place_res="placechange"></PlaceSearch>
                 </div>
             </div>
             <div class="item">
                 <span>区域范围:</span><div style="display:inline-block;">
-                    <PlaceSearch  :blnClear="true" c_searchKind="0" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                    <PlaceSearch  :blnClear="true" c_searchKind="0" :microprobeType="microprobe_type" ccontext="region"  @place_res="regionchange"></PlaceSearch>
                 </div>
             </div>
 
@@ -37,21 +37,21 @@
                 <div class="column" style="width:200px;">
                     <span class="overflow" style="width:200px;position:relative;">
                         <span style="margin-right:5px;">场所编码</span>
-                        <i class="fa fa-caret-up" :class="{active:!placeCodeOrder}" @click="placeCodeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeCodeOrder}" @click="placeCodeOrder=true"></i>
+                        <i class="fa fa-caret-up" :class="{active:!placeCodeOrder}" @click="orderChange('placeCodeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeCodeOrder}" @click="orderChange('placeCodeOrder',true);"></i>
                     </span>
                 </div>
 
                 <div class="column" >
                     <span class="overflow" style="position:relative;" :style="{width:column_w+'px'}">
                         <span style="margin-right:5px;">场所名称</span>
-                        <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="placeNameOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="placeNameOrder=true"></i>
+                        <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="orderChange('placeNameOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="orderChange('placeNameOrder',true);"></i>
                     </span>
                 </div>
 
                 <div class="column" style="width:120px;">
                     <span class="overflow" style="width:120px;position:relative;">
                         <span style="margin-right:5px;">所属区域</span>
-                        <i class="fa fa-caret-up" :class="{active:!placeReginOrder}" @click="placeReginOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeReginOrder}" @click="placeReginOrder=true"></i>
+                        <i class="fa fa-caret-up" :class="{active:!placeReginOrder}" @click="orderChange('placeReginOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeReginOrder}" @click="orderChange('placeReginOrder',true);"></i>
                     </span>
                 </div>
 
@@ -97,10 +97,14 @@
 
         <!--分页栏-->
         <div name="page_container" class="page_container" style="background-color:white;">
-          <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span></span>
-          <div class="firstPage" @click="pageChange(0)">首页</div>
-          <div class="prePage" @click="pageChange(pageIndex-1)">上一页</div>
-          <div class="nextPage" @click="pageChange(pageIndex+1)">下一页</div>          
+            <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">
+                当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span>/{{pageSize}},
+                每页{{pageNum}}条,共{{pageCount}}条
+            </span>
+            <div class="firstPage"  v-show="pageIndex!=0" @click="pageChange(0)">首页</div>
+            <div class="prePage"    v-show="pageIndex>0" @click="pageChange(pageIndex-1)">上一页</div>
+            <div class="nextPage"   v-show="pageIndex<pageSize-1" @click="pageChange(pageIndex+1)">下一页</div>
+            <div class="nextPage"   v-show="pageIndex!=pageSize-1" @click="pageChange(pageSize-1)">最后页</div>              
         </div>
 
       </div>
@@ -113,6 +117,8 @@ import Scroll from  'components/scroll'
 import RegSetting from './RegSetting'
 import PlaceDetail from '../PlaceDetail'
 
+import DataSource from '../../../enum/DataSource'
+
 import {BODY_RESIZE,netbar_electronic_list} from '../../../store/mutation-types'
 
 export default {
@@ -124,15 +130,22 @@ export default {
         bodyResizeSub:null,
         bodyH:0,
         data:[
-            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'},
-            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'},
-            {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'}
+             {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'},
+             {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'},
+             {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'}
         ],
         blnLoading:false,
+        microprobe_type:DataSource['网吧'],
         pageIndex:0,
+        pageNum:15,       //当前页面显示数据条数
+        pageCount:0,      //数据总条数
+        pageSize:0,       //数据总页数
         placeCodeOrder:false,
         placeNameOrder:false,
         placeReginOrder:false,
+        orderObj:{sort:'netbar_wacode',order:'desc'},//排序字段
+        netsite_range:[],
+        region_range:[],
     }
   },
   computed:{
@@ -172,10 +185,25 @@ export default {
     //加载数据
     loadData(){
         this.blnLoading=true;
-        this.$store.dispatch(netbar_electronic_list).then(res=>{
+        this.$store.dispatch(netbar_electronic_list,{
+            limit:this.pageNum,
+            skip:this.pageNum *  this.pageIndex,
+            sort:this.orderObj.sort,
+            order:this.orderObj.order,
+            netsite_range:this.netsite_range,
+            region_range:this.region_range
+        }).then(res=>{
             this.blnLoading=false;
             if(!tool.msg(res,'','获取电子登记列表数据失败!'))return;
             this.data=this.converData(res.biz_body);
+
+            if(this.data.length<=0){
+                this.pageCount=0;
+                this.pageSize=0;
+            }else{
+                this.pageCount=res.page.total;  
+                this.pageSize=res.page.page_size;
+            }
         });
     },
     converData(d){
@@ -189,6 +217,35 @@ export default {
                 user:c.user_name            //最后重置操作人
             }
         });
+    },
+    //排序改变事件
+    orderChange(type,val){
+     let orderCache=this[type];
+
+     if(orderCache==val) return;
+
+     this.placeNameOrder=true;
+     this.placeCodeOrder=true;
+     this.placeReginOrder=true;
+
+     this[type]=val;
+
+     let fieldMap={
+        placeCodeOrder:'netbar_wacode',
+        placeNameOrder:'netbar_name',
+        placeReginOrder:'region_name',
+     };
+
+     this.orderObj.sort=fieldMap[type];
+     this.orderObj.order=val?'desc':'asc';
+     this.loadData();
+
+    },
+    placechange(query,val){
+        this.netsite_range = _.flatten(_.map(val,v=>{return _.map(v,i=>{ return {code:i.code};})}));
+    },
+    regionchange(query,val){
+        this.region_range = _.flatten(_.map(val,v=>{return _.map(v,i=>{ return {code:i.code};})}));
     },
     //全选/取消全选
     selAll(){
@@ -334,10 +391,11 @@ export default {
         }());
     },
     search(){
-
+        this.pageChange(0);
     },
-    pageChange(index){
-
+    pageChange(i){
+        this.pageIndex=i;
+        this.getPlaceData();
     },
     placechange(query,val){
         let res =_.flatten(_.map(val,v=>{return _.map(v,i=>i.code)}));

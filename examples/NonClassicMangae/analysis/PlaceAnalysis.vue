@@ -28,7 +28,7 @@
                     <div class="item">
                         <span>区域范围:</span>
                         <div style="display:inline-block;">
-                            <PlaceSearch  :blnClear="true" c_searchKind="0" @place_res="selectArea"></PlaceSearch>
+                            <PlaceSearch  :blnClear="true" c_searchKind="0" :microprobeType="microprobe_type" @place_res="selectArea"></PlaceSearch>
                         </div>
                     </div>
 

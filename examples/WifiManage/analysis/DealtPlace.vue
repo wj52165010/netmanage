@@ -7,7 +7,7 @@
 
                 <div class="item">
                     <span>场所范围:</span><div style="display:inline-block;">
-                        <PlaceSearch  :blnClear="true" c_searchKind="1" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch  :blnClear="true" c_searchKind="1" :microprobeType="microprobe_type" ccontext="region"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
 
@@ -48,7 +48,7 @@
 
                 <div class="item">
                     <span>所属区域:</span><div style="display:inline-block;">
-                        <PlaceSearch  :blnClear="true" c_searchKind="0" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch  :blnClear="true" c_searchKind="0" :microprobeType="microprobe_type" ccontext="region"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
 
@@ -182,6 +182,7 @@ import CallPolicy from '../CallPolicy'
 import HandlerWay from '../HandlerWay'
 import CollectChart from '../CollectChart'
 import PlaceDetail from '../PlaceDetail'
+
 
 import {BODY_RESIZE,GetFirm} from '../../../store/mutation-types'
 

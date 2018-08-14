@@ -24,6 +24,7 @@ export default {
       'blnList',//只显示列表选择框
       'btnStyle',//按钮样式
       'store',
+      'microprobeType',//场所数据来源类型
   ],
   data () {
     return {
@@ -458,7 +459,7 @@ export default {
                                             treeComp.treeview('setNodeIcon', [node, 'fa fa-spinner fa-spin']);
 
                                 
-                                            store.dispatch(GET_PLACE,{code:node[idKey], type:node.type}).then(function (code) {
+                                            store.dispatch(GET_PLACE,{code:node[idKey], type:node.type,microprobe_type:self.microprobeType}).then(function (code) {
                                                 var childData = _.map(code,c=>{c.selectable=false; return c;});
 
                                                 var copyChildData = Fx.Clone(childData);
@@ -495,7 +496,7 @@ export default {
                             let placeSerachKind = searchKind.replace('1','3').replace('0','1');
                             //code:'410500', type:'1' || placeSerachKind //测试属性控件卡属性
                  
-                            store.dispatch(GET_PLACE,{code:'', type: placeSerachKind, defaultVal:defVal}).then(function (code) {
+                            store.dispatch(GET_PLACE,{code:'', type: placeSerachKind, defaultVal:defVal,microprobe_type:self.microprobeType}).then(function (code) {
                                 
                                 var searchTreeEndTime = (new Date()).getTime();
                                 var rangeTreeTime = parseInt(searchTreeEndTime) - parseInt(searchTreeStartTime);

@@ -6,7 +6,7 @@
 
                 <div class="item">
                     <span>场所范围:</span><div style="display:inline-block;">
-                        <PlaceSearch  c_searchKind="1" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch  c_searchKind="1" :microprobeType="microprobe_type" ccontext="region"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
 
@@ -47,7 +47,7 @@
 
                 <div class="item">
                     <span>所属区域:</span><div style="display:inline-block;">
-                        <PlaceSearch   c_searchKind="0" ccontext="region"  @place_res="regionchange"></PlaceSearch>
+                        <PlaceSearch   c_searchKind="0" :microprobeType="microprobe_type" ccontext="region"  @place_res="regionchange"></PlaceSearch>
                     </div>
                 </div>
 
@@ -193,6 +193,7 @@ import CollectChart from '../CollectChart'
 import IssueList from '../IssueList'
 import PlaceDetail from '../PlaceDetail'
 import HandleMode from '../HandleMode'
+
 
 import {BODY_RESIZE,GetFirm,siteScoreCollect,getDictTables} from '../../../store/mutation-types'
 export default {

@@ -6,7 +6,7 @@
 
                 <div class="item">
                     <span>场所范围:</span><div style="display:inline-block;">
-                        <PlaceSearch  c_searchKind="1" ccontext="region"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch  c_searchKind="1" ccontext="region" :microprobeType="microprobe_type"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
 
@@ -34,7 +34,7 @@
 
                 <div class="item">
                     <span>所属区域:</span><div style="display:inline-block;">
-                        <PlaceSearch   c_searchKind="0" ccontext="region"  @place_res="regionchange"></PlaceSearch>
+                        <PlaceSearch   c_searchKind="0" ccontext="region" :microprobeType="microprobe_type"  @place_res="regionchange"></PlaceSearch>
                     </div>
                 </div>
 

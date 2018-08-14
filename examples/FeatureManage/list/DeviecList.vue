@@ -19,7 +19,7 @@
                 </div>
                 <div class="item">
                     <span>区域范围:</span><div style="display:inline-block;">
-                        <PlaceSearch c_searchKind="0" ccontext="region"  @place_res="regionchange"></PlaceSearch>
+                        <PlaceSearch c_searchKind="0" ccontext="region" :microprobeType="microprobe_type"  @place_res="regionchange"></PlaceSearch>
                     </div>
                 </div>
                 <div class="item">

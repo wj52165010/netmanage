@@ -84,10 +84,14 @@
 
         <!--分页栏-->
         <div name="page_container" class="page_container" style="background-color:white;">
-          <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span></span>
-          <div class="firstPage" @click="pageChange(0)">首页</div>
-          <div class="prePage" @click="pageChange(pageIndex-1)">上一页</div>
-          <div class="nextPage" @click="pageChange(pageIndex+1)">下一页</div>          
+            <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">
+                当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span>/{{pageSize}},
+                每页{{pageNum}}条,共{{pageCount}}条
+            </span>
+            <div class="firstPage"  v-show="pageIndex!=0" @click="pageChange(0)">首页</div>
+            <div class="prePage"    v-show="pageIndex>0" @click="pageChange(pageIndex-1)">上一页</div>
+            <div class="nextPage"   v-show="pageIndex<pageSize-1" @click="pageChange(pageIndex+1)">下一页</div>
+            <div class="nextPage"   v-show="pageIndex!=pageSize-1" @click="pageChange(pageSize-1)">最后页</div>              
         </div>
 
       </div>
@@ -103,7 +107,7 @@ import '../../../../static/jquery.particleground.js'
 import Scroll from  'components/scroll'
 import PlaceTree from 'components/PlaceTreeNew'
 import NoteDetail from './NoteDetail'
-import {BODY_RESIZE} from '../../../store/mutation-types'
+import {BODY_RESIZE,netbar_notice_list} from '../../../store/mutation-types'
 export default {
   name: 'PlaceNote',
   components:{Scroll},
@@ -126,6 +130,9 @@ export default {
         blnLoading:false,
         pageIndex:0,
         order:false,
+        pageNum:15,       //当前页面显示数据条数
+        pageCount:0,      //数据总条数
+        pageSize:0,       //数据总页数
     }
   },
   computed:{
@@ -451,10 +458,11 @@ export default {
         }());
     },
     search(){
-
+        this.pageChange(0);
     },
-    pageChange(index){
-
+    pageChange(i){
+        this.pageIndex=i;
+        this.getPlaceData();
     },
   }
 }

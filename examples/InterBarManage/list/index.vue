@@ -8,12 +8,12 @@
                 <div class="item">
                     <span>场所范围:</span>
                     <div style="display:inline-block;">
-                        <PlaceSearch  c_searchKind="1" ccontext="place"  @place_res="placechange"></PlaceSearch>
+                        <PlaceSearch  c_searchKind="1" :microprobeType="microprobe_type" ccontext="place"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
                 <div class="item">
                     <span>区域范围:</span><div style="display:inline-block;">
-                        <PlaceSearch c_searchKind="0" ccontext="region"  @place_res="regionchange"></PlaceSearch>
+                        <PlaceSearch c_searchKind="0" :microprobeType="microprobe_type" ccontext="region"  @place_res="regionchange"></PlaceSearch>
                     </div>
                 </div>
                 <div class="item">
@@ -326,8 +326,13 @@ export default {
             this.blnLoading=false;
             if(!tool.msg(res,'','获取网吧数据失败!'))return;
             this.data=this.converData(res.biz_body);
-            this.pageCount=res.page.total;
-            this.pageSize=res.page.page_size;
+            if(this.data.length<=0){
+                this.pageCount=0;
+                this.pageSize=0;
+            }else{
+                this.pageCount=res.page.total;  
+                this.pageSize=res.page.page_size;
+            }
         });
     },
     //转化服务器数据对象为客户端对象
