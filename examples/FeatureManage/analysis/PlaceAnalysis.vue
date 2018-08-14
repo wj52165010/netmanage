@@ -151,8 +151,8 @@ export default {
           if(!this.showPage){this.netbar_abnormal_type='';}
 
           this.$nextTick(()=>{
-              this.$refs.DealtPlace.layout && this.$refs.DealtPlace.layout();
-              this.$refs.IssueLook.layout && this.$refs.IssueLook.layout();
+            this.$refs.DealtPlace &&  this.$refs.DealtPlace.layout && this.$refs.DealtPlace.layout();
+            this.$refs.IssueLook &&  this.$refs.IssueLook.layout && this.$refs.IssueLook.layout();
           });
       },
       showList(){

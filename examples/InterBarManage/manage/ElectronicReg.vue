@@ -144,7 +144,11 @@ export default {
       }
   },
   mounted(){
+   //加载数据
+   this.loadData();
    this.layout();
+
+
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
        this.bodyResizeSub=sub
    },sub:()=>{
@@ -167,9 +171,11 @@ export default {
     },
     //加载数据
     loadData(){
+        this.blnLoading=true;
         this.$store.dispatch(netbar_electronic_list).then(res=>{
+            this.blnLoading=false;
             if(!tool.msg(res,'','获取电子登记列表数据失败!'))return;
-
+            this.data=this.converData(res.biz_body);
         });
     },
     converData(d){
