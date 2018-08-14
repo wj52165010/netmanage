@@ -140,9 +140,9 @@ export default {
         pageNum:15,       //当前页面显示数据条数
         pageCount:0,      //数据总条数
         pageSize:0,       //数据总页数
-        placeCodeOrder:false,
-        placeNameOrder:false,
-        placeReginOrder:false,
+        placeCodeOrder:true,
+        placeNameOrder:true,
+        placeReginOrder:true,
         orderObj:{sort:'netbar_wacode',order:'desc'},//排序字段
         netsite_range:[],
         region_range:[],
@@ -395,12 +395,8 @@ export default {
     },
     pageChange(i){
         this.pageIndex=i;
-        this.getPlaceData();
+        this.loadData();
     },
-    placechange(query,val){
-        let res =_.flatten(_.map(val,v=>{return _.map(v,i=>i.code)}));
-        console.log(res);
-    }
   }
 }
 </script>

@@ -921,7 +921,7 @@ export default {
                     </div>
                     <div style="margin-left:40px;height:60px;padding: 12px;font-size:12px;">
                         当数据源并未全部回溯完时,会在列表右侧出现提示。</br>
-                        当数据源已全部完成回溯时,提示图标会自动小时。
+                        当数据源已全部完成回溯时,提示图标会自动消失。
                     </div>
                 </div>
                 <div style="text-align:right;padding:5px 20px;">

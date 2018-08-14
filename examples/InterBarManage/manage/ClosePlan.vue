@@ -6,27 +6,28 @@
         <!--操作栏-->
         <div class="option_bar">
             <div class="item">
+                <span>场所范围:</span>
+                <div style="display:inline-block;">
+                    <PlaceSearch :blnClear="true"  c_searchKind="1" :microprobeType="microprobe_type" ccontext="place"  @place_res="placechange"></PlaceSearch>
+                </div>
+            </div>
+            <div class="item">
+                <span>区域范围:</span><div style="display:inline-block;">
+                    <PlaceSearch  :blnClear="true" c_searchKind="0" :microprobeType="microprobe_type" ccontext="region"  @place_res="regionchange"></PlaceSearch>
+                </div>
+            </div>
+            <div class="item">
                 <span>发布时间:</span>
                 <div style="display:inline-block;">
-                    <el-date-picker  type="date" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker>
-                </div>
-            </div>
-            <div class="item">
-                <span>标题:</span><div style="display:inline-block;">
-                   <el-input placeholder="请输入" ></el-input>
-                </div>
-            </div>
-            <div class="item">
-                <span>内容:</span><div style="display:inline-block;">
-                   <el-input placeholder="请输入" ></el-input>
+                    <el-date-picker  type="date" v-model="time_range" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker>
                 </div>
             </div>
             <div class="item">
                 <span>执行状态:</span><div style="display:inline-block;">
-                   <el-select v-model="state" placeholder="请选择" :clearable="true">
+                   <el-select v-model="plan_status" placeholder="请选择" :clearable="true">
                         <el-option
-                            v-for="kind in states"
-                            :key="kind.code"
+                            v-for="kind in dict_tables.stop_status"
+                            :key="kind.value"
                             :label="kind.name"
                             :value="kind.value">
                         </el-option>
@@ -41,8 +42,8 @@
             <!--右边操作栏-->
             <div class="right_option_bar">
                 <div class="item" @click="pulishClosePlan()"><i class="fa fa-cog fa-fw" /> 发布停业</div>
-                <div class="item" @click="cancelClose()"><i class="fa fa-copyright" /> 撤销停业</div>
-                <div class="item" @click="exportData()"><i class="fa fa-share" /> 导出</div>
+                <div class="item" @click="cancelClose()"><i class="fa fa-copyright" /> 撤销停业 <i class="fa fa-spinner fa-pulse" v-if="blnRevocation" /></div>
+                <div class="item" @click="exportData()"><i class="fa fa-share" /> 导出<i class="fa fa-spinner fa-pulse" v-if="blnExport" /></div>
             </div>
         </div>
 
@@ -54,14 +55,14 @@
                 <div class="column" style="width:200px;">
                     <span class="overflow" style="width:200px;position:relative;">
                         <span style="margin-right:5px;">场所编码</span>
-                        <i class="fa fa-caret-up" :class="{active:!placeCodeOrder}" @click="placeCodeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeCodeOrder}" @click="placeCodeOrder=true"></i>
+                        <i class="fa fa-caret-up" :class="{active:!placeCodeOrder}" @click="orderChange('placeCodeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeCodeOrder}" @click="orderChange('placeCodeOrder',true);"></i>
                     </span>
                 </div>
 
                 <div class="column">
                   <span class="overflow" style="position:relative" :style="{width:column_w+'px'}">
                     <span style="margin-right:5px;">场所名称</span>
-                    <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="placeNameOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="placeNameOrder=true"></i>
+                    <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="orderChange('placeNameOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="orderChange('placeNameOrder',true);"></i>
                   </span>
                 </div>
                 <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">执行状态</span></div>
@@ -73,7 +74,7 @@
                 <div class="column" style="width:120px;">
                     <span class="overflow" style="width:120px;position:relative;">
                         <span style="margin-right:5px;">发布时间</span>
-                        <i class="fa fa-caret-up" :class="{active:!pulishTimeOrder}" @click="pulishTimeOrder=false"></i><i class="fa fa-caret-down" :class="{active:pulishTimeOrder}" @click="pulishTimeOrder=true"></i>
+                        <i class="fa fa-caret-up" :class="{active:!pulishTimeOrder}" @click="orderChange('pulishTimeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:pulishTimeOrder}" @click="orderChange('pulishTimeOrder',true);"></i>
                     </span>
                 </div>
 
@@ -82,7 +83,7 @@
                 <div class="column" style="width:150px;">
                     <span class="overflow" style="width:150px;position:relative;">
                         <span style="margin-right:5px;">所属区域</span>
-                        <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="areaOrder=false"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="areaOrder=true"></i>
+                        <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="orderChange('areaOrder',false);"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="orderChange('areaOrder',true);"></i>
                     </span>
                 </div>
 
@@ -121,10 +122,14 @@
 
         <!--分页栏-->
         <div name="page_container" class="page_container" style="background-color:white;">
-          <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span></span>
-          <div class="firstPage" @click="pageChange(0)">首页</div>
-          <div class="prePage" @click="pageChange(pageIndex-1)">上一页</div>
-          <div class="nextPage" @click="pageChange(pageIndex+1)">下一页</div>          
+            <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">
+                当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span>/{{pageSize}},
+                每页{{pageNum}}条,共{{pageCount}}条
+            </span>
+            <div class="firstPage"  v-show="pageIndex!=0" @click="pageChange(0)">首页</div>
+            <div class="prePage"    v-show="pageIndex>0" @click="pageChange(pageIndex-1)">上一页</div>
+            <div class="nextPage"   v-show="pageIndex<pageSize-1" @click="pageChange(pageIndex+1)">下一页</div>
+            <div class="nextPage"   v-show="pageIndex!=pageSize-1" @click="pageChange(pageSize-1)">最后页</div>              
         </div>
 
       </div>
@@ -133,13 +138,16 @@
 
 <script>
 import Scroll from  'components/scroll'
+import PlaceSearch from 'components/PlaceSearch'
 import PublishClosePlan from './PulishClosePlan'
 import PlaceDetail from '../PlaceDetail'
 
-import {BODY_RESIZE} from '../../../store/mutation-types'
+import DataSource from '../../../enum/DataSource'
+
+import {BODY_RESIZE,getDictTables,netbar_stop_plan_list,netbar_stop_add,netbar_stop_plan_export,netbar_stop_cancel} from '../../../store/mutation-types'
 export default {
   name: 'ClosePlan',
-  components:{Scroll},
+  components:{PlaceSearch,Scroll},
   data () {
     return {
       simpleTime:{
@@ -155,31 +163,52 @@ export default {
           {code:'50099910000005',name:'重庆智多测试部',state:'执行中',user:'张三',phone:'138xxxxxxx',closeTime:'2017-12-06 10:53—2017-12-07 10:53',publishUser:'产品部',publishTime:'2017-12-04 17:09',closeReason:'',region:'南岸区'},
           {code:'50099910000005',name:'重庆智多测试部',state:'执行中',user:'张三',phone:'138xxxxxxx',closeTime:'2017-12-06 10:53—2017-12-07 10:53',publishUser:'产品部',publishTime:'2017-12-04 17:09',closeReason:'',region:'南岸区'}
         ],
+      dict_tables:{},
       blnLoading:false,
+      microprobe_type:DataSource['网吧'],
+      blnExport:false,  //是否正在进行导出数据
+      blnRevocation:false, //是否正在进行撤销操作
       pageIndex:0,
-      placeNameOrder:false,
-      placeCodeOrder:false,
-      pulishTimeOrder:false,
-      areaOrder:false,
+      pageNum:15,       //当前页面显示数据条数
+      pageCount:0,      //数据总条数
+      pageSize:0,       //数据总页数
+      placeNameOrder:true,
+      placeCodeOrder:true,
+      pulishTimeOrder:true,
+      areaOrder:true,
       states:[],
-      state:'',
+      orderObj:{sort:'netbar_wacode',order:'desc'},//排序字段
+      time_range:[],
+      netsite_range:[],
+      region_range:[],
+      plan_status:''
     }
   },
   computed:{
       viewData(){
-        return _.map(this.data,d=>{d.checked=d.checked || false; return d;  })
+        return this.converData(this.data);
       },
       blnAllSel(){
         return !_.find(this.data,d=>!d.checked);
       }
   },
   mounted(){
-   this.layout();
-   this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
-       this.bodyResizeSub=sub
-   },sub:()=>{
-      this.layout();
-   }});
+    //加载数据
+    this.loadData();
+    this.layout();
+
+    //获取数据来源（下拉框序列化）
+    this.$store.dispatch(getDictTables).then(res=>{
+        if(res.msg.code!='successed')return;
+        this.dict_tables= res.biz_body;
+    });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+    },sub:()=>{
+        this.layout();
+    }});
+
   },
   beforeDestroy(){
     this.bodyResizeSub.unsubscribe();
@@ -194,6 +223,81 @@ export default {
             })
         },100);
         this.column_w=$(this.$el).width()-1360;
+    },
+    //加载数据
+    loadData(){
+        this.blnLoading=true;
+        this.$store.dispatch(netbar_stop_plan_list,{
+            limit:this.pageNum,
+            skip:this.pageNum *  this.pageIndex,
+            sort:this.orderObj.sort,
+            order:this.orderObj.order,
+            time_range:this.time_range[0]?_.map(this.time_range,t=>tool.DateFormat(t,'yyyy-MM-dd')).join(' - '):'',
+            netsite_range:this.netsite_range,
+            region_range:this.region_range,
+            plan_status:this.plan_status,
+        }).then(res=>{
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取查询停业计划列表数据失败!'))return;
+            this.data=res.biz_body;
+
+            if(this.data.length<=0){
+                this.pageCount=0;
+                this.pageSize=0;
+            }else{
+                this.pageCount=res.page.total;  
+                this.pageSize=res.page.page_size;
+            }
+        });
+    },
+    converData(d){
+        return _.map(d,c=>{
+            return {
+                id:c.plan_id,                   //计划ID
+                code:c.netbar_wacode,           //场所编码
+                name:c.netbar_name,             //场所名称
+                state:c.plan_status_desc,       //执行状态
+                user:c.principal_name,          //负责人
+                phone:c.principal_tel,          //负责人电话
+                closeTime:c.stop_time_range,    //停业时间
+                publishUser:c.author,           //发布人
+                publishTime:c.log_time,         //发布时间
+                closeReason:c.reason,           //关闭原因
+                region:c.region_name,           //区域
+                checked:c.checked || false,     //是否被选中
+            }
+        });
+    },
+    //排序改变事件
+    orderChange(type,val){
+     let orderCache=this[type];
+
+     if(orderCache==val) return;
+
+     this.placeNameOrder=true;
+     this.placeCodeOrder=true;
+     this.pulishTimeOrder=true;
+     this.areaOrder=true;
+
+     this[type]=val;
+
+     let fieldMap={
+        placeCodeOrder:'netbar_wacode',
+        placeNameOrder:'netbar_name',
+        pulishTimeOrder:'log_time',
+        areaOrder:'region_name'
+     };
+
+     this.orderObj.sort=fieldMap[type];
+     this.orderObj.order=val?'desc':'asc';
+     this.loadData();
+
+    },
+    placechange(query,val){
+        this.netsite_range = _.flatten(_.map(val,v=>{return _.map(v,i=>{ return {code:i.code};})}));
+    },
+    regionchange(query,val){
+        this.region_range = _.flatten(_.map(val,v=>{return _.map(v,i=>{ return {code:i.code};})}));
     },
     //全选/取消全选
     selAll(){
@@ -229,16 +333,32 @@ export default {
     },
     //发布停业计划
     pulishClosePlan(){
-      let s=this;
+        let s=this;
         tool.open(function(){
+            let layIndex=0;
             let param={
                 title:'发布停业',
                 area:'600px',
                 content:`<div class="Publish_Close_pop" style="width:100%;height:100%;">
-                            <PublishClosePlan />
-                            <div class="option_bar" style="text-align:right;margin:10px;margin-right:18px;" >
-                                <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
-                                <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                            <div v-show="curPageIndex==0">
+                                <PublishClosePlan @change="contentChange" />
+                                <div class="option_bar" style="text-align:right;margin:10px;margin-right:18px;" >
+                                    <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                    <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="goNext()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                                </div>
+                            </div>
+                            <div v-show="curPageIndex==1">
+                                <div class="option_bar" style="text-align:right;margin:10px;margin-right:18px;" >
+                                    <div style="width:100%;text-align:center;padding:10px;">请输入密码确认操作</div>
+
+                                    <div style="text-align:center;width:100%;margin-bottom:10px;">
+                                        <input type="password" v-model="pwd" style="width:200px;display: inline-block;" class="form-control" />
+                                    </div>
+
+                                    <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
+                                    <button type="button" class="btn btn-default" @click="goPre()">上一步</button>
+                                    <button type="button" class="btn btn-success" :disabled="!pwd || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
+                                </div>
                             </div>
                          </div>
                         `,
@@ -246,13 +366,66 @@ export default {
                 store:s.$store,
                 computed:{
                   blnSubmit(){
-                    return false;
+                    let d=this.data;
+                    return !(d.close_way && d.stop_time_range && d.reason && d.target);
                   }
                 },
+                watch:{
+                    curPageIndex(){
+                        let titles=['发布停业','确认操作'];
+                        layer.title(` ${titles[this.curPageIndex]}`,layIndex);
+                        layer.style(layIndex, {
+                            width:`${this.curPageIndex==0?'600px':'400px'}`
+                        });
+                    }
+                },
                 context:{
+                    curPageIndex:0,
                     blnExecute:false,
-                    ok_btn(){param.close()},
+                    data:{},
+                    pwd:'',//确认操作密码
+                    //内容改变事件
+                    contentChange(d){
+                        param.selfData.data=d;
+                    },
+                    goNext(){
+                        let d=param.selfData;
+                        
+                        param.selfData.curPageIndex++;
+                    },
+                    goPre(){
+                        let d=param.selfData;
+                        
+                        param.selfData.curPageIndex--;
+                    },
+                    ok_btn(){
+                        let d=param.selfData;
+                        d.blnExecute=true;
+                        s.$store.dispatch(netbar_stop_add,{
+                            pwd:d.pwd,
+                            close_way:d.data.close_way,
+                            stop_time_range:d.data.stop_time_range,
+                            reason:d.data.reason,
+                            reason:d.data.reason
+                        }).then(res=>{
+                            d.blnExecute=false;
+                            if(!tool.msg(res,'添加成功!')){
+                                if(res.msg.code=='error_pwd'){
+                                    d.curPageIndex=1;
+                                }else{
+                                    d.curPageIndex=0;
+                                }
+                                return;
+                            }
+                            s.calPage(1);
+                            s.data.unshift(res.biz_body);
+                            param.close();
+                        })
+                    },
                     cancel_btn(){param.close()}
+                },
+                success(layero,index){
+                    layIndex=index;
                 }
             };
 
@@ -261,13 +434,15 @@ export default {
     },
     //导出数据
     exportData(){
-      let s=this;
+        let s=this;
+        let ids=_.chain(this.data).filter(d=>d.checked).map(d=>d.id).value();//选中的IDS
+        if(ids.length<=0){tool.info('请选择需要导出的数据集合!');return;}
         tool.open(function(){
             let param={
                 title:'提示',
                 area:'400px',
                 content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
-                            <div style="padding: 30px 10px;text-align:center;">请确定是否需要导出所选的50条数据!</div>
+                            <div style="padding: 30px 10px;text-align:center;">请确定是否需要导出所选的${ids.length}条数据!</div>
                             <div class="option_bar" style="text-align:right;padding:15px;padding-top:0px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
@@ -278,7 +453,25 @@ export default {
                 store:s.$store,
                 context:{
                     blnExecute:false,
-                    ok_btn(){param.close()},
+                    ok_btn(){
+                        if(param.selfData.blnExecute){return;}
+                        param.selfData.blnExecute=true;
+                        s.blnExport=true;
+                        s.$store.dispatch(netbar_stop_plan_export,{
+                            sort:s.orderObj.sort,
+                            order:s.orderObj.order,
+                            time_range:s.time_range[0]?_.map(s.time_range,t=>tool.DateFormat(t,'yyyy-MM-dd')).join(' - '):'',
+                            netsite_range:s.netsite_range,
+                            region_range:s.region_range,
+                            plan_status:s.plan_status,
+                            plan_id:ids.join(',')
+                        }).then(res=>{
+                            s.blnExport=false;
+                            if(!tool.msg(res,'导出成功!','导出失败!'))return;
+                            window.location=res.biz_body.url;
+                            param.close();
+                        });
+                    },
                     cancel_btn(){param.close()}
                 }
             };
@@ -288,13 +481,15 @@ export default {
     },
     //撤销停业
     cancelClose(){
-      let s=this;
+        let s=this;
+        let ids=_.chain(this.data).filter(d=>d.checked).map(d=>d.id).value();//选中的IDS
+        if(ids.length<=0){tool.info('请选择需要撤销的数据集合!');return;}
         tool.open(function(){
             let param={
                 title:'提示',
                 area:'400px',
                 content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
-                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />确定要撤销对所选15家场所的停业处置吗?</div>
+                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />确定要撤销对所选${ids.length}家场所的停业处置吗?</div>
                             <div class="option_bar" style="text-align:right;padding:15px;padding-top:0px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
@@ -305,13 +500,42 @@ export default {
                 store:s.$store,
                 context:{
                     blnExecute:false,
-                    ok_btn(){param.close()},
+                    ok_btn(){
+                        if(param.selfData.blnExecute){return;}
+                        param.selfData.blnExecute=true;
+                        s.blnRevocation=true;
+
+                        s.$store.dispatch(netbar_stop_cancel,{
+                            plan_id:ids.join(',')
+                        }).then(res=>{  
+                            s.blnRevocation=false;
+                            if(!tool.msg(res,'撤销成功!','撤销失败!'))return;
+
+                            //判断当前删除后页数变化没有
+                            s.calPage(-ids.length);
+                            s.pageChange((s.pageIndex+1)>=s.pageSize?s.pageSize-1:s.pageIndex);
+                            param.close();
+                        })
+                        param.close()
+                    },
                     cancel_btn(){param.close()}
                 }
             };
 
             return param;
         }());
+    },
+    search(){
+        this.pageChange(0);
+    },
+    pageChange(i){
+        this.pageIndex=i;
+        this.loadData();
+    },
+    //根据操作(新增/删除)对页面总数进行重新计算
+    calPage(num){
+        this.pageCount=this.pageCount+num;
+        this.pageSize=Math.ceil(this.pageCount/this.pageNum);
     }
   }
 }

@@ -55,7 +55,7 @@
                     <div class="photo_item" v-for="d in data">
                         <div class="photo_item_header">{{d.name}}</div>
                         <div class="photo_item_body">
-                            <img class="photo_container" :style="{width:(d.width || '')+'px'}" :src="imgUrl+d.certno" />
+                            <img class="photo_container" :style="{width:(d.width || '')+'px'}" :src="imgUrl+d.img_code" />
 
                             <div class="photo_item_child">证件号:{{d.certno}}</div>
                             <div class="photo_item_child">相似度:{{(d.similarity*100).toFixed(2)}}%</div>

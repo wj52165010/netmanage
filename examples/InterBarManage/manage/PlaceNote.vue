@@ -7,17 +7,17 @@
             <div class="item">
                 <span>发布时间:</span>
                 <div style="display:inline-block;">
-                    <el-date-picker  type="date" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker>
+                    <el-date-picker v-model="time_range"  type="date" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker>
                 </div>
             </div>
             <div class="item">
                 <span>标题:</span><div style="display:inline-block;">
-                   <el-input placeholder="请输入" ></el-input>
+                   <el-input placeholder="请输入" v-model="title" ></el-input>
                 </div>
             </div>
             <div class="item">
                 <span>内容:</span><div style="display:inline-block;">
-                   <el-input placeholder="请输入" ></el-input>
+                   <el-input placeholder="请输入" v-model="content" ></el-input>
                 </div>
             </div>
 
@@ -28,7 +28,7 @@
             <!--右边操作栏-->
             <div class="right_option_bar">
                 <div class="item" @click="notices()"><i class="fa fa-cog fa-fw" /> 发布通知</div>
-                <div class="item" @click="datchRemove()"><i class="fa fa-remove" /> 批量删除</div>
+                <div class="item" @click="datchRemove()"><i class="fa fa-remove" /> 批量删除 <i class="fa fa-spinner fa-pulse" v-if="blnBatchRemove" /></div>
             </div>
         </div>
 
@@ -40,7 +40,7 @@
                 <div class="column" style="width:200px;">
                     <span class="overflow" style="width:200px;position:relative;">
                         <span style="margin-right:5px;">发布时间</span>
-                        <i class="fa fa-caret-up" :class="{active:!order}" @click="order=false"></i><i class="fa fa-caret-down" :class="{active:order}" @click="order=true"></i>
+                        <i class="fa fa-caret-up" :class="{active:!timeOrder}" @click="orderChange('timeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:timeOrder}" @click="orderChange('timeOrder',true);"></i>
                     </span>
                 </div>
                 <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">发布人</span></div>
@@ -104,10 +104,12 @@ import '../../../../static/jquery-file-upload/jquery.iframe-transport.js'
 import '../../../../static/jquery-file-upload/jquery.fileupload.js'
 import '../../../../static/jquery.particleground.js'
 
+import DataSource from '../../../enum/DataSource'
+
 import Scroll from  'components/scroll'
 import PlaceTree from 'components/PlaceTreeNew'
 import NoteDetail from './NoteDetail'
-import {BODY_RESIZE,netbar_notice_list} from '../../../store/mutation-types'
+import {BODY_RESIZE,netbar_notice_list,netbar_notice_add,netbar_notice_del} from '../../../store/mutation-types'
 export default {
   name: 'PlaceNote',
   components:{Scroll},
@@ -128,11 +130,17 @@ export default {
             {name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:''},
         ],
         blnLoading:false,
+        blnBatchRemove:false, //是否正在进行批量删除
+        microprobe_type:DataSource['网吧'],
         pageIndex:0,
-        order:false,
+        timeOrder:true,
         pageNum:15,       //当前页面显示数据条数
         pageCount:0,      //数据总条数
         pageSize:0,       //数据总页数
+        orderObj:{sort:'post_time',order:'desc'},//排序字段
+        time_range:[],
+        content:'',
+        title:''
     }
   },
   computed:{
@@ -144,12 +152,16 @@ export default {
       }
   },
   mounted(){
+   //加载数据
+   this.loadData();
    this.layout();
+
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
        this.bodyResizeSub=sub
    },sub:()=>{
       this.layout();
    }});
+
   },
   beforeDestroy(){
     this.bodyResizeSub.unsubscribe();
@@ -164,6 +176,64 @@ export default {
             })
         },100);
         this.column_w=$(this.$el).width()-950;
+    },
+    loadData(){
+        this.blnLoading=true;
+        this.$store.dispatch(netbar_notice_list,{
+            limit:this.pageNum,
+            skip:this.pageNum *  this.pageIndex,
+            sort:this.orderObj.sort,
+            order:this.orderObj.order,
+            time_range:this.time_range[0]?_.map(this.time_range,t=>tool.DateFormat(t,'yyyy-MM-dd')).join(' - '):'',
+            content:this.content,
+            title:this.title,
+        }).then(res=>{
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取场所通知列表数据失败!'))return;
+            this.data=this.converData(res.biz_body);
+
+            if(this.data.length<=0){
+                this.pageCount=0;
+                this.pageSize=0;
+            }else{
+                this.pageCount=res.page.total;  
+                this.pageSize=res.page.page_size;
+            }
+        });
+    },
+    converData(d){
+        return _.map(d,c=>{
+            return {
+                id:c.notice_id,             //标识
+                name:c.title,               //标题
+                pulishTime:c.post_time_desc,//发布时间
+                user:c.author,              //发布用户
+                placeCount:c.receive_count, //通知场所数
+                sign:c.sign_count,          //签收数
+                unsign:c.un_sign_count,     //未签收数
+                reply:c.reply_count,        //回复数
+                accessory:c.accessory==1?'下载附件':''
+            }
+        });
+    },
+    //排序改变事件
+    orderChange(type,val){
+     let orderCache=this[type];
+
+     if(orderCache==val) return;
+
+     this.timeOrder=true;
+
+     this[type]=val;
+
+     let fieldMap={
+        timeOrder:'post_time',
+     };
+
+     this.orderObj.sort=fieldMap[type];
+     this.orderObj.order=val?'desc':'asc';
+     this.loadData();
+
     },
     //全选/取消全选
     selAll(){
@@ -189,24 +259,24 @@ export default {
                                 <div class="row" style="margin:0px;margin-bottom:10px;">
                                     <div class="col-md-3" style="padding-top:10px;padding-left:25px;">通知标题:</div>
                                     <div class="col-md-8" style="padding-left:0px;">
-                                        <el-input placeholder="请输入标题" />
+                                        <el-input v-model="title" placeholder="请输入标题" />
                                     </div>
                                 </div>
                                 <div class="row" style="margin:0px;margin-bottom:10px;">
                                     <div class="col-md-3" style="padding-top:10px;padding-left:25px;">通知内容:</div>
                                     <div class="col-md-8" style="padding-left:0px;">
-                                        <textarea style="height:200px;width:100%;resize:none;border-radius:5px;border: 1px solid #e5e5e5;" />
+                                        <textarea v-model="content" style="height:200px;width:100%;resize:none;border-radius:5px;border: 1px solid #e5e5e5;" />
                                     </div>
                                 </div>
                                 <div class="row" style="margin:0px;margin-bottom:10px;">
                                     <div class="col-md-3" style="padding-top:10px;padding-left:25px;">场所回复:</div>
                                     <div class="col-md-3" style="padding-left:0px;padding-top:10px;">
-                                        <el-radio  label="1">是</el-radio>
-                                        <el-radio  label="2">否</el-radio>
+                                        <el-radio v-model="is_reply"  label="1">是</el-radio>
+                                        <el-radio v-model="is_reply"  label="2">否</el-radio>
                                     </div>
                                     <div class="col-md-6" style="padding-left:0px;">
                                         <span>有效期:</span>
-                                        <div style="display:inline-block;"><el-date-picker  type="date" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker></div>
+                                        <div style="display:inline-block;"><el-date-picker v-model="timelimit" type="datetime" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker></div>
                                     </div>
                                 </div>
 
@@ -232,7 +302,7 @@ export default {
 
                             <div class="option_bar" style="text-align:right;" v-show="curPageIndex == 0">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
-                                <button type="button" class="btn btn-success" @click="goNext()">下一步</button>
+                                <button type="button" class="btn btn-success" :disabled="blngoNext" @click="goNext()">下一步</button>
                             </div>
 
 
@@ -262,6 +332,11 @@ export default {
                 watch:{
                     curPageIndex(){
                         layer.title(`发布场所通知 - ${layTitle[this.curPageIndex]}`,layIndex)
+                    },
+                },
+                computed:{
+                    blngoNext(){
+                        return !(this.title && this.conetnt && this.is_reply && this.timelimit && this.accessory)
                     }
                 },
                 context:{
@@ -271,12 +346,17 @@ export default {
                             return time.getTime() < Date.now() - 8.64e7;
                         }
                     },
-                    url:ser.uri+'/upload/preview',
+                    url:ser.uri+'/netbar_manages/netbar_notice_attachment_upload',
                     uploadFileName:'',
                     curPageIndex:0,
                     blnSubmit:false,
                     blnExecute:false,
                     selPlaces:[],
+                    title:'',
+                    content:'',
+                    is_reply:'1',
+                    timelimit:'',
+                    accessory:'',// 上传的文件标识（先调用上传接口上传文件，返回唯一标识）
                     //场所区域选择改变事件
                     PlaceResult(d){
                         let res =  _.chain(d).values().flatten().value();
@@ -293,11 +373,29 @@ export default {
                     uploadBtnClick(){
                         layeroDom.find('#uploadFile').click();
                     },
-                    ok_btn(){param.close();},
+                    ok_btn(){
+                        let d=param.selfData;
+
+                        s.$store.dispatch(netbar_notice_add,{
+                            title:d.title,
+                            content:d.content,
+                            is_reply:d.is_reply=='2'?0:1,
+                            timelimit:tool.DateFormat(d.timelimit,'yyyy-MM-dd hh:mm:ss'),
+                            target:_.map(d.selPlaces,c=>c.code).join(','),
+                            accessory:d.accessory
+                        }).then(res=>{
+                            if(!tool.msg(res,'发布通知成功!','发布通知失败!')) return;
+                            s.pageChange(0);
+
+                            param.close();
+                        });
+                        
+                    },
                     cancel_btn(){param.close();}
                 },
-                success(layero){
+                success(layero,index){
                     layeroDom=layero;
+                    layIndex=index;
                     let uploadDom = layero.find('#uploadFile');
                     let s=param.selfData;
 
@@ -337,9 +435,9 @@ export default {
                         },
                         done:function(e,data){
                             if(data.result.msg.code!='successed'){
-                                
+                                tool.info(data.result.msg.note);
                             }else{//成功
-                               
+                               s.accessory=data.result.msg.note;
                             }
                         },
                         progressall: function (e, data) {
@@ -356,12 +454,15 @@ export default {
     //批量删除
     datchRemove(){
         let s=this;
+        let ids=_.chain(this.data).filter(d=>d.checked).map(d=>d.id).value();//选中的IDS
+        if(ids.length<=0){tool.info('请选择需要删除的数据集合!');return;}
+
         tool.open(function(){
             let param={
                 title:'提示',
                 area:'400px',
                 content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
-                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />您确定要删除选择的14项通知吗?</div>
+                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />您确定要删除选择的${ids.length}项通知吗?</div>
                             <div class="option_bar" style="text-align:right;padding:5px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
@@ -372,7 +473,24 @@ export default {
                 store:s.$store,
                 context:{
                     blnExecute:false,
-                    ok_btn(){param.close()},
+                    ok_btn(){
+                        if(param.selfData.blnExecute){return;}
+                        param.selfData.blnExecute=true;
+                        s.blnBatchRemove=true;
+
+                        s.$store.dispatch(netbar_notice_del,{
+                            notice_id:ids.join(',')
+                        }).then(res=>{
+                            s.blnBatchRemove=false;
+                            if(!tool.msg('批量删除成功!','批量删除失败!')) return;
+
+                            //判断当前删除后页数变化没有
+                            s.calPage(-ids.length);
+                            s.pageChange((s.pageIndex+1)>=s.pageSize?s.pageSize-1:s.pageIndex);
+                            param.close()
+                        });
+                        
+                    },
                     cancel_btn(){param.close()}
                 }
             };
@@ -438,7 +556,7 @@ export default {
                 title:'提示',
                 area:'400px',
                 content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
-                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />您确定要删除"会议通知"通知吗?</div>
+                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />您确定要删除"${d.name}"通知吗?</div>
                             <div class="option_bar" style="text-align:right;padding:5px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
@@ -449,7 +567,22 @@ export default {
                 store:s.$store,
                 context:{
                     blnExecute:false,
-                    ok_btn(){param.close()},
+                    ok_btn(){
+
+                        if(param.selfData.blnExecute){return;}
+                        param.selfData.blnExecute=true;
+
+                        s.$store.dispatch(netbar_notice_del,{
+                            notice_id:d.id
+                        }).then(res=>{
+                            if(!tool.msg('删除成功!','删除失败!')) return;
+
+                            //判断当前删除后页数变化没有
+                            s.calPage(-1);
+                            s.pageChange((s.pageIndex+1)>=s.pageSize?s.pageSize-1:s.pageIndex);
+                            param.close()
+                        });
+                    },
                     cancel_btn(){param.close()}
                 }
             };
@@ -462,8 +595,13 @@ export default {
     },
     pageChange(i){
         this.pageIndex=i;
-        this.getPlaceData();
+        this.loadData();
     },
+    //根据操作(新增/删除)对页面总数进行重新计算
+    calPage(num){
+        this.pageCount=this.pageCount+num;
+        this.pageSize=Math.ceil(this.pageCount/this.pageNum);
+    }
   }
 }
 </script>
