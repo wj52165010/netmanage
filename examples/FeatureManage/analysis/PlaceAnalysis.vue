@@ -805,7 +805,7 @@ export default {
                         },
 
                     },
-                    data: [d.netbar_maintenances || 10,d.netbar_offlines || 2,d.netbar_equip_offlines,d.netbar_equip_abnormals,d.collection_undulate,d.collection_abnormals]
+                    data: [d.netbar_maintenances,d.netbar_offlines,d.netbar_equip_offlines,d.netbar_equip_abnormals,d.collection_undulate,d.collection_abnormals]
                 }
                 
             ]

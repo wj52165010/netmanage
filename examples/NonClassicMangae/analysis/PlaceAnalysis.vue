@@ -803,7 +803,7 @@ export default {
                         },
 
                     },
-                    data: [d.netbar_maintenances || 10,d.netbar_offlines || 2,d.abn_equip_err || 2,d.equip_noheart ||10,d.abn_detect_err ||3000,d.abn_soft_err || 4]
+                    data: [d.netbar_maintenances,d.netbar_offlines,d.abn_equip_err,d.equip_noheart,d.abn_detect_err,d.abn_soft_err]
                 }
                 
             ]

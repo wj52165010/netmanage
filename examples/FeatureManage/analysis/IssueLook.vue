@@ -262,10 +262,15 @@ export default {
             if(!tool.msg(res,'','获取总览列表数据失败!'))return;
             this.data = this.converData(res.biz_body);
             //测试数据
-            this.data=[{code:'41050210000007',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'}];
+            //this.data=[{code:'41050210000007',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',issueKind:'刷卡异常',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'2000',digest:'场所已离线48小时'}];
             
-            this.pageCount=res.page.total;
-            this.pageSize=res.page.page_size;
+            if(this.data.length<=0){
+                this.pageCount=0;
+                this.pageSize=0;
+            }else{
+                this.pageCount=res.page.total;  
+                this.pageSize=res.page.page_size;
+            }
             
         });
     },

@@ -802,7 +802,7 @@ export default {
                         },
 
                     },
-                    data: [d.abn_equip_maintenances || 10000,d.equip_offlines || 2,d.abn_equip_err || 2,d.equip_noheart ||10,d.abn_detect_err ||3000,d.abn_soft_err || 4]
+                    data: [d.abn_equip_maintenances ,d.equip_offlines ,d.abn_equip_err ,d.equip_noheart ,d.abn_detect_err ,d.abn_soft_err]
                 }
                 
             ]

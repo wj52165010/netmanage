@@ -275,10 +275,14 @@ export default {
             if(!tool.msg(res,'','获取总览列表数据失败!'))return;
             this.data = this.converData(res.biz_body);
             //测试数据
-            this.data=[{code:'53011135000127',name:'重庆智多测试设备',place:'重庆智多测试设备',firm:'重庆爱思网安',region:'南岸区',issueKind:'采集失效',state:'online',time:'1天前',collect:'0',digest:'XXXXXX'}];
-            
-            this.pageCount=res.page.total;
-            this.pageSize=res.page.page_size;
+            //this.data=[{code:'53011135000127',name:'重庆智多测试设备',place:'重庆智多测试设备',firm:'重庆爱思网安',region:'南岸区',issueKind:'采集失效',state:'online',time:'1天前',collect:'0',digest:'XXXXXX'}];
+            if(this.data.length<=0){
+                this.pageCount=0;
+                this.pageSize=0;
+            }else{
+                this.pageCount=res.page.total;  
+                this.pageSize=res.page.page_size;
+            }
             
         });
     },

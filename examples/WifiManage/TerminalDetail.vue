@@ -43,15 +43,15 @@
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="d in data">
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">证件类型</span></div>
-                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">证件号</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">姓名</span></div>
-                            <div class="column" style="width:60px;"><span class="overflow" style="width:60px;">名族</span></div>
-                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">地址</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">终端IP</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">终端MAC</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">采集时间</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">终端状态</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.cardKind}}</span></div>
+                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.card}}</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.name}}</span></div>
+                            <div class="column" style="width:60px;"><span class="overflow" style="width:60px;">{{d.nation}}</span></div>
+                            <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.address}}</span></div>
+                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.ip}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.mac}}</span></div>
+                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.time}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.state}}</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -63,22 +63,32 @@
 
 <script>
 import Scroll from  'components/scroll'
-import {BODY_RESIZE} from '../../store/mutation-types'
+import {BODY_RESIZE,GetSiteTerminalList} from '../../store/mutation-types'
 export default {
   name: 'TerminalDetail',
+  props:['code'],
   components:{Scroll},
   data () {
     return {
       column_w:0,
       bodyResizeSub:null,
       bodyH:0,
-      data:[1,2,3],
+      data:[],
       blnLoading:false,
-      nameOrder:false
+      nameOrder:true
+    }
+  },
+  watch:{
+    nameOrder(){
+        this.loadData();
     }
   },
   mounted(){
+
    this.layout();
+   
+   this.loadData();
+
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
        this.bodyResizeSub=sub
    },sub:()=>{
@@ -99,6 +109,31 @@ export default {
         },100);
         this.column_w=$(this.$el).width()-1030;
     },
+    //加载终端数据
+    loadData(){
+        this.blnLoading=true;
+        this.$store.dispatch(GetSiteTerminalList,{
+            netbar_wacode:this.code,
+            sort:'customer_name',
+            order:this.nameOrder?'desc':'asc'
+        }).then(res=>{
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取终端数据失败!'))return;
+            this.data=_.map(res.biz_body,d=>{
+                return {
+                    cardKind:d.certificate_type,
+                    card:d.certificate_code,
+                    name:d.customer_name,
+                    nation:d.nation,
+                    address:d.address,
+                    ip:d.terminal_ip,
+                    mac:d.terminal_mac,
+                    time:d.capture_time,
+                    state:d.terminal_state
+                }
+            });
+        });
+    }
   }
 }
 </script>
@@ -110,6 +145,9 @@ export default {
 
 .TerminalDetail .fa-caret-up{position:absolute;top:8px;cursor:pointer;font-size:14px;color:gray;}
 .TerminalDetail .fa-caret-down{position:absolute;top:17px;cursor:pointer;font-size:14px;color:gray;}
+
+.TerminalDetail .fa-caret-up.active,
+.TerminalDetail .fa-caret-down.active,
 .TerminalDetail .fa-caret-up:hover,
 .TerminalDetail .fa-caret-down:hover{
     color:white;
