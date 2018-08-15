@@ -8,8 +8,6 @@ const state={
 }
 
 
-
-
 const actions={
     //发布停业计划
     [types.netbar_stop_add]({commit},data){
@@ -131,6 +129,14 @@ const actions={
             });
         });
     },
+    //电子登记次数重置
+    [types.netbar_electronic_reset_used]({commit},data){
+        return new Promise((resolve,reject)=>{
+            ser.Netbar_electronic_reset_used(data).then(res=>{
+                resolve(res);
+            });
+        });
+    }
 
 }
 

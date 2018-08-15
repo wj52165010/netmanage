@@ -204,7 +204,8 @@ export default {
         self.refreshBtnEl.removeClass('fa-refresh');
         self.refreshBtnEl.addClass('fa-spinner fa-pulse');
         flag.input = true;
-        self.$store.dispatch(GetSitesInfoByInfo,{condition:$(this).val(), types:self.searchKind}).then(function (code) {
+
+        self.$store.dispatch(GetSitesInfoByInfo,{condition:$(this).val(), types:self.searchKind,microprobe_type:self.microprobeType}).then(function (code) {
             arrowIndex = -1;
             self.refreshBtnEl.removeClass('fa-spinner fa-pulse');
             self.refreshBtnEl.addClass('fa-refresh');

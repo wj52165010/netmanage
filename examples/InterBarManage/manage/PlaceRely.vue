@@ -38,11 +38,11 @@
 import Loading from 'components/Loading'
 
 import Scroll from  'components/scroll'
-import {BODY_RESIZE,netbar_notice_reply_list} from '../../../store/mutation-types'
+import {BODY_RESIZE,InterBar} from '../../../store/mutation-types'
 export default {
   name: 'PlaceRely',
   props:['code'],
-  components:{Scroll},
+  components:{Scroll,Loading},
   data () {
     return {
         column_w:0,
@@ -80,7 +80,7 @@ export default {
     },
     loadData(){
         this.blnLoading=true;
-        this.$store.dispatch(netbar_notice_reply_list,{
+        this.$store.dispatch(InterBar.netbar_notice_reply_list,{
             notice_id:this.code,
             limit:1000,
             skip:0

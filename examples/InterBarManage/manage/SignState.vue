@@ -53,7 +53,7 @@
 <script>
 import Loading from 'components/Loading'
 import Scroll from  'components/scroll'
-import {BODY_RESIZE,netbar_notice_sign_list,getDictTables} from '../../../store/mutation-types'
+import {BODY_RESIZE,InterBar,getDictTables} from '../../../store/mutation-types'
 export default {
   name: 'SignState',
   props:['code'],
@@ -67,6 +67,11 @@ export default {
         data:[],
         dict_tables:{},
         blnLoading:false,
+    }
+  },
+  watch:{
+    state(){
+        this.loadData();
     }
   },
   mounted(){
@@ -105,7 +110,7 @@ export default {
     loadData(){
 
         this.blnLoading=true;
-        this.$store.dispatch(netbar_notice_sign_list,{
+        this.$store.dispatch(InterBar.netbar_notice_sign_list,{
             limit:1000,
             skip:0,
             sign_status:this.state,

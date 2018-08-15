@@ -22,7 +22,7 @@
 <script>
 import Loading from 'components/Loading'
 
-import {BODY_RESIZE,netbar_notice_detail} from '../../../store/mutation-types'
+import {BODY_RESIZE,InterBar} from '../../../store/mutation-types'
 export default {
   name: 'NoteContent',
   props:['code'],
@@ -40,7 +40,7 @@ export default {
     loadData(){
       
       this.blnLoading=true;
-      this.$store.dispatch(netbar_notice_detail,{
+      this.$store.dispatch(InterBar.netbar_notice_detail,{
         notice_id:this.code
       }).then(res=>{
         this.blnLoading=false;

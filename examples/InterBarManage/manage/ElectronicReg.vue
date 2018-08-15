@@ -86,8 +86,8 @@
                         <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.user}}</span></div>
                         <div class="column" style="width:200px;">
                             <span class="overflow" style="width:200px;">
-                                <div class="item" @click="editNum(d)"  style="display:inline-block;"><i class="fa fa-pencil-square-o" /> 编辑可用</div>
-                                <div class="item" @click="resetNum(d)" style="display:inline-block;margin-left:10px;"><i class="fa fa-copyright" /> 重置已用</div>
+                                <div class="item" @click="editNum(d.id)"  style="display:inline-block;"><i class="fa fa-pencil-square-o" /> 编辑可用</div>
+                                <div class="item" @click="resetNum(d.id)" style="display:inline-block;margin-left:10px;"><i class="fa fa-copyright" /> 重置已用</div>
                             </span>
                         </div>
                     </div>
@@ -119,7 +119,8 @@ import PlaceDetail from '../PlaceDetail'
 
 import DataSource from '../../../enum/DataSource'
 
-import {BODY_RESIZE,netbar_electronic_list,netbar_electronic_option_allow,netbar_electronic_edit_allow,netbar_electronic_list_export} from '../../../store/mutation-types'
+import {BODY_RESIZE,InterBar} from '../../../store/mutation-types'
+
 
 export default {
   name: 'ElectronicReg',
@@ -130,9 +131,9 @@ export default {
         bodyResizeSub:null,
         bodyH:0,
         data:[
-             {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'},
-             {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'},
-             {code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'}
+             //{code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'},
+             //{code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'},
+             //{code:'50099910000005',name:'重庆智多测试部',region:'测试区',uableCount:10,logtime:'2017-12-04 17:09',user:'产品部'}
         ],
         blnLoading:false,
         microprobe_type:DataSource['网吧'],
@@ -185,7 +186,7 @@ export default {
     //加载数据
     loadData(){
         this.blnLoading=true;
-        this.$store.dispatch(netbar_electronic_list,{
+        this.$store.dispatch(InterBar.netbar_electronic_list,{
             limit:this.pageNum,
             skip:this.pageNum *  this.pageIndex,
             sort:this.orderObj.sort,
@@ -202,7 +203,7 @@ export default {
                 this.pageSize=0;
             }else{
                 this.pageCount=res.page.total;  
-                this.pageSize=res.page.page_size;
+                this.pageSize=res.page.page_count;
             }
         });
     },
@@ -314,7 +315,7 @@ export default {
                         param.selfData.blnExecute=true;
 
                         let d=param.selfData.d;
-                        s.$store.dispatch(netbar_electronic_option_allow,{
+                        s.$store.dispatch(InterBar.netbar_electronic_option_allow,{
                             times:d.times,
                             cover:d.cover,
                             target:d.target
@@ -346,7 +347,7 @@ export default {
                 title:'提示',
                 area:'400px',
                 content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
-                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />确定要将${id?'':`所选${ids.length}的家`}场所可用次数重置为0吗?</div>
+                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />确定要将${id?'':`所选${ids.length}的家`}场所次数重置吗?</div>
                             <div class="option_bar" style="text-align:right;padding:15px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
@@ -361,8 +362,7 @@ export default {
                         if(param.selfData.blnExecute) return;
                         param.selfData.blnExecute=true;
 
-                        s.$store.dispatch(netbar_electronic_edit_allow,{
-                            times:0,
+                        s.$store.dispatch(InterBar.netbar_electronic_reset_used,{
                             site_id:id || ids.join(',')
                         }).then(res=>{
                             param.selfData.blnExecute=false;
@@ -417,7 +417,7 @@ export default {
                         param.selfData.blnExecute=true;
 
                         let d=param.selfData.d;
-                        s.$store.dispatch(netbar_electronic_edit_allow,{
+                        s.$store.dispatch(InterBar.netbar_electronic_edit_allow,{
                             times:d.times,
                             site_id:blnBatch?ids.join(','):id
                         }).then(res=>{
@@ -440,7 +440,7 @@ export default {
         let s=this;
 
         let ids=_.chain(this.data).filter(d=>d.checked).map(d=>d.id).value();//选中的IDS
-        if(!id && ids.length<=0){tool.info('请选择需要导出的数据集合!');return;}
+        if(ids.length<=0){tool.info('请选择需要导出的数据集合!');return;}
 
         tool.open(function(){
             let param={
@@ -463,7 +463,7 @@ export default {
                         if(param.selfData.blnExecute){return;}
                         param.selfData.blnExecute=true;
                         s.blnExport=true;
-                        s.$store.dispatch(netbar_stop_plan_export,{
+                        s.$store.dispatch(InterBar.netbar_electronic_list_export,{
                             sort:s.orderObj.sort,
                             order:s.orderObj.order,
                             netsite_range:s.netsite_range,

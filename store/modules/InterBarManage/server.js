@@ -236,6 +236,21 @@ export default {
         this.baseBag.target='netbar_manages';
         this.baseBag.method='netbar_electronic_edit_allow';
         this.baseBag.data=data || {};
+
+        return this.post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag)
+    },
+
+    /**
+     * 电子登记重置次数
+     * params{
+        site_id:''// 场所编码，多条用逗号分割
+     * } 
+     */
+    Netbar_electronic_reset_used(data){
+        this.baseBag.target='netbar_manages';
+        this.baseBag.method='netbar_electronic_reset_used';
+        this.baseBag.data=data || {};
+
         return this.post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag)
     }
 

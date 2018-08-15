@@ -144,7 +144,8 @@ import PlaceDetail from '../PlaceDetail'
 
 import DataSource from '../../../enum/DataSource'
 
-import {BODY_RESIZE,getDictTables,netbar_stop_plan_list,netbar_stop_add,netbar_stop_plan_export,netbar_stop_cancel} from '../../../store/mutation-types'
+import {BODY_RESIZE,getDictTables,InterBar} from '../../../store/mutation-types'
+
 export default {
   name: 'ClosePlan',
   components:{PlaceSearch,Scroll},
@@ -227,7 +228,7 @@ export default {
     //加载数据
     loadData(){
         this.blnLoading=true;
-        this.$store.dispatch(netbar_stop_plan_list,{
+        this.$store.dispatch(InterBar.netbar_stop_plan_list,{
             limit:this.pageNum,
             skip:this.pageNum *  this.pageIndex,
             sort:this.orderObj.sort,
@@ -246,7 +247,7 @@ export default {
                 this.pageSize=0;
             }else{
                 this.pageCount=res.page.total;  
-                this.pageSize=res.page.page_size;
+                this.pageSize=res.page.page_count;
             }
         });
     },
@@ -316,13 +317,14 @@ export default {
                 title:'场所详情',
                 area:'1000px',
                 content:`<div class="place_detail_pop" style="width:100%;height:100%;">
-                            <PlaceDetail />
+                            <PlaceDetail :code="code" />
                         </div>
                         `,
                 components:{PlaceDetail},
                 store:s.$store,
                 context:{
                     blnExecute:false,
+                    code:d.code,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
                 }
@@ -401,7 +403,7 @@ export default {
                     ok_btn(){
                         let d=param.selfData;
                         d.blnExecute=true;
-                        s.$store.dispatch(netbar_stop_add,{
+                        s.$store.dispatch(InterBar.netbar_stop_add,{
                             pwd:d.pwd,
                             close_way:d.data.close_way,
                             stop_time_range:d.data.stop_time_range,
@@ -457,7 +459,7 @@ export default {
                         if(param.selfData.blnExecute){return;}
                         param.selfData.blnExecute=true;
                         s.blnExport=true;
-                        s.$store.dispatch(netbar_stop_plan_export,{
+                        s.$store.dispatch(InterBar.netbar_stop_plan_export,{
                             sort:s.orderObj.sort,
                             order:s.orderObj.order,
                             time_range:s.time_range[0]?_.map(s.time_range,t=>tool.DateFormat(t,'yyyy-MM-dd')).join(' - '):'',
@@ -506,7 +508,7 @@ export default {
                         param.selfData.blnExecute=true;
                         s.blnRevocation=true;
 
-                        s.$store.dispatch(netbar_stop_cancel,{
+                        s.$store.dispatch(InterBar.netbar_stop_cancel,{
                             plan_id:ids.join(',')
                         }).then(res=>{  
                             s.blnRevocation=false;

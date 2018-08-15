@@ -61,7 +61,7 @@
                 </div>
               </SearchDropdown>
             </div>
-            <el-date-picker type="daterange" v-model="timeRange" :picker-options="simpleTime" placeholder="选择日期范围" style="width: 220px;display:inline-block;"></el-date-picker>
+            <el-date-picker type="datetimerange" v-model="timeRange" :picker-options="simpleTime" placeholder="选择日期范围" style="width: 320px;display:inline-block;"></el-date-picker>
             
             <div style="display:inline-block;width:250px;"><PlaceSearch :blnClear="true" c_searchKind="0" @place_res="placechange"></PlaceSearch></div>
             

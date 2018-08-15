@@ -462,3 +462,6 @@ export const WebSitePortSetting='WebSitePortSetting' //备案获取端口配置
 
 /*************  搜图 **************************/
 export const SearchFace='SearchFace' //搜人脸
+
+import * as interBar from './modules/InterBarManage/types'
+export const InterBar =  interBar;

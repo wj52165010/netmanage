@@ -66,6 +66,9 @@ export default {
         }
       }
   },
+  mounted(){
+    this.data=tool.Clone(this.data);
+  },
   methods:{
     //场所区域选择改变事件
     PlaceResult(d){

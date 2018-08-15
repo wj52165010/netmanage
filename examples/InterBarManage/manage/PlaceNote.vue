@@ -7,7 +7,7 @@
             <div class="item">
                 <span>发布时间:</span>
                 <div style="display:inline-block;">
-                    <el-date-picker v-model="time_range"  type="date" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker>
+                    <el-date-picker v-model="time_range" style="width:250px;" type="daterange" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker>
                 </div>
             </div>
             <div class="item">
@@ -109,7 +109,9 @@ import DataSource from '../../../enum/DataSource'
 import Scroll from  'components/scroll'
 import PlaceTree from 'components/PlaceTreeNew'
 import NoteDetail from './NoteDetail'
-import {BODY_RESIZE,netbar_notice_list,netbar_notice_add,netbar_notice_del} from '../../../store/mutation-types'
+import {BODY_RESIZE,InterBar} from '../../../store/mutation-types'
+
+
 export default {
   name: 'PlaceNote',
   components:{Scroll},
@@ -124,10 +126,10 @@ export default {
         bodyResizeSub:null,
         bodyH:0,
         data:[
-            {name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:'图片XXX'},
-            {name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:'图片XXX'},
-            {name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:'图片XXX'},
-            {name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:''},
+            //{name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:'图片XXX'},
+            //{name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:'图片XXX'},
+            //{name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:'图片XXX'},
+            //{name:'会议通知',pulishTime:'2018-06-12 10:28',user:'产品部',placeCount:10,sign:0,unsign:10,reply:9,accessory:''},
         ],
         blnLoading:false,
         blnBatchRemove:false, //是否正在进行批量删除
@@ -179,7 +181,7 @@ export default {
     },
     loadData(){
         this.blnLoading=true;
-        this.$store.dispatch(netbar_notice_list,{
+        this.$store.dispatch(InterBar.netbar_notice_list,{
             limit:this.pageNum,
             skip:this.pageNum *  this.pageIndex,
             sort:this.orderObj.sort,
@@ -197,7 +199,7 @@ export default {
                 this.pageSize=0;
             }else{
                 this.pageCount=res.page.total;  
-                this.pageSize=res.page.page_size;
+                this.pageSize=res.page.page_count;
             }
         });
     },
@@ -336,7 +338,7 @@ export default {
                 },
                 computed:{
                     blngoNext(){
-                        return !(this.title && this.conetnt && this.is_reply && this.timelimit && this.accessory)
+                        return !(this.title && this.content && this.is_reply && this.timelimit)
                     }
                 },
                 context:{
@@ -376,7 +378,7 @@ export default {
                     ok_btn(){
                         let d=param.selfData;
 
-                        s.$store.dispatch(netbar_notice_add,{
+                        s.$store.dispatch(InterBar.netbar_notice_add,{
                             title:d.title,
                             content:d.content,
                             is_reply:d.is_reply=='2'?0:1,
@@ -478,7 +480,7 @@ export default {
                         param.selfData.blnExecute=true;
                         s.blnBatchRemove=true;
 
-                        s.$store.dispatch(netbar_notice_del,{
+                        s.$store.dispatch(InterBar.netbar_notice_del,{
                             notice_id:ids.join(',')
                         }).then(res=>{
                             s.blnBatchRemove=false;
@@ -525,12 +527,13 @@ export default {
     //下载附件
     loadBag(d){
         let s=this;
+        if(!d.accessory) return;
         tool.open(function(){
             let param={
                 title:'提示',
                 area:'400px',
                 content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
-                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />您确定要下载"XXX"附件进行查看吗?</div>
+                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />您确定要下载该附件进行查看吗?</div>
                             <div class="option_bar" style="text-align:right;padding:5px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
@@ -575,7 +578,7 @@ export default {
                         if(param.selfData.blnExecute){return;}
                         param.selfData.blnExecute=true;
 
-                        s.$store.dispatch(netbar_notice_del,{
+                        s.$store.dispatch(InterBar.netbar_notice_del,{
                             notice_id:d.id
                         }).then(res=>{
                             if(!tool.msg('删除成功!','删除失败!')) return;
