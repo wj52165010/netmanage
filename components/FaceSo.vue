@@ -111,7 +111,7 @@ export default {
             d.width=img.width/img.height*114;
           };
 
-          img.src=s.imgUrl+d.certno;
+          img.src=s.imgUrl+d.img_code;
 
         }
 

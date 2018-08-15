@@ -466,6 +466,7 @@ export default {
                             plan_status:s.plan_status,
                             plan_id:ids.join(',')
                         }).then(res=>{
+                            param.selfData.blnExecute=false;
                             s.blnExport=false;
                             if(!tool.msg(res,'导出成功!','导出失败!'))return;
                             window.location=res.biz_body.url;

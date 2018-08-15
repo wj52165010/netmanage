@@ -210,10 +210,10 @@ export default {
   },
   computed:mapState({
     statusText(){
-         let status=this.params.model.status || {status:this.Menu_State.getKey('完成')},mapStatus=this.Menu_State.getRes(status);
-         if(this.Menu_State.getKey('完成')==mapStatus.code){return this.emptyInfo || '暂无数据';}
+        //  let status=this.params.model.status || {status:this.Menu_State.getKey('完成')},mapStatus=this.Menu_State.getRes(status);
+        //  if(this.Menu_State.getKey('完成')==mapStatus.code){return this.emptyInfo || '暂无数据';}
 
-         return mapStatus.info;
+         return this.emptyInfo || '暂无数据';// mapStatus.info;
      },
      oriMenus:state=>{
          return state.menus;
@@ -236,8 +236,9 @@ export default {
     //     if(!tool.msg(res)){return}
     //     this.remoteData=res.biz_body;
     //   });
+      
       let self=this,config=tool.Clone(self.config),model=this.params.model.condtionsObj;
- 
+      
       self.id='page_'+tool.guid();
       self.$nextTick(()=>{
         cLoading(self.id+'inloading',7);
@@ -567,13 +568,16 @@ export default {
 
          //判断页面是否需要加载额外的数据
         let extraParam={};
-    
+
+
         if(config.queryCondition || extraConditon){
             let condition=tool.Clone(config.queryCondition).concat(tool.Clone(extraConditon || []));
             extraParam= tmpDAO.searchParam(condition,model);
         }
 
+        this.blnSearch=true;
         this.$store.dispatch(Get_OPerate_Data,{interface:config.interface || '',keyid:keyid,condtionsObj:model,extraData:extraParam.param,indexFields:extraParam.sepParam}).then(res=>{
+            this.blnSearch=false;
             console.log((new Date()).getTime()-tempDatePre);
             //console.log(tool.Clone(res.biz_body));
             this.emptyInfo='';

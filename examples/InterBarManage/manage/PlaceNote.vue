@@ -541,7 +541,9 @@ export default {
                 store:s.$store,
                 context:{
                     blnExecute:false,
-                    ok_btn(){param.close()},
+                    ok_btn(){
+                        window.location=`/netbar_manages/netbar_notice_attachment_download/${d.id}`;
+                    },
                     cancel_btn(){param.close()}
                 }
             };

@@ -119,7 +119,7 @@ import PlaceDetail from '../PlaceDetail'
 
 import DataSource from '../../../enum/DataSource'
 
-import {BODY_RESIZE,netbar_electronic_list} from '../../../store/mutation-types'
+import {BODY_RESIZE,netbar_electronic_list,netbar_electronic_option_allow,netbar_electronic_edit_allow,netbar_electronic_list_export} from '../../../store/mutation-types'
 
 export default {
   name: 'ElectronicReg',
@@ -209,6 +209,7 @@ export default {
     converData(d){
         return _.map(d,c=>{
             return {
+                id:c.netbar_wacode,         //标识
                 code:c.netbar_wacode,       //场所编码
                 name:c.netbar_name,         //场所名称
                 region:c.region_name,       //区域名称
@@ -287,7 +288,7 @@ export default {
                 title:'电子登记配置',
                 area:'800px',
                 content:`<div class="Plan_Setting_pop" style="width:100%;height:100%;">
-                            <RegSetting />
+                            <RegSetting @change="change" />
                             <div class="option_bar" style="text-align:right;padding:15px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
@@ -295,10 +296,36 @@ export default {
                         </div>`,
                 components:{RegSetting},
                 store:s.$store,
+                computed:{
+                    blnSubmit(){
+                        let d=this.d;
+                        return !(d.times && d.cover!=undefined && d.target)
+                    }
+                },
                 context:{
                     blnSubmit:false,
                     blnExecute:false,
-                    ok_btn(){param.close();},
+                    d:{},
+                    change(d){
+                        param.selfData.d=d;
+                    },
+                    ok_btn(){
+                        if(param.selfData.blnExecute) return;
+                        param.selfData.blnExecute=true;
+
+                        let d=param.selfData.d;
+                        s.$store.dispatch(netbar_electronic_option_allow,{
+                            times:d.times,
+                            cover:d.cover,
+                            target:d.target
+                        }).then(res=>{
+                            param.selfData.blnExecute=false;
+                            if(!tool.msg(res,'配置成功!','配置失败!')) return;
+
+                            param.close();
+                        });
+                        
+                    },
                     cancel_btn(){param.close();}
                 }
             };
@@ -309,12 +336,17 @@ export default {
     //重置已用
     resetNum(id){
         let s=this;
+
+        let ids=_.chain(this.data).filter(d=>d.checked).map(d=>d.id).value();//选中的IDS
+        if(!id && ids.length<=0){tool.info('请选择需要编辑的数据集合!');return;}
+
+
         tool.open(function(){
             let param={
                 title:'提示',
                 area:'400px',
                 content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
-                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />确定要将${id?'':'所选的14家'}场所可用次数重置为0吗?</div>
+                            <div style="padding: 30px 10px;text-align:center;"><i class="fa fa-warning" style="font-size:20px;margin-right:10px;color:red;" />确定要将${id?'':`所选${ids.length}的家`}场所可用次数重置为0吗?</div>
                             <div class="option_bar" style="text-align:right;padding:15px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
@@ -325,7 +357,22 @@ export default {
                 store:s.$store,
                 context:{
                     blnExecute:false,
-                    ok_btn(){param.close()},
+                    ok_btn(){
+                        if(param.selfData.blnExecute) return;
+                        param.selfData.blnExecute=true;
+
+                        s.$store.dispatch(netbar_electronic_edit_allow,{
+                            times:0,
+                            site_id:id || ids.join(',')
+                        }).then(res=>{
+                            param.selfData.blnExecute=false;
+                            if(!tool.msg(res,'重置成功!','重置失败!')) return;
+
+                            s.pageChange(s.pageIndex);
+                            param.close();
+                        });
+
+                    },
                     cancel_btn(){param.close()}
                 }
             };
@@ -335,15 +382,21 @@ export default {
     },
     //编辑已用
     editNum(id){
-        let s=this;
+        let s=this,blnBatch=id==undefined,ids=[];
         id=id || -1;
+
+        if(blnBatch){//批量编辑
+            ids=_.chain(this.data).filter(d=>d.checked).map(d=>d.id).value();//选中的IDS
+            if(ids.length<=0){tool.info('请选择需要编辑的数据集合!');return;}
+
+        }
 
         tool.open(function(){
             let param={
                 title:'编辑可用',
                 area:'400px',
                 content:`<div class="Plan_Setting_pop" style="width:100%;height:100%;">
-                            <RegSetting :blnHideCoverPlace="true" :blnHideTargetPlace="blnHideTargetPlace" />
+                            <RegSetting @change="change" :blnHideCoverPlace="true" :blnHideTargetPlace="blnHideTargetPlace" />
                             <div class="option_bar" style="text-align:right;padding:15px;padding-top:0px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success" :disabled="blnSubmit || blnExecute" @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
@@ -355,7 +408,26 @@ export default {
                     blnHideTargetPlace:true,
                     blnSubmit:false,
                     blnExecute:false,
-                    ok_btn(){param.close();},
+                    d:{},
+                    change(d){
+                        param.selfData.d=d;
+                    },
+                    ok_btn(){
+                        if(param.selfData.blnExecute) return;
+                        param.selfData.blnExecute=true;
+
+                        let d=param.selfData.d;
+                        s.$store.dispatch(netbar_electronic_edit_allow,{
+                            times:d.times,
+                            site_id:blnBatch?ids.join(','):id
+                        }).then(res=>{
+                            param.selfData.blnExecute=false;
+                            if(!tool.msg(res,'编辑成功!','编辑失败!')) return;
+
+                            s.pageChange(s.pageIndex);
+                            param.close();
+                        });
+                    },
                     cancel_btn(){param.close();}
                 }
             };
@@ -366,12 +438,16 @@ export default {
     //导出数据
     exportData(){
         let s=this;
+
+        let ids=_.chain(this.data).filter(d=>d.checked).map(d=>d.id).value();//选中的IDS
+        if(!id && ids.length<=0){tool.info('请选择需要导出的数据集合!');return;}
+
         tool.open(function(){
             let param={
                 title:'提示',
                 area:'400px',
                 content:`<div class="Reset_Num_pop" style="width:100%;height:100%;">
-                            <div style="padding: 30px 10px;text-align:center;">请确定是否需要导出所选的50条数据!</div>
+                            <div style="padding: 30px 10px;text-align:center;">请确定是否需要导出所选的${ids.length}条数据!</div>
                             <div class="option_bar" style="text-align:right;padding:15px;">
                                 <button type="button" class="btn btn-default" @click="cancel_btn()">取消</button>
                                 <button type="button" class="btn btn-success"  @click="ok_btn()"><span v-if="!blnExecute">确定</span> <i v-if="blnExecute" class="fa fa-spinner fa-pulse"></i></button>
@@ -382,7 +458,25 @@ export default {
                 store:s.$store,
                 context:{
                     blnExecute:false,
-                    ok_btn(){param.close()},
+                    ok_btn(){
+
+                        if(param.selfData.blnExecute){return;}
+                        param.selfData.blnExecute=true;
+                        s.blnExport=true;
+                        s.$store.dispatch(netbar_stop_plan_export,{
+                            sort:s.orderObj.sort,
+                            order:s.orderObj.order,
+                            netsite_range:s.netsite_range,
+                            region_range:s.region_range,
+                            site_id:ids.join(',')
+                        }).then(res=>{
+                            param.selfData.blnExecute=false;
+                            s.blnExport=false;
+                            if(!tool.msg(res,'导出成功!','导出失败!'))return;
+                            window.location=res.biz_body.url;
+                            param.close();
+                        });
+                    },
                     cancel_btn(){param.close()}
                 }
             };
