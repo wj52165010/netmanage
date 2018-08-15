@@ -14,9 +14,7 @@
         <!--列表体-->
         <div :style="{height:bodyH}" style="position:relative;">
             <!--加载中-->
-            <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
-                <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
-            </div>
+            <Loading v-if="blnLoading" />
             <!--暂无数据-->
             <div v-if="data.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;color:gray;">
                 <div style="display:table-cell;vertical-align: middle;">暂无场所回复该通知!</div>
@@ -25,8 +23,8 @@
             <Scroll :listen="data" ref="scroll">
                 <div class="table_body">
                     <div class="row" v-for="d in data">
-                        <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">场所名称</span></div>
-                        <div class="column"><span class="overflow" :style="{width:column_w+'px'}">回复内容</span></div>
+                        <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.netbar_name}}</span></div>
+                        <div class="column"><span class="overflow" :style="{width:column_w+'px'}" :title="d.content">{{d.content}}</span></div>
                     </div>
                 </div>
             </Scroll>
@@ -37,10 +35,13 @@
 </template>
 
 <script>
+import Loading from 'components/Loading'
+
 import Scroll from  'components/scroll'
-import {BODY_RESIZE} from '../../../store/mutation-types'
+import {BODY_RESIZE,netbar_notice_reply_list} from '../../../store/mutation-types'
 export default {
   name: 'PlaceRely',
+  props:['code'],
   components:{Scroll},
   data () {
     return {
@@ -52,12 +53,16 @@ export default {
     }
   },
   mounted(){
+   
+   this.loadData();
    this.layout();
+
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
        this.bodyResizeSub=sub
    },sub:()=>{
       this.layout();
    }});
+
   },
   beforeDestroy(){
     this.bodyResizeSub.unsubscribe();
@@ -73,6 +78,21 @@ export default {
         },100);
         this.column_w=$(this.$el).width()-200;
     },
+    loadData(){
+        this.blnLoading=true;
+        this.$store.dispatch(netbar_notice_reply_list,{
+            notice_id:this.code,
+            limit:1000,
+            skip:0
+        }).then(res=>{
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取回复列表数据失败!')) return;
+
+            this.data =  res.biz_body;
+        });
+
+
+    }
   }
 }
 </script>

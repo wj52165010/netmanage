@@ -5,17 +5,17 @@
         <HTag :tags="pages" @change="tagChange">
             <!--通知内容页面-->
             <div slot="t0" style="height:100%;width:100%;padding:10px;">
-                <NoteContent ref="NoteContent" />
+                <NoteContent ref="NoteContent" :code="code" />
             </div>
 
             <!--签收状态页面-->
             <div slot="t1" style="height:100%;width:100%;">
-                <SignState ref="SignState" />
+                <SignState ref="SignState" :code="code" />
             </div>
 
             <!--场所回复页面-->
             <div slot="t2" style="height:100%;width:100%;">
-                <PlaceRely ref="PlaceRely" />
+                <PlaceRely ref="PlaceRely" :code="code" />
             </div>
         </HTag>
       </div>
@@ -29,6 +29,7 @@ import SignState from  './SignState'
 import PlaceRely from './PlaceRely'
 export default {
   name: 'NoteDetail',
+  props:['code'],
   components:{HTag,NoteContent,SignState,PlaceRely},
   data () {
     return {

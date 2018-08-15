@@ -9,8 +9,8 @@
                 <div style="display:inline-block;">
                    <el-select v-model="state" placeholder="请选择" :clearable="true">
                         <el-option
-                            v-for="kind in states"
-                            :key="kind.code"
+                            v-for="kind in dict_tables.notice_sign_status"
+                            :key="kind.value"
                             :label="kind.name"
                             :value="kind.value">
                         </el-option>
@@ -30,9 +30,7 @@
         <!--列表体-->
         <div :style="{height:bodyH}" style="position:relative;">
             <!--加载中-->
-            <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
-                <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
-            </div>
+            <Loading v-if="blnLoading" />
             <!--暂无数据-->
             <div v-if="data.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
                 <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
@@ -41,8 +39,8 @@
             <Scroll :listen="data" ref="scroll">
                 <div class="table_body">
                     <div class="row" v-for="d in data">
-                        <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所名称</span></div>
-                        <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">签收状态</span></div>
+                        <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.netbar_name}}</span></div>
+                        <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.is_signature_desc}}</span></div>
                     </div>
                 </div>
             </Scroll>
@@ -53,29 +51,41 @@
 </template>
 
 <script>
+import Loading from 'components/Loading'
 import Scroll from  'components/scroll'
-import {BODY_RESIZE} from '../../../store/mutation-types'
+import {BODY_RESIZE,netbar_notice_sign_list,getDictTables} from '../../../store/mutation-types'
 export default {
   name: 'SignState',
-  components:{Scroll},
+  props:['code'],
+  components:{Scroll,Loading},
   data () {
     return {
-        states:[],
         state:'',
         column_w:0,
         bodyResizeSub:null,
         bodyH:0,
-        data:[1,2,3],
+        data:[],
+        dict_tables:{},
         blnLoading:false,
     }
   },
   mounted(){
-   this.layout();
-   this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
-       this.bodyResizeSub=sub
-   },sub:()=>{
-      this.layout();
-   }});
+
+    this.loadData();
+    this.layout();
+
+    //获取数据来源（下拉框序列化）
+    this.$store.dispatch(getDictTables).then(res=>{
+        if(res.msg.code!='successed')return;
+        this.dict_tables= res.biz_body;
+    });
+
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+        this.bodyResizeSub=sub
+    },sub:()=>{
+        this.layout();
+    }});
+
   },
   beforeDestroy(){
     this.bodyResizeSub.unsubscribe();
@@ -91,6 +101,23 @@ export default {
         },100);
         this.column_w=$(this.$el).width()-100;
     },
+    //加载数据
+    loadData(){
+
+        this.blnLoading=true;
+        this.$store.dispatch(netbar_notice_sign_list,{
+            limit:1000,
+            skip:0,
+            sign_status:this.state,
+            notice_id:this.code
+        }).then(res=>{
+            this.blnLoading=false;
+            if(!tool.msg(res,'','获取签收列表数据失败!')) return;
+
+            this.data=res.biz_body;
+
+        });
+    }
   }
 }
 </script>

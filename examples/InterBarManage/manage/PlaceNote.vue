@@ -506,12 +506,13 @@ export default {
                 title:'场所通知详情',
                 area:['600px','500px'],
                 content:`<div class="Place_Note_pop" style="width:100%;height:100%;">
-                            <NoteDetail />
+                            <NoteDetail :code="code" />
                          </div>
                         `,
                 components:{NoteDetail},
                 store:s.$store,
                 context:{
+                    code:d.id,
                     blnExecute:false,
                     ok_btn(){param.close()},
                     cancel_btn(){param.close()}
