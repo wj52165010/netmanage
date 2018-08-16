@@ -307,7 +307,8 @@ export default {
     //单选
     selItem(d,i){
         d.checked=!d.checked;
-        this.data.splice(i,1,d);
+        this.data[i].checked=d.checked;
+        this.data.splice(i,1,this.data[i]);
     },
     //场所详情
     placeDetail(d){
@@ -408,7 +409,7 @@ export default {
                             close_way:d.data.close_way,
                             stop_time_range:d.data.stop_time_range,
                             reason:d.data.reason,
-                            reason:d.data.reason
+                            target:d.data.target
                         }).then(res=>{
                             d.blnExecute=false;
                             if(!tool.msg(res,'添加成功!')){
@@ -419,8 +420,8 @@ export default {
                                 }
                                 return;
                             }
-                            s.calPage(1);
-                            s.data.unshift(res.biz_body);
+                            //s.calPage(1);
+                            s.pageChange(0);
                             param.close();
                         })
                     },

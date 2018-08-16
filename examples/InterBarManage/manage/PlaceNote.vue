@@ -484,7 +484,7 @@ export default {
                             notice_id:ids.join(',')
                         }).then(res=>{
                             s.blnBatchRemove=false;
-                            if(!tool.msg('批量删除成功!','批量删除失败!')) return;
+                            if(!tool.msg(res,'批量删除成功!','批量删除失败!')) return;
 
                             //判断当前删除后页数变化没有
                             s.calPage(-ids.length);
@@ -581,7 +581,7 @@ export default {
                         s.$store.dispatch(InterBar.netbar_notice_del,{
                             notice_id:d.id
                         }).then(res=>{
-                            if(!tool.msg('删除成功!','删除失败!')) return;
+                            if(!tool.msg(res,'删除成功!','删除失败!')) return;
 
                             //判断当前删除后页数变化没有
                             s.calPage(-1);
