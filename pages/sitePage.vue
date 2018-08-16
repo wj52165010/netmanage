@@ -28,7 +28,7 @@
             </div>
             <!--列表显示区域-->
             <div v-show="viewTable=='list'" style="height: calc(100% - 50px - -63px - 40px);position:relative">
-                <div class="option">
+                <div class="option" name="listOption" >
                     <div class="item">
                         <span>数据来源:</span>
                         <div class="input">
@@ -76,9 +76,14 @@
                     <div class="item" >
                         <el-button type="primary" @click="query_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
                     </div>
+
+                    <div class="item" style="float:right;">
+                        <div class="exportSel" :class="{active:blnExport}" @click="blnExport=!blnExport"><i class="fa fa-check-square" style="margin-right:5px;" />选择</div>
+                    </div>
                 </div>
                 <ul class="header">
                     <li class="item">
+                        <div class="column cursor" @click="selAll()" v-if="blnExport" style="width:50px;"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
                         <div><span class="overflow" style="width:120px;">场所编码</span></div>
                         <div><span class="overflow" style="width:100px;">场所名称</span></div>
                         <div><span class="overflow" style="width:230px;">场所地址</span></div>
@@ -98,11 +103,12 @@
                         <div><span class="overflow" style="width:80px;">所属厂商</span></div>
                     </li>
                 </ul>
-                <div class="content" :class="{'tete': query.microprobe_type.length>2}">
+                <div class="content" :style="{height:listBodyH}" :class="{'tete': query.microprobe_type.length>2}">
                     <Scroll :listen="data" ref="indList">
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showData" class="item" >
+                                <div class="column cursor" @click="selItem(d)" v-if="blnExport"  style="width:50px;" ><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></div>
                                 <div  :title="d.netbar_wacode" @click="searchSiteDetail(d.netbar_wacode,d.microprobe_type)"><span class="overflow sit-click" style="width:120px;">{{d.netbar_wacode}}</span></div>
                                 <div class="align" :title="d.netbar_name" ><span class="overflow" style="width:100px;">{{d.netbar_name}}</span></div>
                                 <div class="align" :title="d.netbar_address"><span class="overflow" style="width:230px;">{{d.netbar_address}}</span></div>
@@ -121,6 +127,7 @@
                     </Scroll>
                 </div>
                 <div class="page_container">
+                    <span class="exportBtn" v-if="blnExport" @click="exportList()" style="float:left;margin-top:10px;margin-left:15px;font-size:12px;cursor:pointer;"><i class="fa fa-upload" /> 导出</span>
                     <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;font-weight:bold">{{pageNum+1}}&nbsp;/&nbsp;{{pageSize}}</span></span>
                     <span style="float:left;margin-top:10px;margin-left:40px;font-size:12px;">每页&nbsp;{{query.limit}}&nbsp;条，&nbsp;&nbsp;共计&nbsp;&nbsp;<span>{{allTotall}}</span>&nbsp;条</span>
                     <div class="firstPage" @click="pageChange(0)" v-show="pageNum!=0">首页</div>
@@ -455,9 +462,13 @@ export default {
          siteIndfirms(){
             this.query.security_software_orgcodes=_.map(this.siteIndfirms,s=>s.code).join(',');
         },
+        blnExport(){
+            this.selIds=[];
+        }
     },
   data () {
     return {
+        listBodyH:0,          //列表表体高度
         siteType:[],          //场所类型
         siteState:[{name:'在线',val:true},{name:'离线',val:false}],
         siteSource:[],                  //数据来源
@@ -517,7 +528,10 @@ export default {
         dataProblem:[],
         newObject:{
             primaryKey:"netbar_info|netbar_wacode",
-        }
+        },
+        blnExport:false,//是否进入导出选择阶段,
+        selIds:[],//选中项的IDS
+
     }
   },
   mounted(){
@@ -529,7 +543,10 @@ export default {
     this.getOnOffLineData();
     this.getYesdayData();
     this.getDealData();
+    this.layout();
+
     this.$store.commit(BODY_RESIZE,()=>{
+            this.layout();
             if(this.myLineChart){
                 this.myLineChart.resize();              
             };
@@ -598,6 +615,15 @@ export default {
                     situatioTitle:r.microprobe_type=="网吧"? "申报终端："+r.net_terminal_num+"台/检测终端："+r.actual_terminal+"台/在线终端："+r.internet_users+"台" :"在线："+r.online_device+"台/异常："+r.abnormal_device+"台/离线："+r.offline_device+"台",               
                 }
             });
+      },
+      blnAllSel(){
+        let s=this,res=true;
+        for(let i=0;i<s.data.length;i++){
+            if(_.findIndex(this.selIds,id=>id==s.data[i].netbar_wacode)<0){
+                res=false;break;
+            }
+        }
+        return res;
       }
   },
   destroyed(){
@@ -608,7 +634,13 @@ export default {
       isHasSelItem(data,code){
         return  _.find(data,d=>d.code==code);
       },
-
+      layout(){
+        let optionH=$(this.$el).find('div[name="listOption"]').height();
+        this.listBodyH=`calc(100% - 40px - 50px - 20px - ${optionH}px)`;
+        this.$nextTick(()=>{
+            this.$refs.indList.reloadyScroll();
+        });
+      },
       //数据来源多选下拉框特殊处理，选了网吧就不能选择其他的,如果为空的话也会被强制选择网吧   现在该需求取消不设置默认
       /*filterMicroprobe(data){
             if(data.length==0){
@@ -727,7 +759,7 @@ export default {
         //处理多滚动条页面来回切换的bug
         if(type=="list"){
             this.$nextTick(()=>{
-                this.$refs.indList.reloadyScroll();
+                this.layout();
             });
         }else if(type=="statistics"){
             if(this.problemTable=='1'){
@@ -2182,6 +2214,38 @@ export default {
             this.problemTable='0';  
           }
       },
+      //全选/取消全选
+      selAll(){
+        let s=this;
+        if(s.blnAllSel){
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].netbar_wacode);
+                if(index<0) continue;
+                s.selIds.splice(index,1);
+            }
+        }else{
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].netbar_wacode);
+                if(index>=0) continue;
+                s.selIds.push(s.data[i].netbar_wacode);
+            }
+        }
+      },
+      //单选
+      selItem(d){
+        let index=_.findIndex(this.selIds,id=>id==d.netbar_wacode);
+        if(index>=0){
+            this.selIds.splice(index,1);
+        }else{
+            this.selIds.push(d.netbar_wacode);
+        }
+      },
+      blnSelItem(d){
+        return _.findIndex(this.selIds,id=>id==d.netbar_wacode)>=0;
+      },
+      exportList(){
+        console.log(tool.Clone(this.selIds));
+      }
   }
 }
 </script>
@@ -2372,7 +2436,7 @@ export default {
       text-decoration:underline;
   }
   @optionH:50px;
-  .stiepage .option{width:100%;background-color: white;}
+  .stiepage .option{width:100%;background-color: white;overflow:hidden;}
   .stiepage .page_container{.border('top');.border('bottom');background-color:white;position: absolute;bottom: 2px; }
  .stiepage .content{width:100%;height:~'calc(100% - @{optionH} - 60px - 40px)';}
   .stiepage .content.tete{width:100%;height:~'calc(100% - @{optionH} - 60px - 60px)';}
@@ -2552,4 +2616,10 @@ export default {
         }                
     }
 
+
+    .stiepage  .exportSel{cursor:pointer;}
+    html{.TCol(~".stiepage .exportSel:hover");}
+    html{.TCol(~".stiepage .exportSel.active");}
+    html{.TCol(~".stiepage .exportBtn:hover");}
+    .stiepage .cursor{cursor:pointer;}
 </style>

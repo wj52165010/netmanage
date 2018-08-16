@@ -187,6 +187,7 @@ import {BODY_RESIZE,GetFirm} from '../../../store/mutation-types'
 
 export default {
   name: 'DealtPlace',
+  props:['microprobe_type'],
   components:{PlaceSearch,MulDropDwon,Scroll},
   data () {
     return {

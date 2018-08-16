@@ -25,14 +25,15 @@
                 <div class="item" @click="regSetting()"><i class="fa fa-cog fa-fw" /> 登记配置</div>
                 <div class="item" @click="editNum()"><i class="fa fa-pencil-square-o" /> 编辑可用</div>
                 <div class="item" @click="resetNum()"><i class="fa fa-copyright" /> 重置已用</div>
-                <div class="item" @click="exportData()"><i class="fa fa-share" /> 导出</div>
+                <!--<div class="item" @click="exportData()"><i class="fa fa-share" /> 导出</div>-->
+                <div class="exportSel" style="display:inline-block;" :class="{active:blnExport}" @click="blnExport=!blnExport"><i class="fa fa-check-square" style="margin-right:5px;" />选择</div>
             </div>
         </div>
 
         <!--列表头-->
         <div class="table_header">
             <div class="row">
-                <div class="column cursor" style="width:50px;" @click="selAll()"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
+                <div class="column cursor" style="width:50px;" @click="selAll()" v-if="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
     
                 <div class="column" style="width:200px;">
                     <span class="overflow" style="width:200px;position:relative;">
@@ -76,7 +77,7 @@
             <Scroll :listen="viewData" ref="scroll">
                 <div class="table_body">
                     <div class="row" v-for="(d,i) in viewData">
-                        <div class="column cursor" style="width:50px;" @click="selItem(d,i)"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':d.checked,'fa fa-square-o':!d.checked}"></i></span></div>
+                        <div class="column cursor" style="width:50px;" @click="selItem(d,i)" v-if="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></div>
                         <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
                         <div class="column"><span class="overflow" :style="{width:column_w+'px'}">{{d.name}}</span></div>
                         <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.region}}</span></div>
@@ -97,6 +98,7 @@
 
         <!--分页栏-->
         <div name="page_container" class="page_container" style="background-color:white;">
+            <span class="exportBtn" v-if="blnExport" @click="exportData()" style="float:left;margin-top:10px;margin-left:15px;font-size:12px;cursor:pointer;"><i class="fa fa-upload" /> 导出</span>
             <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">
                 当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span>/{{pageSize}},
                 每页{{pageNum}}条,共{{pageCount}}条
@@ -147,15 +149,29 @@ export default {
         orderObj:{sort:'netbar_wacode',order:'desc'},//排序字段
         netsite_range:[],
         region_range:[],
+        blnExport:false,//是否进入导出选择阶段,
+        selIds:[],//选中项的IDS
+    }
+  },
+  watch:{
+    blnExport(){
+        this.selIds=[];
+        this.layout();
     }
   },
   computed:{
-      viewData(){
+    viewData(){
         return _.map(this.data,d=>{d.checked=d.checked || false; return d;  })
-      },
-      blnAllSel(){
-        return !_.find(this.data,d=>!d.checked);
-      }
+    },
+    blnAllSel(){
+        let s=this,res=true;
+        for(let i=0;i<s.viewData.length;i++){
+            if(_.findIndex(this.selIds,id=>id==s.viewData[i].id)<0){
+                res=false;break;
+            }
+        }
+        return res;
+    }
   },
   mounted(){
    //加载数据
@@ -181,7 +197,7 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },100);
-        this.column_w=$(this.$el).width()-970;
+        this.column_w=$(this.$el).width()-(this.blnExport?970:920);
     },
     //加载数据
     loadData(){
@@ -251,12 +267,32 @@ export default {
     },
     //全选/取消全选
     selAll(){
-        this.data = _.map(this.data,d=>{ d.checked=!this.blnAllSel; return d });
+        let s=this;
+        if(s.blnAllSel){
+            for(let i=0;i<s.viewData.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.viewData[i].id);
+                if(index<0) continue;
+                s.selIds.splice(index,1);
+            }
+        }else{
+            for(let i=0;i<s.viewData.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.viewData[i].id);
+                if(index>=0) continue;
+                s.selIds.push(s.viewData[i].id);
+            }
+        }
     },
     //单选
-    selItem(d,i){
-        d.checked=!d.checked;
-        this.data.splice(i,1,d);
+    selItem(d){
+        let index=_.findIndex(this.selIds,id=>id==d.id);
+        if(index>=0){
+            this.selIds.splice(index,1);
+        }else{
+            this.selIds.push(d.id);
+        }
+    },
+    blnSelItem(d){
+        return _.findIndex(this.selIds,id=>id==d.id)>=0;
     },
     //场所详情
     placeDetail(d){
@@ -338,7 +374,7 @@ export default {
     resetNum(id){
         let s=this;
 
-        let ids=_.chain(this.data).filter(d=>d.checked).map(d=>d.id).value();//选中的IDS
+        let ids=s.selIds;//选中的IDS
         if(!id && ids.length<=0){tool.info('请选择需要编辑的数据集合!');return;}
 
 
@@ -386,7 +422,7 @@ export default {
         id=id || -1;
 
         if(blnBatch){//批量编辑
-            ids=_.chain(this.data).filter(d=>d.checked).map(d=>d.id).value();//选中的IDS
+            ids=s.selIds;//选中的IDS
             if(ids.length<=0){tool.info('请选择需要编辑的数据集合!');return;}
 
         }
@@ -439,7 +475,7 @@ export default {
     exportData(){
         let s=this;
 
-        let ids=_.chain(this.data).filter(d=>d.checked).map(d=>d.id).value();//选中的IDS
+        let ids=s.selIds;//选中的IDS
         if(ids.length<=0){tool.info('请选择需要导出的数据集合!');return;}
 
         tool.open(function(){
@@ -549,4 +585,12 @@ html{.TCol(~".ElectronicReg .table_header .column .sort_item .triangle-down.acti
 .ElectronicReg .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
 
 .overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
+
+
+//导出
+.ElectronicReg  .exportSel{cursor:pointer;}
+html{.TCol(~".ElectronicReg .exportSel:hover");}
+html{.TCol(~".ElectronicReg .exportSel.active");}
+html{.TCol(~".ElectronicReg .exportBtn:hover");}
+.ElectronicReg .cursor{cursor:pointer;}
 </style>

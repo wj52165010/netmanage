@@ -29,7 +29,7 @@
             </div>
             <!--列表显示区域-->
             <div v-show="viewTable=='list'" style="height: calc(100% - 50px - -63px - 40px);position:relative">
-                <div class="option">
+                <div class="option" name="listOption">
                     <div class="item">
                         <span>设备名称：</span>
                         <div class="input">
@@ -117,9 +117,14 @@
                         <el-button type="primary" @click="query_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
                     </div>
 
+                    <div class="item" style="float:right;">
+                        <div class="exportSel" :class="{active:blnExport}" @click="blnExport=!blnExport"><i class="fa fa-check-square" style="margin-right:5px;" />选择</div>
+                    </div>
+
                 </div>
                 <ul class="header">
                     <li class="item">
+                        <div class="column cursor" @click="selAll()" v-if="blnExport" style="width:50px;"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
                         <div><span class="overflow" style="width:180px;">设备编码</span></div>
                         <div><span class="overflow" style="width:150px;">设备名称</span></div>
                         <!-- <div :style="{width:case_address_w+'px'}"><span class="overflow" :style="{width:case_address_w+'px'}">场所名称</span></div> -->
@@ -136,11 +141,12 @@
                         <div><span class="overflow" style="width:80px;">所属厂商</span></div>
                     </li>
                 </ul>
-                <div class="content" :class="{'tete': query.microprobe_type.length>2}">
+                <div class="content" :style="{height:listBodyH}" :class="{'tete': query.microprobe_type.length>2}">
                     <Scroll :listen="data" ref="indList">
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showData" class="item" >
+                                <div class="column cursor" @click="selItem(d)" v-if="blnExport"  style="width:50px;" ><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></div>
                                 <div  :title="d.equipment_id" @click="searchDeviceDetail(d.equipment_id)"><span class="overflow sit-click" style="width:180px;">{{d.equipment_id}}</span></div>
                                 <div class="align" :title="d.equipment_name" ><span class="overflow" style="width:150px;">{{d.equipment_name}}</span></div>
                                 <div class="align" :title="d.mac"><span class="overflow" style="width:130px;">{{d.mac}}</span></div>
@@ -159,6 +165,7 @@
                     </Scroll>
                 </div>
                 <div class="page_container">
+                    <span class="exportBtn" v-if="blnExport" @click="exportList()" style="float:left;margin-top:10px;margin-left:15px;font-size:12px;cursor:pointer;"><i class="fa fa-upload" /> 导出</span>
                     <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;font-weight:bold">{{pageNum+1}}&nbsp;/&nbsp;{{pageSize}}</span></span>
                     <span style="float:left;margin-top:10px;margin-left:40px;font-size:12px;">每页&nbsp;{{query.limit}}&nbsp;条，&nbsp;&nbsp;共计&nbsp;&nbsp;<span>{{allTotall}}</span>&nbsp;条</span>
                     <div class="firstPage" @click="pageChange(0)" v-show="pageNum!=0">首页</div>
@@ -445,6 +452,9 @@ export default {
         siteIndfirms(){
             this.query.security_software_orgcodes=_.map(this.siteIndfirms,s=>s.code).join(',');
         },
+        blnExport(){
+            this.selIds=[];
+        }
     },
   data () {
     return {
@@ -519,7 +529,10 @@ export default {
         dataProblem:[],
         newObject:{
             primaryKey:"netbar_info|netbar_wacode",
-        }
+        },
+        listBodyH:0,
+        blnExport:false,//是否进入导出选择阶段,
+        selIds:[],//选中项的IDS
     }
   },
   mounted(){
@@ -532,8 +545,10 @@ export default {
     this.refreshPage();
     this.getOnOffLineData();
     this.getYesdayData();
+    this.layout();
 
     this.$store.commit(BODY_RESIZE,()=>{
+            this.layout();
             if(this.myLineChart){
                 this.myLineChart.resize();              
             };
@@ -549,76 +564,85 @@ export default {
     });
   },
   computed:{
-      showData(){
-          return _.map(this.data,r=>{
-                return {
-                    equipment_id:r.equipment_id,
-                    equipment_name:r.equipment_name,
-                    mac:r.mac,
-                    online_state:r.online_state,
-                    online_state_nelOn:r.online_state=="在线"?"心跳在线，数据在线":"心跳离线，数据离线",
-                    online_state_nelOff:r.online_state=="异常"?"心跳在线，数据离线或心跳离线，数据在线":"心跳离线，数据离线",
-                    capture_time:(r.capture_time&&r.capture_time!='0') ? tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'无',
-                    capture_time_desc:r.capture_time_desc,
-                    last_upload_num:r.last_upload_num,
-                    equipment_type:r.equipment_type,
-                    county:r.county,
-                    security_software_orgname:r.security_software_orgname,
-                    netbar_name:r.netbar_name,
-                    netbar_wacode:r.netbar_wacode,
+    showData(){
+        return _.map(this.data,r=>{
+            return {
+                equipment_id:r.equipment_id,
+                equipment_name:r.equipment_name,
+                mac:r.mac,
+                online_state:r.online_state,
+                online_state_nelOn:r.online_state=="在线"?"心跳在线，数据在线":"心跳离线，数据离线",
+                online_state_nelOff:r.online_state=="异常"?"心跳在线，数据离线或心跳离线，数据在线":"心跳离线，数据离线",
+                capture_time:(r.capture_time&&r.capture_time!='0') ? tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'无',
+                capture_time_desc:r.capture_time_desc,
+                last_upload_num:r.last_upload_num,
+                equipment_type:r.equipment_type,
+                county:r.county,
+                security_software_orgname:r.security_software_orgname,
+                netbar_name:r.netbar_name,
+                netbar_wacode:r.netbar_wacode,
 
-                    //capture_time:r.capture_time?tool.DateByTimestamp(capture_time,'yyyy-MM-dd hh:mm:ss'):'',
-                    business_state:r.business_state,
-                    last_upload_num:r.last_upload_num,
-                    longitude:r.longitude,
-                    latitude:r.latitude,
-                    netsite_type:r.netsite_type,
-                    region_name:r.region_name,
-                    microprobe_type:r.microprobe_type,
-                    microprobe_type_code:r.microprobe_type_code
-                    //security_software_orgname:r.security_software_orgname,
-
-
-                    //situation:r.microprobe_type=="网吧"? r.net_terminal_num+"/"+r.actual_terminal+"/"+r.internet_users :"<span style='color:green'>"+ r.online_device+"</span>/<span style='color:red'>"+r.abnormal_device+"</span>/<span style='color:#000'>"+r.offline_device+"</span>",
-                }
-            });
-      },
-      showDataProblem(){
-          return _.map(this.dataProblem,r=>{
-                return {
-                    equipment_id:r.equipment_id,
-                    equipment_name:r.equipment_name,
-                    netbar_name:r.netbar_name,
-                    security_software_orgname:r.security_software_orgname,
-                    online_state:r.online_state,
-                    region_name:r.region_name,
-                    errors:r.errors,
-                    last_time:r.last_time,
-
-                    last_upload_num:r.last_upload_num,
-                    microprobe_type_code:r.microprobe_type_code,
+                //capture_time:r.capture_time?tool.DateByTimestamp(capture_time,'yyyy-MM-dd hh:mm:ss'):'',
+                business_state:r.business_state,
+                last_upload_num:r.last_upload_num,
+                longitude:r.longitude,
+                latitude:r.latitude,
+                netsite_type:r.netsite_type,
+                region_name:r.region_name,
+                microprobe_type:r.microprobe_type,
+                microprobe_type_code:r.microprobe_type_code
+                //security_software_orgname:r.security_software_orgname,
 
 
-                    // netbar_wacode:r.netbar_wacode,
-                    // netbar_name:r.netbar_name,
-                    // security_software_orgname:r.security_software_orgname,
-                    // online_state:r.online_state,
+                //situation:r.microprobe_type=="网吧"? r.net_terminal_num+"/"+r.actual_terminal+"/"+r.internet_users :"<span style='color:green'>"+ r.online_device+"</span>/<span style='color:red'>"+r.abnormal_device+"</span>/<span style='color:#000'>"+r.offline_device+"</span>",
+            }
+        });
+    },
+    showDataProblem(){
+        return _.map(this.dataProblem,r=>{
+            return {
+                equipment_id:r.equipment_id,
+                equipment_name:r.equipment_name,
+                netbar_name:r.netbar_name,
+                security_software_orgname:r.security_software_orgname,
+                online_state:r.online_state,
+                region_name:r.region_name,
+                errors:r.errors,
+                last_time:r.last_time,
 
-                    // business_state:r.business_state,
-                    // last_upload_num:r.last_upload_num,
-                    // longitude:r.longitude,
-                    // latitude:r.latitude,
-                    // netsite_type:r.netsite_type,
-                    // region_name:r.region_name,
-                    // errors:r.errors,
-                    // microprobe_type:r.microprobe_type,
-                    // microprobe_type_code:r.microprobe_type_code,
-                    // security_software_orgname:r.security_software_orgname,
-                    // situation:r.microprobe_type=="网吧"? r.net_terminal_num+"/"+r.actual_terminal+"/"+r.internet_users :"<span style='color:green'>"+ r.online_device+"</span>/<span style='color:red'>"+r.abnormal_device+"</span>/<span style='color:#000'>"+r.offline_device+"</span>",
-                    // situatioTitle:r.microprobe_type=="网吧"? "申报终端："+r.net_terminal_num+"台/检测终端："+r.actual_terminal+"台/在线终端："+r.internet_users+"台" :"在线："+r.online_device+"台/异常："+r.abnormal_device+"台/离线："+r.offline_device+"台",               
-                }
-            });
-      }
+                last_upload_num:r.last_upload_num,
+                microprobe_type_code:r.microprobe_type_code,
+
+
+                // netbar_wacode:r.netbar_wacode,
+                // netbar_name:r.netbar_name,
+                // security_software_orgname:r.security_software_orgname,
+                // online_state:r.online_state,
+
+                // business_state:r.business_state,
+                // last_upload_num:r.last_upload_num,
+                // longitude:r.longitude,
+                // latitude:r.latitude,
+                // netsite_type:r.netsite_type,
+                // region_name:r.region_name,
+                // errors:r.errors,
+                // microprobe_type:r.microprobe_type,
+                // microprobe_type_code:r.microprobe_type_code,
+                // security_software_orgname:r.security_software_orgname,
+                // situation:r.microprobe_type=="网吧"? r.net_terminal_num+"/"+r.actual_terminal+"/"+r.internet_users :"<span style='color:green'>"+ r.online_device+"</span>/<span style='color:red'>"+r.abnormal_device+"</span>/<span style='color:#000'>"+r.offline_device+"</span>",
+                // situatioTitle:r.microprobe_type=="网吧"? "申报终端："+r.net_terminal_num+"台/检测终端："+r.actual_terminal+"台/在线终端："+r.internet_users+"台" :"在线："+r.online_device+"台/异常："+r.abnormal_device+"台/离线："+r.offline_device+"台",               
+            }
+        });
+    },
+    blnAllSel(){
+        let s=this,res=true;
+        for(let i=0;i<s.data.length;i++){
+            if(_.findIndex(this.selIds,id=>id==s.data[i].equipment_id)<0){
+                res=false;break;
+            }
+        }
+        return res;
+    }
   },
   destroyed(){
     tool.ClearBind(this.bodyClickId)
@@ -628,6 +652,13 @@ export default {
       //刷新页面
       refreshPage(){
           this.loadData();
+      },
+      layout(){
+        let optionH=$(this.$el).find('div[name="listOption"]').height();
+        this.listBodyH=`calc(100% - 40px - 50px - 20px - ${optionH}px)`;
+        this.$nextTick(()=>{
+            this.$refs.indList.reloadyScroll();
+        });
       },
       //加载数据
       loadData(){
@@ -726,7 +757,7 @@ export default {
         //处理多滚动条页面来回切换的bug
         if(type=="list"){
             this.$nextTick(()=>{
-                this.$refs.indList.reloadyScroll();
+                this.layout();
             });
         }else if(type=="statistics"){
             if(this.problemTable=='1'){
@@ -1987,7 +2018,38 @@ export default {
           }
       },
 
-
+      //全选/取消全选
+      selAll(){
+        let s=this;
+        if(s.blnAllSel){
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].equipment_id);
+                if(index<0) continue;
+                s.selIds.splice(index,1);
+            }
+        }else{
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].equipment_id);
+                if(index>=0) continue;
+                s.selIds.push(s.data[i].equipment_id);
+            }
+        }
+      },
+      //单选
+      selItem(d){
+        let index=_.findIndex(this.selIds,id=>id==d.equipment_id);
+        if(index>=0){
+            this.selIds.splice(index,1);
+        }else{
+            this.selIds.push(d.equipment_id);
+        }
+      },
+      blnSelItem(d){
+        return _.findIndex(this.selIds,id=>id==d.equipment_id)>=0;
+      },
+      exportList(){
+        console.log(tool.Clone(this.selIds));
+      }
   }
 }
 </script>
@@ -2304,4 +2366,10 @@ export default {
             display:none;
         }                
   }  
+
+.devicepage  .exportSel{cursor:pointer;}
+html{.TCol(~".devicepage .exportSel:hover");}
+html{.TCol(~".devicepage .exportSel.active");}
+html{.TCol(~".devicepage .exportBtn:hover");}
+.devicepage .cursor{cursor:pointer;}
 </style>

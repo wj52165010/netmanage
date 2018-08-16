@@ -29,7 +29,7 @@
             </div>
             <!--列表显示区域-->
             <div v-show="viewTable=='list'" style="height: calc(100% - 50px - -63px - 40px);position:relative">
-                <div class="option">
+                <div class="option" name="listOption">
                     <div class="item">
                         <span>应用名称:</span>
                         <div class="input">
@@ -76,9 +76,14 @@
                         <el-button type="primary" @click="query_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
                     </div> 
 
+                    <div class="item" style="float:right;">
+                        <div class="exportSel" :class="{active:blnExport}" @click="blnExport=!blnExport"><i class="fa fa-check-square" style="margin-right:5px;" />选择</div>
+                    </div>
+
                 </div>
                 <ul class="header">
                     <li class="item">
+                        <div class="column cursor" @click="selAll()" v-if="blnExport" style="width:50px;"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
                         <div><span class="overflow" style="width:150px;">应用名称</span></div>
                         <!--<div><span class="overflow" style="width:100px;">应用分类</span></div>-->
                         <div><span class="overflow" style="width:130px;">来源应用市场</span></div>
@@ -91,11 +96,12 @@
                         <!--<div><span class="overflow" style="width:50px;">操作</span></div>-->
                     </li>
                 </ul>
-                <div class="content">
+                <div class="content" :style="{height:listBodyH}">
                     <Scroll :listen="data" ref="indList">
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showData" class="item" >
+                                <div class="column cursor" @click="selItem(d)" v-if="blnExport"  style="width:50px;" ><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></div>
                                 <div class="align" :title="d.app_name"  @click="searchSiteDetail(d.app_id)"><span class="overflow sit-click" style="width:150px;">{{d.app_name}}</span></div>
                                 <!--<div  :title="d.app_id" ><span class="overflow" style="width:100px;">{{d.app_id}}</span></div>-->
                                 <div  :title="d.source_market"><span class="overflow" style="width:130px;">{{d.source_market}}</span></div>
@@ -112,6 +118,7 @@
                     </Scroll>
                 </div>
                 <div class="page_container">
+                    <span class="exportBtn" v-if="blnExport" @click="exportList()" style="float:left;margin-top:10px;margin-left:15px;font-size:12px;cursor:pointer;"><i class="fa fa-upload" /> 导出</span>
                     <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageNum+1}}</span></span>
                     <div class="firstPage" @click="pageChange(0)">首页</div>
                     <div class="prePage" @click="pageChange(pageNum-1)">上一页</div>
@@ -323,7 +330,10 @@ export default {
                     })                                                     
                 }                  
             }
-        },      
+        },     
+        blnExport(){
+            this.selIds=[];
+        } 
     },
   data () {
     return {
@@ -384,7 +394,10 @@ export default {
         ],
         newObject:{
             primaryKey:"netbar_info|netbar_wacode",
-        }
+        },
+        listBodyH:0,
+        blnExport:false,//是否进入导出选择阶段,
+        selIds:[],//选中项的IDS
     }
   },
   mounted(){
@@ -396,21 +409,23 @@ export default {
 
     this.refreshPage();
     this.getOnOffLineData();
-    this.getYesdayData()
+    this.getYesdayData();
+    this.layout();
 
     this.$store.commit(BODY_RESIZE,()=>{
-            if(this.myLineChart){
-                this.myLineChart.resize();              
-            };
-            if(this.myOnOffBarChart){
-                this.myOnOffBarChart.resize();              
-            };
-            if(this.myPieChart){
-                this.myPieChart.resize();             
-            } ;        
-            if(this.myBarChart){
-                this.myBarChart.resize();             
-            }                
+        this.layout();
+        if(this.myLineChart){
+            this.myLineChart.resize();              
+        };
+        if(this.myOnOffBarChart){
+            this.myOnOffBarChart.resize();              
+        };
+        if(this.myPieChart){
+            this.myPieChart.resize();             
+        } ;        
+        if(this.myBarChart){
+            this.myBarChart.resize();             
+        }                
     });
   },
   computed:{
@@ -447,7 +462,16 @@ export default {
 
                 }
             });
-      }      
+      },
+      blnAllSel(){
+        let s=this,res=true;
+        for(let i=0;i<s.data.length;i++){
+            if(_.findIndex(this.selIds,id=>id==s.data[i].app_id)<0){
+                res=false;break;
+            }
+        }
+        return res;
+    }      
   },
   destroyed(){
     tool.ClearBind(this.bodyClickId)
@@ -496,6 +520,13 @@ export default {
           });
 
       },
+      layout(){
+        let optionH=$(this.$el).find('div[name="listOption"]').height();
+        this.listBodyH=`calc(100% - 40px - 50px - 20px - ${optionH}px)`;
+        this.$nextTick(()=>{
+            this.$refs.indList.reloadyScroll();
+        });
+      },
     //   //区域范围的事件回传，第一个参数为上下文环境，第二个参数为具体值,因为该页面为单独定制没有上下文，因此取第二个值即可
     //   selectArea(val,data){
     //     if(data){
@@ -518,7 +549,7 @@ export default {
           this.viewTable=type;
         if(type=="list"){
             this.$nextTick(()=>{
-                this.$refs.indList.reloadyScroll();
+                this.layout();
             });
         }else{
             this.$nextTick(()=>{
@@ -1331,6 +1362,38 @@ export default {
                 },500) 
           }
       },
+      //全选/取消全选
+      selAll(){
+        let s=this;
+        if(s.blnAllSel){
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].app_id);
+                if(index<0) continue;
+                s.selIds.splice(index,1);
+            }
+        }else{
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].app_id);
+                if(index>=0) continue;
+                s.selIds.push(s.data[i].app_id);
+            }
+        }
+      },
+      //单选
+      selItem(d){
+        let index=_.findIndex(this.selIds,id=>id==d.app_id);
+        if(index>=0){
+            this.selIds.splice(index,1);
+        }else{
+            this.selIds.push(d.app_id);
+        }
+      },
+      blnSelItem(d){
+        return _.findIndex(this.selIds,id=>id==d.app_id)>=0;
+      },
+      exportList(){
+        console.log(tool.Clone(this.selIds));
+      }
       
   }
 }
@@ -1709,5 +1772,9 @@ export default {
         }                
   } 
 
-
+.stiepage  .exportSel{cursor:pointer;}
+html{.TCol(~".stiepage .exportSel:hover");}
+html{.TCol(~".stiepage .exportSel.active");}
+html{.TCol(~".stiepage .exportBtn:hover");}
+.stiepage .cursor{cursor:pointer;}
 </style>

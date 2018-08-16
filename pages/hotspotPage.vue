@@ -8,7 +8,7 @@
             </div>
             <!--列表显示区域-->
             <div style="height: calc(100% - 50px - -93px - 40px);position:relative">
-                <div class="option">
+                <div class="option" name="listOption">
                     <div class="item">
                         <span>热点SSID:</span>
                         <div class="input">
@@ -55,9 +55,14 @@
                         <el-button type="primary" @click="query_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
                     </div>
 
+                    <div class="item" style="float:right;">
+                        <div class="exportSel" :class="{active:blnExport}" @click="blnExport=!blnExport"><i class="fa fa-check-square" style="margin-right:5px;" />选择</div>
+                    </div>
+
                 </div>
                 <ul class="header">
                     <li class="item">
+                        <div class="column cursor" @click="selAll()" v-if="blnExport" style="width:50px;"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
                         <div><span class="overflow" style="width:135px;">热点MAC</span></div>
                         <div><span class="overflow" style="width:130px;">热点SSID</span></div>
                         <div><span class="overflow" style="width:60px;">热点频道</span></div>
@@ -74,11 +79,12 @@
                         <div><span class="overflow" style="width:100px;">操作</span></div>
                     </li>
                 </ul>
-                <div class="content">
-                    <Scroll :listen="data">
+                <div class="content" :style="{height:listBodyH}">
+                    <Scroll :listen="data" ref="indList">
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showData" class="item" >
+                                <div class="column cursor" @click="selItem(d)" v-if="blnExport"  style="width:50px;" ><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></div>
                                 <div  :title="d.hotspot_mac" ><span class="overflow" style="width:135px;">{{d.hotspot_mac}}</span></div>
                                 <div class="align" :title="d.ssid" ><span class="overflow" style="width:130px;">{{d.ssid}}</span></div>
                                 <div ><span class="overflow" style="width:60px;">{{d.channel}}</span></div>
@@ -100,6 +106,7 @@
                     </Scroll>
                 </div>
                 <div class="page_container">
+                    <span class="exportBtn" v-if="blnExport" @click="exportList()" style="float:left;margin-top:10px;margin-left:15px;font-size:12px;cursor:pointer;"><i class="fa fa-upload" /> 导出</span>
                     <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageNum+1}}</span></span>
                     <div class="firstPage" @click="pageChange(0)">首页</div>
                     <div class="prePage" @click="pageChange(pageNum-1)">上一页</div>
@@ -154,201 +161,246 @@ export default {
         },
         data:[
         ],
+        listBodyH:0,
+        blnExport:false,//是否进入导出选择阶段,
+        selIds:[],//选中项的IDS
     }
   },
+  watch:{  
+        blnExport(){
+            this.selIds=[];
+        } 
+    },
   mounted(){
     this.bodyClickId=tool.SingleBind('mousedown',$('body'),()=>{
        this.blnShowStatus=false;
     });
     this.refreshPage();
+    this.layout();
 
     this.$store.commit(BODY_RESIZE,()=>{
+        this.layout();
 
     });
   },
   computed:{
-      showData(){
-          return _.map(this.data,r=>{
-                return {
-                    hotspot_mac:r.hotspot_mac,
-                    ssid:r.ssid,
-                    channel:r.channel,
-                    strength:r.strength,
-                    detect_time:(r.detect_time&&r.detect_time!='0')?tool.DateByTimestamp(r.detect_time,'yyyy-MM-dd hh:mm:ss'):'无',
-                    equipment_id:r.equipment_id,
-                    equipment_address:r.equipment_address,
-                    security_software_orgname:r.security_software_orgname,
-                    is_record:r.is_record,
-                    id_enctypt_type:r.id_enctypt_type,
+    showData(){
+        return _.map(this.data,r=>{
+            return {
+                hotspot_mac:r.hotspot_mac,
+                ssid:r.ssid,
+                channel:r.channel,
+                strength:r.strength,
+                detect_time:(r.detect_time&&r.detect_time!='0')?tool.DateByTimestamp(r.detect_time,'yyyy-MM-dd hh:mm:ss'):'无',
+                equipment_id:r.equipment_id,
+                equipment_address:r.equipment_address,
+                security_software_orgname:r.security_software_orgname,
+                is_record:r.is_record,
+                id_enctypt_type:r.id_enctypt_type,
 
 
 
 
 
-                    // region_code:r.region_code,
-                    // region_name:r.region_name,
-                    // region_site_status:"<span style='color:green'>"+ r.site_online_num+"</span>/<span style='color:red'>"+r.site_abnormal_num+"</span>/<span style='color:#000'>"+r.site_offline_num+"</span>",
-                    // site_online_pre:(r.site_online_pre*100).toFixed(2) +"%",
-                    // site_detect_num:r.site_detect_num,
-                    // site_contribution:(r.site_contribution*100).toFixed(2)+"%",
-                    // //security_software_equip_status:r.equip_online_num+'/'+r.equip_abnormal_num+'/'+r.equip_offline_num,      
-                    // region_equip_status:"<span style='color:green'>"+ r.equip_online_num+"</span>/<span style='color:red'>"+r.equip_abnormal_num+"</span>/<span style='color:#000'>"+r.equip_offline_num+"</span>",
-                    // equipment_online_pre:(r.equipment_online_pre*100).toFixed(2) + "%",
-                    // equip_detect_num:r.equip_detect_num,
-                    // equip_contribution:(r.equip_contribution*100).toFixed(2)+"%"    
-                }
-            });
-      }
+                // region_code:r.region_code,
+                // region_name:r.region_name,
+                // region_site_status:"<span style='color:green'>"+ r.site_online_num+"</span>/<span style='color:red'>"+r.site_abnormal_num+"</span>/<span style='color:#000'>"+r.site_offline_num+"</span>",
+                // site_online_pre:(r.site_online_pre*100).toFixed(2) +"%",
+                // site_detect_num:r.site_detect_num,
+                // site_contribution:(r.site_contribution*100).toFixed(2)+"%",
+                // //security_software_equip_status:r.equip_online_num+'/'+r.equip_abnormal_num+'/'+r.equip_offline_num,      
+                // region_equip_status:"<span style='color:green'>"+ r.equip_online_num+"</span>/<span style='color:red'>"+r.equip_abnormal_num+"</span>/<span style='color:#000'>"+r.equip_offline_num+"</span>",
+                // equipment_online_pre:(r.equipment_online_pre*100).toFixed(2) + "%",
+                // equip_detect_num:r.equip_detect_num,
+                // equip_contribution:(r.equip_contribution*100).toFixed(2)+"%"    
+            }
+        });
+    },
+    blnAllSel(){
+        let s=this,res=true;
+        for(let i=0;i<s.data.length;i++){
+            if(_.findIndex(this.selIds,id=>id==s.data[i].ssid)<0){
+                res=false;break;
+            }
+        }
+        return res;
+    }
   },
   destroyed(){
     tool.ClearBind(this.bodyClickId)
   },
   methods:{
-      //刷新页面
-      refreshPage(){
-          this.loadData();
-      },
-      //加载数据
-      loadData(){
+    //刷新页面
+    refreshPage(){
+        this.loadData();
+    },
+    //加载数据
+    loadData(){
         //   加载时先清空数据在加载等待动画，请求完后数据加载
         if(this.data){
-          this.data=[];
-          this.blnLoading=true;
+            this.data=[];
+            this.blnLoading=true;
         }
-         this.$store.dispatch(GetHotspotList,this.query).then(res=>{
-           if(res.msg.code!='successed')return;
-           this.data=res.biz_body;
-            this.blnLoading=false;  
-         });
-            //获取数据来源
-          this.$store.dispatch(getDictTables).then(res=>{
-             if(res.msg.code!='successed')return;
-             //console.log(res.biz_body);
+        this.$store.dispatch(GetHotspotList,this.query).then(res=>{
+            if(res.msg.code!='successed')return;
+            this.data=res.biz_body;
+            this.blnLoading=false;
+        });
+        //获取数据来源
+        this.$store.dispatch(getDictTables).then(res=>{
+            if(res.msg.code!='successed')return;
+            //console.log(res.biz_body);
             this.dict_tables= res.biz_body;
-          });
-         
-      },
-      //区域范围的事件回传，第一个参数为上下文环境，第二个参数为具体值,因为该页面为单独定制没有上下文，因此取第二个值即可
-      selectArea(val,data){
+        });
+        
+    },
+    layout(){
+        let optionH=$(this.$el).find('div[name="listOption"]').height();
+        this.listBodyH=`calc(100% - 40px - 50px - 20px - ${optionH}px)`;
+        this.$nextTick(()=>{
+            this.$refs.indList.reloadyScroll();
+        });
+    },
+    //区域范围的事件回传，第一个参数为上下文环境，第二个参数为具体值,因为该页面为单独定制没有上下文，因此取第二个值即可
+    selectArea(val,data){
         if(data){
             this.query.region_range=data.regions;
         }else{
             this.query.region_range="";
         }
-      },
-      //查询按钮(搜索)
-      query_click(){
-          this.data=[];
-          this.blnSearch=true;
-          this.blnLoading=true;
-          this.pageNum= 0;
-          this.query.skip=this.pageNum*this.query.limit;
-          this.$store.dispatch(GetHotspotList,this.query).then(res=>{
-              this.blnSearch=false;
-              this.blnLoading=false;
-              if(!tool.msg(res,'','搜索失败!'))return;
-              this.data=res.biz_body;
-          });
-      },
-      //页码切换(分页)
-       pageChange(index){
-          this.pageNum=index>0? index : 0;
-          this.query.skip=this.pageNum*this.query.limit;
-          this.$store.dispatch(GetHotspotList,this.query).then(res=>{
-            if(!tool.msg(res))return;
-            let data=res.biz_body;
+    },
+    //查询按钮(搜索)
+    query_click(){
+        this.data=[];
+        this.blnSearch=true;
+        this.blnLoading=true;
+        this.pageNum= 0;
+        this.query.skip=this.pageNum*this.query.limit;
+        this.$store.dispatch(GetHotspotList,this.query).then(res=>{
+            this.blnSearch=false;
+            this.blnLoading=false;
+            if(!tool.msg(res,'','搜索失败!'))return;
+            this.data=res.biz_body;
+        });
+    },
+    //页码切换(分页)
+    pageChange(index){
+        this.pageNum=index>0? index : 0;
+        this.query.skip=this.pageNum*this.query.limit;
+        this.$store.dispatch(GetHotspotList,this.query).then(res=>{
+        if(!tool.msg(res))return;
+        let data=res.biz_body;
 
-            if(data.length<=0){
-                tool.msg({msg:{code:'successed'}},'已经到了最后页!','已经到了最后页!');
-                this.pageNum =this.pageNum-1;
-                return;
-            }
+        if(data.length<=0){
+            tool.msg({msg:{code:'successed'}},'已经到了最后页!','已经到了最后页!');
+            this.pageNum =this.pageNum-1;
+            return;
+        }
 
-            this.data=data;
-          });
-       },
+        this.data=data;
+        });
+    },
+    //查看详情
+    searchSiteDetail(siteId){
+        let self=this;
+        tool.open(function(){
+            let html=`<div name="container" style="width:100%;height:100%;padding: 10px;" >
+                        <div class="row site-detail-row">
+                            <div class="col-md-2 item_label_left">热点MAC：</div>
+                            <div class="col-md-4">{{detailData.hotspot_mac}}</div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-       //查看详情
-        searchSiteDetail(siteId){
-            let self=this;
-            tool.open(function(){
-                let html=`<div name="container" style="width:100%;height:100%;padding: 10px;" >
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">热点MAC：</div>
-                                <div class="col-md-4">{{detailData.hotspot_mac}}</div>
-
-                                <div class="col-md-2 item_label_right">热点SSID：</div>
-                                <div class="col-md-4">{{detailData.ssid}}</div>                                
-                            </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">热点频道：</div>
-                                <div class="col-md-4">{{detailData.channel}}</div>
-                                <div class="col-md-2 item_label_right">热点加密类型：</div>
-                                <div class="col-md-4">{{detailData.id_enctypt_type}}</div>                                
-                            </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">热点场强：</div>
-                                <div class="col-md-4">{{detailData.strength}}</div>
-                                <div class="col-md-2 item_label_right">采集时间：</div>
-                                <div class="col-md-4">{{detailData.detect_time}}</div>                                
-                            </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">采集设备编码：</div>
-                                <div class="col-md-4">{{detailData.equipment_id}}</div>
-                                <div class="col-md-2 item_label_right">采集设备名称：</div>
-                                <div class="col-md-4 tel" :title="detailData.equipment_name">{{detailData.equipment_name}}</div>                                
-                            </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">采集设备地址：</div>
-                                <div class="col-md-10 tel" :title="detailData.equipment_address">{{detailData.equipment_address}}</div>                                
-                            </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">所属场所编码：</div>
-                                <div class="col-md-4">{{detailData.netbar_wacode}}</div>
-                                <div class="col-md-2 item_label_right">所属场所名称：</div>
-                                <div class="col-md-4 tel" :title="detailData.netbar_name">{{detailData.netbar_name}}</div>                                
-                            </div>
-                            <div class="row site-detail-row">
-                                <div class="col-md-2 item_label_left">所属场所地址</div>
-                                <div class="col-md-10 tel" :title="detailData.netbar_address">{{detailData.netbar_address}}</div>                                
-                            </div>
-                            
-                        </div>`;
-                let param={
-                        title:'热点备案详情',
-                        content:html,
-                        skin:'site-detail-container',
-                        area:['1100px','300px'],
-                        context:{
-                            detailData:{},
-                            loadDetail(){
-                                self.$store.dispatch(GetHotspotDetail,{hotspot_mac:siteId}).then(res=>{
-                                    if(res.msg.code!='successed')return;
-                                    param.selfData.detailData=res.biz_body;
-                                    param.selfData.detailData.detect_time = param.selfData.detailData.detect_time ? tool.DateByTimestamp(param.selfData.detailData.detect_time,'yyyy-MM-dd hh:mm:ss'):'';
-                                });
-                            }
-                        },
-                        success(){
-                            param.selfData.loadDetail();    
+                            <div class="col-md-2 item_label_right">热点SSID：</div>
+                            <div class="col-md-4">{{detailData.ssid}}</div>                                
+                        </div>
+                        <div class="row site-detail-row">
+                            <div class="col-md-2 item_label_left">热点频道：</div>
+                            <div class="col-md-4">{{detailData.channel}}</div>
+                            <div class="col-md-2 item_label_right">热点加密类型：</div>
+                            <div class="col-md-4">{{detailData.id_enctypt_type}}</div>                                
+                        </div>
+                        <div class="row site-detail-row">
+                            <div class="col-md-2 item_label_left">热点场强：</div>
+                            <div class="col-md-4">{{detailData.strength}}</div>
+                            <div class="col-md-2 item_label_right">采集时间：</div>
+                            <div class="col-md-4">{{detailData.detect_time}}</div>                                
+                        </div>
+                        <div class="row site-detail-row">
+                            <div class="col-md-2 item_label_left">采集设备编码：</div>
+                            <div class="col-md-4">{{detailData.equipment_id}}</div>
+                            <div class="col-md-2 item_label_right">采集设备名称：</div>
+                            <div class="col-md-4 tel" :title="detailData.equipment_name">{{detailData.equipment_name}}</div>                                
+                        </div>
+                        <div class="row site-detail-row">
+                            <div class="col-md-2 item_label_left">采集设备地址：</div>
+                            <div class="col-md-10 tel" :title="detailData.equipment_address">{{detailData.equipment_address}}</div>                                
+                        </div>
+                        <div class="row site-detail-row">
+                            <div class="col-md-2 item_label_left">所属场所编码：</div>
+                            <div class="col-md-4">{{detailData.netbar_wacode}}</div>
+                            <div class="col-md-2 item_label_right">所属场所名称：</div>
+                            <div class="col-md-4 tel" :title="detailData.netbar_name">{{detailData.netbar_name}}</div>                                
+                        </div>
+                        <div class="row site-detail-row">
+                            <div class="col-md-2 item_label_left">所属场所地址</div>
+                            <div class="col-md-10 tel" :title="detailData.netbar_address">{{detailData.netbar_address}}</div>                                
+                        </div>
+                        
+                    </div>`;
+            let param={
+                    title:'热点备案详情',
+                    content:html,
+                    skin:'site-detail-container',
+                    area:['1100px','300px'],
+                    context:{
+                        detailData:{},
+                        loadDetail(){
+                            self.$store.dispatch(GetHotspotDetail,{hotspot_mac:siteId}).then(res=>{
+                                if(res.msg.code!='successed')return;
+                                param.selfData.detailData=res.biz_body;
+                                param.selfData.detailData.detect_time = param.selfData.detailData.detect_time ? tool.DateByTimestamp(param.selfData.detailData.detect_time,'yyyy-MM-dd hh:mm:ss'):'';
+                            });
                         }
-                    };
+                    },
+                    success(){
+                        param.selfData.loadDetail();    
+                    }
+                };
 
-                return param;
-            }());             
-        },
+            return param;
+        }());             
+    },
+    //全选/取消全选
+    selAll(){
+        let s=this;
+        if(s.blnAllSel){
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].ssid);
+                if(index<0) continue;
+                s.selIds.splice(index,1);
+            }
+        }else{
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].ssid);
+                if(index>=0) continue;
+                s.selIds.push(s.data[i].ssid);
+            }
+        }
+    },
+    //单选
+    selItem(d){
+        let index=_.findIndex(this.selIds,id=>id==d.ssid);
+        if(index>=0){
+            this.selIds.splice(index,1);
+        }else{
+            this.selIds.push(d.ssid);
+        }
+    },
+    blnSelItem(d){
+        return _.findIndex(this.selIds,id=>id==d.ssid)>=0;
+    },
+    exportList(){
+        console.log(tool.Clone(this.selIds));
+    }
  
   }
 }
@@ -630,4 +682,9 @@ export default {
     cursor: pointer;
     color: #03ab67;
   }  
+.areapage  .exportSel{cursor:pointer;}
+html{.TCol(~".areapage .exportSel:hover");}
+html{.TCol(~".areapage .exportSel.active");}
+html{.TCol(~".areapage .exportBtn:hover");}
+.areapage .cursor{cursor:pointer;}
 </style>

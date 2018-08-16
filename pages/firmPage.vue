@@ -25,7 +25,7 @@
 
             <!--列表显示区域-->
             <div v-show="viewTable=='list'" style="height: calc(100% - 50px - -63px - 40px);position:relative">
-                <div class="option">
+                <div class="option" name="listOption">
                     <div class="item">
                         <span>厂商编码:</span>
                         <div class="input">
@@ -56,9 +56,14 @@
                         <el-button type="primary" @click="query_click()"><i v-show="blnSearch" class="fa fa-spinner fa-pulse"></i><span v-show="!blnSearch">搜索</span></el-button>
                     </div>
 
+                    <div class="item" style="float:right;">
+                        <div class="exportSel" :class="{active:blnExport}" @click="blnExport=!blnExport"><i class="fa fa-check-square" style="margin-right:5px;" />选择</div>
+                    </div>
+
                 </div>
                 <ul class="header">
                     <li class="item">
+                        <div class="column cursor" @click="selAll()" v-if="blnExport" style="width:50px;"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
                         <div><span class="overflow" style="width:75px;">厂商编码</span></div>
                         <div><span class="overflow" style="width:205px;">厂商名称</span></div>
                         <div><span class="overflow" style="width:90px;">昨日采集总量</span></div>
@@ -75,11 +80,12 @@
                         <!-- <div><span class="overflow" style="width:70px;">操作</span></div> -->
                     </li>
                 </ul>
-                <div class="content">
-                    <Scroll :listen="data">
+                <div class="content" :style="{height:listBodyH}">
+                    <Scroll :listen="data" ref="indList">
                         <ul class="body">
                             <li class="item" style="text-align:center;display: table-caption;" v-if="showData.length<=0&&!blnLoading">暂无数据</li>
                             <li v-for="(d,i) in showData" class="item" >
+                                <div class="column cursor" @click="selItem(d)" v-if="blnExport"  style="width:50px;" ><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></div>
                                 <div  :title="d.security_software_orgcode" ><span class="overflow" style="width:75px;">{{d.security_software_orgcode}}</span></div>
                                 <div class="align" :title="d.security_software_orgname" ><span class="overflow" style="width:205px;">{{d.security_software_orgname}}</span></div>
                                 <div  :title="d.total_detect_num" @click="dataStatus(d.security_software_orgcode,d.security_software_orgname)"><span class="overflow sit-click" style="width:90px;">{{d.total_detect_num}}</span></div>
@@ -99,6 +105,7 @@
                     </Scroll>
                 </div>
                 <div class="page_container">
+                    <span class="exportBtn" v-if="blnExport" @click="exportList()" style="float:left;margin-top:10px;margin-left:15px;font-size:12px;cursor:pointer;"><i class="fa fa-upload" /> 导出</span>
                     <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageNum+1}}</span></span>
                     <div class="firstPage" @click="pageChange(0)">首页</div>
                     <div class="prePage" @click="pageChange(pageNum-1)">上一页</div>
@@ -361,11 +368,14 @@ export default {
         },
         data:[
         ],
-         pickerOptions0: {
+        pickerOptions0: {
           disabledDate(time) {
             return time.getTime() >Date.now()+1000*60*60*24 - 8.64e7; //默认只能选择今天及今天以前的日期
           }
         },
+        listBodyH:0,
+        blnExport:false,//是否进入导出选择阶段,
+        selIds:[],//选中项的IDS
     }
   },
   mounted(){
@@ -377,34 +387,36 @@ export default {
     //console.log(this.elWidth,this.elHeight);
 
     this.refreshPage();
-       // this.getSiteOnBarData();        // 获取场所在线柱状图数据
-        this.getDeviceOnBarData();        // 获取设备在线柱状图数据
-        this.getDetectRange();            //获取厂商采集详情
-       // this.getDealData();            //获取在线率较低的厂商
-       // this.getSiteOnlineData();        // 获取场所在线折线图数据
-        this.getDeviceOnlineData();        // 获取设备在线折线图数据      
+    // this.getSiteOnBarData();        // 获取场所在线柱状图数据
+    this.getDeviceOnBarData();        // 获取设备在线柱状图数据
+    this.getDetectRange();            //获取厂商采集详情
+    // this.getDealData();            //获取在线率较低的厂商
+    // this.getSiteOnlineData();        // 获取场所在线折线图数据
+    this.getDeviceOnlineData();        // 获取设备在线折线图数据      
 
+    this.layout();
     this.$store.commit(BODY_RESIZE,()=>{
-                if(this.myDealChart){
-                    setTimeout(()=>{
-                        this.myDealChart.resize(); 
-                    })                          
-                };
-                if(this.myBarChart){
-                    setTimeout(()=>{
-                        this.myBarChart.resize();
-                    })                                                      
-                };
-                if(this.deviceOnOffBarChart){
-                    setTimeout(()=>{
-                        this.deviceOnOffBarChart.resize(); 
-                    })                                                    
-                } ;        
-                if(this.deviceOnOffLineChart){
-                    setTimeout(()=>{
-                        this.deviceOnOffLineChart.resize();
-                    })                                                     
-                }                 
+        this.layout();
+        if(this.myDealChart){
+            setTimeout(()=>{
+                this.myDealChart.resize(); 
+            })                          
+        };
+        if(this.myBarChart){
+            setTimeout(()=>{
+                this.myBarChart.resize();
+            })                                                      
+        };
+        if(this.deviceOnOffBarChart){
+            setTimeout(()=>{
+                this.deviceOnOffBarChart.resize(); 
+            })                                                    
+        } ;        
+        if(this.deviceOnOffLineChart){
+            setTimeout(()=>{
+                this.deviceOnOffLineChart.resize();
+            })                                                     
+        }                 
     });
 
 
@@ -434,6 +446,15 @@ export default {
 
                 }
             });
+      },
+      blnAllSel(){
+        let s=this,res=true;
+        for(let i=0;i<s.data.length;i++){
+            if(_.findIndex(this.selIds,id=>id==s.data[i].security_software_orgcode)<0){
+                res=false;break;
+            }
+        }
+        return res;
       }
   },
   destroyed(){
@@ -473,54 +494,57 @@ export default {
         },
         deep: true    
     },
-        viewTable(){
-            if(this.viewTable=="statistics"){
-                // if(this.siteOnOffBarChart){
-                //     setTimeout(()=>{
-                //         this.siteOnOffBarChart.resize(); 
-                //     })                          
-                // };
-                if(this.siteOnOffLineChart){
-                    setTimeout(()=>{
-                        this.siteOnOffLineChart.resize();
-                    })                                                      
-                };
-                if(this.deviceOnOffBarChart){
-                    setTimeout(()=>{
-                        this.deviceOnOffBarChart.resize(); 
-                    })                                                    
-                } ;        
-                if(this.deviceOnOffLineChart){
-                    setTimeout(()=>{
-                        this.deviceOnOffLineChart.resize();
-                    })                                                     
-                }                   
-            }
-        },
-        changeSiteChart(){
-                if(this.siteOnOffBarChart){
-                    setTimeout(()=>{
-                        this.siteOnOffBarChart.resize(); 
-                    })                          
-                };
-                if(this.siteOnOffLineChart){
-                    setTimeout(()=>{
-                        this.siteOnOffLineChart.resize();
-                    })                                                      
-                };
-        },
-        changeDeviceChart(){
-                if(this.deviceOnOffBarChart){
-                    setTimeout(()=>{
-                        this.deviceOnOffBarChart.resize(); 
-                    })                                                    
-                } ;        
-                if(this.deviceOnOffLineChart){
-                    setTimeout(()=>{
-                        this.deviceOnOffLineChart.resize();
-                    })                                                     
-                }  
-        }  
+    viewTable(){
+        if(this.viewTable=="statistics"){
+            // if(this.siteOnOffBarChart){
+            //     setTimeout(()=>{
+            //         this.siteOnOffBarChart.resize(); 
+            //     })                          
+            // };
+            if(this.siteOnOffLineChart){
+                setTimeout(()=>{
+                    this.siteOnOffLineChart.resize();
+                })                                                      
+            };
+            if(this.deviceOnOffBarChart){
+                setTimeout(()=>{
+                    this.deviceOnOffBarChart.resize(); 
+                })                                                    
+            } ;        
+            if(this.deviceOnOffLineChart){
+                setTimeout(()=>{
+                    this.deviceOnOffLineChart.resize();
+                })                                                     
+            }                   
+        }
+    },
+    changeSiteChart(){
+            if(this.siteOnOffBarChart){
+                setTimeout(()=>{
+                    this.siteOnOffBarChart.resize(); 
+                })                          
+            };
+            if(this.siteOnOffLineChart){
+                setTimeout(()=>{
+                    this.siteOnOffLineChart.resize();
+                })                                                      
+            };
+    },
+    changeDeviceChart(){
+            if(this.deviceOnOffBarChart){
+                setTimeout(()=>{
+                    this.deviceOnOffBarChart.resize(); 
+                })                                                    
+            } ;        
+            if(this.deviceOnOffLineChart){
+                setTimeout(()=>{
+                    this.deviceOnOffLineChart.resize();
+                })                                                     
+            }  
+    },
+    blnExport(){
+        this.selIds=[];
+    } 
 
 
 
@@ -554,12 +578,25 @@ export default {
             this.query.microprobe_type=["120"];
         })      
       },
+      layout(){
+        let optionH=$(this.$el).find('div[name="listOption"]').height();
+        this.listBodyH=`calc(100% - 40px - 50px - 20px - ${optionH}px)`;
+        this.$nextTick(()=>{
+            this.$refs.indList.reloadyScroll();
+        });
+      },
       //列表和统计相互切换  
       switchView(type){
-          if(type==this.viewTable) return;
-          this.viewTable=type;
+        if(type==this.viewTable) return;
+        this.viewTable=type;
+        //处理多滚动条页面来回切换的bug
+        if(type=="list"){
+            this.$nextTick(()=>{
+                this.layout();
+            });
+        }
 
-          this.$store.commit(Trigger_RESIZE);
+        this.$store.commit(Trigger_RESIZE);
       },
       //简单的时间戳转化（仅用于当前页面）
       changeTimeFun(val){
@@ -2284,7 +2321,38 @@ export default {
                 return param;           
             }())
         },
-        
+        //全选/取消全选
+      selAll(){
+        let s=this;
+        if(s.blnAllSel){
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].security_software_orgcode);
+                if(index<0) continue;
+                s.selIds.splice(index,1);
+            }
+        }else{
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].security_software_orgcode);
+                if(index>=0) continue;
+                s.selIds.push(s.data[i].security_software_orgcode);
+            }
+        }
+      },
+      //单选
+      selItem(d){
+        let index=_.findIndex(this.selIds,id=>id==d.security_software_orgcode);
+        if(index>=0){
+            this.selIds.splice(index,1);
+        }else{
+            this.selIds.push(d.security_software_orgcode);
+        }
+      },
+      blnSelItem(d){
+        return _.findIndex(this.selIds,id=>id==d.security_software_orgcode)>=0;
+      },
+      exportList(){
+        console.log(tool.Clone(this.selIds));
+      }
 
 
 
@@ -2537,4 +2605,10 @@ export default {
     cursor: pointer;
     color: #03ab67;
   }  
+
+.firmpage  .exportSel{cursor:pointer;}
+html{.TCol(~".firmpage .exportSel:hover");}
+html{.TCol(~".firmpage .exportSel.active");}
+html{.TCol(~".firmpage .exportBtn:hover");}
+.firmpage .cursor{cursor:pointer;}
 </style>
