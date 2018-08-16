@@ -1481,7 +1481,7 @@ export default {
       let numReg=/^[0-9]*$/;
       let hanziReg = /[\u4E00-\u9FA5]/g; //中文
       let macReg=/([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}/g;//MAC验证
-      let certificateReg=/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;//身份证验证
+      let certificateReg=/(^\d{18}$)|(^\d{17}(\d|X|x)$)/;//身份证验证
       let phoneReg=/^[1][3,4,5,7,8][0-9]{9}$/;//验证手机号
       
       if(hanziReg.test(v)){return res;}
