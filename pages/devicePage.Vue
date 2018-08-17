@@ -458,6 +458,7 @@ export default {
     },
   data () {
     return {
+        device_status:{online:'在线',offline:'离线',abnormal:'异常'},      //设备在线状态
         siteType:[],          //场所类型
         siteState:[{name:'在线',val:true},{name:'离线',val:false}],
         siteSource:[],                  //数据来源
@@ -570,9 +571,9 @@ export default {
                 equipment_id:r.equipment_id,
                 equipment_name:r.equipment_name,
                 mac:r.mac,
-                online_state:r.online_state,
-                online_state_nelOn:r.online_state=="在线"?"心跳在线，数据在线":"心跳离线，数据离线",
-                online_state_nelOff:r.online_state=="异常"?"心跳在线，数据离线或心跳离线，数据在线":"心跳离线，数据离线",
+                online_state:this.device_status[r.online_state],
+                online_state_nelOn:this.device_status[r.online_state]=="在线"?"心跳在线，数据在线":"心跳离线，数据离线",
+                online_state_nelOff:this.device_status[r.online_state]=="异常"?"心跳在线，数据离线或心跳离线，数据在线":"心跳离线，数据离线",
                 capture_time:(r.capture_time&&r.capture_time!='0') ? tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'无',
                 capture_time_desc:r.capture_time_desc,
                 last_upload_num:r.last_upload_num,
@@ -605,7 +606,7 @@ export default {
                 equipment_name:r.equipment_name,
                 netbar_name:r.netbar_name,
                 security_software_orgname:r.security_software_orgname,
-                online_state:r.online_state,
+                online_state:this.device_status[r.online_state],
                 region_name:r.region_name,
                 errors:r.errors,
                 last_time:r.last_time,

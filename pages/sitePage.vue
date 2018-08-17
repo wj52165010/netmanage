@@ -112,7 +112,7 @@
                                 <div  :title="d.netbar_wacode" @click="searchSiteDetail(d.netbar_wacode,d.microprobe_type)"><span class="overflow sit-click" style="width:120px;">{{d.netbar_wacode}}</span></div>
                                 <div class="align" :title="d.netbar_name" ><span class="overflow" style="width:100px;">{{d.netbar_name}}</span></div>
                                 <div class="align" :title="d.netbar_address"><span class="overflow" style="width:230px;">{{d.netbar_address}}</span></div>
-                                <div  :title="d.online_state=='在线'?d.online_state_nelOn:d.online_state_nelOff"><span class="overflow" style="width:65px;" :class="[{red : d.online_state=='异常'},{green : d.online_state=='在线'}]">{{d.online_state}}</span></div>
+                                <div  :title="d.online_state=='在线'?d.online_state_nelOn:d.online_state_nelOff"><span class="overflow" style="width:65px;" :class="[{red : d.online_state=='异常'},{green :d.online_state=='在线'}]">{{d.online_state}}</span></div>
                                 <div  :title="d.situatioTitle" @click="moutType(d.netbar_wacode,d.netbar_name,d.microprobe_type)"><span class="overflow sit-click" style="width:80px;" v-html="d.situation"></span></div>
                                 <div  :title="d.capture_time_desc"><span class="overflow" style="width:90px;">{{d.capture_time_desc}}</span></div>
                                 <div  :title="d.last_upload_num" @click="dataStatus(d.netbar_wacode,d.netbar_name,d.microprobe_type_code)"><span class="overflow sit-click" style="width:72px;">{{d.last_upload_num}}</span></div>
@@ -468,6 +468,7 @@ export default {
     },
   data () {
     return {
+        place_status:{online:'在线',offline:'离线',abnormal:'异常'},      //场所在线状态
         listBodyH:0,          //列表表体高度
         siteType:[],          //场所类型
         siteState:[{name:'在线',val:true},{name:'离线',val:false}],
@@ -571,9 +572,9 @@ export default {
                     netbar_wacode:r.netbar_wacode,
                     netbar_name:r.netbar_name,
                     netbar_address:r.netbar_address,
-                    online_state:r.online_state,
-                    online_state_nelOn:r.online_state=="在线"?"心跳在线，数据在线":"心跳离线，数据离线",
-                    online_state_nelOff:r.online_state=="异常"?"心跳在线，数据离线或心跳离线，数据在线":"心跳离线，数据离线",
+                    online_state:this.place_status[r.online_state],
+                    online_state_nelOn:this.place_status[r.online_state]=="在线"?"心跳在线，数据在线":"心跳离线，数据离线",
+                    online_state_nelOff:this.place_status[r.online_state]=="异常"?"心跳在线，数据离线或心跳离线，数据在线":"心跳离线，数据离线",
                     capture_time:(r.capture_time&&r.capture_time!='0') ? tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'无',
                     capture_time_desc:r.capture_time_desc,
                     business_state:r.business_state,
@@ -596,9 +597,9 @@ export default {
                     netbar_wacode:r.netbar_wacode,
                     netbar_name:r.netbar_name,
                     security_software_orgname:r.security_software_orgname,
-                    online_state:r.online_state,
-                    online_state_nelOn:r.online_state=="在线"?"心跳在线，数据在线":"心跳离线，数据离线",
-                    online_state_nelOff:r.online_state=="异常"?"心跳在线，数据离线或心跳离线，数据在线":"心跳离线，数据离线",                    
+                    online_state:this.place_status[r.online_state],
+                    online_state_nelOn:this.place_status[r.online_state]=="在线"?"心跳在线，数据在线":"心跳离线，数据离线",
+                    online_state_nelOff:this.place_status[r.online_state]=="异常"?"心跳在线，数据离线或心跳离线，数据在线":"心跳离线，数据离线",                    
                     capture_time:(r.capture_time&&r.capture_time!='0') ? tool.DateByTimestamp(r.capture_time,'yyyy-MM-dd hh:mm:ss'):'无',
                     last_time:r.last_time,
                     business_state:r.business_state,

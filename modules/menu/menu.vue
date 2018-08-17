@@ -299,6 +299,7 @@ export default {
       },
       //格式化时间
       formatTime(time,format){
+          if(!time) return '';
           return tool.DateByTimestamp(time,format);
       },
       //获取菜单集合数据
