@@ -164,7 +164,9 @@ Vue.directive('focus', {
 Vue.directive('drag-header',{
    // 当被绑定的元素插入到 DOM 中时……
    inserted: function (el) {
-    console.log(2);
+     let colSelector=el.getAttribute('col-selector');
+     let cols = $(el).find(colSelector);
+    console.log(cols);
   }
 });
 

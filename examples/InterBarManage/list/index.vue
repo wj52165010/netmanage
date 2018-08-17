@@ -59,7 +59,7 @@
             </div>
 
             <!--列表头-->
-            <div class="table_header" v-drag-header>
+            <div class="table_header" v-drag-header col-selector='.column'>
                 <div class="row">
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">

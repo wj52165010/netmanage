@@ -338,29 +338,29 @@ export default {
         {name:'车船航班',icon:'fa fa-plane',keyid:"11039",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"ShipCar"},
         {name:'隐患快递',icon:'fa fa-truck',keyid:"11040",menu_type:_.find(MenuKind,m=>m.id==8),blnShow:1,status:'{status:"completed"}',type:"Expressage"},
 
-        {name:'场所管理',icon:'fa fa-cubes',keyid:"11041",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"sitePage"},
-        {name:'设备管理',icon:'fa fa-ticket',keyid:"11042",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"devicePage"},
-        {name:'厂商概况',icon:'fa fa-handshake-o',keyid:"11043",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"firmPage"},
-        {name:'区域管理',icon:'fa fa-eercast',keyid:"11044",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"areaPage"},
+        {name:'场所管理',icon:'fa fa-cubes',keyid:"11041",orderby:0,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"sitePage"},
+        {name:'设备管理',icon:'fa fa-ticket',keyid:"11042",orderby:1,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"devicePage"},
+        {name:'厂商概况',icon:'fa fa-handshake-o',keyid:"11043",orderby:6,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"firmPage"},
+        {name:'区域管理',icon:'fa fa-eercast',keyid:"11044",orderby:7,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"areaPage"},
         {name:'App管理',icon:'fa fa-mobile',keyid:"11045",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"mobileAppPage"},
         //{name:'网站备案',icon:'fa fa-ravelry',keyid:"11046",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"WebSiteRecordPage"},
-        {name:'数据质量',icon:'fa fa-dashboard',keyid:"11022",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"dataMassPage"},
+        {name:'数据质量',icon:'fa fa-dashboard',keyid:"11022",orderby:9,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"dataMassPage"},
         {name:'热点备案',icon:'fa fa-podcast',keyid:"11047",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"hotspotPage"},
-        {name:'统计考核',icon:'fa fa-map',keyid:"11048",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"staticCheckPage"},   
+        {name:'统计考核',icon:'fa fa-map',keyid:"11048",orderby:10,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"staticCheckPage"},   
         //{name:'数据总览',icon:'fa fa-dashboard',id:'11015',keyid:"11015",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"BasePage"},
 
-        {name:'巡查管理',icon:'fa fa-dashboard',id:'18015',keyid:"18015",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"Patrol"},
+        {name:'巡查管理',icon:'fa fa-dashboard',id:'18015',keyid:"18015",orderby:8,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"Patrol"},
         {name:'态势感知',icon:'fa fa-dashboard',id:'18037',keyid:"18037",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"StatePerception"},
         {name:'网站备案',icon:'fa fa-ravelry',id:'18038',keyid:"18038",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"SiteRecords"},
 
         /**网吧管理**/
-        {name:'网吧管理',icon:'fa fa-ravelry',id:'18039',keyid:"18039",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"InterBarManage"},
+        {name:'网吧管理',icon:'fa fa-ravelry',id:'18039',keyid:"18039",orderby:2,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"InterBarManage"},
         /**WIFI管理**/
-        {name:'无线管理',icon:'fa fa-ravelry',id:'18040',keyid:"18040",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"WIFIMangae"},
+        {name:'无线管理',icon:'fa fa-rss',id:'18040',keyid:"18040",orderby:3,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"WIFIMangae"},
         /**特征设备管理**/
-        {name:'特征管理',icon:'fa fa-ravelry',id:'18041',keyid:"18041",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"FeatureManage"},
+        {name:'特征管理',icon:'fa fa-shield',id:'18041',keyid:"18041",orderby:4,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"FeatureManage"},
         /**非经管理**/
-        {name:'非经管理',icon:'fa fa-ravelry',id:'18042',keyid:"18042",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"NonClassicMangae"},
+        {name:'非经管理',icon:'fa fa-hotel ',id:'18042',keyid:"18042",orderby:5,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"NonClassicMangae"},
       ];
 
       app.menus=fixMenus;
