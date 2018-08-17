@@ -9,17 +9,17 @@
           </div>
         
           <!--管理页面-->
-          <div slot="t1" style="height:100%;width:100%;">
+          <!--<div slot="t1" style="height:100%;width:100%;">
               <Manage ref="Manage" />
-          </div>
+          </div>-->
 
           <!--列表页面-->
-          <div slot="t2" style="height:100%;width:100%;">
+          <div slot="t1" style="height:100%;width:100%;">
               <ListIndex ref="ListIndex" />
           </div>
 
           <!--地图页面-->
-          <div slot="t3" style="height:100%;width:100%;">
+          <div slot="t2" style="height:100%;width:100%;">
               地图页面
           </div>
 
@@ -41,7 +41,7 @@ export default {
     return {
        pages:[
               {name:'分析',icon:'fa fa-area-chart'},
-              {name:'管理',icon:'fa fa-cog fa-fw'},
+              //{name:'管理',icon:'fa fa-cog fa-fw'},
               {name:'列表',icon:'fa fa-list'},
               {name:'地图',icon:'fa fa-map-marker'}
             ],
@@ -55,13 +55,13 @@ export default {
           case 0: //分析
             this.$refs.Analysis && this.$refs.Analysis.layout();
             break;
-          case 1://管理
-            this.$refs.Manage && this.$refs.Manage.layout();
-            break;
-          case 2://列表
+          // case 1://管理
+          //   this.$refs.Manage && this.$refs.Manage.layout();
+          //   break;
+          case 1://列表
             this.$refs.ListIndex && this.$refs.ListIndex.layout();
             break;
-          case 3://地图
+          case 2://地图
             break;
         }
       });

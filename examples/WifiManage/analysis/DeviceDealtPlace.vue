@@ -60,7 +60,7 @@
                 <div class="right_option_bar">
                     <div class="item"  @click="changeChart='bar'"><i class="fa fa-copyright" /> 撤销通知</div>
                     <div class="item"  @click="changeChart='line'"><i class="fa fa-legal" /> 处置通知</div>
-                    <div class="item" @click="ExportOnlineCount()"><i class="fa fa-share" /> 导出</div>
+                    <div class="exportSel" style="display:inline-block;" :class="{active:blnExport}" @click="blnExport=!blnExport"><i class="fa fa-check-square" style="margin-right:5px;" />选择</div>
                 </div>
 
             </div>
@@ -68,7 +68,7 @@
             <!--列表头-->
             <div class="table_header">
                 <div class="row">
-                    <div class="column cursor" style="width:50px;" @click="selAll()"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
+                    <div class="column cursor" style="width:50px;" @click="selAll()" v-if="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
 
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
@@ -133,7 +133,7 @@
                 <Scroll :listen="viewData" ref="scroll">
                     <div class="table_body">
                         <div class="row" v-for="(d,i) in viewData">
-                            <div class="column cursor" style="width:50px;" @click="selItem(d,i)"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':d.checked,'fa fa-square-o':!d.checked}"></i></span></div>
+                            <div class="column cursor" style="width:50px;" @click="selItem(d,i)" v-if="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></div>
                             <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
                             <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.firm}}</span></div>
@@ -152,6 +152,7 @@
 
             <!--分页栏-->
             <div name="page_container" class="page_container" style="background-color:white;">
+                <span class="exportBtn" v-if="blnExport" @click="ExportOnlineCount()" style="float:left;margin-top:10px;margin-left:15px;font-size:12px;cursor:pointer;"><i class="fa fa-upload" /> 导出</span>
                 <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span></span>
                 <div class="firstPage" @click="pageChange(0)">首页</div>
                 <div class="prePage" @click="pageChange(pageIndex-1)">上一页</div>
@@ -179,6 +180,7 @@ import {BODY_RESIZE,GetFirm} from '../../../store/mutation-types'
 
 export default {
   name: 'DealtPlace',
+  props:['microprobe_type'],
   components:{PlaceSearch,MulDropDwon,Scroll},
   data () {
     return {
@@ -199,6 +201,8 @@ export default {
       firmOrder:false,
       areaOrder:false,
       timeOrder:false,
+      blnExport:false,//是否进入导出选择阶段,
+      selIds:[],//选中项的IDS
     }
   },
   computed:{
@@ -206,8 +210,20 @@ export default {
         return _.map(this.data,d=>{d.checked=d.checked || false; return d;  })
       },
       blnAllSel(){
-        return !_.find(this.data,d=>!d.checked);
-      }
+        let s=this,res=true;
+        for(let i=0;i<s.viewData.length;i++){
+            if(_.findIndex(this.selIds,id=>id==s.viewData[i].code)<0){
+                res=false;break;
+            }
+        }
+        return res;
+    }
+  },
+  watch:{
+    blnExport(){
+        this.selIds=[];
+        this.layout();
+    }
   },
   mounted(){
 
@@ -236,16 +252,36 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },500);
-        this.column_w=$(this.$el).width()-1330 -10;
+        this.column_w=$(this.$el).width()-(this.blnExport?1330:1280) -10;
     },
     //全选/取消全选
     selAll(){
-        this.data = _.map(this.data,d=>{ d.checked=!this.blnAllSel; return d });
+        let s=this;
+        if(s.blnAllSel){
+            for(let i=0;i<s.viewData.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.viewData[i].code);
+                if(index<0) continue;
+                s.selIds.splice(index,1);
+            }
+        }else{
+            for(let i=0;i<s.viewData.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.viewData[i].code);
+                if(index>=0) continue;
+                s.selIds.push(s.viewData[i].code);
+            }
+        }
     },
     //单选
-    selItem(d,i){
-        d.checked=!d.checked;
-        this.data.splice(i,1,d);
+    selItem(d){
+        let index=_.findIndex(this.selIds,id=>id==d.code);
+        if(index>=0){
+            this.selIds.splice(index,1);
+        }else{
+            this.selIds.push(d.code);
+        }
+    },
+    blnSelItem(d){
+        return _.findIndex(this.selIds,id=>id==d.code)>=0;
     },
     //场所详情
     placeDetail(d){
@@ -471,4 +507,11 @@ html{.TCol(~".DealtPlace .table_header .column .sort_item .triangle-down.active"
 
 .DealtPlace .table_body .column:first-child{.border('left');}
 .overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
+
+//导出
+.DealtPlace  .exportSel{cursor:pointer;}
+html{.TCol(~".DealtPlace .exportSel:hover");}
+html{.TCol(~".DealtPlace .exportSel.active");}
+html{.TCol(~".DealtPlace .exportBtn:hover");}
+.DealtPlace .cursor{cursor:pointer;}
 </style>

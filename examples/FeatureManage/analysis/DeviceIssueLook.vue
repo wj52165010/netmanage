@@ -50,13 +50,14 @@
 
                 <!--右边操作栏-->
                 <div class="right_option_bar">
-                    <div class="item" @click="ExportOnlineCount()"><i class="fa fa-share" /> 导出</div>
+                    <div class="exportSel" style="display:inline-block;" :class="{active:blnExport}" @click="blnExport=!blnExport"><i class="fa fa-check-square" style="margin-right:5px;" />选择</div>
                 </div>
             </div>
 
             <!--列表头-->
             <div class="table_header">
                 <div class="row">
+                    <div class="column cursor" style="width:50px;" @click="selAll()" v-if="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
                             <span style="margin-right:5px;">设备编码</span>
@@ -120,7 +121,8 @@
 
                 <Scroll :listen="data" ref="scroll">
                     <div class="table_body">
-                        <div class="row" v-for="d in data">
+                        <div class="row" v-for="(d,i) in data">
+                            <div class="column cursor" style="width:50px;" @click="selItem(d,i)" v-if="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></div>
                             <div class="column" style="width:200px;"><span class="overflow clickItem" @click="deviceDetail(d)"  style="width:200px;">{{d.code}}</span></div>
                             <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
                             <div class="column" style="width:120px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:120px;">{{d.place}}</span></div>
@@ -138,6 +140,7 @@
 
             <!--分页栏-->
             <div name="page_container" class="page_container" style="background-color:white;">
+                <span class="exportBtn" v-if="blnExport" @click="ExportOnlineCount()" style="float:left;margin-top:10px;margin-left:15px;font-size:12px;cursor:pointer;"><i class="fa fa-upload" /> 导出</span>
                 <span style="float:left;margin-top:10px;margin-left:15px;font-size:12px;">
                     当前页号&nbsp;&nbsp;&nbsp;:<span style="margin-left:8px;">{{pageIndex+1}}</span>/{{pageSize}},
                     每页{{pageNum}}条,共{{pageCount}}条
@@ -197,7 +200,20 @@ export default {
       dict_tables:{},
       orderObj:{sort:'equipment_id',order:'desc'},
       iabnormal_type:'',
-      iabnormal_name:''
+      iabnormal_name:'',
+      blnExport:false,//是否进入导出选择阶段,
+      selIds:[],//选中项的IDS
+    }
+  },
+  computed:{
+    blnAllSel(){
+        let s=this,res=true;
+        for(let i=0;i<s.data.length;i++){
+            if(_.findIndex(this.selIds,id=>id==s.data[i].code)<0){
+                res=false;break;
+            }
+        }
+        return res;
     }
   },
   watch:{
@@ -208,6 +224,10 @@ export default {
     iabnormal_type(){
         this.iabnormal_name=_.find(this.dict_tables.netbar_abnormal_type,c=>c.value==this.iabnormal_type);
     },
+    blnExport(){
+        this.selIds=[];
+        this.layout();
+    }
   },
   mounted(){
 
@@ -253,7 +273,7 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },500);
-        this.column_w=$(this.$el).width()-1140 -10;
+        this.column_w=$(this.$el).width()-(this.blnExport?1190:1140) -10;
     },
      //加载列表数据
     loadData(){
@@ -285,6 +305,35 @@ export default {
             }
             
         });
+    },
+    //全选/取消全选
+    selAll(){
+        let s=this;
+        if(s.blnAllSel){
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].code);
+                if(index<0) continue;
+                s.selIds.splice(index,1);
+            }
+        }else{
+            for(let i=0;i<s.data.length;i++){
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].code);
+                if(index>=0) continue;
+                s.selIds.push(s.data[i].code);
+            }
+        }
+    },
+    //单选
+    selItem(d){
+        let index=_.findIndex(this.selIds,id=>id==d.code);
+        if(index>=0){
+            this.selIds.splice(index,1);
+        }else{
+            this.selIds.push(d.code);
+        }
+    },
+    blnSelItem(d){
+        return _.findIndex(this.selIds,id=>id==d.code)>=0;
     },
     //排序改变事件
     orderChange(type,val){
@@ -537,4 +586,11 @@ html{.TCol(~".IssueLook .table_header .column .sort_item .triangle-down.active",
 
 .IssueLook .table_body .column:first-child{.border('left');}
 .overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
+
+//导出
+.IssueLook  .exportSel{cursor:pointer;}
+html{.TCol(~".IssueLook .exportSel:hover");}
+html{.TCol(~".IssueLook .exportSel.active");}
+html{.TCol(~".IssueLook .exportBtn:hover");}
+.IssueLook .cursor{cursor:pointer;}
 </style>
