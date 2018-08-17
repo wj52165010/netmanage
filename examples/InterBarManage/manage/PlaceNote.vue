@@ -406,7 +406,7 @@ export default {
                         dataType:'json',
                         autoUpload:false,
                         add:function(e,data){
-                            let allowType=/(\.|\/)(rar|zip|jpeg|gif|png|doc|xis|txt)$/i;
+                            let allowType=/(\.|\/)(rar|zip|jpeg|jpg|gif|png|doc|xis|txt)$/i;
 
                             var file=data.files[0];//上传文件
                             if(!file.name.match(allowType)){
