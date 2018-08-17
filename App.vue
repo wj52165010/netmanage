@@ -340,7 +340,7 @@ export default {
 
         {name:'场所管理',icon:'fa fa-cubes',keyid:"11041",orderby:0,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"sitePage"},
         {name:'设备管理',icon:'fa fa-ticket',keyid:"11042",orderby:1,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"devicePage"},
-        {name:'厂商概况',icon:'fa fa-handshake-o',keyid:"11043",orderby:6,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"firmPage"},
+        {name:'厂商管理',icon:'fa fa-handshake-o',keyid:"11043",orderby:6,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"firmPage"},
         {name:'区域管理',icon:'fa fa-eercast',keyid:"11044",orderby:7,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"areaPage"},
         {name:'App管理',icon:'fa fa-mobile',keyid:"11045",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"mobileAppPage"},
         //{name:'网站备案',icon:'fa fa-ravelry',keyid:"11046",menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"WebSiteRecordPage"},
