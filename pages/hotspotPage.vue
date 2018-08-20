@@ -409,7 +409,7 @@ export default {
             ssid:this.query.ssid,                   //热点ssid
             hotspot_mac:this.query.hotspot_mac,     //热点mac
             is_record:this.query.is_record,         //是否备案
-            equipment_id:this.query.equipment_id    //设备编码
+            equipment_id:this.query.equipment_id,   //设备编码
             ids:this.selIds.join(',')
         }).then(res=>{
             this.exportDataing=false;
