@@ -25,7 +25,7 @@
 
             <!--列表显示区域-->
             <div v-show="viewTable=='list'" style="height: calc(100% - 50px - -63px - 40px);position:relative">
-                <div class="option" name="listOption">
+                <div class="option clearfix" name="listOption">
                     <div class="item">
                         <span>区域范围:</span>
                         <div class="input">

@@ -28,7 +28,7 @@
             </div>
             <!--列表显示区域-->
             <div v-show="viewTable=='list'" style="height: calc(100% - 50px - -63px - 40px);position:relative">
-                <div class="option" name="listOption" >
+                <div class="option clearfix" name="listOption" >
                     <div class="item">
                         <span>数据来源:</span>
                         <div class="input">
@@ -2464,7 +2464,7 @@ export default {
       text-decoration:underline;
   }
   @optionH:50px;
-  .stiepage .option{width:100%;background-color: white;overflow:hidden;}
+  .stiepage .option{width:100%;background-color: white;}
   .stiepage .page_container{.border('top');.border('bottom');background-color:white;position: absolute;bottom: 2px; }
  .stiepage .content{width:100%;height:~'calc(100% - @{optionH} - 60px - 40px)';}
   .stiepage .content.tete{width:100%;height:~'calc(100% - @{optionH} - 60px - 60px)';}

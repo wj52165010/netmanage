@@ -8,7 +8,7 @@
             </div>
             <!--列表显示区域-->
             <div style="height: calc(100% - 50px - -93px - 40px);position:relative">
-                <div class="option" name="listOption">
+                <div class="option clearfix" name="listOption">
                     <div class="item">
                         <span>热点SSID:</span>
                         <div class="input">

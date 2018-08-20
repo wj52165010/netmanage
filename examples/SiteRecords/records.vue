@@ -2,7 +2,7 @@
 <template>
     <div class="Records">
         <!--操作栏-->
-        <div class="option_bar">
+        <div class="option_bar clearfix">
             <div class="item">
                 <span>站点域名:</span><div style="display:inline-block;"><el-input placeholder="请输入" v-model="domain"></el-input></div>
             </div>

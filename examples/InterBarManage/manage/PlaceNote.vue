@@ -285,12 +285,12 @@ export default {
                                 <div class="row" style="margin:0px;margin-bottom:10px;">
                                     <div class="col-md-3" style="padding-top:10px;padding-left:25px;">附件路径:</div>
                                     <div class="col-md-2" style="padding-left:0px;position:relative;">
-                                       <button type="button" class="btn btn-primary" @click="uploadBtnClick()">点击上传</button>
+                                       <button type="button" class="btn btn-primary" @click="uploadBtnClick()">点击上传 <i v-if="blnUploadFile" class="fa fa-spinner fa-pulse" /></button>
                                        <input id="uploadFile" :data-url="url" name="files[]" type="file" style="width: 0px;position: absolute;top: 0px;right: 0px;bottom: 0px;margin: 0px;opacity: 0;direction: ltr;cursor: pointer;" />
                                     </div>
                                     <div class="col-md-7" style="padding-left:0px;">
                                         <div style="background-color:#e5e5e5;border-radius:5px;display: inline-block;padding:6px 10px;margin-left: 10px;" v-if="uploadFileName">
-                                            <i class="fa fa-file-text-o" />{{uploadFileName}}<i class="fa fa-remove" @click="uploadFileName=''" style="cursor:pointer;" />
+                                            <i class="fa fa-file-text-o" />{{uploadFileName}}<i class="fa fa-remove" @click="uploadFileName='';blnUploadFile=false;" style="cursor:pointer;" />
                                         </div>
                                     </div>
                                 </div>
@@ -359,6 +359,7 @@ export default {
                     is_reply:'1',
                     timelimit:'',
                     accessory:'',// 上传的文件标识（先调用上传接口上传文件，返回唯一标识）
+                    blnUploadFile:false, //是否正在进行文件上传操作
                     //场所区域选择改变事件
                     PlaceResult(d){
                         let res =  _.chain(d).values().flatten().value();
@@ -377,6 +378,8 @@ export default {
                     },
                     ok_btn(){
                         let d=param.selfData;
+
+                        if(s.blnUploadFile){tool.info('文件正在上传中...,请稍后！');return;}
 
                         s.$store.dispatch(InterBar.netbar_notice_add,{
                             title:d.title,
@@ -421,6 +424,7 @@ export default {
                             }
 
                             s.uploadFileName=file.name;
+                            s.blnUploadFile=true;
                             
                             // s.uploadFileName=data.files[0].name;
                             // s.uploadCurData=data;
@@ -436,10 +440,13 @@ export default {
                             return;
                         },
                         done:function(e,data){
+
+                            s.blnUploadFile=false;
                             if(data.result.msg.code!='successed'){
                                 tool.info(data.result.msg.note);
                             }else{//成功
-                               s.accessory=data.result.msg.note;
+                               s.accessory=data.result.biz_body.file_name;
+                               tool.info('上传成功!');
                             }
                         },
                         progressall: function (e, data) {

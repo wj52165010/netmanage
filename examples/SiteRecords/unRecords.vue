@@ -2,7 +2,7 @@
 <template>
     <div class="UnRecords">
         <!--操作栏-->
-        <div class="option_bar">
+        <div class="option_bar clearfix">
             <div class="item">
                 <span>站点URL:</span><div style="display:inline-block;"><el-input placeholder="请输入" v-model="domain"></el-input></div>
             </div>
@@ -196,7 +196,7 @@ export default {
             this.blnLoading=false;
             if(!tool.msg(res,'','获取列表信息失败!')) return;
             if(res.biz_body.length<=0 && index>0){tool.info('已经到了最后页!');return;}
-            
+            console.log(tool.Clone(res.biz_body));
             this.pageIndex=index;
             this.data=res.biz_body;
         })

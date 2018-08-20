@@ -93,6 +93,7 @@ export default {
      * } 
      */
     NetBar_Notice_ADD(data){
+        console.log(data);
         this.baseBag.target='netbar_manages';
         this.baseBag.method='netbar_notice_add';
         this.baseBag.data=data || {};
