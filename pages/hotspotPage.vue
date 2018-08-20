@@ -134,7 +134,7 @@ import 'echarts/lib/component/dataZoom'
 import TaskType from '../enum/TaskType'
 import RelativeAnlay from '../modules/case/anlay'
 import AddPop from '../modules/case/addPop'
-import {BODY_RESIZE,GetSiteList,SiteDetail,GetRegionList,GetHotspotList,GetHotspotDetail,getDictTables} from '../store/mutation-types'
+import {BODY_RESIZE,GetSiteList,SiteDetail,GetRegionList,GetHotspotList,ExportHotspotList,GetHotspotDetail,getDictTables} from '../store/mutation-types'
 export default {
   name: 'areaPage',
   components:{
@@ -164,6 +164,7 @@ export default {
         listBodyH:0,
         blnExport:false,//是否进入导出选择阶段,
         selIds:[],//选中项的IDS
+        exportDataing:false,
     }
   },
   watch:{  
@@ -219,7 +220,7 @@ export default {
     blnAllSel(){
         let s=this,res=true;
         for(let i=0;i<s.data.length;i++){
-            if(_.findIndex(this.selIds,id=>id==s.data[i].ssid)<0){
+            if(_.findIndex(this.selIds,id=>id==s.data[i].hotspot_mac)<0){
                 res=false;break;
             }
         }
@@ -374,32 +375,48 @@ export default {
         let s=this;
         if(s.blnAllSel){
             for(let i=0;i<s.data.length;i++){
-                let index=_.findIndex(s.selIds,id=>id==s.data[i].ssid);
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].hotspot_mac);
                 if(index<0) continue;
                 s.selIds.splice(index,1);
             }
         }else{
             for(let i=0;i<s.data.length;i++){
-                let index=_.findIndex(s.selIds,id=>id==s.data[i].ssid);
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].hotspot_mac);
                 if(index>=0) continue;
-                s.selIds.push(s.data[i].ssid);
+                s.selIds.push(s.data[i].hotspot_mac);
             }
         }
     },
     //单选
     selItem(d){
-        let index=_.findIndex(this.selIds,id=>id==d.ssid);
+        let index=_.findIndex(this.selIds,id=>id==d.hotspot_mac);
         if(index>=0){
             this.selIds.splice(index,1);
         }else{
-            this.selIds.push(d.ssid);
+            this.selIds.push(d.hotspot_mac);
         }
     },
     blnSelItem(d){
-        return _.findIndex(this.selIds,id=>id==d.ssid)>=0;
+        return _.findIndex(this.selIds,id=>id==d.hotspot_mac)>=0;
     },
     exportList(){
-        console.log(tool.Clone(this.selIds));
+        
+        if(this.exportDataing) return;
+        this.exportDataing=true;
+        
+            
+        this.$store.dispatch(ExportHotspotList,{
+            ssid:this.query.ssid,                   //热点ssid
+            hotspot_mac:this.query.hotspot_mac,     //热点mac
+            is_record:this.query.is_record,         //是否备案
+            equipment_id:this.query.equipment_id    //设备编码
+            ids:this.selIds.join(',')
+        }).then(res=>{
+            this.exportDataing=false;
+            if(!tool.msg(res,'导出成功!','导出失败!'))  return;
+
+            window.location = res.biz_body.url;
+        });
     }
  
   }

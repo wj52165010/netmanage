@@ -1627,18 +1627,26 @@ export default new Vuex.Store({
                 });
             });
         },
-                //获取场所管理定制页面
-        [types.GetSiteList]({commit},data){
+        //场所导出
+        [types.ExportSiteList]({commit},data){
             return new Promise((resolve,reject)=>{
-                ser.GetSiteList(data).then(res=>{
+                ser.ExportSiteList(data).then(res=>{
                     resolve(res);
                 });
             });
-        },       
+        },
         //获取场所下挂在设备详情
         [types.GetSiteDeviceList]({commit},data){
             return new Promise((resolve,reject)=>{
                 ser.GetSiteDeviceList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
+        //设备列表导出
+        [types.ExportDeviceList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportDeviceList(data).then(res=>{
                     resolve(res);
                 });
             });
@@ -1854,6 +1862,14 @@ export default new Vuex.Store({
                 });
             });
         },
+        //导出厂商列表数据
+        [types.ExportFirmList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportFirmList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
         //厂商状态数量统计[柱状图]
         [types.GetFirmCollColumn]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -1928,6 +1944,14 @@ export default new Vuex.Store({
                 });
             });
         },
+        //导出区域列表数据
+        [types.ExportRegionList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportRegionList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
         //区域采集统计（采集详情）
         [types.RegionDetectRange]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -1978,6 +2002,14 @@ export default new Vuex.Store({
                 });
             });
         },   
+        //导出APP定制页面列表数据
+        [types.ExportAppList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportAppList(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
         //获取app定制页面违规app列表
         [types.GetViolationsAppList]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -2058,6 +2090,14 @@ export default new Vuex.Store({
                 });
             });
         }, 
+        //导出热点列表数据
+        [types.ExportHotspotList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportHotspotList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
         //获取热点列表定制页面详情
         [types.GetHotspotDetail]({commit},data){
             return new Promise((resolve,reject)=>{
@@ -2382,10 +2422,26 @@ export default new Vuex.Store({
                 });
             });
         },
+        //未备案列表导出
+        [types.ExportWebSiteList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportWebSiteList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
         //备案列表信息
         [types.WebSiteRecordList]({commit},data){
             return new Promise((resolve,reject)=>{
                 ser.WebSiteRecordList(data).then(res=>{
+                    resolve(res);  
+                });
+            });
+        },
+        //备案列表信息导出
+        [types.ExportSiteRecordList]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportSiteRecordList(data).then(res=>{
                     resolve(res);  
                 });
             });

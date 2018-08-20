@@ -290,7 +290,9 @@ import 'echarts/lib/component/dataZoom'
 import TaskType from '../enum/TaskType'
 import RelativeAnlay from '../modules/case/anlay'
 import AddPop from '../modules/case/addPop'
-import {HisPercentageExport,GetAppList,GetAppDetail,BODY_RESIZE,GetViolationsAppList,GetAppGreenPreExport,GetAppViolations,GetAppGreenPre,Get_OPerate_Data,GetSiteList,GetSiteDeviceList,getDictTables,SiteDetectColl,SiteDetail,SiteHisPercentage,LastPercentage} from '../store/mutation-types'
+import {HisPercentageExport,GetAppList,GetAppDetail,BODY_RESIZE,GetViolationsAppList,GetAppGreenPreExport,ExportAppList,
+        GetAppViolations,GetAppGreenPre,Get_OPerate_Data,GetSiteList,GetSiteDeviceList,getDictTables,
+        SiteDetectColl,SiteDetail,SiteHisPercentage,LastPercentage} from '../store/mutation-types'
 export default {
   name: 'mobileAppPage',
   components:{
@@ -398,6 +400,7 @@ export default {
         listBodyH:0,
         blnExport:false,//是否进入导出选择阶段,
         selIds:[],//选中项的IDS
+        exportDataing:false,
     }
   },
   mounted(){
@@ -1392,7 +1395,21 @@ export default {
         return _.findIndex(this.selIds,id=>id==d.app_id)>=0;
       },
       exportList(){
-        console.log(tool.Clone(this.selIds));
+        if(this.exportDataing) return;
+        this.exportDataing=true;
+          
+        this.$store.dispatch(ExportAppList,{
+            app_name:this.query.app_name,           //应用名称
+            source_market:this.query.source_market, //来源市场
+            app_devp:this.query.app_devp,           //应用开发商
+            is_illegal:ths.query.is_illegal,        //是否违规，0否，1是
+            ids:this.selIds.join(',')
+        }).then(res=>{
+            this.exportDataing=false;
+            if(!tool.msg(res,'导出成功!','导出失败!'))  return;
+
+            window.location = res.biz_body.url;
+        });
       }
       
   }

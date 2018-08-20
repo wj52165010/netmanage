@@ -70,7 +70,7 @@
 <script>
 import Scroll from  'components/scroll'
 
-import {BODY_RESIZE,WebSiteRecordList,WebSiteRecordDetail} from '../../store/mutation-types'
+import {BODY_RESIZE,WebSiteRecordList,ExportSiteRecordList,WebSiteRecordDetail} from '../../store/mutation-types'
 export default {
   name: 'Records',
   components:{Scroll},
@@ -87,6 +87,7 @@ export default {
       listBodyH:0,
       blnExport:false,//是否进入导出选择阶段,
       selIds:[],//选中项的IDS
+      exportDataing:false,
     }
   },
   watch:{
@@ -99,7 +100,7 @@ export default {
     blnAllSel(){
         let s=this,res=true;
         for(let i=0;i<s.data.length;i++){
-            if(_.findIndex(this.selIds,id=>id==s.data[i].id)<0){
+            if(_.findIndex(this.selIds,id=>id==s.data[i].website_scan_url)<0){
                 res=false;break;
             }
         }
@@ -283,32 +284,45 @@ export default {
         let s=this;
         if(s.blnAllSel){
             for(let i=0;i<s.data.length;i++){
-                let index=_.findIndex(s.selIds,id=>id==s.data[i].id);
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].website_scan_url);
                 if(index<0) continue;
                 s.selIds.splice(index,1);
             }
         }else{
             for(let i=0;i<s.data.length;i++){
-                let index=_.findIndex(s.selIds,id=>id==s.data[i].id);
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].website_scan_url);
                 if(index>=0) continue;
-                s.selIds.push(s.data[i].id);
+                s.selIds.push(s.data[i].website_scan_url);
             }
         }
     },
     //单选
     selItem(d){
-        let index=_.findIndex(this.selIds,id=>id==d.id);
+        let index=_.findIndex(this.selIds,id=>id==d.website_scan_url);
         if(index>=0){
             this.selIds.splice(index,1);
         }else{
-            this.selIds.push(d.id);
+            this.selIds.push(d.website_scan_url);
         }
     },
     blnSelItem(d){
-        return _.findIndex(this.selIds,id=>id==d.id)>=0;
+        return _.findIndex(this.selIds,id=>id==d.website_scan_url)>=0;
     },
     exportList(){
-        console.log(tool.Clone(this.selIds));
+        if(this.exportDataing) return;
+        this.exportDataing=true;
+        
+            
+        this.$store.dispatch(ExportSiteRecordList,{
+            domain:this.domain,
+            webname:this.webname,
+            ids:this.selIds.join(',')
+        }).then(res=>{
+            this.exportDataing=false;
+            if(!tool.msg(res,'导出成功!','导出失败!'))  return;
+
+            window.location = res.biz_body.url;
+        });
     }
   }
 }

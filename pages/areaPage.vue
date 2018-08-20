@@ -289,7 +289,10 @@ import MulDropDwon from 'components/MulDropDown'     //首页厂商选择控件
 import TaskType from '../enum/TaskType'
 import RelativeAnlay from '../modules/case/anlay'
 import AddPop from '../modules/case/addPop'
-import {waitingHandleSite,BODY_RESIZE,Trigger_RESIZE,getDictTables,SiteDetail,GetFirm,GetFirmList,SiteHisPercentage,regionCollColumn,RegionCollLine,RegionDeviceExport,RegionSiteExport,FirmDetectHistory,FirmDetectYesterday,FirmDetectColl,RegionDetectRange,GetRegionList} from '../store/mutation-types'
+import {waitingHandleSite,BODY_RESIZE,Trigger_RESIZE,getDictTables,SiteDetail,GetFirm,GetFirmList,ExportRegionList,
+        SiteHisPercentage,regionCollColumn,RegionCollLine,RegionDeviceExport,RegionSiteExport,
+        FirmDetectHistory,FirmDetectYesterday,FirmDetectColl,RegionDetectRange,GetRegionList
+        } from '../store/mutation-types'
 export default {
   name: 'firmPage',
   components:{
@@ -353,6 +356,7 @@ export default {
         listBodyH:0,
         blnExport:false,//是否进入导出选择阶段,
         selIds:[],//选中项的IDS
+        exportDataing:false,
     }
   },
   mounted(){
@@ -2320,7 +2324,19 @@ export default {
         return _.findIndex(this.selIds,id=>id==d.region_code)>=0;
     },
     exportList(){
-        console.log(tool.Clone(this.selIds));
+        if(this.exportDataing) return;
+        this.exportDataing=true;
+        
+            
+        this.$store.dispatch(ExportRegionList,{
+            region_range:this.query.region_range, 
+            ids:this.selIds.join(',')
+        }).then(res=>{
+            this.exportDataing=false;
+            if(!tool.msg(res,'导出成功!','导出失败!'))  return;
+
+            window.location = res.biz_body.url;
+        });
     }
 
 

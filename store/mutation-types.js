@@ -330,8 +330,10 @@ export const GetPersonPhoto='GetPersonPhoto' //获取人员头像
 
 /**获取场所管理定制页面信息*/
 export const GetSiteList='GetSiteList' //获取场所管理定制页面
+export const ExportSiteList='ExportSiteList' //场所列表导出功能
 export const SiteDetail='SiteDetail' //获取场所详情
 export const GetSiteDeviceList='GetSiteDeviceList' //获取非网吧场所下挂在设备详情
+export const ExportDeviceList='ExportDeviceList'   //设备列表导出
 export const GetSiteTerminalList='GetSiteTerminalList' //获取网吧场所下挂载终端列表
 export const getDictTables='getDictTables' //获取字典信息集合
 export const SiteDetectColl='SiteDetectColl' //获取数据采集趋势
@@ -361,6 +363,7 @@ export const DeviceMapRegion='DeviceMapRegion' //获取按区域汇总场所集�
 
 /**获取厂商管理定制页面信息*/
 export const GetFirmList='GetFirmList' //获取厂商管理定制页面
+export const ExportFirmList='ExportFirmList' //导出商场列表数据
 export const GetFirmCollColumn='GetFirmCollColumn' //厂商状态数量统计[柱状图]
 export const GetFirmCollLine='GetFirmCollLine' //厂商状态数量统计[折线图]
 export const GetFirmSiteExport='GetFirmSiteExport' //厂商状态率按场所汇总导出
@@ -373,6 +376,7 @@ export const FirmDetectHistory='FirmDetectHistory' //获取厂商历史采集详
 
 // 获取区域管理定制页面信息
 export const GetRegionList='GetRegionList' //获取区域管理定制页面
+export const ExportRegionList='ExportRegionList' //导出区域列表数据
 export const RegionDetectRange='RegionDetectRange' ///区域采集统计（采集详情）
 export const regionCollColumn='regionCollColumn' ///区域状态数量统计[柱状图]
 export const RegionCollLine='RegionCollLine' //区域状态数量统计[折线图]
@@ -382,6 +386,7 @@ export const RegionDeviceExport='RegionDeviceExport' //区域状态率按设备�
 
 // 获取app定制页面信息
 export const GetAppList='GetAppList' //获取app定制页面列表信息
+export const ExportAppList='ExportAppList' //导出APP定制页面数据
 export const GetViolationsAppList='GetViolationsAppList' //获取app定制页面违规app列表
 export const GetAppDetail='GetAppDetail' //获取app定制页面详情
 export const GetAppViolations='GetAppViolations' //app页面概况统计（用于饼图和右侧柱状图）
@@ -396,6 +401,7 @@ export const GetWebChangeDetail='GetWebChangeDetail' //获取备案变更详情
 
 // 获取热点列表定制页面信息
 export const GetHotspotList='GetHotspotList' //获取热点列表定制页面信息
+export const ExportHotspotList='ExportHotspotList' //导出热点列表数据
 export const GetHotspotDetail='GetHotspotDetail' //获取热点列表定制页面详情
 
 // 获取统计考核中的考核相关信息
@@ -452,7 +458,9 @@ export const StartPatrol='StartPatrol' //开启巡查项目
 
 /************** 新网站备案接口*******************/
 export const WebSiteList='WebSiteList'//未备案列表
+export const ExportWebSiteList='ExportWebSiteList' //未备案列表导出
 export const WebSiteRecordList='WebSiteRecordList' //备案列表
+export const ExportSiteRecordList='ExportSiteRecordList' //备案列表导出
 export const WebSiteRecordDetail='WebSiteRecordDetail' //备案列表详细
 export const WebSiteScanSetting='WebSiteScanSetting' //备案获取IP列表
 export const WebSiteAddIP='WebSiteAddIP' //备案新增IP段

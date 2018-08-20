@@ -388,7 +388,11 @@ import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 import TaskType from '../enum/TaskType'
 import RelativeAnlay from '../modules/case/anlay'
 import AddPop from '../modules/case/addPop'
-import {GetFirm,SiteDetail,DeviceScoreCollect,GetDeviceList,DeviceDetectColl,LastDevicePercentage,DeviceDetail,DeviceHisPercentage,DeviceHisPercentageExport,BODY_RESIZE,Add_History_Menu,GetMicroprobe,Get_OPerate_Data,GetSiteList,getDictTables,DeviceDetectYesterday,DeviceDetectHistory} from '../store/mutation-types'
+import {GetFirm,SiteDetail,DeviceScoreCollect,GetDeviceList,ExportDeviceList,
+        DeviceDetectColl,LastDevicePercentage,DeviceDetail,DeviceHisPercentage,
+        DeviceHisPercentageExport,BODY_RESIZE,Add_History_Menu,
+        GetMicroprobe,Get_OPerate_Data,GetSiteList,getDictTables,
+        DeviceDetectYesterday,DeviceDetectHistory} from '../store/mutation-types'
 export default {
   name: 'devicePage',
   components:{
@@ -534,6 +538,7 @@ export default {
         listBodyH:0,
         blnExport:false,//是否进入导出选择阶段,
         selIds:[],//选中项的IDS
+        exportDataing:false, //是否正在进行导出数据请求
     }
   },
   mounted(){
@@ -2049,7 +2054,26 @@ export default {
         return _.findIndex(this.selIds,id=>id==d.equipment_id)>=0;
       },
       exportList(){
-        console.log(tool.Clone(this.selIds));
+        if(this.exportDataing) return;
+        this.exportDataing=true;
+            
+        this.$store.dispatch(ExportDeviceList,{
+            netbar_wacode:this.query.netbar_wacode,     //场所编码
+            netbar_name:this.query.netbar_name,         //场所名称
+            equipment_name:this.query.equipment_name,   //设备名称
+            equipment_id:this.query.equipment_id,      //设备编码
+            microprobe_type:this.query.microprobe_type,//数据来源
+            region_range:this.query.region_range,      //区域范围
+            device_state:this.query.device_state,       //设备状态
+            equipment_type:this.query.equipment_type,   //设备类型
+            security_software_orgcodes:this.query.security_software_orgcodes,        //厂商编码，多个用逗号分割
+            ids:this.selIds.join(',')
+        }).then(res=>{
+            this.exportDataing=false;
+            if(!tool.msg(res,'导出成功!','导出失败!'))  return;
+
+            window.location = res.biz_body.url;
+        });
       }
   }
 }

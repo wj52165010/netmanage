@@ -392,7 +392,9 @@ import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 import TaskType from '../enum/TaskType'
 import RelativeAnlay from '../modules/case/anlay'
 import AddPop from '../modules/case/addPop'
-import {HisPercentageExport,GetSiteTerminalList,GetFirm,BODY_RESIZE,GetSiteList,GetSiteDeviceList,getDictTables,SiteDetectColl,SiteDetail,SiteHisPercentage,LastPercentage,siteDetectYesterday,siteDetectHistory,siteScoreCollect,waitingHandleSite} from '../store/mutation-types'
+import {HisPercentageExport,GetSiteTerminalList,GetFirm,BODY_RESIZE,GetSiteList,ExportSiteList,
+        GetSiteDeviceList,getDictTables,SiteDetectColl,SiteDetail,SiteHisPercentage,LastPercentage
+        ,siteDetectYesterday,siteDetectHistory,siteScoreCollect,waitingHandleSite} from '../store/mutation-types'
 export default {
   name: 'sitePage',
   components:{
@@ -532,6 +534,7 @@ export default {
         },
         blnExport:false,//是否进入导出选择阶段,
         selIds:[],//选中项的IDS
+        exportDataing:false, //是否正在进行导出数据请求
 
     }
   },
@@ -2245,7 +2248,24 @@ export default {
         return _.findIndex(this.selIds,id=>id==d.netbar_wacode)>=0;
       },
       exportList(){
-        console.log(tool.Clone(this.selIds));
+        if(this.exportDataing) return;
+        this.exportDataing=true;
+        
+            
+        this.$store.dispatch(ExportSiteList,{
+            netsite_type:this.query.netsite_type,           //场所类型
+            netsite_state:this.query.netsite_state,         //场所状态
+            microprobe_type:this.query.microprobe_type,     //数据来源&采集系统类型
+            region_range:this.query.region_range,           //区域范围
+            netsite_range:this.query.netsite_range,         //场所范围
+            security_software_orgcodes:this.query.security_software_orgcodes,
+            ids:this.selIds.join(',')
+        }).then(res=>{
+            this.exportDataing=false;
+            if(!tool.msg(res,'导出成功!','导出失败!'))  return;
+
+            window.location = res.biz_body.url;
+        });
       }
   }
 }

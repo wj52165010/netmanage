@@ -89,7 +89,7 @@
 import Scroll from  'components/scroll'
 import IPsetting from './ipSetting'
 
-import {BODY_RESIZE,WebSiteList} from '../../store/mutation-types'
+import {BODY_RESIZE,WebSiteList,ExportWebSiteList} from '../../store/mutation-types'
 export default {
   name: 'UnRecords',
   components:{Scroll},
@@ -108,6 +108,7 @@ export default {
       listBodyH:0,
       blnExport:false,//是否进入导出选择阶段,
       selIds:[],//选中项的IDS
+      exportDataing:false,
     }
   },
   watch:{
@@ -247,7 +248,23 @@ export default {
         return _.findIndex(this.selIds,id=>id==d.id)>=0;
     },
     exportList(){
-        console.log(tool.Clone(this.selIds));
+
+        if(this.exportDataing) return;
+        this.exportDataing=true;
+        
+            
+        this.$store.dispatch(ExportWebSiteList,{
+            domain:this.domain,
+            webname:this.webname,
+            ip:this.ip,
+            isrecord:this.isrecord=='3'?'':this.isrecord,
+            ids:this.selIds.join(',')
+        }).then(res=>{
+            this.exportDataing=false;
+            if(!tool.msg(res,'导出成功!','导出失败!'))  return;
+
+            window.location = res.biz_body.url;
+        });
     }
   }
 }

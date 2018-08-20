@@ -5,8 +5,8 @@ import netBarSer from '../store/modules/InterBarManage/server' //网吧管理服
 //发布地址:172.23.90.8:3030
 
 //let url='http://192.168.23.23:3030';
-let url='http://192.168.100.85:3030';
-//let url='http://192.168.23.73:3030';
+//let url='http://192.168.100.85:3030';
+let url='http://192.168.23.73:3030';
 //let url='';
 let baseUri=url+'/api/v1';
 //baseUri='http://localhost:8080/api/v1';
@@ -2547,6 +2547,15 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }
+
+  //场所列表导出
+  ExportSiteList(data){
+    this.baseBag.target='custom';
+    this.baseBag.method='site_list_export';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
 // 获取非网吧场所下挂在设备详情
   GetSiteDeviceList(data){
     this.baseBag.target='device';
@@ -2554,6 +2563,15 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }
+
+  //设备列表导出
+  ExportDeviceList(data){
+    this.baseBag.target='device';
+    this.baseBag.method='device_list_export';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
   // 获取网吧场所下挂载终端列表
   GetSiteTerminalList(data){
     this.baseBag.target='terminal_info';
@@ -2739,6 +2757,15 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }  
+
+  //导出厂商列表
+  ExportFirmList(data){
+    this.baseBag.target='firm';
+    this.baseBag.method='firm_list_export';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
   // 厂商状态数量统计[柱状图]
   GetFirmCollColumn(data){
     this.baseBag.target='firm';
@@ -2806,6 +2833,14 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   } 
+
+  //导出区域列表数据
+  ExportRegionList(data){
+    this.baseBag.target='region';
+    this.baseBag.method='region_list_export';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
   // 区域采集统计（采集详情）
   RegionDetectRange(data){
     this.baseBag.target='region';
@@ -2834,6 +2869,14 @@ GetVehicleChart(data){
   GetAppList(data){
     this.baseBag.target='app_info';
     this.baseBag.method='app_list';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
+
+  //导出app定制页面列表数据
+  ExportAppList(data){
+    this.baseBag.target='app_info';
+    this.baseBag.method='app_list_export';
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   }
@@ -2909,6 +2952,13 @@ GetVehicleChart(data){
     this.baseBag.data=data;
     return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
   } 
+
+  ExportHotspotList(data){
+    this.baseBag.target='hotspot_info';
+    this.baseBag.method='hotspot_list_export';
+    this.baseBag.data=data;
+    return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+  }
   // 获取热点列表定制页面详情
   GetHotspotDetail(data){
     this.baseBag.target='hotspot_info';
@@ -3262,6 +3312,14 @@ WebSiteList=function({domain,webname,ip,isrecord,limit,skip}){
   return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
 }
 
+//网站备案-未备案列表导出
+ExportWebSiteList=function(data){
+  this.baseBag.target='web_site';
+  this.baseBag.method='website_list_export';
+  this.baseBag.data=data;
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
 //网站备案-已备案列表
 /**
  * domain:'',//域名
@@ -3271,6 +3329,14 @@ WebSiteRecordList=function({domain,webname,limit,skip}){
   this.baseBag.target='web_site';
   this.baseBag.method='website_record_list';
   this.baseBag.data={domain:domain || '',webname:webname || '',limit:limit || '',skip:skip || 0};
+  return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+}
+
+//网站备案-已备案列表导出
+ExportSiteRecordList=function(data){
+  this.baseBag.target='web_site';
+  this.baseBag.method='website_record_list_export';
+  this.baseBag.data=data;
   return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
 }
 

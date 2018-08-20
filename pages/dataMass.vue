@@ -8,6 +8,7 @@
                         <HList title="数据接收" :data="data" :header="header" :column="column" :showField="showField" :rowAction="[{name:'详细',action:'lookDetail',icon:'fa fa-plus'}]"
                             :searchAction="searchAction"  @lookDetail="lookDetail" :blnNoSel="true" :expan="false" 
                             @search="search" :blnNoPage="true"
+                            :action="receiveAction" @exportList="exportList"
                             />
                     </div>
                     <div class="loading" v-show="blnShowLoading"><div :id="id+'inloading'" class="loadingContainer"></div></div>
@@ -106,6 +107,7 @@ export default {
       siteData:[],//厂商数据
       params:{},
       blnSearch:false,
+      receiveAction:[{name:'导出',action:'exportList',icon:'fa fa-level-up'}],//数据接收页面操作按钮
     }
   },
   mounted(){
@@ -305,6 +307,10 @@ export default {
             };
         
         this.myLineChart.setOption(option,{notMerge:true});
+      },
+      //导出数据接收数据
+      exportList(){
+          
       }
   }
 }
