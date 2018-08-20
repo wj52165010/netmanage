@@ -121,7 +121,7 @@ export default {
     blnAllSel(){
         let s=this,res=true;
         for(let i=0;i<s.data.length;i++){
-            if(_.findIndex(this.selIds,id=>id==s.data[i].id)<0){
+            if(_.findIndex(this.selIds,id=>id==s.data[i].website_scan_url)<0){
                 res=false;break;
             }
         }
@@ -196,7 +196,7 @@ export default {
             this.blnLoading=false;
             if(!tool.msg(res,'','获取列表信息失败!')) return;
             if(res.biz_body.length<=0 && index>0){tool.info('已经到了最后页!');return;}
-            console.log(tool.Clone(res.biz_body));
+
             this.pageIndex=index;
             this.data=res.biz_body;
         })
@@ -223,29 +223,29 @@ export default {
         let s=this;
         if(s.blnAllSel){
             for(let i=0;i<s.data.length;i++){
-                let index=_.findIndex(s.selIds,id=>id==s.data[i].id);
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].website_scan_url);
                 if(index<0) continue;
                 s.selIds.splice(index,1);
             }
         }else{
             for(let i=0;i<s.data.length;i++){
-                let index=_.findIndex(s.selIds,id=>id==s.data[i].id);
+                let index=_.findIndex(s.selIds,id=>id==s.data[i].website_scan_url);
                 if(index>=0) continue;
-                s.selIds.push(s.data[i].id);
+                s.selIds.push(s.data[i].website_scan_url);
             }
         }
     },
     //单选
     selItem(d){
-        let index=_.findIndex(this.selIds,id=>id==d.id);
+        let index=_.findIndex(this.selIds,id=>id==d.website_scan_url);
         if(index>=0){
             this.selIds.splice(index,1);
         }else{
-            this.selIds.push(d.id);
+            this.selIds.push(d.website_scan_url);
         }
     },
     blnSelItem(d){
-        return _.findIndex(this.selIds,id=>id==d.id)>=0;
+        return _.findIndex(this.selIds,id=>id==d.website_scan_url)>=0;
     },
     exportList(){
 
