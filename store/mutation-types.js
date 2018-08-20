@@ -181,6 +181,7 @@ export const GetLastData='GetLastData' //获取最新重点人员报警数据
 
 /*数据质量统计*/
 export const DataMassCount='DataMassCount' //数据质量统计(数据质量组建页面使用)
+export const ExportDataMass='ExportDataMass'    //导出数据质量
 export const DataCount='DataCount' //数据上传质量统计(首页使用)
 export const DayCount='DayCount'  //日统计量
 export const GetRegion='GetRegion' //获取地区

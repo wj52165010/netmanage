@@ -1157,6 +1157,15 @@ class server{
         this.baseBag.data={receive_time_start:startTime || '',receive_time_end:endTime || '',firm_id:firm_id || ''};
         return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
       }
+      
+      //导出数据质量
+      ExportDataMass(data){
+        this.baseBag.target='data_count';
+        this.baseBag.method='all_firm_clean_export';
+        this.baseBag.data=data;
+        return post(this.uri+'/'+this.baseBag.target+'/'+this.baseBag.method,this.baseBag);
+      }
+      
       /**
        * 数据上传质量统计(/data_count/data_count/clean_log_count)首页使用
        * {

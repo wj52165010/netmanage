@@ -1402,7 +1402,7 @@ export default {
             app_name:this.query.app_name,           //应用名称
             source_market:this.query.source_market, //来源市场
             app_devp:this.query.app_devp,           //应用开发商
-            is_illegal:ths.query.is_illegal,        //是否违规，0否，1是
+            is_illegal:this.query.is_illegal,        //是否违规，0否，1是
             ids:this.selIds.join(',')
         }).then(res=>{
             this.exportDataing=false;

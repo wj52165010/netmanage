@@ -165,6 +165,7 @@ export default {
         blnExport:false,//是否进入导出选择阶段,
         selIds:[],//选中项的IDS
         exportDataing:false,
+        bodyResizeSub:null,
     }
   },
   watch:{  
@@ -179,10 +180,12 @@ export default {
     this.refreshPage();
     this.layout();
 
-    this.$store.commit(BODY_RESIZE,()=>{
-        this.layout();
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+        this.layout();              
+    }});
 
-    });
   },
   computed:{
     showData(){
@@ -226,6 +229,9 @@ export default {
         }
         return res;
     }
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   destroyed(){
     tool.ClearBind(this.bodyClickId)

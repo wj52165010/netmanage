@@ -539,6 +539,7 @@ export default {
         blnExport:false,//是否进入导出选择阶段,
         selIds:[],//选中项的IDS
         exportDataing:false, //是否正在进行导出数据请求
+        bodyResizeSub:null,
     }
   },
   mounted(){
@@ -553,21 +554,24 @@ export default {
     this.getYesdayData();
     this.layout();
 
-    this.$store.commit(BODY_RESIZE,()=>{
-            this.layout();
-            if(this.myLineChart){
-                this.myLineChart.resize();              
-            };
-            if(this.myOnOffBarChart){
-                this.myOnOffBarChart.resize();              
-            };
-            if(this.myPieChart){
-                this.myPieChart.resize();             
-            } ;        
-            if(this.myBarChart){
-                this.myBarChart.resize();             
-            }                
-    });
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
+        this.layout();
+        if(this.myLineChart){
+            this.myLineChart.resize();              
+        };
+        if(this.myOnOffBarChart){
+            this.myOnOffBarChart.resize();              
+        };
+        if(this.myPieChart){
+            this.myPieChart.resize();             
+        } ;        
+        if(this.myBarChart){
+            this.myBarChart.resize();             
+        }                
+    }});
+
   },
   computed:{
     showData(){
@@ -649,6 +653,9 @@ export default {
         }
         return res;
     }
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   destroyed(){
     tool.ClearBind(this.bodyClickId)

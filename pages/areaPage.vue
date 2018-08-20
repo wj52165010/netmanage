@@ -357,6 +357,7 @@ export default {
         blnExport:false,//是否进入导出选择阶段,
         selIds:[],//选中项的IDS
         exportDataing:false,
+        bodyResizeSub:false,
     }
   },
   mounted(){
@@ -376,7 +377,9 @@ export default {
     this.getDeviceOnlineData();        // 获取设备在线折线图数据  
     this.layout();    
 
-    this.$store.commit(BODY_RESIZE,()=>{
+    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
+       this.bodyResizeSub=sub
+    },sub:()=>{
         this.layout();
         if(this.myDealChart){
             setTimeout(()=>{
@@ -397,10 +400,8 @@ export default {
             setTimeout(()=>{
                 this.deviceOnOffLineChart.resize();
             })                                                     
-        }                 
-    });
-
-
+        }                      
+    }});
 
   },
   computed:{
@@ -430,6 +431,9 @@ export default {
         }
         return res;
       }
+  },
+  beforeDestroy(){
+    this.bodyResizeSub.unsubscribe();
   },
   destroyed(){
     tool.ClearBind(this.bodyClickId)

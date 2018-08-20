@@ -737,6 +737,14 @@ export default new Vuex.Store({
                 });
             });
         },
+        //导出数据质量
+        [types.ExportDataMass]({commit},data){
+            return new Promise((resolve,reject)=>{
+                ser.ExportDataMass(data).then(res=>{
+                    resolve(res);
+                });
+            });
+        },
         //数据质量统计(首页使用)
         [types.DataCount]({commit}){
             return new Promise((resolve,reject)=>{

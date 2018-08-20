@@ -62,7 +62,7 @@ import HList from 'components/HList'
 import cLoading from '../js/canvasLoading.js'
 import {searchType} from '../enum/SearchType'
 import HTag from 'components/HTag'
-import {Add_History_Menu,DataMassCount,BODY_RESIZE,Trigger_RESIZE,Del_Nav_Page,Trigger_Page_Switch,Nav_Page,DataRate} from '../store/mutation-types'
+import {Add_History_Menu,DataMassCount,BODY_RESIZE,Trigger_RESIZE,Del_Nav_Page,Trigger_Page_Switch,Nav_Page,DataRate,ExportDataMass} from '../store/mutation-types'
 import MulDropDwon from 'components/MulDropDown'
 
 import echarts from  'echarts/lib/echarts'
@@ -108,6 +108,7 @@ export default {
       params:{},
       blnSearch:false,
       receiveAction:[{name:'导出',action:'exportList',icon:'fa fa-level-up'}],//数据接收页面操作按钮
+      exportDataing:false,
     }
   },
   mounted(){
@@ -143,7 +144,6 @@ export default {
     let menus=_.compact(_.flatten(_.pluck(this.$store.getters.Menus,'menus')));
 
     let menu=tool.Clone(_.find(menus,m=>m.keyid=='235'));
-   
     menu.id=menu.keyid;
     menu.type=menu.type || 'templatePage';
     this.params.model=menu;
@@ -310,7 +310,24 @@ export default {
       },
       //导出数据接收数据
       exportList(){
-          
+        if(this.exportDataing) return;
+        this.exportDataing=true;
+        
+        let timeVal=this.searchAction[0].val,
+            startTime=timeVal[0]?tool.Timestamp(timeVal[0]):'',
+            endTime=timeVal[1]?tool.Timestamp(timeVal[1]):'';
+
+
+        this.$store.dispatch(ExportDataMass,{
+            startTime:startTime,
+            endTime:endTime,
+            firm_id:this.searchAction[1].val
+        }).then(res=>{
+            this.exportDataing=false;
+            if(!tool.msg(res,'导出成功!','导出失败!'))  return;
+
+            window.location = res.biz_body.url;
+        });
       }
   }
 }
