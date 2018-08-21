@@ -1,4 +1,4 @@
-<!-- 列表列推动组件 -->
+<!-- 列表列拖动组件 -->
 <template>
     <div :id="id" class="TableDrag" @mouseup="mouseup($event)" @mousemove="mousemove($event)">
 

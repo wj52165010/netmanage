@@ -1,4 +1,10 @@
 <!-- 列表体插件 -->
+<!--<template>
+    <div class="tableBbody">
+       <slot></slot>
+    </div>
+</template>-->
+
 <script>
 import Vue from 'vue'
 import cRow from './tableRow'
@@ -11,19 +17,27 @@ export default {
     }
   },
   mounted(){
-    
+    console.log(this.data);
   },
-  computed:{
-    columns(){return this.store.states.columns;}
-  },
-  render(h){
-
-    let _self=this;
-    return h('div',
-              this.data.map((item,index)=>{
-                return h(cRow,{props:{columns:_self.columns,row:item}});
-              })
-            );
+  render: function (createElement) {
+    return createElement(
+      'div', 
+      {
+        class:{
+          table:true,
+        }
+      },
+      [
+        createElement('div',[this.$slots.default[0]]),
+        createElement('div',{
+            class:{
+              'table-body':true,
+            }
+          },
+          [this.$slots.default[2]]
+        )
+      ]
+    )
   },
   methods:{
       clickHandler(){
@@ -33,7 +47,7 @@ export default {
 }
 </script>
 <style lang="less">
-    @import './common.less';
-    
+  @import './common.less';
+  .tableBbody{width:100%;height:100%;}
 </style>
 

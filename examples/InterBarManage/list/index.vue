@@ -74,7 +74,7 @@
                             <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="orderChange('placeNameOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="orderChange('placeNameOrder',true);"></i>
                         </span>
                     </div>
-                    <div class="column"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
+                    <div class="column" :style="{width:column_w+'px'}"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
                     <div class="column" style="width:150px;">
                         <span class="overflow" style="width:150px;">
@@ -124,7 +124,7 @@
                         <div class="row" v-for="d in data">
                             <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
                             <div class="column" style="width:200px;"    :title="d.name"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
-                            <div class="column"><span class="overflow"  :title="d.address" :style="{width:column_w+'px'}">{{d.address}}</span></div>
+                            <div class="column" :style="{width:column_w+'px'}"><span class="overflow"  :title="d.address" :style="{width:column_w+'px'}">{{d.address}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
                             <div class="column" style="width:150px;"><span class="overflow clickItem" style="width:150px;" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>
                             <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.time}}</span></div>
@@ -206,7 +206,7 @@ export default {
 
 
    this.$store.commit(BODY_RESIZE,{cb:(sub)=>{
-       this.bodyResizeSub=sub
+      this.bodyResizeSub=sub
    },sub:()=>{
       this.layout();
    }});

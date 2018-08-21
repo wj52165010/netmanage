@@ -361,6 +361,10 @@ export default {
         {name:'特征管理',icon:'fa fa-shield',id:'18041',keyid:"18041",orderby:4,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"FeatureManage"},
         /**非经管理**/
         {name:'非经管理',icon:'fa fa-hotel ',id:'18042',keyid:"18042",orderby:5,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"NonClassicMangae"},
+
+        //测试页面
+        {name:'测试页面',icon:'fa fa-hotel ',id:'28042',keyid:"28042",orderby:5,menu_type:_.find(MenuKind,m=>m.id==7),blnShow:1,status:'{status:"completed"}',type:"TestPage"},
+      
       ];
 
       app.menus=fixMenus;

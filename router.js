@@ -96,6 +96,9 @@ Vue.component('FeatureManage',(resolve)=>{require(['./examples/FeatureManage/ind
 Vue.component('NonClassicMangae',(resolve)=>{require(['./examples/NonClassicMangae/index'],resolve)});
 
 
+//测试页面
+Vue.component('TestPage',(resolve)=>{require(['./pages/Test'],resolve)});
+
 export default[
   { path: '/', component: (resolve)=>{require(['./pages/index'], resolve)} },
   { path: '/setting', component:(resolve)=>{require(['./pages/setting'],resolve)} },

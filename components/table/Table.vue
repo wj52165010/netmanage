@@ -1,13 +1,9 @@
 <!-- 列表插件 -->
-<template>
+<!--<template>
     <div class="table">
-      <!--隐藏列对象(为了让插件子对象能被加载所用)-->
-      <div class="hiddencolumns" ref="hiddenColumns"><slot></slot></div>
-
-      <v-table-header :store="store"></v-table-header>
-      <v-table-body :store="store" :data="data" class="table-body"></v-table-body>
+      <slot></slot>
     </div>
-</template>
+</template>-->
 
 <script>
 import TableStore from './table-store.js'
@@ -23,8 +19,33 @@ export default {
       store:new TableStore(),
     }
   },
+  render: function (createElement) {
+    this.$slots.default[0].data.attrs={data:this.data};
+    this.$slots.default[2].data.attrs={data:this.data};
+
+    console.log(this.$slots.default);
+
+    return createElement(
+      'div', 
+      {
+        class:{
+          table:true,
+        }
+      },
+      [
+        createElement('div',[this.$slots.default[0]]),
+        createElement('div',{
+            class:{
+              'table-body':true,
+            }
+          },
+          [this.$slots.default[2]]
+        )
+      ]
+    )
+  },
   mounted(){
-    
+    //console.log(this.$slots);
   }
 }
 </script>

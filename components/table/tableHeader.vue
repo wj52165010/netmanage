@@ -1,9 +1,7 @@
 <!-- 列表头插件 -->
 <template>
     <div class="table-header">
-       <div class="table-column" v-for="(column,index) in columns" :style="{width:(100/columns.length)+'%'}">
-          {{column.label}}
-       </div>
+       列表头
     </div>
 </template>
 
