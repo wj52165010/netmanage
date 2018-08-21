@@ -1,7 +1,7 @@
 <!-- 列表头插件 -->
 <template>
     <div class="table-header">
-       列表头
+      <slot></slot>
     </div>
 </template>
 
@@ -23,7 +23,7 @@ export default {
 </script>
 <style scoped lang="less">
   @import './common.less';
-  .table-header{width:100%;height:@tableHeaderH;}
+  .table-header{width:100%;height:@tableHeaderH;background-color:@tableHeaderBG;.border('bottom');}
   .table-header .table-column{display:inline-block;height:100%;}
   //设置列的边界线
   .table-header .table-column:first-child{.border('bottom');.border('right');}

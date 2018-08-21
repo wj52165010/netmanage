@@ -20,16 +20,21 @@ export default {
     }
   },
   render: function (createElement) {
-    this.$slots.default[0].data.attrs={data:this.data};
-    this.$slots.default[2].data.attrs={data:this.data};
+    this.$slots.default[0].componentOptions.propsData={data:this.data};//设置Props属性值
+    this.$slots.default[2].componentOptions.propsData={data:this.data};
 
-    console.log(this.$slots.default);
+    let cols=this.$slots.default[0].child;
+
+    console.log(cols);
 
     return createElement(
       'div', 
       {
         class:{
           table:true,
+        },
+        props:{
+          data:this.data
         }
       },
       [
@@ -45,8 +50,8 @@ export default {
     )
   },
   mounted(){
-    //console.log(this.$slots);
-  }
+    
+  },
 }
 </script>
 <style scoped lang="less">

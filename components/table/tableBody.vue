@@ -1,9 +1,9 @@
 <!-- 列表体插件 -->
-<!--<template>
+<template>
     <div class="tableBbody">
        <slot></slot>
     </div>
-</template>-->
+</template>
 
 <script>
 import Vue from 'vue'
@@ -17,28 +17,28 @@ export default {
     }
   },
   mounted(){
-    console.log(this.data);
+    
   },
-  render: function (createElement) {
-    return createElement(
-      'div', 
-      {
-        class:{
-          table:true,
-        }
-      },
-      [
-        createElement('div',[this.$slots.default[0]]),
-        createElement('div',{
-            class:{
-              'table-body':true,
-            }
-          },
-          [this.$slots.default[2]]
-        )
-      ]
-    )
-  },
+  // render: function (createElement) {
+
+  //   let rows=_.filter(this.$slots.default,d=>d.tag);
+  //   let data=this.data;
+  //   return createElement(
+  //     'div', 
+  //     {
+  //       class:{
+  //         tableBbody:true,
+  //       }
+  //     },
+  //     _.map(rows,(r,i)=>createElement(cRow,{
+  //       props:{
+  //         columns:rows,
+  //         row:data[i]
+  //       }
+  //       })
+  //     )
+  //   )
+  // },
   methods:{
       clickHandler(){
         //console.log(this.row);
@@ -48,6 +48,6 @@ export default {
 </script>
 <style lang="less">
   @import './common.less';
-  .tableBbody{width:100%;height:100%;}
+  .tableBbody{width:100%;height:100%;background-color:@tableBodyBG;}
 </style>
 

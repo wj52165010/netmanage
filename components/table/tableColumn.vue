@@ -1,7 +1,7 @@
 <!-- 列表列插件 -->
 <template>
   <div class="table-column">
-    列
+    <slot></slot>
   </div>
 </template>
 <script>
