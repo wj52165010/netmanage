@@ -1,24 +1,25 @@
 <!-- 导航组件 -->
 <template>
     <div class="Test">
-        <v-table :listen="data">
-            <v-table-header>
-              <v-table-column :width="100">
-                  姓名
-              </v-table-column>
-              <v-table-column>标识</v-table-column>
-              <v-table-column>内容</v-table-column>
-            </v-table-header>
-            <v-table-body>
-                <v-table-row v-for="d in data">
-                  <v-table-column>{{d.name}}</v-table-column>
-                  <v-table-column>{{d.id}}</v-table-column>
-                  <v-table-column>{{d.content}}</v-table-column>
-                </v-table-row>
-            </v-table-body>
-        </v-table>
-
-        <button style="position:absolute;bottom:0px;" @click="data.push({name:5,id:4})">Test</button>
+        <div style="position:absolute;top:100px;left:100px;right:200px;bottom:200px;">
+          <v-table :listen="data">
+              <v-table-header>
+                <v-table-column :width="100" :title="123">
+                    姓名
+                </v-table-column>
+                <v-table-column :width="1500">标识</v-table-column>
+                <v-table-column :width="1500">内容</v-table-column>
+              </v-table-header>
+              <v-table-body>
+                  <v-table-row v-for="d in data">
+                    <v-table-column :title="d.name">{{d.name}}</v-table-column>
+                    <v-table-column>{{d.id}}</v-table-column>
+                    <v-table-column>{{d.content}}</v-table-column>
+                  </v-table-row>
+              </v-table-body>
+          </v-table>
+        </div>
+        <button style="position:absolute;bottom:0px;" @click="data.push({name:5,id:4,content:''})">Test</button>
     </div>
 </template>
 

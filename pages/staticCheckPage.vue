@@ -88,7 +88,7 @@
                 </div>
             </div>
         </div>
-        <HTag :tags="pages" @change="tagChange" v-show="viewTable=='statistics'">
+        <HTag :tags="pages" @change="tagChange" v-show="viewTable=='statistics'" style="height: calc(100% - 30px);">
                 <div slot="t0" style="height:100%;width:100%;">
                     <!--基础数据-->
                     <div class="header">
@@ -251,45 +251,48 @@
                             </div>
                         </div>    
                     </div>
-                    <div class="date-sel" v-show="colltype=='1'">
-                        <div class="tag" style="width:18%;min-width:305px;float: left;margin: 10px;" v-for="name in FirmStatis">
-                            <div style="padding:10px;">
-                                <div class="title" style="line-height: 30px;font-size: 14px;text-indent: 0px;">
-                                    <span style="font-size:14px;font-weight:900">{{name.security_software_orgname}}</span>
-                                </div> 
-                                <div class="title" style="line-height: 30px;font-size: 13px;text-indent: 0px;">昨日量：
-                                    <span>{{name.last_detect_num}}</span>
-                                </div> 
-                                <div class="title" style="line-height: 30px;font-size: 13px;text-indent: 0px;">接入总量：
-                                    <span>{{name.total_detect_num}}</span>
-                                </div> 
-                                <div style="padding-top:10px;font-size:20px;" class="number">
-                                    <div style="position: absolute;right: 9px;top: 16px;"><i style="font-size: 90px" class="fa fa-globe"></i> 
+                    <div style="width:100%;height:calc(100% - 55px);">
+                        <Scroll :listen="colltype">
+                            <div class="date-sel clearfix" v-show="colltype=='1'">
+                                <div class="tag" style="width:18%;min-width:305px;float: left;margin: 10px;" v-for="name in FirmStatis">
+                                    <div style="padding:10px;">
+                                        <div class="title" style="line-height: 30px;font-size: 14px;text-indent: 0px;">
+                                            <span style="font-size:14px;font-weight:900">{{name.security_software_orgname}}</span>
+                                        </div> 
+                                        <div class="title" style="line-height: 30px;font-size: 13px;text-indent: 0px;">昨日量：
+                                            <span>{{name.last_detect_num}}</span>
+                                        </div> 
+                                        <div class="title" style="line-height: 30px;font-size: 13px;text-indent: 0px;">接入总量：
+                                            <span>{{name.total_detect_num}}</span>
+                                        </div> 
+                                        <div style="padding-top:10px;font-size:20px;" class="number">
+                                            <div style="position: absolute;right: 9px;top: 16px;"><i style="font-size: 90px" class="fa fa-globe"></i> 
+                                            </div> 
+                                        </div>
                                     </div> 
-                                </div>
-                            </div> 
-                        </div>                        
+                                </div>                        
+                            </div>
+                            <div class="date-sel clearfix" v-show="colltype=='0'">
+                                <div class="tag" style="width: 300px;float: left;margin: 10px;" v-for="f in CollMicroprobe">
+                                    <div style="padding:10px;">
+                                        <div class="title" style="line-height: 30px;font-size: 14px;text-indent: 20px;">
+                                            <span style="font-size:18px;font-weight:900">{{f.name}}</span>
+                                        </div> 
+                                        <div class="title" style="line-height: 30px;font-size: 14px;text-indent: 20px;">{{f.title_one}}
+                                            <span>{{f.num_one}}</span>
+                                        </div> 
+                                        <div class="title" style="line-height: 30px;font-size: 14px;text-indent: 20px;">{{f.title_two}}
+                                            <span>{{f.num_two}}</span>
+                                        </div> 
+                                        <div style="padding-top:10px;font-size:20px;" class="number">
+                                            <div style="position: absolute;right: 29px;top: 24px;"><i style="font-size: 80px" :class="f.icon"></i> 
+                                            </div> 
+                                        </div>
+                                    </div> 
+                                </div>                        
+                            </div>            
+                        </Scroll>   
                     </div>
-                    <div class="date-sel" v-show="colltype=='0'">
-                        <div class="tag" style="width: 300px;float: left;margin: 10px;" v-for="f in CollMicroprobe">
-                            <div style="padding:10px;">
-                                <div class="title" style="line-height: 30px;font-size: 14px;text-indent: 20px;">
-                                    <span style="font-size:18px;font-weight:900">{{f.name}}</span>
-                                </div> 
-                                <div class="title" style="line-height: 30px;font-size: 14px;text-indent: 20px;">{{f.title_one}}
-                                    <span>{{f.num_one}}</span>
-                                </div> 
-                                <div class="title" style="line-height: 30px;font-size: 14px;text-indent: 20px;">{{f.title_two}}
-                                    <span>{{f.num_two}}</span>
-                                </div> 
-                                <div style="padding-top:10px;font-size:20px;" class="number">
-                                    <div style="position: absolute;right: 29px;top: 24px;"><i style="font-size: 80px" :class="f.icon"></i> 
-                                    </div> 
-                                </div>
-                            </div> 
-                        </div>                        
-                    </div>               
-
 
 
                 </div>            

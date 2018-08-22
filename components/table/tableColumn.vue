@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'v-table-column',
-  props:['label'],
+  props:['column'],
   data () {
     return {
     }
@@ -17,6 +17,9 @@ export default {
   },
   methods:{
     click(){
+      //this.column.data.attrs.width=200;//改变列宽度
+
+      //console.log(this.column);
       this.$emit('click');
     }
   },
@@ -26,5 +29,5 @@ export default {
 }
 </script>
 <style scoped lang="less">
-  .table-column{display:inline-block;height:100%;width:100%;}
+  .table-column{display:inline-block;height:100%;width:100%;overflow: hidden;text-overflow: ellipsis;}
 </style>

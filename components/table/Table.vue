@@ -52,7 +52,7 @@ export default {
 </script>
 <style scoped lang="less">
   @import './common.less';
-  .table{width:100%;height:100%;margin:0px;text-align:left;.border("");}
+  .table{width:100%;height:100%;margin:0px;text-align:left;.border("");position:relative;}
   .table .hiddencolumns{display:none;position:absolute;z-index:-1;}
   .table .table-body{height:~"calc(100% - @{tableHeaderH})"}
 </style>
