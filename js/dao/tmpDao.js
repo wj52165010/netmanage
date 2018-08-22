@@ -12,6 +12,7 @@ module.exports={
         for(let cond of comCond){
             if(!cond.value && !cond.defVal){continue;}
             let value=cond.value || cond.defVal || '';
+        
             if(searchArrType[cond.type]=='日期范围' && _.compact(value).length<=0){continue;}
             if(searchArrType[cond.type]=='日期' && value){
                 if(typeof(value) == 'string'){
@@ -27,7 +28,8 @@ module.exports={
                     value[0]=new Date(value[0])
                     value[1]=new Date(value[1]);
                 }
-                value[1].setHours(23,59,59);
+                
+                //value[1].setHours(23,59,59);
                 value=[tool.Timestamp(value[0]),tool.Timestamp(value[1])];
             }
             if(searchArrType[cond.type]=='生日' && value){
