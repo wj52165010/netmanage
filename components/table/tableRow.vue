@@ -1,14 +1,14 @@
 <!-- 列表行插件 -->
-<template>
+<!--<template>
     <div class="table-row">
        <slot></slot>
     </div>
-</template>
+</template>-->
 <script>
 import Vue from 'vue'
 export default {
   name: 'v-row',
-  props:['row','columns'],
+  props:['columns','store'],
   data () {
     return {
      
@@ -17,22 +17,36 @@ export default {
   mounted(){
     
   },
-  // render(h){
-  //    return h('div',
-  //       {
-  //         class:{
-  //           'table-row':true,
-  //         }
-  //       },
-  //       this.columns.map((column,index)=>{
-  //          return h('div',{
-  //              'class':{'table-row-item':true},
-  //              'style':{'width':(100/this.columns.length)+'%'},
-  //           },
-  //           []);
-  //       })
-  //   );
-  // }
+  render(h){
+     let columns=this.cols || [];
+     let colContent=this.columns || [];
+     let slots=_.filter(this.$slots.default,d=>d.tag);
+     let fixWTotal=_.reduce(this.cols,(memo,d)=>{return memo+ (d.data.attrs || {width:0}).width},0);
+     console.log(fixWTotal);
+
+     return h('div',
+        {
+          class:{
+            'table-row':true,
+          }
+        },
+        columns.map((column,index)=>{
+           let {width} =  this.cols[index].data.attrs || {};
+
+           
+           return h('div',{
+               'class':{'table-row-item':true},
+               'style':{'width':(100/columns.length)+'%'},
+            },
+            [
+              colContent[index] || slots[index] || ''
+            ]);
+        })
+    );
+  },
+  computed:{
+    cols(){return this.store.states.columns;}
+  }
 }
 </script>
 <style scoped lang="less">

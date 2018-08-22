@@ -4,7 +4,10 @@
 mutations={
     //添加列
     insertColumn(states,column,index){
-        states.columns.splice(index,0,column);
+        let blnArr=column instanceof Array;
+
+        blnArr?states.columns.splice(index,0,...column):
+               states.columns.splice(index,0,column) ;
     }
 }
 

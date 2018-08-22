@@ -13,19 +13,15 @@ import ctableBody from './tableBody'
 export default {
   name: 'v-table',
   components:{'v-table-header':ctableHeader,'v-table-body':ctableBody},
-  props:['data'],
+  props:['listen'],
   data () {
     return {
       store:new TableStore(),
     }
   },
   render: function (createElement) {
-    this.$slots.default[0].componentOptions.propsData={data:this.data};//设置Props属性值
-    this.$slots.default[2].componentOptions.propsData={data:this.data};
-
-    let cols=this.$slots.default[0].child;
-
-    console.log(cols);
+    this.$slots.default[0].componentOptions.propsData={listen:this.listen,store:this.store};//设置Props属性值
+    this.$slots.default[2].componentOptions.propsData={listen:this.listen,store:this.store};
 
     return createElement(
       'div', 
@@ -34,7 +30,7 @@ export default {
           table:true,
         },
         props:{
-          data:this.data
+          listen:this.listen
         }
       },
       [

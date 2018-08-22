@@ -1,11 +1,13 @@
 <!-- 列表头插件 -->
-<template>
+<!--<template>
     <div class="table-header">
       <slot></slot>
     </div>
-</template>
+</template>-->
 
 <script>
+
+import cRow from './tableRow'
 
 export default {
   name: 'v-table-header',
@@ -15,6 +17,29 @@ export default {
     }
   },
   mounted(){
+    let cols=_.filter(this.$slots.default,d=>d.tag);
+    this.store.comit('insertColumn',cols,0);
+  },
+  render: function (createElement) {
+    return createElement(
+      'div', 
+      {
+        class:{
+          "table-header":true,
+        },
+        props:{
+          store:this.store
+        }
+      },
+      [
+        createElement(cRow,{
+          props:{
+            store:this.store,
+            columns:this.columns
+          }
+        })
+      ]
+    )
   },
   computed:{
     columns(){return this.store.states.columns;}
