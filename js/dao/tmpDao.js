@@ -28,7 +28,6 @@ module.exports={
                     value[0]=new Date(value[0])
                     value[1]=new Date(value[1]);
                 }
-                
                 //value[1].setHours(23,59,59);
                 value=[tool.Timestamp(value[0]),tool.Timestamp(value[1])];
             }
