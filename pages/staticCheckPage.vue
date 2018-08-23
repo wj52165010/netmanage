@@ -1592,10 +1592,6 @@ export default {
                                         options:JSON.stringify(d.options)
                                     }
                                 })
-                                // for(var key of param.selfData.detailData){
-                                //     delete key.security_software_orgname;
-                                //     key.options=JSON.stringify(key.options)
-                                // }
 
                                 let obj={
                                     options:res
