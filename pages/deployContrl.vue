@@ -495,6 +495,7 @@ export default {
           i.alarm_alarm_type=_.map(tmps,tmp=>{return `<i class="${tmp.icon}"></i>${tmp.name}`}).join('');
           i.netbar_title= i.netbar_title || '';
           i.keywords=i.keywords.replace(/^,/g,'').replace(/,$/g,'');
+          i.logtime=i.logtime.indexOf(':')>=0?i.logtime:tool.DateByTimestamp(i.logtime,'yyyy-MM-dd hh:mm:ss');
           return i;
         });
 
@@ -544,7 +545,7 @@ export default {
         item._alarm_type=_.map(item.alarm_type,itemD=>{
           return _.find(AlarmType,i=>{return i.val==itemD}).name;
         }).join(',');
-        item._log_time=tool.DateByTimestamp(item.log_time,'yyyy-MM-dd hh:mm:ss');
+        item._log_time=item.log_time.indexOf(':')>=0?item.log_time:tool.DateByTimestamp(item.log_time,'yyyy-MM-dd hh:mm:ss');
         item.blnRead=false;
         item.children=[];
         return item;
@@ -664,7 +665,7 @@ export default {
                   </div>
                   <div class="row row_item">
                     <div class="col-md-2 item_label_left">终端MAC</div><div class="col-md-4">{{d.mac}}</div>
-                    <div class="col-md-2 item_label_right">产生时间</div><div class="col-md-4">{{d.logtime}}</div>
+                    <div class="col-md-2 item_label_right">产生时间</div><div class="col-md-4">{{converTime(d.logtime)}}</div>
                   </div>
                   <div class="row row_item">
                     <div class="col-md-2 item_label_left">身份证类型</div><div class="col-md-4">{{d.certificate_type}}</div>
@@ -695,7 +696,8 @@ export default {
           context:{
             d:{},
             converTime(time){
-              return tool.DateByTimestamp(time,'yyyy-MM-dd hh:mm:ss');
+              if(!time) return '';
+              return time.indexOf(':')>=0?time :tool.DateByTimestamp(time,'yyyy-MM-dd hh:mm:ss');
             }
           }
         };

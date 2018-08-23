@@ -1585,12 +1585,20 @@ export default {
                                 }
                             },
                             submit(){
-                                for(var key of param.selfData.detailData){
-                                    delete key.security_software_orgname;
-                                    key.options=JSON.stringify(key.options)
-                                }
+                                let res = _.map(param.selfData.detailData,d=>{
+                                    return {
+                                        microprobe_type:d.microprobe_type,
+                                        security_software_orgcode:d.security_software_orgcode,
+                                        options:JSON.stringify(d.options)
+                                    }
+                                })
+                                // for(var key of param.selfData.detailData){
+                                //     delete key.security_software_orgname;
+                                //     key.options=JSON.stringify(key.options)
+                                // }
+
                                 let obj={
-                                    options:param.selfData.detailData
+                                    options:res
                                 }
                                  self.$store.dispatch(examineSaveOrgOption,obj).then(res=>{
                                     if(res.msg.code!='successed')return;
