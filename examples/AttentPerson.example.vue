@@ -1088,7 +1088,7 @@ export default {
                                     </div>
                                 
                                     <div class="option_container">
-                                        <div class="btn_container" style="cursor:pointer;" @click="AddLabel()">+</div>
+                                        <div class="btn_container"  style="cursor:pointer;" @click="AddLabel()">+</div>
                                         <div class="input_container">
                                             <input type="text" v-model="key" placeholder="创建新标签" />
                                         </div>
@@ -1116,6 +1116,7 @@ export default {
                                        }
                                     },
                                     AddLabel(){
+                                         if(!addParam.selfData.key){tool.info('请输入标签名称!');return;}
                                          s.$store.dispatch(AddFocusPersonLabel,{tag_title:addParam.selfData.key}).then(res=>{
                                             if(!tool.msg(res,'添加成功!')) return;
                                             let item = _.map(res.biz_body,r=>{r.name=r.tag_title; return r;})[0];
