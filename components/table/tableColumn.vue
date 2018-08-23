@@ -29,5 +29,7 @@ export default {
 }
 </script>
 <style scoped lang="less">
-  .table-column{display:inline-block;height:100%;width:100%;overflow: hidden;text-overflow: ellipsis;}
+  .table-column{
+    display:inline-block;height:100%;width:100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;position:relative;text-align:center;
+  }
 </style>

@@ -57,85 +57,69 @@
 
             
             </div>
-
-            <!--列表头-->
-            <div class="table_header" v-drag-header col-selector='.column'>
-                <div class="row">
-                    <div class="column" style="width:200px;">
-                        <span class="overflow" style="width:200px;position:relative;">
+            
+            <!--列表-->
+            <div style="width:100%;" :style="{height:bodyH}">
+                <v-table :listen="data" :blnLoading="blnLoading" ref="listTable">
+                    <v-table-header>
+                        <v-table-column :width="200" >
                             <span style="margin-right:5px;">场所编码</span>
                             <i class="fa fa-caret-up" :class="{active:!placeCodeOrder}" @click="orderChange('placeCodeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeCodeOrder}" @click="orderChange('placeCodeOrder',true);"></i>
-                        </span>
-                    </div>
+                        </v-table-column>
 
-                    <div class="column" style="width:200px">
-                        <span class="overflow" style="position:relative;width:200px">
+                        <v-table-column :width="200">
                             <span style="margin-right:5px;">场所名称</span>
                             <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="orderChange('placeNameOrder',false);"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="orderChange('placeNameOrder',true);"></i>
-                        </span>
-                    </div>
-                    <div class="column" :style="{width:column_w+'px'}"><span class="overflow" :style="{width:column_w+'px'}">场所地址</span></div>
-                    <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                    <div class="column" style="width:150px;">
-                        <span class="overflow" style="width:150px;">
-                            终端概况
-                            <el-tooltip placement="top" content="申报终端/检测终端/在线终端"><i class="fa fa-question-circle" /></el-tooltip>
-                        </span>
-                    </div>
-                    <div class="column" style="width:150px;">
-                        <span class="overflow" style="width:150px;position:relative;">
+                        </v-table-column>
+
+                        <v-table-column >场所地址</v-table-column>
+                        <v-table-column :width="80">场所状态</v-table-column>
+                        
+                        <v-table-column :width="150">
+                            <span class="overflow">
+                                终端概况
+                                <el-tooltip placement="top" content="申报终端/检测终端/在线终端"><i class="fa fa-question-circle" /></el-tooltip>
+                            </span>
+                        </v-table-column>
+
+                        <v-table-column :width="150">
                             <span style="margin-right:5px;">最近联系时间</span>
                             <i class="fa fa-caret-up" :class="{active:!pulishTimeOrder}" @click="orderChange('pulishTimeOrder',false);"></i><i class="fa fa-caret-down" :class="{active:pulishTimeOrder}" @click="orderChange('pulishTimeOrder',true);"></i>
-                        </span>
-                    </div>
-                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">昨日采集</span></div>
-                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">营业状态</span></div>
+                        </v-table-column>
 
-                    <div class="column" style="width:150px;">
-                        <span class="overflow" style="width:150px;position:relative;">
+                        <v-table-column :width="100">昨日采集</v-table-column>
+
+                        <v-table-column :width="100">营业状态</v-table-column>
+
+                        <v-table-column :width="150">
                             <span style="margin-right:5px;">所属区域</span>
                             <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="orderChange('areaOrder',false);"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="orderChange('areaOrder',true);"></i>
-                        </span>
-                    </div>
+                        </v-table-column>
 
-                    <div class="column" style="width:150px;">
-                        <span class="overflow" style="width:150px;position:relative;">
+                        <v-table-column :width="150">
                             <span style="margin-right:5px;">所属厂商</span>
                             <i class="fa fa-caret-up" :class="{active:!firmOrder}" @click="orderChange('firmOrder',false);"></i><i class="fa fa-caret-down" :class="{active:firmOrder}" @click="orderChange('firmOrder',true);"></i>
-                        </span>
-                    </div>
+                        </v-table-column>
 
-                </div>
+                    </v-table-header>
+                    <v-table-body>
+                        <v-table-row v-for="d in data">
+                
+                            <v-table-column><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></v-table-column>
+                            <v-table-column>{{d.name}}</v-table-column>
+                            <v-table-column :title="d.address">{{d.address}}</v-table-column>
+                            <v-table-column><span :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></v-table-column>
+                            <v-table-column :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`"><span class="overflow clickItem" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></v-table-column>
+                            <v-table-column>{{d.time}}</v-table-column>
+                            <v-table-column><span class="overflow clickItem" @click="collectChart(d)">{{d.collect}}</span></v-table-column>
+                            <v-table-column>{{d.businessState}}</v-table-column>
+                            <v-table-column>{{d.region}}</v-table-column>
+                            <v-table-column>{{d.firm}}</v-table-column>
+                        </v-table-row>
+                    </v-table-body>
+                </v-table>
             </div>
 
-            <!--列表体-->
-            <div :style="{height:bodyH}" style="position:relative;">
-                <!--加载中-->
-                <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
-                    <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
-                </div>
-                <!--暂无数据-->
-                <div v-if="data.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
-                    <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
-                </div>
-
-                <Scroll :listen="data" ref="scroll">
-                    <div class="table_body">
-                        <div class="row" v-for="d in data">
-                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
-                            <div class="column" style="width:200px;"    :title="d.name"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
-                            <div class="column" :style="{width:column_w+'px'}"><span class="overflow"  :title="d.address" :style="{width:column_w+'px'}">{{d.address}}</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow clickItem" style="width:150px;" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.time}}</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow clickItem" style="width:100px;" @click="collectChart(d)">{{d.collect}}</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.businessState}}</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.region}}</span></div>
-                            <div class="column" style="width:150px;"><span class="overflow" style="width:150px;">{{d.firm}}</span></div>
-                        </div>
-                    </div>
-                </Scroll>
-            </div>
 
             <!--分页栏-->
             <div name="page_container" class="page_container" style="background-color:white;">
@@ -217,10 +201,10 @@ export default {
   methods:{
     layout(){
         setTimeout(()=>{
-            this.bodyH=`calc(100% - 50px - 40px - ${$(this.$el).find('.option_bar').height()}px)`;
+            this.bodyH=`calc(100% - 50px  - ${$(this.$el).find('.option_bar').height()}px)`;
 
             this.$nextTick(()=>{
-                this.$refs.scroll.reloadyScroll()
+                this.$refs.listTable.reloadScroll();
             })
         },100);
         this.column_w=$(this.$el).width()-1290;
@@ -375,6 +359,7 @@ export default {
     },
     //排序改变事件
     orderChange(type,val){
+
      let orderCache=this[type];
 
      if(orderCache==val) return;
@@ -397,7 +382,7 @@ export default {
      this.orderObj.sort=fieldMap[type];
      this.orderObj.order=val?'desc':'asc';
      this.getPlaceData();
-
+      
     },
     //场所范围
     placechange(query,val){

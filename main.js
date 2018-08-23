@@ -14,6 +14,8 @@ import {Dropdown,DropdownMenu,DropdownItem,Button,ButtonGroup,Select,Option,Opti
         Radio,Tabs,TabPane,Slider,Switch,TimePicker,TimeSelect
        } from 'element-ui'
 
+import {VTable,VTableBody,VTableHeader,VTableColumn,VTableRow} from 'components/table/index'
+
 // import ctable from 'components/table/table'
 // import ccolumn from 'components/table/tableColumn'
 
@@ -63,6 +65,14 @@ Vue.component(Radio.name,Radio);
 Vue.component(Tabs.name,Tabs);
 Vue.component(TabPane.name,TabPane);
 Vue.component(Slider.name,Slider);
+
+
+//注册自定义列表插件(可拖动列)
+Vue.component(VTable.name,VTable);
+Vue.component(VTableBody.name,VTableBody);
+Vue.component(VTableHeader.name,VTableHeader);
+Vue.component(VTableColumn.name,VTableColumn);
+Vue.component(VTableRow.name,VTableRow);
 
 //全局验证配置方法
 Vue.mixin({
@@ -160,15 +170,6 @@ Vue.directive('focus', {
   }
 })
 
-//拖动列表头指令
-Vue.directive('drag-header',{
-   // 当被绑定的元素插入到 DOM 中时……
-   inserted: function (el) {
-     let colSelector=el.getAttribute('col-selector');
-     let cols = $(el).find(colSelector);
-    console.log(cols);
-  }
-});
 
 Vue.mixin({
   data(){

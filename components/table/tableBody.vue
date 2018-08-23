@@ -9,16 +9,27 @@
 import Vue from 'vue'
 import cRow from './tableRow'
 import Scroll from 'components/scroll'
+import Loading from 'components/Loading'
 
 export default {
   name: 'v-table-body',
-  props:['listen','store'],
+  props:['listen','store','blnLoading'],
   data () {
     return {
+      info:'暂无数据'
+    }
+  },
+  watch:{
+    listen(){
+      this.showInfo();
+    },
+    blnLoading(){
+      this.$refs.loading.blnShow(this.blnLoading);
     }
   },
   mounted(){
-    
+    this.$refs.loading.blnShow(false);
+    this.showInfo();
   },
   render: function (createElement) {
 
@@ -36,6 +47,7 @@ export default {
         createElement(Scroll,
           {
             props:{ listen:this.listen || []},
+            ref:'scroll'
           },
           _.map(rows,(r,i)=>createElement(cRow,{
               props:{
@@ -44,20 +56,45 @@ export default {
             },
             rows[i].componentOptions.children)
           )
-        )
+        ),
+        createElement(Loading,{ref:'loading'}),
+        createElement('div',{
+          ref:'info',
+          style:{
+            'width':'100%',
+            'height':'100%',
+            'text-align':'center',
+            'display':'table',
+          }
+        },[
+          createElement('div',{
+            style:{
+              'display':'table-cell',
+              'vertical-align': 'middle'
+            }
+          },this.info)
+        ])
       ]
       
     )
   },
   methods:{
-      clickHandler(){
-        //console.log(this.row);
+    showInfo(){
+      if(this.listen && this.listen.length>0){
+        $(this.$refs.info).hide();
+      }else{
+        $(this.$refs.info).show();
       }
+    }
   }
+  
 }
 </script>
 <style lang="less">
+  @import "../../css/variables.less";
   @import './common.less';
-  .tableBbody{width:100%;height:100%;background-color:@tableBodyBG;}
+  .tableBbody{width:100%;height:100%;background-color:@tableBodyBG;position:relative;}
+  html{.TColLighten(~".tableBbody .table-row:nth-child(even)",90%,'bg');}
+
 </style>
 

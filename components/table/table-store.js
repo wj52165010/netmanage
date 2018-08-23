@@ -8,6 +8,10 @@ mutations={
 
         blnArr?states.columns.splice(index,0,...column):
                states.columns.splice(index,0,column) ;
+    },
+    //删除列
+    deleteColumn(states){
+        states.columns.splice(0,states.columns.length);
     }
 }
 

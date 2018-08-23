@@ -17,10 +17,20 @@ export default {
     }
   },
   mounted(){
-    let cols=_.filter(this.$slots.default,d=>d.tag);
+    let cols=_.map(_.filter(this.$slots.default,d=>d.tag),d=>{
+      d.componentOptions.propsData.width=d.componentOptions.propsData.width || 0;
+      d.data.attrs=d.data.attrs || {};
+      d.data.attrs.width=d.data.attrs.width || 0;
+      return d;
+    });
+
     this.store.comit('insertColumn',cols,0);
   },
   render: function (createElement) {
+    
+    let  cols= _.filter(this.$slots.default,d=>d.tag);
+
+    
     return createElement(
       'div', 
       {
@@ -35,7 +45,7 @@ export default {
         createElement(cRow,{
           props:{
             store:this.store,
-            columns:this.columns
+            columns:cols,
           }
         })
       ]
@@ -43,15 +53,19 @@ export default {
   },
   computed:{
     columns(){return this.store.states.columns;}
-  }
+  },
+
 }
 </script>
 <style scoped lang="less">
+  @import "../../css/variables.less";
   @import './common.less';
   .table-header{width:100%;height:@tableHeaderH;background-color:@tableHeaderBG;.border('bottom');}
-  .table-header .table-column{display:inline-block;height:100%;}
+
   //设置列的边界线
   .table-header .table-column:first-child{.border('bottom');.border('right');}
   .table-header .table-column:last-child{.border('bottom');}
   .table-header .table-column:not(:first-child):not(:last-child){.border('bottom');.border('right');}
+
+  html{.TCol(~".table-header .table-row ",'bg');}
 </style>
