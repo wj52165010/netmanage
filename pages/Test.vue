@@ -27,7 +27,7 @@
 
                     <v-table-row @click="rowClicks" >
                       <v-table-column v-show="blnShow" :width="50" :title="123">
-                        <i :class="{'fa fa-check-square-o':placeCodeOrder,'fa fa-square-o':!placeCodeOrder}" ></i>
+                        <i @click.stop="placeCodeOrder=!placeCodeOrder" :class="{'fa fa-check-square-o':placeCodeOrder,'fa fa-square-o':!placeCodeOrder}" ></i>
                       </v-table-column>
                       <v-table-column :title="d.name">
                           <span style="margin-right:5px;">场所编码</span>
