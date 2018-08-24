@@ -7,7 +7,7 @@
                 <v-table-column v-show="blnShow" :width="50" :title="123">
                     
                  
-                    <i @click="placeCodeOrder=!placeCodeOrder" :class="{'fa fa-check-square-o':placeCodeOrder,'fa fa-square-o':!placeCodeOrder}" ></i>
+                    <i @click.stop="placeCodeOrder=!placeCodeOrder" :class="{'fa fa-check-square-o':placeCodeOrder,'fa fa-square-o':!placeCodeOrder}" ></i>
                     
                 </v-table-column>
                 <v-table-column :width="100" :title="123">

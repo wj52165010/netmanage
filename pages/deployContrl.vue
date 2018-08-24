@@ -556,7 +556,7 @@ export default {
       return _.map(data,item=>{return { name:item.law_case_title,
                                                             note:item.law_case_note,
                                                             user:item.law_user || '',
-                                                            time:tool.DateByTimestamp(item.log_time || '','yyyy-MM-dd hh:mm:ss'),
+                                                            time:item.log_time.indexOf(':')>=0?item.log_time:tool.DateByTimestamp(item.log_time || '','yyyy-MM-dd hh:mm:ss'),
                                                             ctlNum:item.ctlNum || '0',
                                                             alarmNum:item.total || '0',
                                                             law_case_id:item.law_case_id || '',

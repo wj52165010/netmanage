@@ -21,11 +21,29 @@ export default {
     
   },
   render(h){
-     let columns=this.cols || [];
-     let colContent=this.columns || [];
-     let slots=_.filter(this.$slots.default,d=>d.tag);
-     let fixWTotal=_.reduce(this.cols,(memo,d)=>{return memo+ (d.data.attrs || {width:0}).width},0);
-     let autoCols=_.filter(this.cols,d=>!(d.data.attrs || {width:0}).width).length;
+     let columns=_.filter(this.cols || [],c=>{
+        return (c.data.directives && _.find(c.data.directives,d=>d.name=='show') && _.find(c.data.directives,d=>d.name=='show').value) ||
+               (c.data.directives && !_.find(c.data.directives,d=>d.name=='show'))  ||
+               !c.data.directives  
+      });
+
+    
+    let colContent=_.filter(this.columns || [],c=>{
+        return (c.data.directives && _.find(c.data.directives,d=>d.name=='show') && _.find(c.data.directives,d=>d.name=='show').value) ||
+               (c.data.directives && !_.find(c.data.directives,d=>d.name=='show'))  ||
+               !c.data.directives  
+      });
+    //this.columns || [];
+ 
+    let slots=_.filter(this.$slots.default,d=>d.tag);
+        slots =_.filter(slots || [],c=>{
+          return (c.data.directives && _.find(c.data.directives,d=>d.name=='show') && _.find(c.data.directives,d=>d.name=='show').value) ||
+                (c.data.directives && !_.find(c.data.directives,d=>d.name=='show'))  ||
+                !c.data.directives  
+        });
+
+    let fixWTotal=_.reduce(columns,(memo,d)=>{return memo+ (d.data.attrs || {width:0}).width},0);
+    let autoCols=_.filter(columns,d=>!(d.data.attrs || {width:0}).width).length;
      
      
      return h('div',
@@ -41,7 +59,7 @@ export default {
         columns.map((column,index)=>{
            
            
-           let {width,title} =  this.cols[index].data.attrs || {};
+           let {width,title} =  columns[index].data.attrs || {};
            let curWidth=0;
 
            if(autoCols){//包含自适应列

@@ -26,11 +26,11 @@ export default {
     });
 
     this.store.comit('insertColumn',cols,0);
+    
   },
   render: function (createElement) {
 
     let  cols=_.filter(this.$slots.default,d=>d.tag);
-
     this.replaceCols(cols);
 
     return createElement(
@@ -65,21 +65,20 @@ export default {
       this.replaceFunc(cols);
     },
     replaceStoreCol(cols){
-      console.log(cols);
-      let  newCols=_.map(cols,d=>{
-  
-        let old =_.find(this.columns,c=>c.elm.id==d.elm.id) || d ;
 
-        d.componentOptions.propsData.width=old.componentOptions.propsData.width || 0;
+      if(this.columns.length<=0) return;
+      //if(!cols[0].elm) return;
+          
+      let  newCols=_.map(cols,(d,i)=>{
+
+        d.componentOptions.propsData.width=this.columns[i].componentOptions.propsData.width || 0;
         d.data.attrs=d.data.attrs || {};
-        d.data.attrs.width=old.data.attrs.width || 0;
+        d.data.attrs.width=this.columns[i].data.attrs.width || 0;
+
 
         return d;
       });
       
-      console.log(newCols);
-      console.log('````````````````');
-
 
       this.store.comit('replaceColumn',newCols);
     }
