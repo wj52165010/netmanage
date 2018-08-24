@@ -14,6 +14,7 @@ export default {
   props:['store'],
   data () {
     return {
+      replaceFunc:null
     }
   },
   mounted(){
@@ -27,10 +28,11 @@ export default {
     this.store.comit('insertColumn',cols,0);
   },
   render: function (createElement) {
-    
-    let  cols= _.filter(this.$slots.default,d=>d.tag);
 
-    
+    let  cols=_.filter(this.$slots.default,d=>d.tag);
+
+    this.replaceCols(cols);
+
     return createElement(
       'div', 
       {
@@ -54,6 +56,34 @@ export default {
   computed:{
     columns(){return this.store.states.columns;}
   },
+  methods:{
+    replaceCols(cols){
+      if(!this.replaceFunc){
+        this.replaceFunc =  _.throttle(this.replaceStoreCol,200);
+      }
+    
+      this.replaceFunc(cols);
+    },
+    replaceStoreCol(cols){
+      console.log(cols);
+      let  newCols=_.map(cols,d=>{
+  
+        let old =_.find(this.columns,c=>c.elm.id==d.elm.id) || d ;
+
+        d.componentOptions.propsData.width=old.componentOptions.propsData.width || 0;
+        d.data.attrs=d.data.attrs || {};
+        d.data.attrs.width=old.data.attrs.width || 0;
+
+        return d;
+      });
+      
+      console.log(newCols);
+      console.log('````````````````');
+
+
+      this.store.comit('replaceColumn',newCols);
+    }
+  }
 
 }
 </script>

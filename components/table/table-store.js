@@ -12,6 +12,10 @@ mutations={
     //删除列
     deleteColumn(states){
         states.columns.splice(0,states.columns.length);
+    },
+    //重置列数据比较两个列集合是否存在差异(存在则替换)
+    replaceColumn(states,column){
+        states.columns=column;
     }
 }
 

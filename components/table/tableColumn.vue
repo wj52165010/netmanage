@@ -1,6 +1,6 @@
 <!-- 列表列插件 -->
 <template>
-  <div class="table-column" @click="click()">
+  <div class="table-column" :id="id" @click="click()">
     <slot></slot>
   </div>
 </template>
@@ -10,6 +10,7 @@ export default {
   props:['column'],
   data () {
     return {
+      id:'col'+tool.guid()
     }
   },
   computed:{
