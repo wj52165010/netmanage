@@ -34,8 +34,7 @@ export default {
   render: function (createElement) {
 
     let rows=_.filter(this.$slots.default,d=>d.tag);
-    let data=this.data;
-  
+
     return createElement(
       'div', 
       {
@@ -52,6 +51,12 @@ export default {
           _.map(rows,(r,i)=>createElement(cRow,{
               props:{
                 store:this.store
+              },
+              on:{
+                click:(e)=>{this.rowClick(e,r,i)}
+              },
+              class:{
+                rowClick:r.componentOptions.listeners && r.componentOptions.listeners.click
               }
             },
             rows[i].componentOptions.children)
@@ -85,6 +90,11 @@ export default {
       }else{
         $(this.$refs.info).show();
       }
+    },
+    //行单击事件
+    rowClick(e,r,index){
+      let listeners =r.componentOptions.listeners;
+      listeners && listeners.click && listeners.click(index);
     }
   }
   
@@ -94,7 +104,11 @@ export default {
   @import "../../css/variables.less";
   @import './common.less';
   .tableBbody{width:100%;height:100%;background-color:@tableBodyBG;position:relative;}
-  html{.TColLighten(~".tableBbody .table-row:nth-child(even)",90%,'bg');}
+  html{.TColLighten(~".tableBbody .table-row:nth-of-type(even)",90%,'bg');}
+
+  .tableBbody .rowClick{cursor:pointer;}
+
+  .tableBbody .rowClick:hover{color:white;background-color:#777777;}
 
 </style>
 

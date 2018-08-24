@@ -21,21 +21,26 @@ export default {
     
   },
   render(h){
-     let columns=_.filter(this.cols || [],c=>{
-        return (c.data.directives && _.find(c.data.directives,d=>d.name=='show') && _.find(c.data.directives,d=>d.name=='show').value) ||
-               (c.data.directives && !_.find(c.data.directives,d=>d.name=='show'))  ||
-               !c.data.directives  
-      });
+    let blnTmp=false;//行内子集是否为模板数据 
+
+    let columns=_.filter(this.cols || [],c=>{
+      return (c.data.directives && _.find(c.data.directives,d=>d.name=='show') && _.find(c.data.directives,d=>d.name=='show').value) ||
+              (c.data.directives && !_.find(c.data.directives,d=>d.name=='show'))  ||
+              !c.data.directives  
+    });
 
     
     let colContent=_.filter(this.columns || [],c=>{
-        return (c.data.directives && _.find(c.data.directives,d=>d.name=='show') && _.find(c.data.directives,d=>d.name=='show').value) ||
-               (c.data.directives && !_.find(c.data.directives,d=>d.name=='show'))  ||
-               !c.data.directives  
-      });
-    //this.columns || [];
- 
-    let slots=_.filter(this.$slots.default,d=>d.tag);
+      return (c.data.directives && _.find(c.data.directives,d=>d.name=='show') && _.find(c.data.directives,d=>d.name=='show').value) ||
+              (c.data.directives && !_.find(c.data.directives,d=>d.name=='show'))  ||
+              !c.data.directives  
+    });
+
+
+    //每行的子集合
+    blnTmp =!(_.filter(this.$slots.default,d=>d.tag && d.tag.indexOf('v-table-column')>=0).length>0 || this.columns);
+
+    let slots=_.filter(this.$slots.default,d=>d.tag && d.tag.indexOf('v-table-column')>=0);
         slots =_.filter(slots || [],c=>{
           return (c.data.directives && _.find(c.data.directives,d=>d.name=='show') && _.find(c.data.directives,d=>d.name=='show').value) ||
                 (c.data.directives && !_.find(c.data.directives,d=>d.name=='show'))  ||
@@ -49,16 +54,17 @@ export default {
      return h('div',
         {
           class:{
-            'table-row':true,
+            'table-row':!blnTmp,
+            'table-row-tmp':blnTmp,
           },
           on:{
             //mousemove:colContent.length?this.mousemove:function(){},
             //mouseup:colContent.length?this.header_mouseup:function(){},
+            click:this.rowClick
           }
         },
-        columns.map((column,index)=>{
-           
-           
+        !blnTmp?columns.map((column,index)=>{
+                 
            let {width,title} =  columns[index].data.attrs || {};
            let curWidth=0;
 
@@ -89,7 +95,8 @@ export default {
             [
               colContent[index] || slots[index] || ''
             ]);
-        })
+        }):
+        this.$slots.default
     );
   },
   computed:{
@@ -176,6 +183,10 @@ export default {
       this.curDragHeader=null;
      
     },
+    //行单击事件
+    rowClick(e){
+      this.$emit('click',e);
+    }
   }
 }
 </script>
