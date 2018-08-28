@@ -85,7 +85,7 @@ export default {
             
            return h('div',{
               'class':{'table-row-item':true},
-              'style':{'width':curWidth},
+              'style':{'width':curWidth,'border-right':this.blnBase?'none':false},
               'attrs':{'title':title,'data-index':index},
               'on':{
                 mousemove:colContent.length?this.header_mousemove:function(){},
@@ -100,7 +100,8 @@ export default {
     );
   },
   computed:{
-    cols(){return this.store.states.columns;}
+    cols(){return this.store.states.columns;},
+    blnBase(){return this.store.states.base;}
   },
   methods:{
     //判断鼠标是否进入的可拖动表头宽度的位置
@@ -162,21 +163,27 @@ export default {
       let instances= width-this.curDragHeader.width(); //拖动距离
       let colIndex=parseInt(this.curDragHeader.parents('.table-row-item').attr('data-index'));
 
+      let cols=_.filter(this.cols || [],c=>{
+                return (c.data.directives && _.find(c.data.directives,d=>d.name=='show') && _.find(c.data.directives,d=>d.name=='show').value) ||
+                        (c.data.directives && !_.find(c.data.directives,d=>d.name=='show'))  ||
+                        !c.data.directives  
+              });  
 
-      if(this.cols[colIndex])this.cols[colIndex].data.attrs.width=width;
-
-      if(this.cols[colIndex+1]){
+      if(cols[colIndex+1]){
         let relatievDom = $(this.$el).find(`div[class="table-row-item"][data-index="${colIndex+1}"]`);
         let relativeW=relatievDom.width();
-        this.cols[colIndex+1].data.attrs.width=relativeW-instances;
+        cols[colIndex+1].data.attrs.width=(relativeW-instances)>20?relativeW-instances:20;
+
+        if(cols[colIndex])cols[colIndex].data.attrs.width=(relativeW-instances)>20?width:this.curDragHeaderW.width()+relativeW-20;
 
       }else{
         let relatievDom = $(this.$el).find(`div[class="table-row-item"][data-index="${colIndex-1}"]`);
         let relativeW=relatievDom.width();
-        this.cols[colIndex-1].data.attrs.width=relativeW-instances;
+        cols[colIndex-1].data.attrs.width=(relativeW-instances)>20?relativeW-instances:20;
+
+        if(cols[colIndex])cols[colIndex].data.attrs.width=(relativeW-instances)>20?width:this.curDragHeaderW.width()+relativeW-20;
 
       }
-
 
       this.curDragHeaderW.remove();
       this.curDragHeaderW=null;
@@ -192,12 +199,10 @@ export default {
 </script>
 <style scoped lang="less">
   @import './common.less';
-  .table-row{height:@tableHeaderH;line-height:@tableHeaderH;}
+  .table-row{height:@tableHeaderH;line-height:@tableHeaderH;.border('bottom');}
   .table-row-item{float:left;height:@tableHeaderH;}
-  .table-row-item:first-child{.border('bottom');.border('right');}
-  .table-row-item:last-child{.border('bottom');}
-  .table-row-item:not(:first-child):not(:last-child){.border('bottom');.border('right');}
-
-  .table-header .table-row .table-column{color:white;}
+  .table-row-item:first-child{.border('right');}
+  .table-row-item:last-child{}
+  .table-row-item:not(:first-child):not(:last-child){.border('right');}
 
 </style>

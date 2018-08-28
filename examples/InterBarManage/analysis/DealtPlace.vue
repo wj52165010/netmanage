@@ -5,34 +5,34 @@
             <!--操作栏-->
             <div class="option_bar">
                 <div class="item">
+                    <span>问题等级:</span><div style="display:inline-block;">
+                    <el-select placeholder="请选择" :clearable="true">
+                            <el-option
+                                v-for="kind in []"
+                                :key="kind.code"
+                                :label="kind.name"
+                                :value="kind.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span>问题分类:</span><div style="display:inline-block;">
+                    <el-select placeholder="请选择" :clearable="true">
+                            <el-option
+                                v-for="kind in []"
+                                :key="kind.code"
+                                :label="kind.name"
+                                :value="kind.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+
+                <div class="item">
                     <span>场所范围:</span><div style="display:inline-block;">
                         <PlaceSearch  :blnClear="true" c_searchKind="1" :microprobeType="microprobe_type" ccontext="region"  @place_res="placechange"></PlaceSearch>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <span>紧急分类:</span><div style="display:inline-block;">
-                    <el-select placeholder="请选择" :clearable="true">
-                            <el-option
-                                v-for="kind in []"
-                                :key="kind.code"
-                                :label="kind.name"
-                                :value="kind.value">
-                            </el-option>
-                        </el-select>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <span>处置状态:</span><div style="display:inline-block;">
-                    <el-select placeholder="请选择" :clearable="true">
-                            <el-option
-                                v-for="kind in []"
-                                :key="kind.code"
-                                :label="kind.name"
-                                :value="kind.value">
-                            </el-option>
-                        </el-select>
                     </div>
                 </div>
 
@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="item">
-                    <span>区域范围:</span><div style="display:inline-block;">
+                    <span>所属区域:</span><div style="display:inline-block;">
                         <PlaceSearch  :blnClear="true" c_searchKind="0" :microprobeType="microprobe_type" ccontext="region"  @place_res="placechange"></PlaceSearch>
                     </div>
                 </div>
@@ -57,98 +57,81 @@
 
                 <!--右边操作栏-->
                 <div class="right_option_bar">
-                    <div class="item"  @click="changeChart='bar'"><i class="fa fa-copyright" /> 撤销</div>
-                    <div class="item"  @click="changeChart='line'"><i class="fa fa-legal" /> 审核</div>
                     <div class="exportSel" style="display:inline-block;" :class="{active:blnExport}" @click="blnExport=!blnExport"><i class="fa fa-check-square" style="margin-right:5px;" />选择</div>
                 </div>
 
             </div>
 
-            <!--列表头-->
-            <div class="table_header">
-                <div class="row">
-                    <div class="column cursor" style="width:50px;" @click="selAll()" v-if="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
-
-                    <div class="column" style="width:200px;">
-                        <span class="overflow" style="width:200px;position:relative;">
-                            <span style="margin-right:5px;">场所编码</span>
+            <!--列表容器-->
+            <div style="width:100%;" :style="{height:bodyH}">
+                <v-table :listen="data" :blnLoading="blnLoading" ref="listTable">
+                    <v-table-header>
+                        <v-table-column v-show="blnExport" :width="50" >
+                            <span class="overflow" @click="selAll()"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span>
+                        </v-table-column>
+                        <v-table-column :width="200" >
+                             <span style="margin-right:5px;">场所编码</span>
                             <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="placeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="placeOrder=true"></i>
-                        </span>
-                    </div>
-
-                    <div class="column" style="width:200px;">
-                        <span class="overflow" style="width:200px;position:relative;">
+                        </v-table-column>
+                        <v-table-column :width="200" >
                             <span style="margin-right:5px;">场所名称</span>
                             <i class="fa fa-caret-up" :class="{active:!placeNameOrder}" @click="placeNameOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeNameOrder}" @click="placeNameOrder=true"></i>
-                        </span>
-                    </div>
-
-                    <div class="column" style="width:120px;">
-                        <span class="overflow" style="width:120px;position:relative;">
+                        </v-table-column>
+                        <v-table-column :width="120" >
                             <span style="margin-right:5px;">所属厂商</span>
                             <i class="fa fa-caret-up" :class="{active:!firmOrder}" @click="firmOrder=false"></i><i class="fa fa-caret-down" :class="{active:firmOrder}" @click="firmOrder=true"></i>
-                        </span>
-                    </div>
-
-                    <div class="column" style="width:120px;">
-                        <span class="overflow" style="width:120px;position:relative;">
+                        </v-table-column>
+                        <v-table-column :width="120" >
                             <span style="margin-right:5px;">所属区域</span>
                             <i class="fa fa-caret-up" :class="{active:!areaOrder}" @click="areaOrder=false"></i><i class="fa fa-caret-down" :class="{active:areaOrder}" @click="areaOrder=true"></i>
-                        </span>
-                    </div>
-
-                    <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">场所状态</span></div>
-                    <div class="column" style="width:120px;">
-                        <span class="overflow" style="width:120px;">
-                            终端概况
-                            <el-tooltip placement="top" content="申报终端/检测终端/在线终端"><i class="fa fa-question-circle" /></el-tooltip>
-                        </span>
-                    </div>  
-
-                    <div class="column" style="width:120px;">
-                        <span class="overflow" style="width:120px;position:relative;">
+                        </v-table-column>
+                        <v-table-column :width="80" >
+                            场所状态
+                        </v-table-column>
+                        <v-table-column :width="120" >
+                            <span>
+                                终端概况
+                                <el-tooltip placement="top" content="申报终端/检测终端/在线终端"><i class="fa fa-question-circle" /></el-tooltip>
+                            </span>
+                        </v-table-column>
+                        <v-table-column :width="120" >
                             <span style="margin-right:5px;">最近联系时间</span>
                             <i class="fa fa-caret-up" :class="{active:!timeOrder}" @click="timeOrder=false"></i><i class="fa fa-caret-down" :class="{active:timeOrder}" @click="timeOrder=true"></i>
-                        </span>
-                    </div>
+                        </v-table-column>
+                        <v-table-column :width="80" >
+                            昨日采集
+                        </v-table-column>
+                        <v-table-column :width="120" >
+                            <span>
+                                问题数量
+                                <el-tooltip placement="top" content="申报终端/检测终端/在线终端"><i class="fa fa-question-circle" /></el-tooltip>
+                            </span>
+                        </v-table-column>
+                        <v-table-column  >
+                            推送问题摘要
+                        </v-table-column>
 
-                    <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">昨日采集</span></div>
-                    <div class="column"><span class="overflow" :style="{width:column_w+'px'}">待处理问题摘要</span></div>
-                    <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">处理耗时</span></div>  
-                    <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">处置状态</span></div>  
-                </div>
-            </div>
-            
-            <!--列表体-->
-            <div :style="{height:bodyH}" style="position:relative;">
-                <!--加载中-->
-                <div v-if="blnLoading" style="position: absolute;top: 0px;left: 0px;right: 0px;bottom: 0px;font-size: 50px;z-index: 100;">
-                    <div style="display:table;width: 100%;height: 100%;"><div style="display: table-cell;vertical-align: middle;text-align: center;"><i class="fa fa-spinner fa-pulse"></i></div></div>
-                </div>
-                <!--暂无数据-->
-                <div v-if="viewData.length<=0 && blnLoading==false" style="width:100%;height:100%;text-align:center;display:table;">
-                    <div style="display:table-cell;vertical-align: middle;">暂无数据</div>
-                </div>
+                    </v-table-header>
 
-                <Scroll :listen="viewData" ref="scroll">
-                    <div class="table_body">
-                        <div class="row" v-for="(d,i) in viewData">
-                            <div class="column cursor" style="width:50px;" @click="selItem(d,i)" v-if="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></div>
-                            <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
-                            <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.firm}}</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.region}}</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow" style="width:80px;" :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.time}}</span></div>
-                            <div class="column" style="width:80px;"><span class="overflow clickItem" style="width:80px;" @click="collectChart(d)">{{d.collect}}</span></div>
-                            <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="callPolicy(d)">{{d.reason}}</span></div>
-                            <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.noteway}}</span></div>  
-                            <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" @click="handerWay(d)">{{d.handlerState}}</span></div> 
-                        </div>
-                    </div>
-                </Scroll>
+                    <v-table-body>
+                        <v-table-row v-for="d in data">
+                            <v-table-column v-show="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></v-table-column>
+                            <v-table-column><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></v-table-column>
+                            <v-table-column>{{d.name}}</v-table-column>
+                            <v-table-column>{{d.firm}}</v-table-column>
+                            <v-table-column>{{d.region}}</v-table-column>
+                            <v-table-column><span :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></v-table-column>
+                            <v-table-column><span class="overflow clickItem" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></v-table-column>
+                            <v-table-column>{{d.time}}</v-table-column>
+                            <v-table-column><span class="overflow clickItem" @click="collectChart(d)">{{d.collect}}</span></v-table-column>
+                            <v-table-column>{{d.num}}</v-table-column>
+                            <v-table-column><span class="overflow clickItem" @click="callPolicy(d)">{{d.reason}}</span></v-table-column>
+                        </v-table-row>
+                    </v-table-body>
+
+                </v-table>
             </div>
+
 
             <!--分页栏-->
             <div name="page_container" class="page_container" style="background-color:white;">
@@ -190,9 +173,9 @@ export default {
       bodyResizeSub:null,
       bodyH:0,
       data:[
-        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'severity',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',noteway:'1小时',handlerState:'处置中'},
-        {code:'53011135000125',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'general',state:'offline',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',noteway:'1小时',handlerState:'已完成'},
-        {code:'53011135000124',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'ignore',state:'abnormal',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',noteway:'2小时',handlerState:'处置中'}
+        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'severity',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',},
+        {code:'53011135000125',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'general',state:'offline',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',},
+        {code:'53011135000124',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'ignore',state:'abnormal',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',}
       ],
       blnLoading:false,
       pageIndex:0,
@@ -246,13 +229,13 @@ export default {
   methods:{
     layout(){
         setTimeout(()=>{
-            this.bodyH=`calc(100% - 50px - 40px - ${$(this.$el).find('.option_bar').height()}px)`;
+            this.bodyH=`calc(100% - 50px  - ${$(this.$el).find('.option_bar').height()}px)`;
 
             this.$nextTick(()=>{
-                this.$refs.scroll.reloadyScroll()
+                this.$refs.listTable.reloadScroll()
             })
         },500);
-        this.column_w=$(this.$el).width()-(this.blnExport?1330:1280) -10;
+        this.column_w=$(this.$el).width()-(this.blnExport?1210:1160) -10;
     },
     //全选/取消全选
     selAll(){
@@ -466,8 +449,6 @@ html{.TCol(~".DealtPlace .right_option_bar .item:hover");}
 
 .DealtPlace .cursor{cursor:pointer;}
 
-.DealtPlace .page_container{.border('top');}
-
 .DealtPlace .table_body .item{cursor:pointer;}
 html{.TCol(~".DealtPlace .table_body .item:hover");}
 
@@ -483,30 +464,6 @@ html{.TCol(~".DealtPlace .table_body .item:hover");}
 
 .DealtPlace .clickItem:hover{cursor:pointer;text-decoration:underline;}
 html{.TCol(~".DealtPlace .clickItem");}
-
-//列表显示样式
-@header_H:40px;
-.DealtPlace .table_header{height:@header_H;display:table;width:100%;border:none;color:white;}
-html{.TCol(~".DealtPlace .table_header .row",'bg');}
-
-.DealtPlace .table_header .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
-.DealtPlace .row{height:@header_H;display:table-row;width:100%;line-height:@header_H;.border('bottom');background-color:white;}
-.DealtPlace .table_header .column .sort_item .triangle-up:hover{cursor:pointer;}
-html{.TCol(~".DealtPlace .table_header .column .sort_item .triangle-up:hover",'bbc');}
-
-.DealtPlace .table_header .column .sort_item .triangle-down:hover{cursor:pointer;}
-html{.TCol(~".DealtPlace .table_header .column .sort_item .triangle-down:hover",'btc');}
-
-html{.TCol(~".DealtPlace .table_header .column .sort_item .triangle-up.active",'bbc');}
-
-html{.TCol(~".DealtPlace .table_header .column .sort_item .triangle-down.active",'btc');}
-
-.DealtPlace .table_body{width:100%;height:~"calc(100% - @{header_H} - 40px)";.border('bottom');}
-.DealtPlace .table_body{width:100%;display:table;width:100%;border:none;}
-.DealtPlace .table_body .column{display:table-cell;text-align:center;.border('right');overflow: hidden;text-overflow: ellipsis;white-space: nowrap;vertical-align: middle;}
-
-.DealtPlace .table_body .column:first-child{.border('left');}
-.overflow{text-overflow:ellipsis;overflow:hidden;white-space:nowrap;display:block;}
 
 //导出
 .DealtPlace  .exportSel{cursor:pointer;}

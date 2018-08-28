@@ -13,16 +13,22 @@ import ctableBody from './tableBody'
 export default {
   name: 'v-table',
   components:{'v-table-header':ctableHeader,'v-table-body':ctableBody},
-  props:['listen','blnLoading'],
+  props:['listen','blnLoading','base'],
   data () {
     return {
       store:new TableStore(),
     }
   },
   render: function (createElement) {
-    let self=this;
-    this.$slots.default[0].componentOptions.propsData={listen:this.listen,store:this.store,blnLoading:this.blnLoading};//设置Props属性值
-    this.$slots.default[2].componentOptions.propsData={listen:this.listen,store:this.store,blnLoading:this.blnLoading};
+    let self=this,
+        props={
+          listen:this.listen,
+          store:this.store,
+          blnLoading:this.blnLoading,
+        };
+    this.$slots.default[0].componentOptions.propsData=Object.assign({},this.$slots.default[0].componentOptions.propsData || {},props,{style:this.$slots.default[0].data.style || {}});//设置Props属性值
+    this.$slots.default[2].componentOptions.propsData=Object.assign({},this.$slots.default[2].componentOptions.propsData || {},props);
+
 
     return createElement(
       'div', 
@@ -40,6 +46,11 @@ export default {
         attrs: {
           
         },
+        style:{
+          'border-top':this.base?'none':false,
+          'border-left':this.base?'none':false,
+          'border-right':this.base?'none':false,
+        }
       },
       [
         createElement('div',[this.$slots.default[0]]),
@@ -54,7 +65,7 @@ export default {
     )
   },
   mounted(){
-    
+    this.store.comit('showWay',this.base);
   },
   methods:{
     mouseup(e){

@@ -71,8 +71,8 @@
                 <!--右边操作栏-->
                 <div class="right_option_bar">
                     <div class="item" ><i class="fa fa-ban" /> 忽略</div>
-                    <div class="item" ><i class="fa fa-copyright" /> 撤销</div>
-                    <div class="item" ><i class="fa fa-volume-down" /> 通知</div>
+                    <div class="item" ><i class="fa fa-copyright" /> 观察</div>
+                    <div class="item" ><i class="fa fa-volume-down" /> 处理</div>
                     <div class="exportSel" style="display:inline-block;" :class="{active:blnExport}" @click="blnExport=!blnExport"><i class="fa fa-check-square" style="margin-right:5px;" />选择</div>
                 </div>
             </div>
@@ -81,6 +81,13 @@
             <div class="table_header">
                 <div class="row">
                     <div class="column cursor" style="width:50px;" @click="selAll()" v-if="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span></div>
+                    
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">问题分类</span></div>
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">问题等级</span></div>
+                    <div class="column"><span class="overflow" :style="{width:column_w+'px'}">最新问题摘要</span></div>
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">处理方式</span></div>
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">操作者</span></div>
+                    
                     <div class="column" style="width:200px;">
                         <span class="overflow" style="width:200px;position:relative;">
                             <span style="margin-right:5px;">场所编码</span>
@@ -125,11 +132,7 @@
                     </div>
 
                     <div class="column" style="width:80px;"><span class="overflow" style="width:80px;">昨日采集</span></div>
-                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">问题类型</span></div>
-                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">问题等级</span></div>
-                    <div class="column"><span class="overflow" :style="{width:column_w+'px'}">昨日问题摘要</span></div>
-                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">处理方式</span></div>
-                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">操作者</span></div>
+                
                 </div>
             </div>
 
@@ -148,6 +151,12 @@
                     <div class="table_body">
                         <div class="row" v-for="(d,i) in viewData">
                             <div class="column cursor" style="width:50px;" @click="selItem(d,i)" v-if="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.issueKind}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;" :style="{color:converIssueLevel(d.issueLevel).color}">{{converIssueLevel(d.issueLevel).name}}</span></div>
+                            <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="issueDetail(d)">{{d.digest}}</span></div>
+                            <div class="column" style="width:100px;" @click="handleMode(d)"><span class="overflow clickItem" style="width:100px;">{{d.handleWay}}</span></div>
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.user}}</span></div>
+
                             <div class="column" style="width:200px;"><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></div>
                             <div class="column" style="width:200px;"><span class="overflow" style="width:200px;">{{d.name}}</span></div>
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.firm}}</span></div>
@@ -156,11 +165,7 @@
                             <div class="column" style="width:120px;"><span class="overflow clickItem" style="width:120px;" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></div>  
                             <div class="column" style="width:120px;"><span class="overflow" style="width:120px;">{{d.time}}</span></div>
                             <div class="column" style="width:80px;"><span class="overflow clickItem" style="width:80px;" @click="collectChart(d)">{{d.collect}}</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.issueKind}}</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;" :style="{color:converIssueLevel(d.issueLevel).color}">{{converIssueLevel(d.issueLevel).name}}</span></div>
-                            <div class="column"><span class="overflow clickItem" :style="{width:column_w+'px'}" @click="issueDetail(d)">{{d.digest}}</span></div>
-                            <div class="column" style="width:100px;" @click="handleMode(d)"><span class="overflow clickItem" style="width:100px;">{{d.handleWay}}</span></div>
-                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">{{d.user}}</span></div>
+                            
                         </div>
                     </div>
                 </Scroll>

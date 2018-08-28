@@ -11,7 +11,7 @@ import cRow from './tableRow'
 
 export default {
   name: 'v-table-header',
-  props:['store'],
+  props:['store','style'],
   data () {
     return {
       replaceFunc:null
@@ -48,13 +48,14 @@ export default {
           props:{
             store:this.store,
             columns:cols,
-          }
+          },
+          style:Object.assign({},this.style)
         })
       ]
     )
   },
   computed:{
-    columns(){return this.store.states.columns;}
+    columns(){return this.store.states.columns;},
   },
   methods:{
     replaceCols(cols){
@@ -95,6 +96,8 @@ export default {
   .table-header .table-column:first-child{.border('bottom');.border('right');}
   .table-header .table-column:last-child{.border('bottom');}
   .table-header .table-column:not(:first-child):not(:last-child){.border('bottom');.border('right');}
+
+  .table-header .table-row {color:white;}
 
   html{.TCol(~".table-header .table-row ",'bg');}
 </style>

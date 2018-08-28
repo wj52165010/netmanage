@@ -42,8 +42,8 @@
                     <v-table-row>
                         <div v-if="d.showTmp" class="table_test fadeIn">
 
-                          <v-table :listen="childData">
-                            <v-table-header>
+                          <v-table :listen="childData" :base="true">
+                            <v-table-header :style="{'background-color':'transparent','color':'black'}">
                               <v-table-column>名称</v-table-column>
                               <v-table-column>内容</v-table-column>
                             </v-table-header>
@@ -85,6 +85,7 @@ export default {
       blnShow:false,
       childData:[
         {name:1,id:2,content:'421421',showTmp:false},
+        {name:1,id:2,content:'421421',showTmp:false}
       ]
     }
   },
@@ -107,6 +108,6 @@ export default {
 @import "../css/variables.less";
 .Test{width:100%;height:100%;}
 
-.table_test{}
+.table_test{padding:10px 20px;.border('bottom');position:relative;z-index:1;}
 
 </style>

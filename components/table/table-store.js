@@ -16,6 +16,10 @@ mutations={
     //重置列数据比较两个列集合是否存在差异(存在则替换)
     replaceColumn(states,column){
         states.columns=column;
+    },
+    //设置显示方式
+    showWay(states,blnBase){
+        states.base=blnBase || false;
     }
 }
 
@@ -23,7 +27,8 @@ class TableStore{
    constructor(){
       //仓库状态对象
       this.states={
-         columns:[]
+         columns:[],
+         base:false,//是否显示基础版
       };
    }
 
