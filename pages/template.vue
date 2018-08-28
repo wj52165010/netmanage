@@ -511,7 +511,15 @@ export default {
         config.data =model.data || [],//[{vidlog_id:'2012-12-12 12:12:12',vidlog_number:1},{vidlog_id:'2012-12-12 12:12:12',vidlog_number:1},{vidlog_id:'2012-12-12 12:12:12',vidlog_number:1},{vidlog_id:'2012-12-12 12:12:12',vidlog_number:1}];
         config.options=_.filter(model.field_btns,(btn)=>{return !btn.blnCom;});
         config.field_options=model.field_options;
-        config.queryCondition=tool.Clone(model.queryItems);
+        config.queryCondition=_.map(model.queryItems,m=>{
+            if(m.beforeDay){
+                let curDate=new Date();
+                curDate.setDate(curDate.getDate() - parseInt(m.beforeDay));
+                curDate.setHours(0,0,0);
+                m.defVal=[curDate,new Date];
+            }
+            return m;
+        });
 
         //判断查询字段是否包含远程字段
         let remoteSearch= _.filter(config.queryCondition,q=>this.searchArrType[q.type]=='远程字段');

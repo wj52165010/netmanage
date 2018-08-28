@@ -505,7 +505,7 @@ export default {
     //添加查询条件
     addQuery(){
       this.queryCondition.push(
-        {name:'',type:'1',defVal:'',value:'',filed:'',mask:'',searchFormat:'',referval:[],dropVal:'',range:0,timeShort:[],blnAdd:1,}
+        {name:'',type:'1',defVal:'',value:'',filed:'',mask:'',searchFormat:'',referval:[],dropVal:'',range:0,timeShort:[],blnAdd:1,beforeDay:''}
       );
     },
     //转化索引为字段映射组件需要的格式

@@ -58,11 +58,19 @@
                 </div>
             </div>
 
+            <div class="item" v-show="searchArrType[setF.type]=='日期范围'">
+                <div class="input-group">
+                    <span class="input-group-addon">今天之前</span>
+                    <input type="text" class="form-control" v-model="setF.beforeDay" placeholder="天数">
+                    <span class="input-group-addon">天</span>
+                </div>
+            </div>
+
             <div class="item">
                 <el-input placeholder="请输入默认值" v-if="searchArrType[setF.type]=='文本框'"  v-model="setF.defVal"  class="input-with-select" />
-                <el-date-picker style="width:100%;" v-if="searchArrType[setF.type]=='日期'" format="yyyy-MM-dd" v-model="setF.defVal" type="date" placeholder="选择日期" :picker-options="single_pickerOptions"></el-date-picker>
-                <el-date-picker style="width:100%;" v-if="searchArrType[setF.type]=='生日'" format="yyyy-MM-dd" v-model="setF.defVal" type="date" placeholder="选择日期"></el-date-picker>
-                <el-date-picker style="width:100%;" v-if="searchArrType[setF.type]=='日期范围'" format="yyyy-MM-dd" v-model="setF.defVal" type="daterange" placeholder="选择日期" :picker-options="single_pickerOptions"></el-date-picker>
+                <el-date-picker style="width:100%;" v-if="searchArrType[setF.type]=='日期'" format="yyyy-MM-dd" v-model="setF.defVal" type="date" placeholder="默认日期" :picker-options="single_pickerOptions"></el-date-picker>
+                <el-date-picker style="width:100%;" v-if="searchArrType[setF.type]=='生日'" format="yyyy-MM-dd" v-model="setF.defVal" type="date" placeholder="默认日期"></el-date-picker>
+                <el-date-picker style="width:100%;" v-if="searchArrType[setF.type]=='日期范围'" format="yyyy-MM-dd" v-model="setF.defVal" type="daterange" placeholder="默认日期" :picker-options="single_pickerOptions"></el-date-picker>
                 <el-select style="width:100%;" v-if="searchArrType[setF.type]=='下拉框'" v-model="setF.dropVal" placeholder="请选择" @change="dropChange">
                     <el-option
                         v-for="item in ((setF.filed || {}).referval || [])"
