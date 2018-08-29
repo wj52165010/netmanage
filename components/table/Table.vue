@@ -50,6 +50,7 @@ export default {
           'border-top':this.base?'none':false,
           'border-left':this.base?'none':false,
           'border-right':this.base?'none':false,
+          'border-bottom':this.base?'none':false
         }
       },
       [

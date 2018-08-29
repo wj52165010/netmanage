@@ -70,7 +70,7 @@
                             <span class="overflow" @click="selAll()"><i :class="{'fa fa-check-square-o':blnAllSel,'fa fa-square-o':!blnAllSel}"></i></span>
                         </v-table-column>
                         <v-table-column :width="200" >
-                             <span style="margin-right:5px;">场所编码</span>
+                            <span style="margin-right:5px;">场所编码</span>
                             <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="placeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="placeOrder=true"></i>
                         </v-table-column>
                         <v-table-column :width="200" >
@@ -104,7 +104,7 @@
                         <v-table-column :width="120" >
                             <span>
                                 问题数量
-                                <el-tooltip placement="top" content="申报终端/检测终端/在线终端"><i class="fa fa-question-circle" /></el-tooltip>
+                                <el-tooltip placement="top" content="严重数/观察数/忽略数据"><i class="fa fa-question-circle" /></el-tooltip>
                             </span>
                         </v-table-column>
                         <v-table-column  >
@@ -114,19 +114,55 @@
                     </v-table-header>
 
                     <v-table-body>
-                        <v-table-row v-for="d in data">
-                            <v-table-column v-show="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></v-table-column>
-                            <v-table-column><span class="overflow clickItem" @click="placeDetail(d)" style="width:200px;">{{d.code}}</span></v-table-column>
-                            <v-table-column>{{d.name}}</v-table-column>
-                            <v-table-column>{{d.firm}}</v-table-column>
-                            <v-table-column>{{d.region}}</v-table-column>
-                            <v-table-column><span :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></v-table-column>
-                            <v-table-column><span class="overflow clickItem" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></v-table-column>
-                            <v-table-column>{{d.time}}</v-table-column>
-                            <v-table-column><span class="overflow clickItem" @click="collectChart(d)">{{d.collect}}</span></v-table-column>
-                            <v-table-column>{{d.num}}</v-table-column>
-                            <v-table-column><span class="overflow clickItem" @click="callPolicy(d)">{{d.reason}}</span></v-table-column>
-                        </v-table-row>
+                        <template v-for="d in data">
+                            <v-table-row @click="rowClicks">
+                                <v-table-column v-show="blnExport"><span class="overflow" style="width:50px;"><i :class="{'fa fa-check-square-o':blnSelItem(d),'fa fa-square-o':!blnSelItem(d)}"></i></span></v-table-column>
+                                <v-table-column><span class="overflow clickItem" @click.stop="placeDetail(d)" style="width:200px;">{{d.code}}</span></v-table-column>
+                                <v-table-column>{{d.name}}</v-table-column>
+                                <v-table-column>{{d.firm}}</v-table-column>
+                                <v-table-column>{{d.region}}</v-table-column>
+                                <v-table-column><span :style="{color:converPlaceState(d.state).color}">{{converPlaceState(d.state).name}}</span></v-table-column>
+                                <v-table-column><span class="overflow clickItem" :title="`申报:${d.declareTerminal}/检测:${d.detectionTerminal}/在线:${d.onlineTerminal}`" @click.stop="terminalDetail(d)">{{`${d.declareTerminal}/${d.detectionTerminal}/${d.onlineTerminal}`}}</span></v-table-column>
+                                <v-table-column>{{d.time}}</v-table-column>
+                                <v-table-column><span class="overflow clickItem" @click.stop="collectChart(d)">{{d.collect}}</span></v-table-column>
+                                <v-table-column>
+                                    <span :title="`严重:${d.severityNum}/观察:${d.lookNum}/忽略:${d.ignoreNum}`">
+                                        <span style="color:#ec4840;">{{d.severityNum}}</span>/<span style="color:#ff9600;">{{d.lookNum}}</span>/<span style="color:#007ad5;">{{d.ignoreNum}}</span>
+                                    </span>
+                                </v-table-column>
+                                <v-table-column><span class="overflow clickItem" @click="issueDetail(d)">{{d.reason}}<span v-if="d.blnLast" class="newLable">new</span></span></v-table-column>
+                            </v-table-row>
+                            <v-table-row>
+                                <div v-if="d.showTmp" class="row_item_child fadeIn">
+
+                                    <v-table :listen="childData" :base="true">
+                                        <v-table-header :style="{'background-color':'transparent','color':'black'}">
+                                            <v-table-column :width="150">
+                                                <span style="margin-right:5px;">最近推送时间</span>
+                                                <i class="fa fa-caret-up" :class="{active:!placeOrder}" @click="placeOrder=false"></i><i class="fa fa-caret-down" :class="{active:placeOrder}" @click="placeOrder=true"></i>
+                                            </v-table-column>
+                                            <v-table-column :width="150">问题分类</v-table-column>
+                                            <v-table-column :width="150">问题等级</v-table-column>
+                                            <v-table-column >问题描述</v-table-column>
+                                            <v-table-column :width="150">持续出现</v-table-column>
+                                            <v-table-column :width="150">推送者</v-table-column>
+                                        </v-table-header>
+
+                                        <v-table-body>
+                                            <v-table-row v-for="c in childData">
+                                                <v-table-column>{{c.lastTime}}</v-table-column>
+                                                <v-table-column>{{c.kind}}</v-table-column>
+                                                <v-table-column>{{c.level}}</v-table-column>
+                                                <v-table-column>{{c.desc}}<span v-if="c.blnLast" class="newLable">new</span></v-table-column>
+                                                <v-table-column>{{c.apperTime}}</v-table-column>
+                                                <v-table-column>{{c.user}}</v-table-column>
+                                            </v-table-row>
+                                        </v-table-body>
+                                    </v-table>
+
+                                </div>
+                            </v-table-row>
+                        </template>
                     </v-table-body>
 
                 </v-table>
@@ -151,12 +187,16 @@
 import PlaceSearch from 'components/PlaceSearch'
 import MulDropDwon from 'components/MulDropDown'     //厂商选择控件
 import Scroll from  'components/scroll'
+import HTag from 'components/HTag'
 
 import TerminalDetail from '../TerminalDetail'
 import CallPolicy from '../CallPolicy'
+import IssueList from '../IssueList'
+import PendHandle from '../PendHandle'
 import HandlerWay from '../HandlerWay'
 import CollectChart from '../CollectChart'
 import PlaceDetail from '../PlaceDetail'
+
 
 
 import {BODY_RESIZE,GetFirm} from '../../../store/mutation-types'
@@ -173,10 +213,11 @@ export default {
       bodyResizeSub:null,
       bodyH:0,
       data:[
-        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'severity',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',},
-        {code:'53011135000125',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'general',state:'offline',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',},
-        {code:'53011135000124',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'ignore',state:'abnormal',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',}
+        {code:'53011135000127',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'severity',state:'online',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',blnLast:true,severityNum:3,lookNum:2,ignoreNum:1,showTmp:false,},
+        {code:'53011135000125',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'general',state:'offline',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',blnLast:true,severityNum:3,lookNum:2,ignoreNum:1,showTmp:false,},
+        {code:'53011135000124',name:'重庆智多测试场所',firm:'重庆爱思网安',region:'南岸区',kind:'ignore',state:'abnormal',declareTerminal:'100',detectionTerminal:'90',onlineTerminal:'12',time:'1天前',collect:'0',reason:'场所已离线48小时',blnLast:false,severityNum:3,lookNum:2,ignoreNum:1,showTmp:false,}
       ],
+      childData:[{lastTime:'2018-08-08 10:35:48',kind:'场所离线',level:'严重',desc:'场所已经离线，未上传数据及心跳',apperTime:'2天',user:'系统',blnLast:true}],
       blnLoading:false,
       pageIndex:0,
       placeOrder:false,
@@ -312,6 +353,43 @@ export default {
             return param;
         }());
     },
+    //问题总览详情
+    issueDetail(){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'问题总览详情(场所名称)',
+                area:['800px','400px'],
+                content:`<div class="pendHandle_detail_pop" style="width:100%;height:100%;overflow:hidden;">
+                            <HTag :tags="pages" @change="tagChange">
+                                <div slot="t0" style="height:100%;width:100%;">
+                                    <PendHandle ref="pend" />
+                                </div>
+                                <div slot="t1" style="height:100%;width:100%;">
+                                    <IssueList ref="issue" />
+                                </div>
+                            </HTag>
+                        </div>
+                        `,
+                components:{HTag,IssueList,PendHandle},
+                store:s.$store,
+                context:{
+                    pages:[
+                        {name:'待处理问题详情',icon:'fa fa-list'},
+                        {name:'场所问题日志',icon:'fa fa-list'}
+                    ],
+                    blnExecute:false,
+                    tagChange(i){
+                        i==0?param.$refs.pend.layout():param.$refs.issue.layout();
+                    },
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
+    },
     //报警原因详情
     callPolicy(d){
         let s=this;
@@ -429,6 +507,14 @@ export default {
 
         return res;
     },
+    //列表行单击事件
+    rowClicks(i){
+      let index = i/2;
+      let data =tool.Clone(this.data[index]);
+      data.showTmp=!data.showTmp;
+
+      this.data.splice(index,1,data);
+     }
   }
 }
 </script>
@@ -471,4 +557,8 @@ html{.TCol(~".DealtPlace .exportSel:hover");}
 html{.TCol(~".DealtPlace .exportSel.active");}
 html{.TCol(~".DealtPlace .exportBtn:hover");}
 .DealtPlace .cursor{cursor:pointer;}
+
+.DealtPlace .newLable{padding:5px 10px;background:red;color:white;border-radius:5px;margin-left:5px;}
+
+.DealtPlace .row_item_child{padding:10px 50px;.border('bottom');position:relative;z-index:1;}
 </style>

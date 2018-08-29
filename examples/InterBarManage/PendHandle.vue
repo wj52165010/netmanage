@@ -1,4 +1,4 @@
-<!-- 问题总览详情列表页面组件 -->
+<!-- 问题总览待处理页面组件 -->
 <template>
     <div class="IssueList">
         <div class="IssueList_container">
@@ -6,14 +6,27 @@
             <div class="option_bar">
 
                 <div class="item">
-                    <span>时间范围:</span><div style="display:inline-block;">
+                    <span>报警时间:</span><div style="display:inline-block;">
                         <el-date-picker  type="date" placeholder="选择日期" :picker-options="simpleTime"> </el-date-picker>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span>问题类型:</span><div style="display:inline-block;">
+                        <el-select  placeholder="请选择" :clearable="true">
+                            <el-option
+                                v-for="kind in  []"
+                                :key="kind.value"
+                                :label="kind.name"
+                                :value="kind.value">
+                            </el-option>
+                        </el-select>
                     </div>
                 </div>
 
                 <!--右边操作栏-->
                 <div class="right_option_bar">
-                    <div class="item" ><i class="fa fa-share" /> 导出</div>
+                   
                 </div>
             </div>
 
@@ -28,6 +41,8 @@
                     </div>
 
                     <div class="column"><span class="overflow" :style="{width:column_w+'px'}">问题详情</span></div>
+
+                    <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">推送者</span></div>
                 </div>
             </div>
 
@@ -64,6 +79,8 @@
                                                         </template>
                                                 </span>
                             </div>
+
+                            <div class="column" style="width:100px;"><span class="overflow" style="width:100px;">推送者</span></div>
                         </div>
                     </div>
                 </Scroll>
@@ -92,7 +109,7 @@ import DoubleSystem from './DoubleSystem'
 
 import {BODY_RESIZE,GetFirm} from '../../store/mutation-types'
 export default {
-  name: 'IssueList',
+  name: 'PendHandle',
   components:{Scroll,CircCardList,ExptionCard,LongHungCard,PlusCard,DoubleSystem},
   data () {
     return {
@@ -111,7 +128,7 @@ export default {
             },
             {time:'2018-06-06 17:13:30',content:[
                     {blnExport:false,val:'场所存在非法刷卡上网行为，连续两天使用6张证件反复刷卡上网,最多一张证件刷卡20次'},
-                    {val:'场所一天内共使用了3次外挂共计6小时'}
+                    {blnExport:false,val:'场所一天内共使用了3次外挂共计6小时'}
                 ]
             }
         ],
@@ -150,7 +167,7 @@ export default {
                 this.$refs.scroll.reloadyScroll()
             })
         },500);
-        this.column_w=$(this.$el).width()-200 -10;
+        this.column_w=$(this.$el).width()-300 -10;
     },
   }
 }
