@@ -231,7 +231,7 @@ export default {
   }),
 
   mounted(){
-      //获取远程数据集合
+    //获取远程数据集合
     //   this.$store.dispatch(GetInterface).then(res=>{
     //     if(!tool.msg(res)){return}
     //     this.remoteData=res.biz_body;

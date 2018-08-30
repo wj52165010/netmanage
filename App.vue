@@ -385,6 +385,7 @@ export default {
         //res.biz_body=_.filter(res.biz_body,r=>r.condtionsObj);
         //console.log(tool.Clone(res.biz_body));
         this.$store.commit(Add_System_Menus,res.biz_body);
+
         //this.$store.commit(Add_System_Menus,[res.biz_body[6]]);
         menus_mounted.next(1);
         menuFinish.next(res.biz_body);
