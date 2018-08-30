@@ -598,7 +598,7 @@ export default {
 
         this.curStateChart.setOption(option);
     },
-    //加载待处理场所图标
+    //加载待处理场所图表
     loadPlaceChart(d){
         if(!this.placeChart){
             this.placeChart = echarts.init($(this.$el).find('div[name="place"]')[0]);
@@ -612,25 +612,26 @@ export default {
         let option = {
             title: [
                 {
-                    text: '待处理设备',
+                    text: '待处理场所',
                     x : 50, 
                     textStyle: {  
                         fontSize: 19,
                         fontWeight:900,
                     }, 
                 },
-                {
-                    text: '总量：'+100,
-                    x : 50, 
-                    y : 30, 
-                    textStyle: {  
-                        fontSize: 13,
-                        fontWeight:"normal",
-                    }, 
-            } ],
+                // {
+                //     text: '总量：'+100,
+                //     x : 50, 
+                //     y : 30, 
+                //     textStyle: {  
+                //         fontSize: 13,
+                //         fontWeight:"normal",
+                //     }, 
+                // } 
+            ],
             tooltip: {
                 trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
+                formatter: "{b}: {c} ({d}%)"
             },
             legend: {
                 orient : 'vertical',  
@@ -642,7 +643,7 @@ export default {
                 textStyle: {  
                     fontSize: 13,
                 }, 
-                data:["严重："+100,"一般："+20,"忽略："+10]  
+                data:["处理中："+100,"待处理："+20,"待审核："+10,"已完成："+30]  
             },
             series: [
                 {
@@ -652,7 +653,7 @@ export default {
                     center: ['65%','55%'],
                     data: [
                         {
-                            name: "严重："+100, 
+                            name: "处理中："+100, 
                             value: 100,
                             itemStyle:{
                                 normal:{
@@ -668,7 +669,7 @@ export default {
                                 }
                             }
                         },{
-                            name: "一般："+20, 
+                            name: "待处理："+20, 
                             value: 20,
                             itemStyle:{
                                 normal:{
@@ -684,8 +685,24 @@ export default {
                                 }
                             }
                         },{
-                            name: "忽略："+10, 
+                            name: "待审核："+10, 
                             value: 10,
+                            itemStyle:{
+                                normal:{
+                                    color:'#728498',
+                                    label : {
+                                        show : true,
+                                    textStyle : {
+                                        fontWeight : 300 ,
+                                        fontSize : 12    //文字的字体大小
+                                    }, 
+                                    formatter:'{d}%'
+                                    },
+                                }
+                            }
+                        },{
+                            name: "已完成："+30, 
+                            value: 30,
                             itemStyle:{
                                 normal:{
                                     color:'#728498',

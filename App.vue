@@ -242,9 +242,6 @@ export default {
   },
   mounted(){
 
-    let date=new XDate();
-    console.log(date);
-
     app={t:this,menus:[]};
 
     //判断当前资源加载完成

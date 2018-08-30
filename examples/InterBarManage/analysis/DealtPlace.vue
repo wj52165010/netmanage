@@ -130,7 +130,7 @@
                                         <span style="color:#ec4840;">{{d.severityNum}}</span>/<span style="color:#ff9600;">{{d.lookNum}}</span>/<span style="color:#007ad5;">{{d.ignoreNum}}</span>
                                     </span>
                                 </v-table-column>
-                                <v-table-column><span class="overflow clickItem" @click="issueDetail(d)">{{d.reason}}<span v-if="d.blnLast" class="newLable">new</span></span></v-table-column>
+                                <v-table-column><span class="overflow clickItem" @click="issueDetail(d)">{{d.reason}}</span><span v-if="d.blnLast" class="newLable">new</span></v-table-column>
                             </v-table-row>
                             <v-table-row>
                                 <div v-if="d.showTmp" class="row_item_child fadeIn">
@@ -153,7 +153,7 @@
                                                 <v-table-column>{{c.lastTime}}</v-table-column>
                                                 <v-table-column>{{c.kind}}</v-table-column>
                                                 <v-table-column>{{c.level}}</v-table-column>
-                                                <v-table-column>{{c.desc}}<span v-if="c.blnLast" class="newLable">new</span></v-table-column>
+                                                <v-table-column><span class="clickItem" @click="issuePop()">{{c.desc}}</span><span v-if="c.blnLast" class="newLable">new</span></v-table-column>
                                                 <v-table-column>{{c.apperTime}}</v-table-column>
                                                 <v-table-column>{{c.user}}</v-table-column>
                                             </v-table-row>
@@ -192,6 +192,7 @@ import HTag from 'components/HTag'
 import TerminalDetail from '../TerminalDetail'
 import CallPolicy from '../CallPolicy'
 import IssueList from '../IssueList'
+import IssueDetail from '../IssueDetail'
 import PendHandle from '../PendHandle'
 import HandlerWay from '../HandlerWay'
 import CollectChart from '../CollectChart'
@@ -390,6 +391,28 @@ export default {
             return param;
         }());
     },
+    //问题描述详情
+    issuePop(){
+        let s=this;
+        tool.open(function(){
+            let param={
+                title:'问题详情(场所名称)',
+                area:'800px',
+                content:`<div class="issue_detail_pop" style="width:100%;height:100%;overflow:hidden;">
+                            <IssueDetail />
+                         </div>
+                        `,
+                components:{IssueDetail},
+                store:s.$store,
+                context:{
+                    ok_btn(){param.close()},
+                    cancel_btn(){param.close()}
+                }
+            };
+
+            return param;
+        }());
+    },
     //报警原因详情
     callPolicy(d){
         let s=this;
@@ -558,7 +581,7 @@ html{.TCol(~".DealtPlace .exportSel.active");}
 html{.TCol(~".DealtPlace .exportBtn:hover");}
 .DealtPlace .cursor{cursor:pointer;}
 
-.DealtPlace .newLable{padding:5px 10px;background:red;color:white;border-radius:5px;margin-left:5px;}
+.DealtPlace .newLable{padding:5px 10px;background:red;color:white;border-radius:5px;margin-left:5px;text-decoration:none;}
 
 .DealtPlace .row_item_child{padding:10px 50px;.border('bottom');position:relative;z-index:1;}
 </style>
